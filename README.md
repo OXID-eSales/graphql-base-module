@@ -1,2 +1,2 @@
-# graph_ql_base_module
+# graph-ql-base-module
 The main framework for using GraphQL in OXID
