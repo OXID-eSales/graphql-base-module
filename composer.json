@@ -1,0 +1,32 @@
+{
+  "name": "oxid-esales/graphql-base",
+  "description": "OXID GraphQL Base",
+  "type": "oxideshop-module",
+  "keywords": ["oxid", "modules", "eShop"],
+  "homepage": "https://www.oxid-esales.com",
+  "license": ["GPL-3.0", "proprietary"],
+  "extra": {
+    "oxideshop": {
+      "target-directory": "oe/graphql-base",
+      "blacklist-filter": [
+        "node_modules/**/*.*",
+        "**/*.php"
+      ]
+    }
+  },
+  "version": "0.0.1",
+  "require": {
+    "php": "^7.0",
+    "webonyx/graphql-php": "^0.12.6",
+    "firebase/php-jwt": "^5.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6"
+  },
+  "autoload": {
+    "psr-4": {
+      "OxidEsales\\GraphQl\\": "src",
+      "OxidEsales\\GraphQl\\Tests": "tests"
+    }
+  }
+}
