@@ -10,7 +10,8 @@
       "target-directory": "oe/graphql-base",
       "blacklist-filter": [
         "node_modules/**/*.*",
-        "**/*.php"
+        "src/**/*.php",
+        "tests/**/*.php"
       ]
     }
   },
