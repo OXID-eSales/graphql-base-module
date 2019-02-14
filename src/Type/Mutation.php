@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
@@ -8,10 +7,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQl\Type;
 
-use OxidProfessionalServices\GraphQl\Core\Framework\RootGraphQlType;
-
 /**
- * @internal
+ * Class Mutation
+ *
+ * @package OxidEsales\GraphQl\Type
  */
 class Mutation extends RootGraphQlType
 {

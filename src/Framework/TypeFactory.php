@@ -7,10 +7,17 @@
 
 namespace OxidEsales\GraphQl\Framework;
 
-use OxidProfessionalServices\GraphQl\Core\Type\BaseType;
+use OxidEsales\GraphQl\Type\BaseType;
 
 /**
- * @internal
+ * Class TypeFactory
+ *
+ * This factory is used to collect all the query and
+ * mutation types before building the schema. This allows
+ * us to use dependency injection to build the complete
+ * schema.
+ *
+ * @package OxidEsales\GraphQl\Framework
  */
 class TypeFactory
 {
@@ -43,10 +50,10 @@ class TypeFactory
      */
     public function addSubType(BaseType $type)
     {
-        foreach ($type->getProvidedFields() as $parentFieldName => $parentField) {
+        foreach ($type->getQueriesOrMutations() as $parentFieldName => $parentField) {
             $this->fields[$parentFieldName] = $parentField;
         }
-        foreach ($type->getFieldHandlers() as $handlerName => $handler) {
+        foreach ($type->getQueryOrMutationHandlers() as $handlerName => $handler) {
             $this->fieldHandlers[$handlerName] = $handler;
         }
     }

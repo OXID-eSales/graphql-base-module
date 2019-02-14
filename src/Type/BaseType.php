@@ -17,10 +17,10 @@ abstract class BaseType extends ObjectType
     /**
      * @return array
      */
-    abstract public function getProvidedFields();
+    abstract public function getQueriesOrMutations();
 
     /**
      * @return array
      */
-    abstract public function getFieldHandlers();
+    abstract public function getQueryOrMutationHandlers();
 }
