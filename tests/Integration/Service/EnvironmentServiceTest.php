@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Tests\Integration;
+namespace OxidEsales\GraphQl\Tests\Integration\Service;
 
 use OxidEsales\GraphQl\Service\EnvironmentService;
 use PHPUnit\Framework\TestCase;

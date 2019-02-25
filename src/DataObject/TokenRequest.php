@@ -9,23 +9,23 @@ namespace OxidEsales\GraphQl\DataObject;
 
 class TokenRequest
 {
-    /** @var  string $username */
+    /** @var  null|string $username */
     private $username = null;
-    /** @var  string $password */
+    /** @var  null|string $password */
     private $password = null;
-    /** @var  string $group */
+    /** @var  null|string $group */
     private $group = null;
-    /** @var  string lang */
+    /** @var  null|string lang */
     private $lang = null;
-    /** @var  int $shopid */
+    /** @var  null|int $shopid */
     private $shopid = null;
-    /** @var  Token $currentToken */
+    /** @var  null|Token $currentToken */
     private $currentToken = null;
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getUsername(): string
+    public function getUsername()
     {
         return $this->username;
     }
@@ -39,9 +39,9 @@ class TokenRequest
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getPassword(): string
+    public function getPassword()
     {
         return $this->password;
     }
@@ -55,9 +55,9 @@ class TokenRequest
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getGroup(): string
+    public function getGroup()
     {
         return $this->group;
     }
@@ -71,9 +71,9 @@ class TokenRequest
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getLang(): string
+    public function getLang()
     {
         return $this->lang;
     }
@@ -87,9 +87,9 @@ class TokenRequest
     }
 
     /**
-     * @return int
+     * @return null|int
      */
-    public function getShopid(): int
+    public function getShopid()
     {
         return $this->shopid;
     }
@@ -103,9 +103,9 @@ class TokenRequest
     }
 
     /**
-     * @return Token
+     * @return null|Token
      */
-    public function getCurrentToken(): Token
+    public function getCurrentToken()
     {
         return $this->currentToken;
     }
@@ -117,6 +117,5 @@ class TokenRequest
     {
         $this->currentToken = $currentToken;
     }
-
 
 }

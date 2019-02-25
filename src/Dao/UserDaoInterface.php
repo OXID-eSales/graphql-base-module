@@ -22,8 +22,9 @@ interface UserDaoInterface
      *
      * @param string $username
      * @param string $password
+     * @param int $shopId
      *
      * @return string
      */
-    public function verifyPassword(string $username, string $password): string;
+    public function fetchUserGroup(string $username, string $password, int $shopid): string;
 }

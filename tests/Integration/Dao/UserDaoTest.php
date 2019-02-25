@@ -31,20 +31,20 @@ class UserDaoTest extends TestCase
     {
         $this->expectException(UserNotFoundException::class);
 
-        $this->userDao->verifyPassword("nonexisting user", "password");
+        $this->userDao->fetchUserGroup("nonexisting user", "password", 1);
     }
 
     public function testWrongPassword()
     {
         $this->expectException(PasswordMismatchException::class);
 
-        $this->userDao->verifyPassword("admin", "password");
+        $this->userDao->fetchUserGroup("admin", "password", 1);
     }
 
     public function testCorrectVerification()
     {
-        $oxid = $this->userDao->verifyPassword("admin", "admin");
+        $oxid = $this->userDao->fetchUserGroup("admin", "admin", 1);
 
-        $this->assertEquals('oxdefaultadmin', $oxid);
+        $this->assertEquals('admin', $oxid);
     }
 }

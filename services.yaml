@@ -14,11 +14,21 @@ services:
     class: OxidEsales\GraphQl\Framework\ModuleSetup
     public: true
 
+  OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
+    class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
+    public: true
+
+  OxidEsales\GraphQl\Framework\ErrorCodeProviderInterface:
+    class: OxidEsales\GraphQl\Framework\ErrorCodeProvider
+
+  OxidEsales\GraphQl\Framework\RequestReaderInterface:
+    class: OxidEsales\GraphQl\Framework\RequestReader
+
+  OxidEsales\GraphQl\Framework\ResponseWriterInterface:
+    class: OxidEsales\GraphQl\Framework\ResponseWriter
+
   OxidEsales\GraphQl\Dao\UserDaoInterface:
     class: OxidEsales\GraphQl\Dao\UserDao
-
-  OxidEsales\GraphQl\Dao\TokenDaoInterface:
-    class: OxidEsales\GraphQl\Dao\TokenDao
 
   OxidEsales\GraphQl\Service\KeyRegistryInterface:
     class: OxidEsales\GraphQl\Service\KeyRegistry
@@ -44,7 +54,6 @@ services:
     class: OxidEsales\GraphQl\Framework\TypeFactory
     arguments: ['OxidEsales\GraphQl\Type\Mutation']
 
-  OxidProfessionalServices\GraphQl\Core\Framework\SchemaFactoryInterface:
+  OxidEsales\GraphQl\Core\Framework\SchemaFactoryInterface:
     class: OxidEsales\GraphQl\Framework\SchemaFactory
     arguments: ['@query_type_factory', '@mutation_type_factory']
-    public: true

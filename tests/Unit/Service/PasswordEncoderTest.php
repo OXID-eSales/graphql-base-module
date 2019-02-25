@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Tests\Unit;
+namespace OxidEsales\GraphQl\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker;
 use OxidEsales\Eshop\Core\PasswordSaltGenerator;

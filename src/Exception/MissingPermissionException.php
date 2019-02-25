@@ -7,7 +7,7 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class TooManyTokensException extends \Exception;
+class MissingPermissionException extends \Exception
 {
 
 }

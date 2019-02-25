@@ -7,6 +7,7 @@
 
 namespace OxidEsales\GraphQl\Service;
 
+use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 
 interface AuthenticationServiceInterface
@@ -16,6 +17,6 @@ interface AuthenticationServiceInterface
      *
      * @return string
      */
-    public function getToken(TokenRequest $tokenRequest);
+    public function getToken(TokenRequest $tokenRequest): Token;
 
 }

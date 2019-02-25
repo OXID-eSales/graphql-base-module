@@ -12,90 +12,62 @@ use OxidEsales\GraphQl\Exception\InsufficientTokenData;
 
 class Token
 {
+    const ALGORITHM = 'HS512';
 
-    private $signatureKey;
+    private $jwtObject;
 
-    private $subject = null;
-    private $issueDate = null;
-    private $tokenId = null;
-    private $expiryDate = null;
-    private $shopUrl = null;
-    private $lang = null;
-    private $shopid = null;
-    private $userGroup = null;
-
-    public function __construct(string $signatureKey)
+    public function __construct(int $expiryDays=31)
     {
-        $this->signatureKey = $signatureKey;
+        $this->jwtObject = new \stdClass();
+        $this->jwtObject->sub = null;
+        $this->jwtObject->iat = null;
+        $this->jwtObject->jti = $this->generateTokenKey();
+        $this->jwtObject->iss = time();
+        $this->jwtObject->aud = null;
+        $this->jwtObject->exp = $this->jwtObject->iss + $expiryDays * 24 * 60 * 60;
+        $this->jwtObject->data = new \stdClass();
+        $this->jwtObject->lang = null;
+        $this->jwtObject->shopId = null;
+        $this->jwtObject->userGroup = null;
     }
 
-    public function getJwt(): string
+    public function getJwt(string $signatureKey): string
     {
         $this->verifyData();
 
-        if (!$this->tokenId) {
-            $this->tokenId = $this->generateTokenKey();
-        }
-
-        if (!$this->issueDate) {
-            $this->issueDate = time();
-        }
-
-        if (!$this->expiryDate) {
-            $this->expiryDate = $this->issueDate + (365 * 24 * 60 * 60);
-        }
-
-        $tokenArray = [
-            'sub'  => $this->subject,             //Subject
-            'iat'  => $this->issueDate,          // Issued at: time when the token was generated
-            'jti'  => $this->tokenId,            // Json Token Id: an unique identifier for the token
-            'iss'  => $this->shopUrl,         // Issuer
-            'aud'  => $this->shopUrl,         // Audience
-            'exp'  => $this->expiryDate,            // Expire
-            'data' => [                     // Data related to the signer use
-                                            'lang'      => $this->lang,
-                                            'shopid'    => $this->shopid,
-                                            'usergroup' => $this->userGroup
-            ]
-        ];
-        $jwt = JWT::encode(
-            $tokenArray,      //Data to be encoded in the JWT
-            $this->signatureKey, // The signing key
-            'HS512'     // Algorithm used to sign the token, see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
+        return JWT::encode(
+            json_decode(json_encode($this->jwtObject), true), //Data to be encoded in the JWT
+            $signatureKey, // The signing key
+            $this::ALGORITHM     // Algorithm used to sign the token, see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
         );
 
-        return $jwt;
     }
 
-    public function setJwt($jwt)
+    public function setJwt(string $jwt, string $signatureKey)
     {
-        $tokenArray = JWT::decode($jwt, $this->signatureKey, ['HS512']);
-        $this->subject = $tokenArray->sub;
-        $this->issueDate = $tokenArray->iat;
-        $this->tokenId = $tokenArray->jti;
-        $this->shopUrl = $tokenArray->iss;
-        $this->expiryDate = $tokenArray->exp;
-        $data = $tokenArray->data;
-        $this->lang = $data->lang;
-        $this->shopid = $data->shopid;
-        $this->userGroup = $data->usergroup;
+
+        $this->jwtObject = JWT::decode($jwt, $signatureKey, [$this::ALGORITHM]);
+
     }
 
     public function verifyData()
     {
-        if ($this->subject === null) {
+        if (! $this->jwtObject->sub) {
             throw new InsufficientTokenData("Missing subject data.");
         }
-        if ($this->shopUrl === null) {
+        if (! $this->jwtObject->iat) {
             throw new InsufficientTokenData("Missing shop url.");
         }
-        if ($this->lang === null) {
+        if (! $this->jwtObject->aud) {
+            throw new InsufficientTokenData("Missing shop url.");
+        }
+        if (! $this->jwtObject->data->lang) {
             throw new InsufficientTokenData("Missing language.");
         }
-        if ($this->shopid === null) {
+        if ($this->jwtObject->data->shopid === null) {
             throw new InsufficientTokenData("Missing shop id.");
         }
-        if ($this->userGroup === null) {
+        if (! $this->jwtObject->data->userGroup) {
             throw new InsufficientTokenData("Missing user group.");
         }
     }
@@ -106,131 +78,117 @@ class Token
     }
 
     /**
-     * @return null
+     * @return null|string
      */
     public function getSubject()
     {
-        return $this->subject;
+        return $this->jwtObject->sub;
     }
 
     /**
-     * @param null $subject
+     * @param string|null $subject
      */
     public function setSubject($subject)
     {
-        $this->subject = $subject;
+        $this->jwtObject->sub = $subject;
     }
 
     /**
-     * @return null
+     * @return int
      */
-    public function getIssueDate()
+    public function getIssueDate(): int
     {
-        return $this->issueDate;
+        return $this->jwtObject->iss;
     }
 
     /**
-     * @param null $issueDate
+     * @return string
      */
-    public function setIssueDate($issueDate)
+    public function getTokenId(): string
     {
-        $this->issueDate = $issueDate;
+        return $this->jwtObject->jti;
     }
 
     /**
-     * @return null
-     */
-    public function getTokenId()
-    {
-        return $this->tokenId;
-    }
-
-    /**
-     * @param null $tokenId
-     */
-    public function setTokenId($tokenId)
-    {
-        $this->tokenId = $tokenId;
-    }
-
-    /**
-     * @return null
+     * @return int
      */
     public function getExpiryDate()
     {
-        return $this->expiryDate;
+        return $this->jwtObject->exp;
     }
 
     /**
-     * @param null $expiryDate
+     * @return null|string
      */
-    public function setExpiryDate($expiryDate)
+    public function getIssuer()
     {
-        $this->expiryDate = $expiryDate;
+        return $this->jwtObject->iat;
     }
 
     /**
-     * @return null
+     * @return null|string
      */
-    public function getShopUrl()
+    public function getAudience()
     {
-        return $this->shopUrl;
+        return $this->jwtObject->aud;
     }
 
+
     /**
-     * @param null $shopUrl
+     * @param string|null $shopUrl
      */
     public function setShopUrl($shopUrl)
     {
-        $this->shopUrl = $shopUrl;
+        $this->jwtObject->iat = $shopUrl;
+        $this->jwtObject->aud = $shopUrl;
     }
 
     /**
-     * @return null
+     * @return null|string
      */
     public function getLang()
     {
-        return $this->lang;
+        return $this->jwtObject->data->lang;
     }
 
     /**
-     * @param null $lang
+     * @param string|null $lang
      */
     public function setLang($lang)
     {
-        $this->lang = $lang;
+        $this->jwtObject->data->lang = $lang;
     }
 
     /**
-     * @return null
+     * @return null|int
      */
     public function getShopid()
     {
-        return $this->shopid;
+        return $this->jwtObject->data->shopid;
     }
 
     /**
-     * @param null $shopid
+     * @param int|null $shopid
      */
     public function setShopid($shopid)
     {
-        $this->shopid = $shopid;
+        $this->jwtObject->data->shopid = $shopid;
     }
 
     /**
-     * @return null
+     * @return null|string
      */
     public function getUserGroup()
     {
-        return $this->userGroup;
+        return $this->jwtObject->data->userGroup;
     }
 
     /**
-     * @param null $userGroup
+     * @param null|string $userGroup
      */
     public function setUserGroup($userGroup)
     {
-        $this->userGroup = $userGroup;
+        $this->jwtObject->data->userGroup = $userGroup;
     }
 
 }

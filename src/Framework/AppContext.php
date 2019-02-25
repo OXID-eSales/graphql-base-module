@@ -24,6 +24,16 @@ class AppContext
     /** @var  string $shopUrl */
     private $shopUrl;
 
+    public function getUserGroup(): string
+    {
+        if ($this->token) {
+            return $this->token->getUserGroup();
+        }
+        else {
+            return 'unknown';
+        }
+    }
+
     public function getAuthToken(): Token
     {
         return $this->token;

@@ -26,13 +26,36 @@ class UserDao implements UserDaoInterface
         $this->passwordEncoder = $passwordEncoder;
     }
 
-    public function verifyPassword(string $username, string $password): string
+    /**
+     * Checks if there is a working user/password/shopid combination
+     * and determines the user group.
+     *
+     * If not, an exception is thrown. If yes, the group the user
+     * belongs to is returned.
+     *
+     * TODO: Improve the user group mechanism
+     *
+     * @param string $username
+     * @param string $password
+     * @param int    $shopid
+     *
+     * @return string
+     * @throws PasswordMismatchException
+     * @throws UserNotFoundException
+     */
+    public function fetchUserGroup(string $username, string $password, int $shopid): string
     {
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select('oxid', 'oxpassword', 'oxpasssalt')
+        $queryBuilder->select('oxrights', 'oxpassword', 'oxpasssalt')
             ->from('oxuser')
-            ->where($queryBuilder->expr()->eq('oxusername', ':name'))
-            ->setParameter('name', $username);
+            ->where(
+                $queryBuilder->expr()->andX(
+                    $queryBuilder->expr()->eq('oxusername', ':name'),
+                    $queryBuilder->expr()->eq('oxshopid', ':shopid')
+                )
+            )
+            ->setParameter('name', $username)
+            ->setParameter('shopid', $shopid);
         $result = $queryBuilder->execute()->fetch();
         if (! $result) {
             throw new UserNotFoundException();
@@ -42,6 +65,9 @@ class UserDao implements UserDaoInterface
         if ($storedHashedPassword !== $providedHashedPassword) {
             throw new PasswordMismatchException();
         }
-        return $result['oxid'];
+        if ($result['oxrights'] == 'malladmin') {
+            return 'admin';
+        }
+        return 'customer';
     }
 }

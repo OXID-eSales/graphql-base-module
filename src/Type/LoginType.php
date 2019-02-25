@@ -10,8 +10,10 @@ namespace OxidEsales\GraphQl\Type;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
+use OxidEsales\GraphQl\Framework\AppContext;
 use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
+use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 
 /**
  * Class LoginType
@@ -24,15 +26,16 @@ class LoginType extends BaseType
     /** @var AuthenticationServiceInterface $authService */
     private $authService;
 
-    /** @var  EnvironmentServiceInterface $environmentService */
-    private $environmentService;
+    /** @var  KeyRegistryInterface $keyRegistry */
+    private $keyRegistry;
 
     public function __construct(
         AuthenticationServiceInterface $authService,
-        EnvironmentServiceInterface $environmentService)
+        KeyRegistryInterface $keyRegistry
+    )
     {
         $this->authService = $authService;
-        $this->environmentService = $environmentService;
+        $this->keyRegistry = $keyRegistry;
 
         $config = [
             'name' => 'Token',
@@ -72,23 +75,18 @@ class LoginType extends BaseType
     {
         return [
             'login' => function ($value, $args, $context, ResolveInfo $info) {
+                /** @var AppContext $context */
                 $tokenRequest = new TokenRequest();
-                $tokenRequest->setUsername($args['username']);
-                $tokenRequest->setPassword($args['password']);
-                if ($args['lang']) {
-                    $tokenRequest->setLang($args['lang']);
+                $tokenRequest->setUsername($args['username'] ? $args['username'] : '');
+                $tokenRequest->setPassword($args['password'] ? $args['password'] : '');
+                $tokenRequest->setLang($args['lang'] ? $args['lang'] : $context->getDefaultShopLanguage());
+                $tokenRequest->setShopid($args['shopid'] ? $args['shopid'] : $context->getDefaultShopId());
+                if ($context->hasAuthToken()) {
+                    $tokenRequest->setCurrentToken($context->getToken());
                 }
-                else {
-                    $tokenRequest->setLang($this->environmentService->getDefaultLanguage());
-                }
-                if ($args['shopid']) {
-                    $tokenRequest->setShopid($args['shopid']);
-                }
-                else {
-                    $tokenRequest->setShopid($this->environmentService->getDefaultShopId());
-                }
-                $tokenRequest->setCurrentToken($context->getToken());
-                return $this->authService->getToken($tokenRequest);
+                $token = $this->authService->getToken($tokenRequest);
+                $signatureKey = $this->keyRegistry->getSignatureKey();
+                return $token->getJwt($signatureKey);
             }
         ];
     }
