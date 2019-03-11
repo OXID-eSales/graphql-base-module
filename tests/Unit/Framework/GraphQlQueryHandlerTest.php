@@ -9,20 +9,19 @@ namespace OxidEsales\GraphQl\Tests\Unit\Framework;
 
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Token;
+use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Framework\ErrorCodeProvider;
 use OxidEsales\GraphQl\Framework\GraphQlQueryHandler;
 use OxidEsales\GraphQl\Framework\RequestReaderInterface;
 use OxidEsales\GraphQl\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQl\Framework\SchemaFactory;
-use OxidEsales\GraphQl\Framework\TypeFactory;
 use OxidEsales\GraphQl\Service\AuthenticationService;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistry;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
-use OxidEsales\GraphQl\Type\LoginType;
-use OxidEsales\GraphQl\Type\Mutation;
-use OxidEsales\GraphQl\Type\Query;
+use OxidEsales\GraphQl\Service\PermissionsService;
+use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -67,12 +66,13 @@ class GraphQlQueryHandlerTest extends TestCase
         $this->environmentService->method('getDefaultLanguage')->willReturn('de');
         $this->environmentService->method('getDefaultShopId')->willReturn('1');
 
-        $loginType = new LoginType(
+        $loginType = new LoginQueryProvider(
             new AuthenticationService($this->environmentService, $this->userDao),
-            $this->keyRegistry);
-        $queryTypeFactory = new TypeFactory(Query::class);
-        $queryTypeFactory->addSubType($loginType);
-        $schemaFactory = new SchemaFactory($queryTypeFactory, new TypeFactory(Mutation::class));
+            $this->keyRegistry,
+            new PermissionsService());
+
+        $schemaFactory = new SchemaFactory();
+        $schemaFactory->addQueryProvider($loginType);
 
         $this->graphQlQueryHandler = new GraphQlQueryHandler(
             new NullLogger(),
@@ -112,6 +112,29 @@ class GraphQlQueryHandlerTest extends TestCase
         $this->assertHttpStatus(401);
     }
 
+    public function testMissingPermission()
+    {
+        $this->userDao->method('addIdAndUserGroupToTokenRequest')
+            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
+
+        // This query needs a permission, but no permissions are configured
+        $query = <<< EOQ
+query TestLanguage {
+    setlanguage (lang: "en") {
+        token       
+    }
+}
+EOQ;
+        $jwt = $this->initializeToken()->getJwt($this::SIGNATURE_KEY);
+        $this->requestReader->method('getAuthorizationHeader')->willReturn("Bearer $jwt");
+        $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
+
+        $this->graphQlQueryHandler->executeGraphQlQuery();
+
+        $this->assertEquals(403, $this->httpStatus);
+
+    }
+
     public function testIssuerDoesNotMatch()
     {
         $token = $this->initializeToken();
@@ -144,9 +167,18 @@ class GraphQlQueryHandlerTest extends TestCase
 
     }
 
+    public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest)
+    {
+        $tokenRequest->setUserid('someid');
+        $tokenRequest->setGroup('customer');
+        return $tokenRequest;
+    }
+
     public function testUserLogin()
     {
-        $this->userDao->method('fetchUserGroup')->willReturn('customer');
+        $this->userDao->method('addIdAndUserGroupToTokenRequest')
+            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
+
         $query = <<< EOQ
 query TestLogin {
     login (username: "someuser", password: "password", lang: "en", shopid: 25) {
@@ -165,12 +197,14 @@ EOQ;
         $this->assertNotNull($jwt);
         $token = new Token();
         $token->setJwt($jwt, $this::SIGNATURE_KEY);
-        $this->assertEquals('someuser', $token->getSubject());
+        $this->assertEquals('someid', $token->getSubject());
     }
 
     public function testAnonymousLogin()
     {
-        $this->userDao->method('fetchUserGroup')->willReturn('customer');
+        $this->userDao->method('addIdAndUserGroupToTokenRequest')
+            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
+
         $query = <<< EOQ
 query TestLogin {
     login {
@@ -189,13 +223,15 @@ EOQ;
         $this->assertNotNull($jwt);
         $token = new Token();
         $token->setJwt($jwt, $this::SIGNATURE_KEY);
-        $this->assertEquals('anonymous', $token->getSubject());
+        $this->assertEquals('anonymousid', $token->getSubject());
         $this->assertEquals('anonymous', $token->getUserGroup());
     }
 
     public function testGraphQlSyntaxError()
     {
-        $this->userDao->method('fetchUserGroup')->willReturn('customer');
+        $this->userDao->method('addIdAndUserGroupToTokenRequest')
+            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
+
         $query = <<< EOQ
 query bla TestLogin {
     login {
@@ -210,12 +246,15 @@ EOQ;
         $this->graphQlQueryHandler->executeGraphQlQuery();
 
         $this->assertErrorMessage('/.*Syntax Error.*/');
+        $this->assertEquals(400, $this->httpStatus);
 
     }
 
     public function testGraphQlMissingTypeError()
     {
-        $this->userDao->method('fetchUserGroup')->willReturn('customer');
+        $this->userDao->method('addIdAndUserGroupToTokenRequest')
+            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
+
         $query = <<< EOQ
 query TestLogin {
     logout {
@@ -230,6 +269,7 @@ EOQ;
         $this->graphQlQueryHandler->executeGraphQlQuery();
 
         $this->assertErrorMessage('/.*Cannot query field.*/');
+        $this->assertEquals(400, $this->httpStatus);
 
     }
 
@@ -240,6 +280,7 @@ EOQ;
 
         $this->graphQlQueryHandler->executeGraphQlQuery();
         $this->assertErrorMessage('/Unknown error:.*/');
+        $this->assertEquals(400, $this->httpStatus);
     }
 
     private function assertErrorMessage(string $regex)

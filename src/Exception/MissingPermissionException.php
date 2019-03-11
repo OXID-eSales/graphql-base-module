@@ -7,7 +7,10 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class MissingPermissionException extends \Exception
+class MissingPermissionException extends \Exception implements HttpErrorInterface
 {
-
+    public function getHttpStatus()
+    {
+        return 403;
+    }
 }

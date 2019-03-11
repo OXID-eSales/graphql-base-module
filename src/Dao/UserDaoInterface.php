@@ -1,30 +1,24 @@
-<?php declare(strict_types=1);
-
+<?php
 /**
- * Copyright © OXID eSales AG. All rights reserved.
- * See LICENSE file for license details.
+ * Created by PhpStorm.
+ * User: michael
+ * Date: 28.02.19
+ * Time: 14:32
  */
 
 namespace OxidEsales\GraphQl\Dao;
 
-use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Exception\UserNotFoundException;
+use OxidEsales\GraphQl\DataObject\TokenRequest;
+use OxidEsales\GraphQl\DataObject\User;
 
 interface UserDaoInterface
 {
+    public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest): TokenRequest;
 
-    /**
-     * Verifies that user and password match. If this
-     * succeeds, it returns the oxid of the user.
-     *
-     * @throws UserNotFoundException
-     * @throws PasswordMismatchException
-     *
-     * @param string $username
-     * @param string $password
-     * @param int $shopId
-     *
-     * @return string
-     */
-    public function fetchUserGroup(string $username, string $password, int $shopid): string;
+    public function getUserById(string $userid): User;
+
+    public function getUserByName(string $username, int $shopid): User;
+
+    public function saveOrUpdateUser(User $user);
+
 }

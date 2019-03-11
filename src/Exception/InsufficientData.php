@@ -7,7 +7,12 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class UserNotFoundException extends \Exception
+class InsufficientData extends \Exception implements HttpErrorInterface
 {
+
+    public function getHttpStatus()
+    {
+        return 400;
+    }
 
 }

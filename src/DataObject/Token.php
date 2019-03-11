@@ -8,7 +8,7 @@
 namespace OxidEsales\GraphQl\DataObject;
 
 use Firebase\JWT\JWT;
-use OxidEsales\GraphQl\Exception\InsufficientTokenData;
+use OxidEsales\GraphQl\Exception\InsufficientData;
 
 class Token
 {
@@ -26,9 +26,10 @@ class Token
         $this->jwtObject->aud = null;
         $this->jwtObject->exp = $this->jwtObject->iss + $expiryDays * 24 * 60 * 60;
         $this->jwtObject->data = new \stdClass();
-        $this->jwtObject->lang = null;
-        $this->jwtObject->shopId = null;
-        $this->jwtObject->userGroup = null;
+        $this->jwtObject->data->lang = null;
+        $this->jwtObject->data->shopId = null;
+        $this->jwtObject->data->userName = null;
+        $this->jwtObject->data->userGroup = null;
     }
 
     public function getJwt(string $signatureKey): string
@@ -53,28 +54,38 @@ class Token
     public function verifyData()
     {
         if (! $this->jwtObject->sub) {
-            throw new InsufficientTokenData("Missing subject data.");
+            throw new InsufficientData("Missing subject data.");
         }
         if (! $this->jwtObject->iat) {
-            throw new InsufficientTokenData("Missing shop url.");
+            throw new InsufficientData("Missing shop url.");
         }
         if (! $this->jwtObject->aud) {
-            throw new InsufficientTokenData("Missing shop url.");
+            throw new InsufficientData("Missing shop url.");
         }
         if (! $this->jwtObject->data->lang) {
-            throw new InsufficientTokenData("Missing language.");
+            throw new InsufficientData("Missing language.");
         }
         if ($this->jwtObject->data->shopid === null) {
-            throw new InsufficientTokenData("Missing shop id.");
+            throw new InsufficientData("Missing shop id.");
         }
         if (! $this->jwtObject->data->userGroup) {
-            throw new InsufficientTokenData("Missing user group.");
+            throw new InsufficientData("Missing user group.");
         }
     }
 
     public function generateTokenKey()
     {
         return base64_encode(openssl_random_pseudo_bytes(16));
+    }
+
+    public function getKey()
+    {
+        return $this->jwtObject->jti;
+    }
+
+    public function setKey(string $key)
+    {
+        $this->jwtObject->jti = $key;
     }
 
     /**
@@ -191,4 +202,19 @@ class Token
         $this->jwtObject->data->userGroup = $userGroup;
     }
 
+    /**
+     * @return null|string
+     */
+    public function getUserName()
+    {
+        return $this->jwtObject->data->userName;
+    }
+
+    /**
+     * @param null|string $userName
+     */
+    public function setUserName($userName)
+    {
+        $this->jwtObject->data->userName = $userName;
+    }
 }

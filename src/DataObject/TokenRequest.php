@@ -10,6 +10,8 @@ namespace OxidEsales\GraphQl\DataObject;
 class TokenRequest
 {
     /** @var  null|string $username */
+    private $userid = null;
+    /** @var  null|string $username */
     private $username = null;
     /** @var  null|string $password */
     private $password = null;
@@ -21,6 +23,22 @@ class TokenRequest
     private $shopid = null;
     /** @var  null|Token $currentToken */
     private $currentToken = null;
+
+    /**
+     * @return null|string
+     */
+    public function getUserid()
+    {
+        return $this->userid;
+    }
+
+    /**
+     * @param null|string $userid
+     */
+    public function setUserid($userid)
+    {
+        $this->userid = $userid;
+    }
 
     /**
      * @return null|string

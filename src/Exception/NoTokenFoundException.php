@@ -7,7 +7,11 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class NoTokenFoundException extends \Exception
+class NoTokenFoundException extends \Exception implements HttpErrorInterface
 {
+    public function getHttpStatus()
+    {
+        return 401;
+    }
 
 }

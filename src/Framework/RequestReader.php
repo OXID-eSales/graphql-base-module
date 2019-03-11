@@ -31,11 +31,10 @@ class RequestReader implements RequestReaderInterface
             //(a nice side-effect of this fix means we don't care about capitalization for Authorization)
             $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
 
-            if (isset($aRequestHeaders['Authorization'])) {
+            if (isset($requestHeaders['Authorization'])) {
                 $authHeader = trim($requestHeaders['Authorization']);
             }
         }
-
         return $authHeader;
     }
 

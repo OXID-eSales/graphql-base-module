@@ -34,7 +34,10 @@ class AppContext
         }
     }
 
-    public function getAuthToken(): Token
+    /**
+     * @return Token|null
+     */
+    public function getAuthToken()
     {
         return $this->token;
     }
@@ -47,22 +50,6 @@ class AppContext
     public function hasAuthToken(): bool
     {
         return $this->token !== null;
-    }
-
-    /**
-     * @return Token
-     */
-    public function getToken(): Token
-    {
-        return $this->token;
-    }
-
-    /**
-     * @param Token $token
-     */
-    public function setToken(Token $token)
-    {
-        $this->token = $token;
     }
 
     /**

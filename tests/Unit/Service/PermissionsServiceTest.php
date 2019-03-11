@@ -10,6 +10,7 @@ namespace OxidEsales\GraphQl\Tests\Unit\Service;
 
 use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\Exception\MissingPermissionException;
+use OxidEsales\GraphQl\Service\PermissionsProvider;
 use OxidEsales\GraphQl\Service\PermissionsService;
 use PHPUnit\Framework\TestCase;
 
@@ -24,10 +25,12 @@ class PermissionsServiceTest extends TestCase
     public function setUp()
     {
 
+        $permissionsProvider = new PermissionsProvider();
+        $permissionsProvider->addPermission("group1", "perm1");
+        $permissionsProvider->addPermission("group1", "perm2");
+        $permissionsProvider->addPermission("group2", "perm3");
         $this->permissionsService = new PermissionsService();
-        $this->permissionsService->addPermission("group1", "perm1");
-        $this->permissionsService->addPermission("group1", "perm2");
-        $this->permissionsService->addPermission("group2", "perm3");
+        $this->permissionsService->addPermissionsProvider($permissionsProvider);
 
     }
 

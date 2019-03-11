@@ -10,16 +10,21 @@ namespace OxidEsales\GraphQl\Service;
 use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\Exception\MissingPermissionException;
 
-class PermissionsService implements PermissionsServiceInterface
+class PermissionsService  implements PermissionsServiceInterface
 {
+
+    const PermissionHeader = 'Missing Permission';
+
     private $permissions = [];
 
-    public function addPermission($group, $permission)
+    public function addPermissionsProvider(PermissionsProvider $provider)
     {
-        if (! array_key_exists($group, $this->permissions)) {
-            $this->permissions[$group] = [];
+        foreach ($provider->getPermissions() as $group => $permissions) {
+            if (! array_key_exists($group, $this->permissions)) {
+                $this->permissions[$group] = [];
+            }
+            $this->permissions[$group] = array_merge($this->permissions[$group], $permissions);
         }
-        $this->permissions[$group][] = $permission;
     }
 
     /**
@@ -39,7 +44,7 @@ class PermissionsService implements PermissionsServiceInterface
             $permissions = [$permissions];
         }
         if (! $token) {
-            throw new MissingPermissionException("User without authentication does not have permission " .
+            throw new MissingPermissionException($this::PermissionHeader . ": User without authentication does not have permission " .
                                                  $this->formatPermissions($permissions));
         }
         $group = $token->getUserGroup();
@@ -48,7 +53,8 @@ class PermissionsService implements PermissionsServiceInterface
         }
         if (! array_key_exists($group, $this->permissions))
         {
-            throw new MissingPermissionException("User " . $token->getSubject() . " has no permissions at all.");
+            throw new MissingPermissionException($this::PermissionHeader . ": User " . $token->getUserName() . " with group " .
+                                                 $token->getUserGroup() . " has no permissions at all.");
         }
 
         foreach ($permissions as $permission) {
@@ -57,7 +63,7 @@ class PermissionsService implements PermissionsServiceInterface
             }
         }
 
-        throw new MissingPermissionException("User " . $token->getSubject() . " does not have permission " .
+        throw new MissingPermissionException($this::PermissionHeader . ": User " . $token->getUserName() . " does not have permission " .
                                              $this->formatPermissions($permissions));
 
     }
@@ -67,8 +73,9 @@ class PermissionsService implements PermissionsServiceInterface
         $joiner = '';
         $result = '';
         foreach ($permissions as $permission){
-            $result .= "$joiner'$permission'";
+            $result .= "$joiner\"$permission\"";
             $joiner = ' or ';
         }
+        return $result;
     }
 }

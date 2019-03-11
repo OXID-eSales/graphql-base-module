@@ -8,9 +8,9 @@
 
 namespace OxidEsales\GraphQl\Framework;
 
-use GraphQL\Error\Error;
+use GraphQL\Executor\ExecutionResult;
 
 interface ErrorCodeProviderInterface
 {
-    public function getHttpReturnCode(Error $error): int;
+    public function getHttpReturnCode(ExecutionResult $result): int;
 }

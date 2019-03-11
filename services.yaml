@@ -14,6 +14,10 @@ services:
     class: OxidEsales\GraphQl\Framework\ModuleSetup
     public: true
 
+  OxidEsales\GraphQl\Framework\ModuleSetup:
+    class: OxidEsales\GraphQl\Framework\ModuleSetup
+    public: true
+
   OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
     class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
     public: true
@@ -27,6 +31,9 @@ services:
   OxidEsales\GraphQl\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQl\Framework\ResponseWriter
 
+  OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
+    class: OxidEsales\GraphQl\Framework\SchemaFactory
+
   OxidEsales\GraphQl\Dao\UserDaoInterface:
     class: OxidEsales\GraphQl\Dao\UserDao
 
@@ -36,24 +43,45 @@ services:
   OxidEsales\GraphQl\Service\EnvironmentServiceInterface:
     class: OxidEsales\GraphQl\Service\EnvironmentService
 
-  OxidEsales\GraphQl\Service\PasswordEncoderInterface:
-    class: OxidEsales\GraphQl\Service\PasswordEncoder
-
   OxidEsales\GraphQl\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQl\Service\AuthenticationService
 
-  OxidEsales\GraphQl\Type\LoginType:
-    class: OxidEsales\GraphQl\Type\LoginType
-    tags: ['graphql_query_type']
+  OxidEsales\GraphQl\Service\UserServiceInterface:
+    class: OxidEsales\GraphQl\Service\UserService
 
-  query_type_factory:
-    class: OxidEsales\GraphQl\Framework\TypeFactory
-    arguments: ['OxidEsales\GraphQl\Type\Query']
+  OxidEsales\GraphQl\Service\PermissionsServiceInterface:
+    class: OxidEsales\GraphQl\Service\PermissionsService
 
-  mutation_type_factory:
-    class: OxidEsales\GraphQl\Framework\TypeFactory
-    arguments: ['OxidEsales\GraphQl\Type\Mutation']
+  OxidEsales\GraphQl\Service\LoginPermissionsProvider:
+    class: OxidEsales\GraphQl\Service\PermissionsProvider
+    calls:
+      - ['addPermission', ['anonymous', 'mayreaddata']]
+      - ['addPermission', ['customer', 'mayreaddata']]
+      - ['addPermission', ['admin', 'mayreaddata']]
+      - ['addPermission', ['shopadmin', 'mayreaddata']]
+    tags: ['graphql_permissions_provider']
 
-  OxidEsales\GraphQl\Core\Framework\SchemaFactoryInterface:
-    class: OxidEsales\GraphQl\Framework\SchemaFactory
-    arguments: ['@query_type_factory', '@mutation_type_factory']
+  OxidEsales\GraphQl\Service\UserPermissionsProvider:
+    class: OxidEsales\GraphQl\Service\PermissionsProvider
+    calls:
+      - ['addPermission', ['anonymous', 'maycreatecustomer']]
+      - ['addPermission', ['customer', 'mayupdateself']]
+      - ['addPermission', ['customer', 'maygetself']]
+      - ['addPermission', ['shopadmin', 'maycreateanyuser']]
+      - ['addPermission', ['shopadmin', 'maygetshopuser']]
+      - ['addPermission', ['admin', 'maycreateanyuser']]
+      - ['addPermission', ['admin', 'maygetanyuser']]
+      - ['addPermission', ['admin', 'maycreateuserforothershop']]
+      - ['addPermission', ['admin', 'mayupdateanyuser']]
+    tags: ['graphql_permissions_provider']
+
+  OxidEsales\GraphQl\Type\Provider\LoginQueryProvider:
+    class: OxidEsales\GraphQl\Type\Provider\LoginQueryProvider
+    tags: ['graphql_query_provider']
+
+  OxidEsales\GraphQl\Type\Provider\UserMutationProvider:
+    class: OxidEsales\GraphQl\Type\Provider\UserMutationProvider
+    tags: ['graphql_mutation_provider', 'graphql_query_provider']
+
+  OxidEsales\GraphQl\Utility\LegacyWrapperInterface:
+    class: OxidEsales\GraphQl\Utility\LegacyWrapper

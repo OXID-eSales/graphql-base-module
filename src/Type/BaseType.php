@@ -9,18 +9,26 @@ namespace OxidEsales\GraphQl\Type;
 
 use GraphQL\Type\Definition\ObjectType;
 
-/**
- * @internal
- */
 abstract class BaseType extends ObjectType
 {
     /**
      * @return array
      */
-    abstract public function getQueriesOrMutations();
+    abstract public function getQueries();
 
     /**
      * @return array
      */
-    abstract public function getQueryOrMutationHandlers();
+    abstract public function getQueryHandlers();
+
+    /**
+     * @return array
+     */
+    abstract public function getMutations();
+
+    /**
+     * @return array
+     */
+    abstract public function getMutationHandlers();
+
 }

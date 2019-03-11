@@ -7,7 +7,11 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class PasswordMismatchException extends \Exception
+class PasswordMismatchException extends \Exception implements HttpErrorInterface
 {
+    public function getHttpStatus()
+    {
+        return 401;
+    }
 
 }

@@ -11,6 +11,7 @@ use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Executor\ExecutionResult;
 use OxidEsales\GraphQl\DataObject\Token;
+use OxidEsales\GraphQl\Exception\HttpErrorInterface;
 use OxidEsales\GraphQl\Exception\InvalidTokenException;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
@@ -55,9 +56,8 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $this->requestReader = $requestReader;
         $this->responseWriter = $responseWriter;
 
-        $this->loggingErrorFormatter = function(Error $error) use (&$httpStatus) {
+        $this->loggingErrorFormatter = function(Error $error) {
             $this->logger->error($error);
-            $httpStatus = $this->errorCodeProvider->getHttpReturnCode($error);
             return FormattedError::createFromException($error);
         };
 
@@ -65,16 +65,30 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
 
     public function executeGraphQlQuery()
     {
+        $httpStatus = null;
+
         try {
             $context = $this->initializeAppContext();
             $queryData = $this->requestReader->getGraphQLRequestData();
             $result = $this->executeQuery($context, $queryData);
-        } catch (\Exception $e)
-        {
+        } catch (\Exception $e) {
+            $reflectionClass = new \ReflectionClass($e);
+            if (is_subclass_of($e, HttpErrorInterface::class)) {
+                // Thank god. Our own exceptions provide a http status.
+                /** @var HttpErrorInterface $e */
+                $httpStatus = $e->getHttpStatus();
+            }
+            elseif ($reflectionClass->getNamespaceName() == 'Firebase\JWT') {
+                // Authentication failed. Something with the token went wrong.
+                $httpStatus = 401;
+            }
             $result = $this->createErrorResult($e);
         }
+        if (is_null($httpStatus)) {
+            $httpStatus = $this->errorCodeProvider->getHttpReturnCode($result);
+        }
         $result->setErrorFormatter($this->loggingErrorFormatter);
-        $this->responseWriter->renderJsonResponse($result->toArray(), 401);
+        $this->responseWriter->renderJsonResponse($result->toArray(), $httpStatus);
 
     }
 
@@ -94,9 +108,9 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
             $appContext->setAuthToken($token);
         }
         catch (NoAuthHeaderException $e)
-        {
-            // pass
+        { //pass
         }
+
         return $appContext;
     }
 

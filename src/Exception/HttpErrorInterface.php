@@ -7,7 +7,7 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class InsufficientTokenData extends \Exception
+interface HttpErrorInterface
 {
-
+    public function getHttpStatus();
 }
