@@ -305,16 +305,27 @@ more than one address etc.
 
 ## Installation
 
-Use composer to install this module. It needs the currently
-unreleased OXID eShop from the `b-6.x` branch.
+Fetch the currently
+unreleased [OXID eShop from the `b-6.x` branch](https://github.com/OXID-eSales/oxideshop_ce/tree/b-6.x).
 
-Additionally you need to insert the following line into you
-`.htaccess` file before the line with 
-`RewriteCond %{REQUEST_URI} config\.inc\.php [NC]`:
+
+Then clone this module somewhere locally and add the following
+to the repositories section of the `composer.json`.
 
 ```
-RewriteRule ^(graphql/) widget.php?cl=graphql   [NC,L]
+        "oxid-esales/graphql-base":
+        {
+            "type": "path",
+            "url": "<path to module>/graph-ql-base-module"
+        }
 ```
+
+Now make a `composer require oxid-esales/graph-ql-base-module`.
+
+That's all. Run the shop setup and your shop is ready for
+graphql.
+
+
 ## Testing
 
 To run the tests, change the `test_config.yml` file of your
