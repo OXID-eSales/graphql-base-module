@@ -38,13 +38,21 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function getToken(TokenRequest $tokenRequest): Token
     {
         $token = null;
+        if ($tokenRequest->getGroup() == AuthConstants::USER_GROUP_CUSTOMER) {
+            return $this->getDeveloperToken($tokenRequest);
+        }
         if ($tokenRequest->getUsername()) {
-            $token = $this->getUserToken($tokenRequest);
+            return $this->getUserToken($tokenRequest);
         }
-        else {
-            $token = $this->getAnonymousToken($tokenRequest);
-        }
-        return $token;
+        return $this->getAnonymousToken($tokenRequest);
+    }
+
+    private function getDeveloperToken(TokenRequest $tokenRequest)
+    {
+        $tokenRequest->setUserid('developerid');
+        $tokenRequest->setUsername('developer');
+        return $this->createToken($tokenRequest);
+
     }
 
     private function getAnonymousToken(TokenRequest $tokenRequest)

@@ -9,6 +9,7 @@ namespace OxidEsales\GraphQl\Service;
 
 use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\Exception\MissingPermissionException;
+use OxidEsales\GraphQl\Utility\AuthConstants;
 
 class PermissionsService  implements PermissionsServiceInterface
 {
@@ -17,9 +18,15 @@ class PermissionsService  implements PermissionsServiceInterface
 
     private $permissions = [];
 
+    private $acceptDeveloperChecks = false;
+
     public function addPermissionsProvider(PermissionsProvider $provider)
     {
         foreach ($provider->getPermissions() as $group => $permissions) {
+            if ($group === AuthConstants::USER_GROUP_DEVELOPER) {
+                $this->acceptDeveloperChecks = true;
+                continue;
+            }
             if (! array_key_exists($group, $this->permissions)) {
                 $this->permissions[$group] = [];
             }
@@ -48,7 +55,7 @@ class PermissionsService  implements PermissionsServiceInterface
                                                  $this->formatPermissions($permissions));
         }
         $group = $token->getUserGroup();
-        if ($group == 'developer') {
+        if ($this->acceptDeveloperChecks && $group == AuthConstants::USER_GROUP_DEVELOPER) {
             return;
         }
         if (! array_key_exists($group, $this->permissions))

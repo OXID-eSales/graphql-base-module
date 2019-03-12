@@ -14,4 +14,5 @@ class AuthConstants
     const USER_GROUP_CUSTOMER = 'customer';
     const USER_GROUP_ADMIN = 'admin';
     const USER_GROUP_SHOPADMIN = 'shopadmin';
+    const USER_GROUP_DEVELOPER = 'developer';
 }

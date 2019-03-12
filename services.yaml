@@ -45,6 +45,7 @@ services:
 
   OxidEsales\GraphQl\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQl\Service\AuthenticationService
+    public: true
 
   OxidEsales\GraphQl\Service\UserServiceInterface:
     class: OxidEsales\GraphQl\Service\UserService
