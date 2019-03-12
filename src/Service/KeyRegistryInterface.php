@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: michael
- * Date: 12.02.19
- * Time: 15:41
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
 
 namespace OxidEsales\GraphQl\Service;
