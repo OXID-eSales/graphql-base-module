@@ -24,7 +24,7 @@ class UserType extends ObjectType
     {
         $config = [
             'name' => 'User',
-            'description' => 'Mutation to create or change user',
+            'description' => 'Rudimentary user object',
             'fields' => [
                 'username' => Type::string(),
                 'firstname' => Type::string(),

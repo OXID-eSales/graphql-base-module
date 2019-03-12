@@ -38,7 +38,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function getToken(TokenRequest $tokenRequest): Token
     {
         $token = null;
-        if ($tokenRequest->getGroup() == AuthConstants::USER_GROUP_CUSTOMER) {
+        if ($tokenRequest->getGroup() == AuthConstants::USER_GROUP_DEVELOPER) {
             return $this->getDeveloperToken($tokenRequest);
         }
         if ($tokenRequest->getUsername()) {
