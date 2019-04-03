@@ -7,12 +7,24 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class InsufficientData extends \Exception implements HttpErrorInterface
+use GraphQL\Error\ClientAware;
+
+class InsufficientData extends \Exception implements HttpErrorInterface, ClientAware
 {
 
     public function getHttpStatus()
     {
         return 400;
+    }
+
+    public function isClientSafe()
+    {
+        return true;
+    }
+
+    public function getCategory()
+    {
+        return ErrorCategories::TOKENERRORS;
     }
 
 }

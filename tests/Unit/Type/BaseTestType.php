@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
 class BaseTestType extends TestCase
 {
 
+    const DEFAULTGROUP = 'somegroup';
+
     /** @var  Schema */
     protected $schema;
 
@@ -69,7 +71,7 @@ class BaseTestType extends TestCase
         $token = new Token();
         $token->setSubject('someid');
         $token->setUsername('someuser');
-        $token->setUserGroup('somegroup');
+        $token->setUserGroup($this::DEFAULTGROUP);
         $token->setKey('initialtokenkey');
         $token->setLang('de');
         $token->setShopid(1);

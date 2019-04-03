@@ -51,8 +51,9 @@ class PermissionsService  implements PermissionsServiceInterface
             $permissions = [$permissions];
         }
         if (! $token) {
-            throw new MissingPermissionException($this::PermissionHeader . ": User without authentication does not have permission " .
-                                                 $this->formatPermissions($permissions));
+            throw new MissingPermissionException($this::PermissionHeader . ": User is not autheticated. "
+            . "Did you send an Authorization header with content \"Bearer <token>\" where token is a token "
+            . "received by a login query?");
         }
         $group = $token->getUserGroup();
         if ($this->acceptDeveloperChecks && $group == AuthConstants::USER_GROUP_DEVELOPER) {

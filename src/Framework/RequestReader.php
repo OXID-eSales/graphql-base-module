@@ -55,9 +55,14 @@ class RequestReader implements RequestReaderInterface
         $data += ['query' => null, 'variables' => null, 'operationName' => null];
 
         if (null === $data['query']) {
-            $aData['query'] = '{welcome}';
+            $Data['query'] = '{welcome}';
         }
 
+        print("RequestData:\n");
+        foreach($data as $key => $value) {
+            print "$key: $value\n";
+        }
+        print "EOD\n";
         return $data;
     }
 }

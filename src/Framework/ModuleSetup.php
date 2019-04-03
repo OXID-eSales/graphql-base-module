@@ -10,9 +10,6 @@ namespace OxidEsales\GraphQl\Framework;
 use OxidEsales\EshopCommunity\Internal\Application\ContainerFactory;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 
-/**
- * @internal
- */
 class ModuleSetup
 {
     /** @var  KeyRegistryInterface $keyRegistry */

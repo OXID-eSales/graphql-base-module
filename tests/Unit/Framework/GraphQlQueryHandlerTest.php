@@ -283,6 +283,24 @@ EOQ;
         $this->assertEquals(400, $this->httpStatus);
     }
 
+    public function testBadRequest()
+    {
+       $this->userDao->method('addIdAndUserGroupToTokenRequest')
+            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
+
+        $query = "query login { user {firstname}}";
+
+        $this->requestReader->method('getAuthorizationHeader')
+            ->willThrowException(new NoAuthHeaderException());
+        $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
+
+        $this->graphQlQueryHandler->executeGraphQlQuery();
+
+        $this->assertErrorMessage('/.*Cannot query field.*/');
+        $this->assertEquals(400, $this->httpStatus);
+
+    }
+
     private function assertErrorMessage(string $regex)
     {
         $error = $this->result['errors'][0]['message'];

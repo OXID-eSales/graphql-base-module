@@ -14,10 +14,6 @@ services:
     class: OxidEsales\GraphQl\Framework\ModuleSetup
     public: true
 
-  OxidEsales\GraphQl\Framework\ModuleSetup:
-    class: OxidEsales\GraphQl\Framework\ModuleSetup
-    public: true
-
   OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
     class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
     public: true
@@ -33,6 +29,9 @@ services:
 
   OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
     class: OxidEsales\GraphQl\Framework\SchemaFactory
+
+  OxidEsales\GraphQl\Framework\GenericFieldResolverInterface:
+    class: OxidEsales\GraphQl\Framework\GenericFieldResolver
 
   OxidEsales\GraphQl\Dao\UserDaoInterface:
     class: OxidEsales\GraphQl\Dao\UserDao

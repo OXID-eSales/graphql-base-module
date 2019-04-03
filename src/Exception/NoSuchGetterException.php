@@ -9,11 +9,11 @@ namespace OxidEsales\GraphQl\Exception;
 
 use GraphQL\Error\ClientAware;
 
-class MissingPermissionException extends \Exception implements ClientAware, HttpErrorInterface
+class NoSuchGetterException extends \Exception implements ClientAware, HttpErrorInterface
 {
     public function getHttpStatus()
     {
-        return 403;
+        return 501;
     }
 
     public function isClientSafe()
@@ -23,7 +23,7 @@ class MissingPermissionException extends \Exception implements ClientAware, Http
 
     public function getCategory()
     {
-        return ErrorCategories::PERMISSIONERRORS;
+        return ErrorCategories::CONFIGURATIONERROR;
     }
 
 }

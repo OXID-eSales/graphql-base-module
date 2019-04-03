@@ -68,12 +68,12 @@ class UserDao implements UserDaoInterface
             ->setParameter('shopid', $tokenRequest->getShopid());
         $result = $queryBuilder->execute()->fetch();
         if (!$result) {
-            throw new NotFoundException();
+            throw new PasswordMismatchException('User/password combination is not valid.');
         }
         $storedHashedPassword = $result['OXPASSWORD'];
         $providedHashedPassword = $this->legacyWrapper->encodePassword($tokenRequest->getPassword(), $result['OXPASSSALT']);
         if ($storedHashedPassword !== $providedHashedPassword) {
-            throw new PasswordMismatchException();
+            throw new PasswordMismatchException('User/password combination is not valid.');
         }
         $tokenRequest->setUserid($result['OXID']);
         $tokenRequest->setGroup($this->mapGroup($result['OXRIGHTS']));

@@ -7,10 +7,23 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class InvalidTokenException extends \Exception implements HttpErrorInterface
+use GraphQL\Error\ClientAware;
+
+class InvalidTokenException extends \Exception implements HttpErrorInterface, ClientAware
 {
     public function getHttpStatus()
     {
         return 401;
     }
+
+    public function isClientSafe()
+    {
+        return true;
+    }
+
+    public function getCategory()
+    {
+        return ErrorCategories::TOKENERRORS;
+    }
+
 }

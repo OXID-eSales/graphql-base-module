@@ -33,7 +33,7 @@ class UserDaoTest extends TestCase
 
     public function testUserNotExisting()
     {
-        $this->expectException(NotFoundException::class);
+        $this->expectException(PasswordMismatchException::class);
 
         $tokenRequest = new TokenRequest();
         $tokenRequest->setUsername('nonexisting_user');
