@@ -12,4 +12,5 @@ class ErrorCategories
     const PERMISSIONERRORS = 'permissionerror';
     const TOKENERRORS = 'tokenerror';
     const CONFIGURATIONERROR = 'configurationerror';
+    const REQUESTERROR = 'requesterror';
 }

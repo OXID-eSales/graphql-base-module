@@ -18,7 +18,7 @@ use OxidEsales\GraphQl\Utility\AuthConstants;
 use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class UserTypeTest extends BaseTestType
+class UserTypeTest extends GraphQlTypeTestCase
 {
 
     /** @var  UserDaoInterface|MockObject */

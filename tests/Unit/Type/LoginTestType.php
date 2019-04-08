@@ -15,7 +15,7 @@ use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class LoginTestType extends BaseTestType
+class LoginTestType extends GraphQlTypeTestCase
 {
     const SIGNATURE_KEY = '1234567890123456';
 

@@ -19,9 +19,10 @@ use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 
-class BaseAcceptanceTestCase extends UnitTestCase
+class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 {
 
     /** @var  RequestReaderInterface|MockObject */
@@ -30,14 +31,20 @@ class BaseAcceptanceTestCase extends UnitTestCase
     /** @var  ResponseWriterInterface|MockObject */
     private $responseWriter;
 
+    /** @var  EnvironmentServiceInterface */
+    private $environmentService;
+
     /** @var  ExecutionResult */
     protected $queryResult;
 
     /** @var int */
     protected $httpStatus;
 
+    /** @var  string */
+    protected $logResult = "";
+
     /** @var Container */
-    private $container;
+    protected $container;
 
     public function responseCallback($result, $httpStatus)
     {
@@ -45,32 +52,44 @@ class BaseAcceptanceTestCase extends UnitTestCase
         $this->httpStatus = $httpStatus;
     }
 
+    public function loggerCallback(string $logmessage)
+    {
+        $this->logResult .= $logmessage;
+    }
+
     public function setUp()
     {
+        $this->queryResult = null;
+        $this->httpStatus = null;
+        $this->logResult = null;
+
         $containerFactory = new TestContainerFactory();
         $this->container = $containerFactory->create();
         $this->requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
         $this->responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)->getMock();
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->method('error')->willReturnCallback([$this, 'loggerCallback']);
         $this->container->set(RequestReaderInterface::class, $this->requestReader);
         $this->container->autowire(RequestReaderInterface::class, RequestReader::class);
         $this->container->set(ResponseWriterInterface::class, $this->responseWriter);
         $this->container->autowire(ResponseWriterInterface::class, ResponseWriter::class);
+        $this->container->set(LoggerInterface::class, $logger);
+        $this->container->autowire(LoggerInterface::class, get_class($logger));
         $this->container->compile();
+        $this->environmentService = $this->container->get(EnvironmentServiceInterface::class);
     }
 
     public function executeQuery($query, $userGroup='anonymous')
     {
         /** @var KeyRegistryInterface $keyRegistry */
         $keyRegistry = $this->container->get(KeyRegistryInterface::class);
-        /** @var EnvironmentServiceInterface $environmentService */
-        $environmentService = $this->container->get(EnvironmentServiceInterface::class);
         $token = new Token();
         $token->setUserGroup($userGroup);
         $token->setKey('somekey');
-        $token->setSubject($environmentService->getShopUrl());
-        $token->setShopUrl($environmentService->getShopUrl());
-        $token->setLang($environmentService->getDefaultLanguage());
-        $token->setShopid($environmentService->getDefaultShopId());
+        $token->setSubject($this->environmentService->getShopUrl());
+        $token->setShopUrl($this->environmentService->getShopUrl());
+        $token->setLang($this->getLang());
+        $token->setShopid($this->getShopId());
 
         $authHeader = 'Bearer ' . $token->getJwt($keyRegistry->getSignatureKey());
 
@@ -81,5 +100,13 @@ class BaseAcceptanceTestCase extends UnitTestCase
         $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);
         $queryHandler->executeGraphQlQuery();
 
+    }
+
+    public function getShopId() {
+        return $this->environmentService->getDefaultShopId();
+    }
+
+    public function getLang() {
+        return $this->environmentService->getDefaultLanguage();
     }
 }
