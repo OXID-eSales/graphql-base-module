@@ -58,11 +58,6 @@ class RequestReader implements RequestReaderInterface
             $Data['query'] = '{welcome}';
         }
 
-        print("RequestData:\n");
-        foreach($data as $key => $value) {
-            print "$key: $value\n";
-        }
-        print "EOD\n";
         return $data;
     }
 }
