@@ -10,6 +10,7 @@ namespace OxidEsales\GraphQl\Tests\Acceptance;
 use GraphQL\Executor\ExecutionResult;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQl\DataObject\Token;
+use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface;
 use OxidEsales\GraphQl\Framework\RequestReader;
 use OxidEsales\GraphQl\Framework\RequestReaderInterface;
@@ -61,7 +62,7 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
     {
         $this->queryResult = null;
         $this->httpStatus = null;
-        $this->logResult = null;
+        $this->logResult = "";
 
         $containerFactory = new TestContainerFactory();
         $this->container = $containerFactory->create();
@@ -81,8 +82,27 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 
     public function executeQuery($query, $userGroup='anonymous')
     {
+        if (is_null($userGroup)) {
+            $this->requestReader->method('getAuthorizationHeader')
+                ->willThrowException(new NoAuthHeaderException());
+        }
+        else {
+            $this->requestReader->method('getAuthorizationHeader')
+                ->willReturn($this->createAuthHeader($userGroup));
+        }
+        $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
+        $this->responseWriter->method('renderJsonResponse')->willReturnCallback([$this, 'responseCallback']);
+
+        $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);
+        $queryHandler->executeGraphQlQuery();
+
+    }
+
+    private function createAuthHeader($userGroup)
+    {
         /** @var KeyRegistryInterface $keyRegistry */
         $keyRegistry = $this->container->get(KeyRegistryInterface::class);
+
         $token = new Token();
         $token->setUserGroup($userGroup);
         $token->setKey('somekey');
@@ -91,14 +111,7 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
         $token->setLang($this->getLang());
         $token->setShopid($this->getShopId());
 
-        $authHeader = 'Bearer ' . $token->getJwt($keyRegistry->getSignatureKey());
-
-        $this->requestReader->method('getAuthorizationHeader')->willReturn($authHeader);
-        $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
-        $this->responseWriter->method('renderJsonResponse')->willReturnCallback([$this, 'responseCallback']);
-
-        $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);
-        $queryHandler->executeGraphQlQuery();
+        return 'Bearer ' . $token->getJwt($keyRegistry->getSignatureKey());
 
     }
 

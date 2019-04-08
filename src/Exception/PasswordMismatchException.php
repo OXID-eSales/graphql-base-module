@@ -7,11 +7,22 @@
 
 namespace OxidEsales\GraphQl\Exception;
 
-class PasswordMismatchException extends \Exception implements HttpErrorInterface
+use GraphQL\Error\ClientAware;
+
+class PasswordMismatchException extends \Exception implements ClientAware, HttpErrorInterface
 {
     public function getHttpStatus()
     {
         return 401;
     }
 
+    public function isClientSafe()
+    {
+        return true;
+    }
+
+    public function getCategory()
+    {
+        return ErrorCategories::TOKENERRORS;
+    }
 }

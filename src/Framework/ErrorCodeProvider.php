@@ -9,6 +9,7 @@ namespace OxidEsales\GraphQl\Framework;
 
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\ExecutionResult;
+use OxidEsales\GraphQl\Exception\HttpErrorInterface;
 
 /**
  * Class ErrorCodeProvider
@@ -35,10 +36,10 @@ class ErrorCodeProvider implements ErrorCodeProviderInterface
 
         $error = $result->errors[0];
 
-        if (preg_match('/^Missing Permission:/', $error->message)) {
-            return 403; // Forbidden
+        $previous = $error->getPrevious();
+        if ($previous instanceof HttpErrorInterface) {
+            return $previous->getHttpStatus();
         }
-
 
         $errorClass = get_class($error);
         switch ($errorClass) {

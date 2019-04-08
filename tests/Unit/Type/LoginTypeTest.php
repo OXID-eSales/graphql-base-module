@@ -15,7 +15,7 @@ use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
-class LoginTestType extends GraphQlTypeTestCase
+class LoginTypeTest extends GraphQlTypeTestCase
 {
     const SIGNATURE_KEY = '1234567890123456';
 
@@ -114,7 +114,8 @@ EOQ;
         $result = $this->executeQuery($query, new AppContext());
         $this->assertEquals(1, count($result->errors));
         $this->assertEquals(
-            'User without authentication does not have permission "mayreaddata"',
+            'Missing Permission: User is not autheticated. Did you send an Authorization header with ' .
+            'content "Bearer <token>" where token is a token received by a login query?',
             $result->errors[0]->message);
         $this->assertNull($result->data['setlanguage']);
 
