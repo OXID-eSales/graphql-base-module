@@ -27,7 +27,7 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 {
 
     /** @var  RequestReaderInterface|MockObject */
-    private $requestReader;
+    protected $requestReader;
 
     /** @var  ResponseWriterInterface|MockObject */
     private $responseWriter;
@@ -46,6 +46,9 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 
     /** @var Container */
     protected $container;
+
+    /** @var  string */
+    protected $signatureKey;
 
     public function responseCallback($result, $httpStatus)
     {
@@ -68,6 +71,7 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
         $this->container = $containerFactory->create();
         $this->requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
         $this->responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)->getMock();
+        $this->responseWriter->method('renderJsonResponse')->willReturnCallback([$this, 'responseCallback']);
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->method('error')->willReturnCallback([$this, 'loggerCallback']);
         $this->container->set(RequestReaderInterface::class, $this->requestReader);
@@ -78,20 +82,16 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
         $this->container->autowire(LoggerInterface::class, get_class($logger));
         $this->container->compile();
         $this->environmentService = $this->container->get(EnvironmentServiceInterface::class);
+        /** @var KeyRegistryInterface $keyRegistry */
+        $keyRegistry = $this->container->get(KeyRegistryInterface::class);
+        $this->signatureKey = $keyRegistry->getSignatureKey();
     }
 
     public function executeQuery($query, $userGroup='anonymous')
     {
-        if (is_null($userGroup)) {
-            $this->requestReader->method('getAuthorizationHeader')
-                ->willThrowException(new NoAuthHeaderException());
-        }
-        else {
-            $this->requestReader->method('getAuthorizationHeader')
-                ->willReturn($this->createAuthHeader($userGroup));
-        }
+        $this->requestReader->method('getAuthorizationHeader')
+            ->willReturn($this->createAuthHeader($userGroup));
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
-        $this->responseWriter->method('renderJsonResponse')->willReturnCallback([$this, 'responseCallback']);
 
         $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);
         $queryHandler->executeGraphQlQuery();
@@ -100,10 +100,14 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 
     private function createAuthHeader($userGroup)
     {
-        /** @var KeyRegistryInterface $keyRegistry */
-        $keyRegistry = $this->container->get(KeyRegistryInterface::class);
+        return 'Bearer ' . $this->createToken($userGroup)->getJwt($this->signatureKey);
+
+    }
+
+    protected function createToken($userGroup) {
 
         $token = new Token();
+
         $token->setUserGroup($userGroup);
         $token->setKey('somekey');
         $token->setSubject($this->environmentService->getShopUrl());
@@ -111,7 +115,17 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
         $token->setLang($this->getLang());
         $token->setShopid($this->getShopId());
 
-        return 'Bearer ' . $token->getJwt($keyRegistry->getSignatureKey());
+        return $token;
+    }
+
+    protected function executeQueryWithToken($query, Token $token)
+    {
+        $this->requestReader->method('getAuthorizationHeader')
+            ->willReturn('Bearer ' . $token->getJwt($this->signatureKey));
+        $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
+
+        $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);
+        $queryHandler->executeGraphQlQuery();
 
     }
 
@@ -121,5 +135,30 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 
     public function getLang() {
         return $this->environmentService->getDefaultLanguage();
+    }
+
+    public function assertErrorMessage(string $message)
+    {
+        $this->assertEquals($message, $this->queryResult['errors'][0]['message']);
+    }
+
+    public function assertErrorMessageContains(string $messageFragment)
+    {
+        $this->assertContains($messageFragment, $this->queryResult['errors'][0]['message']);
+    }
+
+    public function assertLogMessageContains(string $messageFragment)
+    {
+        $this->assertContains($messageFragment, $this->logResult);
+    }
+
+    public function assertHttpStatus(int $status)
+    {
+        $this->assertEquals($status, $this->httpStatus);
+    }
+
+    public function assertHttpStatusOK()
+    {
+        $this->assertHttpStatus(200);
     }
 }
