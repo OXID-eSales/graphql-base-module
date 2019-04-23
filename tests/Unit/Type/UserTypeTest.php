@@ -21,7 +21,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 class UserTypeTest extends GraphQlTypeTestCase
 {
 
-    /** @var  UserDaoInterface|MockObject */
+    /** @var  UserDaoInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $userDao;
 
     /** @var  UserServiceInterface $userService */
@@ -37,7 +37,7 @@ class UserTypeTest extends GraphQlTypeTestCase
     {
         parent::setUp();
 
-        /** @var LegacyWrapperInterface|MockObject $legacyWrapper */
+        /** @var LegacyWrapperInterface|\PHPUnit_Framework_MockObject_MockObject $legacyWrapper */
         $legacyWrapper = $this->getMockBuilder(LegacyWrapperInterface::class)->getMock();
         $legacyWrapper->method('encodePassword')->willReturn('somepasswordhash');
         $legacyWrapper->method('createSalt')->willReturn('somesalt');

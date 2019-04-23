@@ -18,6 +18,7 @@ use OxidEsales\GraphQl\Framework\ResponseWriter;
 use OxidEsales\GraphQl\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQl\Tests\Integration\ContainerTrait;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -26,10 +27,12 @@ use Symfony\Component\DependencyInjection\Container;
 class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 {
 
-    /** @var  RequestReaderInterface|MockObject */
+    use ContainerTrait;
+
+    /** @var  RequestReaderInterface|\PHPUnit_Framework_MockObject_MockObject */
     protected $requestReader;
 
-    /** @var  ResponseWriterInterface|MockObject */
+    /** @var  ResponseWriterInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $responseWriter;
 
     /** @var  EnvironmentServiceInterface */
@@ -67,19 +70,15 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
         $this->httpStatus = null;
         $this->logResult = "";
 
-        $containerFactory = new TestContainerFactory();
-        $this->container = $containerFactory->create();
+        $this->container = $this->createUncompiledContainer();
         $this->requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
         $this->responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)->getMock();
         $this->responseWriter->method('renderJsonResponse')->willReturnCallback([$this, 'responseCallback']);
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->method('error')->willReturnCallback([$this, 'loggerCallback']);
         $this->container->set(RequestReaderInterface::class, $this->requestReader);
-        $this->container->autowire(RequestReaderInterface::class, RequestReader::class);
         $this->container->set(ResponseWriterInterface::class, $this->responseWriter);
-        $this->container->autowire(ResponseWriterInterface::class, ResponseWriter::class);
         $this->container->set(LoggerInterface::class, $logger);
-        $this->container->autowire(LoggerInterface::class, get_class($logger));
         $this->container->compile();
         $this->environmentService = $this->container->get(EnvironmentServiceInterface::class);
         /** @var KeyRegistryInterface $keyRegistry */

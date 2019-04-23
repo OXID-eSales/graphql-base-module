@@ -10,9 +10,8 @@ namespace OxidEsales\GraphQl\Tests\Unit\Framework;
 use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\NoSuchGetterException;
 use OxidEsales\GraphQl\Framework\GenericFieldResolver;
-use PHPUnit\Framework\TestCase;
 
-class GenerictFieldResolverTest extends TestCase
+class GenerictFieldResolverTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  GenericFieldResolver */
     private $genericFieldResolver;
@@ -34,8 +33,7 @@ class GenerictFieldResolverTest extends TestCase
 
     public function testUnknownGetter() {
 
-        $this->expectException(NoSuchGetterException::class);
-        $this->expectExceptionMessage('Can\'t resolve field with name "nonexistingfield".');
+        $this->setExpectedException(NoSuchGetterException::class, 'Can\'t resolve field with name "nonexistingfield".');
 
         $dataObject = new User();
 

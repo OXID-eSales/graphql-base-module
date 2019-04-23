@@ -9,15 +9,14 @@ namespace OxidEsales\GraphQl\Tests\Unit\DataObject;
 
 use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\Exception\InsufficientData;
-use PHPUnit\Framework\TestCase;
 
-class TokenTest extends TestCase
+class TokenTest extends \PHPUnit_Framework_TestCase
 {
     const TEST_KEY = '1234567890123456';
 
     public function testJWTGenerationMissingData()
     {
-        $this->expectException(InsufficientData::class);
+        $this->setExpectedException(InsufficientData::class);
 
         $token = new Token();
         $token->getJwt($this::TEST_KEY);

@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @internal
  */
-class PermissionsServiceTest extends TestCase
+class PermissionsServiceTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  PermissionsService $permissionsService */
     private $permissionsService;
@@ -36,13 +36,13 @@ class PermissionsServiceTest extends TestCase
 
     public function testNoToken()
     {
-        $this->expectException(MissingPermissionException::class);
+        $this->setExpectedException(MissingPermissionException::class);
         $this->permissionsService->checkPermission(null, 'perm1');
     }
 
     public function testNotExistingGroup()
     {
-        $this->expectException(MissingPermissionException::class);
+        $this->setExpectedException(MissingPermissionException::class);
 
         $token = new Token();
         $token->setUserGroup("group3");
@@ -52,7 +52,7 @@ class PermissionsServiceTest extends TestCase
 
     public function testNoPermissionSingle()
     {
-        $this->expectException(MissingPermissionException::class);
+        $this->setExpectedException(MissingPermissionException::class);
 
         $token = new Token();
         $token->setUserGroup("group2");
@@ -62,7 +62,7 @@ class PermissionsServiceTest extends TestCase
 
     public function testNoPermissionSeveral()
     {
-        $this->expectException(MissingPermissionException::class);
+        $this->setExpectedException(MissingPermissionException::class);
 
         $token = new Token();
         $token->setUserGroup("group2");

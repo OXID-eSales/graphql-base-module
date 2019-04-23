@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  * See LICENSE file for license details.
  */
 
-class SchemaTest extends TestCase
+class SchemaTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -27,9 +27,9 @@ class SchemaTest extends TestCase
      */
     public function testSchemaFactory()
     {
-        /** @var MockObject|AuthenticationServiceInterface $authService */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|AuthenticationServiceInterface $authService */
         $authService = $this->getMockBuilder(AuthenticationServiceInterface::class)->getMock();
-        /** @var MockObject|KeyRegistryInterface $keyRegistry */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|KeyRegistryInterface $keyRegistry */
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $loginType = new LoginQueryProvider($authService, $keyRegistry, new PermissionsService());
 

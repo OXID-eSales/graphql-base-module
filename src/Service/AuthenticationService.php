@@ -85,7 +85,12 @@ class AuthenticationService implements AuthenticationServiceInterface
         return $token;
     }
 
-    private function createToken(TokenRequest $tokenRequest)
+    /**
+     * @param TokenRequest|null $tokenRequest
+     *
+     * @return Token
+     */
+    private function createToken($tokenRequest)
     {
         $token = new Token();
         $token->setSubject($tokenRequest->getUserid());

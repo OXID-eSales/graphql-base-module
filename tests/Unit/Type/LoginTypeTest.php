@@ -23,10 +23,10 @@ class LoginTypeTest extends GraphQlTypeTestCase
     {
         parent::setUp();
 
-        /** @var MockObject|AuthenticationServiceInterface $authService */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|AuthenticationServiceInterface $authService */
         $authService = $this->getMockBuilder(AuthenticationServiceInterface::class)->getMock();
         $authService->method('getToken')->willReturnCallback(function () {return $this->token;});
-        /** @var MockObject|KeyRegistryInterface $keyRegistry */
+        /** @var \PHPUnit_Framework_MockObject_MockObject|KeyRegistryInterface $keyRegistry */
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $keyRegistry->method('getSignatureKey')->willReturn($this::SIGNATURE_KEY);
         $loginQueryProvider = new LoginQueryProvider($authService, $keyRegistry, $this->permissionsService);

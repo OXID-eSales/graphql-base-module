@@ -9,10 +9,8 @@ namespace OxidEsales\GraphQl\Tests\Integration\Service;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQl\Service\KeyRegistry;
-use OxidEsales\TestingLibrary\UnitTestCase;
-use PHPUnit\Framework\TestCase;
 
-class KeyRegistryTest extends TestCase
+class KeyRegistryTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {

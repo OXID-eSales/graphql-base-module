@@ -19,7 +19,7 @@ use OxidEsales\GraphQl\Utility\AuthConstants;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class AuthenticationServiceTest extends TestCase
+class AuthenticationServiceTest extends \PHPUnit_Framework_TestCase
 {
 
     const TESTKEY = '1234567890123456';
@@ -28,7 +28,7 @@ class AuthenticationServiceTest extends TestCase
      */
     private $authService;
 
-    /** @var  MockObject|UserDaoInterface $userDao */
+    /** @var  \PHPUnit_Framework_MockObject_MockObject|UserDaoInterface $userDao */
     private $userDao;
 
     private $testUserId = 'adminid';
@@ -36,10 +36,10 @@ class AuthenticationServiceTest extends TestCase
 
     public function setUp()
     {
-        /** @var EnvironmentServiceInterface|MockObject $environmentService */
+        /** @var EnvironmentServiceInterface|\PHPUnit_Framework_MockObject_MockObject $environmentService */
         $environmentService = $this->getMockBuilder(EnvironmentServiceInterface::class)->getMock();
         $environmentService->method('getShopUrl')->willReturn('https://myshop.de');
-        /** @var UserDaoInterface|MockObject $userDao */
+        /** @var UserDaoInterface|\PHPUnit_Framework_MockObject_MockObject $userDao */
         $this->userDao = $this->getMockBuilder(UserDaoInterface::class)->getMock();
         $this->authService = new AuthenticationService($environmentService, $this->userDao);
     }
@@ -171,7 +171,7 @@ class AuthenticationServiceTest extends TestCase
 
     public function testMissingLanguage()
     {
-        $this->expectException(InsufficientData::class);
+        $this->setExpectedException(InsufficientData::class);
 
         $tokenRequest = new TokenRequest();
         $tokenRequest->setShopid(1);
@@ -179,12 +179,14 @@ class AuthenticationServiceTest extends TestCase
         $tokenRequest->setPassword('somepassword');
         $tokenRequest->setGroup('admin');
 
+        $this->userDao->method('addIdAndUserGroupToTokenRequest')->willReturn($tokenRequest);
+
         $this->authService->getToken($tokenRequest)->getJwt($this::TESTKEY);
     }
 
     public function testMissingShopId()
     {
-        $this->expectException(PasswordMismatchException::class);
+        $this->setExpectedException(PasswordMismatchException::class);
 
         $tokenRequest = new TokenRequest();
         $tokenRequest->setLang('de');
@@ -198,13 +200,15 @@ class AuthenticationServiceTest extends TestCase
 
     public function testMissingGroup()
     {
-        $this->expectException(InsufficientData::class);
+        $this->setExpectedException(InsufficientData::class);
 
         $tokenRequest = new TokenRequest();
         $tokenRequest->setLang('de');
         $tokenRequest->setShopid(1);
         $tokenRequest->setUsername('admin');
         $tokenRequest->setPassword('somepassword');
+
+        $this->userDao->method('addIdAndUserGroupToTokenRequest')->willReturn($tokenRequest);
 
         $this->authService->getToken($tokenRequest)->getJwt($this::TESTKEY);
 

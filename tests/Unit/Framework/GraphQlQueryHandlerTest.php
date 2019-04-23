@@ -22,27 +22,25 @@ use OxidEsales\GraphQl\Service\KeyRegistry;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Service\PermissionsService;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
-use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
-class GraphQlQueryHandlerTest extends TestCase
+class GraphQlQueryHandlerTest extends \PHPUnit_Framework_TestCase
 {
     const SIGNATURE_KEY = '1234567890123456';
 
-    /** @var RequestReaderInterface|MockObject */
+    /** @var RequestReaderInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $requestReader;
 
-    /** @var  ResponseWriterInterface|MockObject */
+    /** @var  ResponseWriterInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $responseWriter;
 
-    /** @var  UserDaoInterface|MockObject */
+    /** @var  UserDaoInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $userDao;
 
-    /** @var  KeyRegistry|MockObject */
+    /** @var  KeyRegistry|\PHPUnit_Framework_MockObject_MockObject */
     private $keyRegistry;
 
-    /** @var  EnvironmentServiceInterface|MockObject */
+    /** @var  EnvironmentServiceInterface|\PHPUnit_Framework_MockObject_MockObject */
     private $environmentService;
 
     /** @var  GraphQlQueryHandler */
@@ -64,7 +62,7 @@ class GraphQlQueryHandlerTest extends TestCase
         $this->environmentService = $this->getMockBuilder(EnvironmentServiceInterface::class)->getMock();
         $this->environmentService->method('getShopUrl')->willReturn('http://myshop.com');
         $this->environmentService->method('getDefaultLanguage')->willReturn('de');
-        $this->environmentService->method('getDefaultShopId')->willReturn('1');
+        $this->environmentService->method('getDefaultShopId')->willReturn(1);
 
         $loginType = new LoginQueryProvider(
             new AuthenticationService($this->environmentService, $this->userDao),

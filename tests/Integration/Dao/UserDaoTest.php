@@ -7,33 +7,32 @@
 
 namespace OxidEsales\GraphQl\Tests\Integration\Dao;
 
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQl\Dao\UserDao;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Exception\NotFoundException;
+use OxidEsales\GraphQl\Tests\Integration\ContainerTrait;
 use OxidEsales\GraphQl\Utility\AuthConstants;
-use PHPUnit\Framework\TestCase;
 
-class UserDaoTest extends TestCase
+class UserDaoTest extends \PHPUnit_Framework_TestCase
 {
+    use ContainerTrait;
+
     /** @var  UserDao */
     private $userDao;
 
     public function setUp()
     {
-        $containerFactory = new TestContainerFactory();
-        $container = $containerFactory->create();
+        $container = $this->createUncompiledContainer();
         $container->compile();
         $this->userDao = $container->get(UserDaoInterface::class);
     }
 
     public function testUserNotExisting()
     {
-        $this->expectException(PasswordMismatchException::class);
+        $this->setExpectedException(PasswordMismatchException::class);
 
         $tokenRequest = new TokenRequest();
         $tokenRequest->setUsername('nonexisting_user');
@@ -45,7 +44,7 @@ class UserDaoTest extends TestCase
 
     public function testWrongPassword()
     {
-        $this->expectException(PasswordMismatchException::class);
+        $this->setExpectedException(PasswordMismatchException::class);
 
         $tokenRequest = new TokenRequest();
         $tokenRequest->setUsername('admin');

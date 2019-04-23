@@ -1,56 +1,86 @@
 services:
 
-  _defaults:
+  OxidEsales\Eshop\Core\PasswordSaltGenerator:
+    class: OxidEsales\Eshop\Core\PasswordSaltGenerator
     public: false
     autowire: true
 
-  OxidEsales\Eshop\Core\PasswordSaltGenerator:
-    class: OxidEsales\Eshop\Core\PasswordSaltGenerator
-
   OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker:
     class: OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Framework\ModuleSetup:
     class: OxidEsales\GraphQl\Framework\ModuleSetup
+    autowire: true
     public: true
 
   OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
     class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
+    arguments:
+      $logger: '@Psr\Log\LoggerInterface'
+      $environmentService: '@OxidEsales\GraphQl\Service\EnvironmentServiceInterface'
+      $keyRegistry: '@OxidEsales\GraphQl\Service\KeyRegistryInterface'
+      $schemaFactory: '@OxidEsales\GraphQl\Framework\SchemaFactoryInterface'
+      $errorCodeProvider: '@OxidEsales\GraphQl\Framework\ErrorCodeProviderInterface'
+      $requestReader: '@OxidEsales\GraphQl\Framework\RequestReaderInterface'
+      $responseWriter: '@OxidEsales\GraphQl\Framework\ResponseWriterInterface'
     public: true
 
   OxidEsales\GraphQl\Framework\ErrorCodeProviderInterface:
     class: OxidEsales\GraphQl\Framework\ErrorCodeProvider
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Framework\RequestReaderInterface:
     class: OxidEsales\GraphQl\Framework\RequestReader
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQl\Framework\ResponseWriter
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
     class: OxidEsales\GraphQl\Framework\SchemaFactory
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Framework\GenericFieldResolverInterface:
     class: OxidEsales\GraphQl\Framework\GenericFieldResolver
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Dao\UserDaoInterface:
     class: OxidEsales\GraphQl\Dao\UserDao
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Service\KeyRegistryInterface:
     class: OxidEsales\GraphQl\Service\KeyRegistry
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Service\EnvironmentServiceInterface:
     class: OxidEsales\GraphQl\Service\EnvironmentService
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQl\Service\AuthenticationService
     public: true
+    autowire: true
 
   OxidEsales\GraphQl\Service\UserServiceInterface:
     class: OxidEsales\GraphQl\Service\UserService
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Service\PermissionsServiceInterface:
     class: OxidEsales\GraphQl\Service\PermissionsService
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Service\LoginPermissionsProvider:
     class: OxidEsales\GraphQl\Service\PermissionsProvider
@@ -59,7 +89,10 @@ services:
       - ['addPermission', ['customer', 'mayreaddata']]
       - ['addPermission', ['admin', 'mayreaddata']]
       - ['addPermission', ['shopadmin', 'mayreaddata']]
-    tags: ['graphql_permissions_provider']
+    tags:
+      - {'name': 'graphql_permissions_provider'}
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Service\UserPermissionsProvider:
     class: OxidEsales\GraphQl\Service\PermissionsProvider
@@ -73,15 +106,27 @@ services:
       - ['addPermission', ['admin', 'maygetanyuser']]
       - ['addPermission', ['admin', 'maycreateuserforothershop']]
       - ['addPermission', ['admin', 'mayupdateanyuser']]
-    tags: ['graphql_permissions_provider']
+    tags:
+      - {'name': 'graphql_permissions_provider'}
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Type\Provider\LoginQueryProvider:
     class: OxidEsales\GraphQl\Type\Provider\LoginQueryProvider
-    tags: ['graphql_query_provider']
+    tags:
+      - {'name': 'graphql_query_provider'}
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Type\Provider\UserMutationProvider:
     class: OxidEsales\GraphQl\Type\Provider\UserMutationProvider
-    tags: ['graphql_mutation_provider', 'graphql_query_provider']
+    tags:
+      - {'name': 'graphql_mutation_provider'}
+      - {'name': 'graphql_query_provider'}
+    public: false
+    autowire: true
 
   OxidEsales\GraphQl\Utility\LegacyWrapperInterface:
     class: OxidEsales\GraphQl\Utility\LegacyWrapper
+    public: false
+    autowire: true

@@ -15,7 +15,7 @@ use OxidEsales\GraphQl\Service\PermissionsProvider;
 use OxidEsales\GraphQl\Service\PermissionsService;
 use PHPUnit\Framework\TestCase;
 
-class GraphQlTypeTestCase extends TestCase
+class GraphQlTypeTestCase extends \PHPUnit_Framework_TestCase
 {
 
     const DEFAULTGROUP = 'somegroup';

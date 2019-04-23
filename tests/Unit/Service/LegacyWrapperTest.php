@@ -9,11 +9,9 @@ namespace OxidEsales\GraphQl\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker;
 use OxidEsales\Eshop\Core\PasswordSaltGenerator;
-use OxidEsales\GraphQl\Service\PasswordEncoder;
 use OxidEsales\GraphQl\Utility\LegacyWrapper;
-use PHPUnit\Framework\TestCase;
 
-class LegacyWrapperTest extends TestCase
+class LegacyWrapperTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  LegacyWrapper */
     private $legacyWrapper;

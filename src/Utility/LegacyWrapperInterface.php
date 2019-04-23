@@ -8,9 +8,9 @@ namespace OxidEsales\GraphQl\Utility;
 
 interface LegacyWrapperInterface
 {
-    public function encodePassword(string $password, string $salt): string;
+    public function encodePassword(string $password, string $salt);
 
-    public function createSalt(): string;
+    public function createSalt();
 
     public function createUid();
 }

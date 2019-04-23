@@ -11,11 +11,11 @@ use OxidEsales\GraphQl\DataObject\User;
 
 interface UserDaoInterface
 {
-    public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest): TokenRequest;
+    public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest);
 
-    public function getUserById(string $userid): User;
+    public function getUserById(string $userid);
 
-    public function getUserByName(string $username, int $shopid): User;
+    public function getUserByName(string $username, int $shopid);
 
     public function saveOrUpdateUser(User $user);
 

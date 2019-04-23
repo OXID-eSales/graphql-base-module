@@ -10,9 +10,9 @@ namespace OxidEsales\GraphQl\Service;
 interface EnvironmentServiceInterface
 {
 
-    public function getShopUrl(): string;
+    public function getShopUrl();
 
-    public function getDefaultLanguage(): string;
+    public function getDefaultLanguage();
 
-    public function getDefaultShopId(): int;
+    public function getDefaultShopId();
 }

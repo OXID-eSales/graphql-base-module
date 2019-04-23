@@ -8,9 +8,8 @@
 namespace OxidEsales\GraphQl\Tests\Integration\Service;
 
 use OxidEsales\GraphQl\Service\EnvironmentService;
-use PHPUnit\Framework\TestCase;
 
-class EnvironmentServiceTest extends TestCase
+class EnvironmentServiceTest extends \PHPUnit_Framework_TestCase
 {
     /** @var  EnvironmentService $environmentService */
     private $environmentService;
