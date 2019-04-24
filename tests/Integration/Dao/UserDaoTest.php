@@ -14,7 +14,6 @@ use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Exception\NotFoundException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 use PHPUnit\Framework\TestCase;
 
