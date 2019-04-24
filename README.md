@@ -2,10 +2,41 @@
 
 The main framework for using GraphQL in OXID
 
-<aside class="warning">
-This code is still in the `alpha` state, so things
-may still be changing before release.
-</aside>
+The code in this branch is altered to be backward compatible
+to the 6.1.3 compilation. You need to add the `service.yaml`
+files of this and all the other graphql modules you are
+using manually to the DI container (the feature to do this
+automatically on module installation will be available
+in the next minor release). This can be done in
+the `Internal\Application\services.yaml` like this:
+
+```yaml
+  imports:
+    - { resource: ../Utility/services.yaml }
+    - { resource: ../Logger/services.yaml }
+    - { resource: ../Common/services.yaml }
+    - { resource: ../Review/services.yaml }
+    - { resource: ../Form/services.yaml }
+    - { resource: ../Adapter/services.yaml }
+    - { resource: ../../../vendor/oxid-esales/graphql-base/services.yaml }
+    - { resource: ../../../vendor/oxid-esales/graphql-developer/services.yaml }
+    - { resource: ../../../vendor/oxid-esales/graphql-example/services.yaml }
+```
+
+And you need to add one line for graphql before tline manually to the .htaccess file
+of your project:
+
+```
+    RewriteRule ^(graphql/)    widget.php?cl=graphql   [NC,L]
+```
+
+Just put it before the line:
+
+```
+    RewriteCond %{REQUEST_URI}     config\.inc\.php [NC]
+```
+
+Now you can work with the OXID GraphQL framework.
 
 ## The basics
 
@@ -42,8 +73,9 @@ This is all you need to do:
   
   ```yaml
   OxidEsales\GraphQl\Type\LoginType:
-      OxidEsales\GraphQl\Type\Provider\LoginQueryProvider
-      tags: ['graphql_query_provider']
+      class: OxidEsales\GraphQl\Type\Provider\LoginQueryProvider
+      tags: 
+        - {name: 'graphql_query_provider'}
   ```
   
   For mutations choose the `graphql_mutation_provider` as
@@ -179,7 +211,8 @@ This is an example for the permissions above:
       - ['addPermission', ['customer', 'mayupdateself']]
       - ['addPermission', ['shopadmin', 'mayupdateself']]
       - ['addPermission', ['admin', 'mayupdateanyuser']]
-    tags: ['graphql_permissions_provider']
+    tags:
+      - {name: 'graphql_permissions_provider'}
 ``` 
 
 ## The OXID GraphQL framework authorization
@@ -305,8 +338,9 @@ more than one address etc.
 
 ## Installation
 
-Fetch the currently
-unreleased [OXID eShop from the `b-6.x` branch](https://github.com/OXID-eSales/oxideshop_ce/tree/b-6.x).
+Use the current compilation (6.1.3) or the
+released Version 6.3.3 of the oxideshop, community
+edition.
 
 
 Then clone this module somewhere locally and add the following
