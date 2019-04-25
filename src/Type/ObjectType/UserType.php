@@ -11,17 +11,22 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use OxidEsales\GraphQl\DataObject\User;
+use OxidEsales\GraphQl\Framework\GenericFieldResolverInterface;
 use OxidEsales\GraphQl\Service\UserServiceInterface;
 
 class UserType extends ObjectType
 {
+    /** @var GenericFieldResolverInterface $genericFieldResolver */
+    private $genericFieldResolver;
     /**
      * UserType constructor.
      *
      * @param UserServiceInterface $userService
      */
-    public function __construct()
+    public function __construct(GenericFieldResolverInterface $genericFieldResolver, AddressType $addressType)
     {
+        $this->genericFieldResolver = $genericFieldResolver;
+
         $config = [
             'name' => 'User',
             'description' => 'Rudimentary user object',
@@ -30,11 +35,10 @@ class UserType extends ObjectType
                 'firstname' => Type::string(),
                 'lastname' => Type::string(),
                 'id' => Type::string(),
-                'address' => new AddressType()
+                'address' => $addressType
             ],
             'resolveField' => function ($value, $args, $context, ResolveInfo $info) {
-                /** @var User $value */
-                return $value->getField($info->fieldName);
+                return $this->genericFieldResolver->getField($info->fieldName, $value);
             }
         ];
         parent::__construct($config);

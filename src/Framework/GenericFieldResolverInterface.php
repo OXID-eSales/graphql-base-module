@@ -18,4 +18,6 @@ interface GenericFieldResolverInterface
      * @return mixed
      */
     public function getField(string $fieldname, $dataObject);
+
+    public function setField(string $fieldname, $value, $dataObject);
 }

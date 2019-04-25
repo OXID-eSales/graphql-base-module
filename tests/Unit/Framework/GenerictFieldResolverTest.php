@@ -9,6 +9,7 @@ namespace OxidEsales\GraphQl\Tests\Unit\Framework;
 
 use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\NoSuchGetterException;
+use OxidEsales\GraphQl\Exception\NoSuchSetterException;
 use OxidEsales\GraphQl\Framework\GenericFieldResolver;
 use PHPUnit\Framework\TestCase;
 
@@ -40,6 +41,28 @@ class GenerictFieldResolverTest extends TestCase
         $dataObject = new User();
 
         $this->assertEquals('testuser', $this->genericFieldResolver->getField('nonexistingfield', $dataObject));
+
+    }
+
+    public function testSetterWorking() {
+
+        /** @var User $dataObject */
+        $dataObject = new User();
+
+        $this->genericFieldResolver->setField('username', 'testuser', $dataObject);
+
+
+        $this->assertEquals('testuser', $dataObject->getUsername());
+
+    }
+
+    public function testUnknownSetter() {
+
+        $this->expectException(NoSuchSetterException::class);
+        $this->expectExceptionMessage('Can\'t set field with name "nonexistingfield".');
+
+        $dataObject = new User();
+        $this->genericFieldResolver->setField('nonexistingfield', 'testdata', $dataObject);
 
     }
 

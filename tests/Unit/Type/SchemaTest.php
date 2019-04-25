@@ -3,14 +3,11 @@
 namespace OxidEsales\GraphQl\Tests\Unit\Type;
 
 use OxidEsales\GraphQl\Framework\SchemaFactory;
-use OxidEsales\GraphQl\Framework\QueryTypeFactory;
 use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Service\PermissionsService;
-use OxidEsales\GraphQl\Type\LoginType;
-use OxidEsales\GraphQl\Type\Mutation;
+use OxidEsales\GraphQl\Type\ObjectType\LoginType;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
-use OxidEsales\GraphQl\Type\Query;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +28,7 @@ class SchemaTest extends TestCase
         $authService = $this->getMockBuilder(AuthenticationServiceInterface::class)->getMock();
         /** @var MockObject|KeyRegistryInterface $keyRegistry */
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
-        $loginType = new LoginQueryProvider($authService, $keyRegistry, new PermissionsService());
+        $loginType = new LoginQueryProvider($authService, $keyRegistry, new PermissionsService(), new LoginType());
 
         $schemaFactory = new SchemaFactory();
         $schemaFactory->addQueryProvider($loginType);

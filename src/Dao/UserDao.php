@@ -12,6 +12,7 @@ use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterf
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
+use OxidEsales\GraphQl\Exception\ObjectNotFoundException;
 use OxidEsales\GraphQl\Exception\PasswordMismatchException;
 use OxidEsales\GraphQl\Exception\UnknownUsergroupException;
 use OxidEsales\GraphQl\Exception\NotFoundException;
@@ -51,7 +52,7 @@ class UserDao implements UserDaoInterface
      *
      * @return TokenRequest
      * @throws PasswordMismatchException
-     * @throws NotFoundException
+     * @throws ObjectNotFoundException
      */
     public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest): TokenRequest
     {
@@ -182,7 +183,7 @@ class UserDao implements UserDaoInterface
         $result = $queryBuilder->execute()->fetch();
 
         if (!$result) {
-            throw new NotFoundException("Did not find country with shortcut \"$countryShortcut\"");
+            throw new ObjectNotFoundException("Did not find country with shortcut \"$countryShortcut\"");
         }
 
         return $result['OXID'];
@@ -193,7 +194,7 @@ class UserDao implements UserDaoInterface
         $result = $queryBuilder->execute()->fetch();
 
         if (!$result) {
-            throw new NotFoundException('Could not find requested user.');
+            throw new ObjectNotFoundException('Could not find requested user.');
         }
 
         return $this->mapUserFromDatabaseResult($result);
@@ -260,7 +261,7 @@ class UserDao implements UserDaoInterface
         if (preg_match("/^\d+$/", $oxrights)) {
             return AuthConstants::USER_GROUP_SHOPADMIN;
         }
-        throw new UnknownUsergroupException("Can't map oxrights \"$oxrights\" to any known usergroup.");
+        throw new \Exception("Can't map oxrights \"$oxrights\" to any known usergroup.");
     }
 
     private function unmapGroup(User $user): string
@@ -275,7 +276,7 @@ class UserDao implements UserDaoInterface
         if ($usergroup === AuthConstants::USER_GROUP_SHOPADMIN) {
             return "" . $user->getShopid();
         }
-        throw new UnknownUsergroupException("Can't map usergroup \"$usergroup\" to any known oxright.");
+        throw new \Exception("Can't map usergroup \"$usergroup\" to any known oxright.");
     }
 
 }

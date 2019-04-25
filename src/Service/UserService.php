@@ -8,9 +8,9 @@
 namespace OxidEsales\GraphQl\Service;
 
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
-use OxidEsales\GraphQl\DataObject\Token;
+use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\User;
-use OxidEsales\GraphQl\Exception\InsufficientData;
+use OxidEsales\GraphQl\Framework\GenericFieldResolver;
 use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 
 class UserService implements UserServiceInterface
@@ -22,18 +22,23 @@ class UserService implements UserServiceInterface
     /** @var  LegacyWrapperInterface */
     private $legacyWrapper;
 
-    public function __construct(UserDaoInterface $userDao, LegacyWrapperInterface $legacyWrapper)
+    /** @var  GenericFieldResolver */
+    private $genericFieldResolver;
+
+    public function __construct(
+        UserDaoInterface $userDao,
+        LegacyWrapperInterface $legacyWrapper,
+        GenericFieldResolver $genericFieldResolver)
     {
         $this->userDao = $userDao;
         $this->legacyWrapper = $legacyWrapper;
+        $this->genericFieldResolver = $genericFieldResolver;
     }
 
     public function saveUser(array $data): User
     {
-        $user = new User($data);
-        $this->setPassword($user, $data['password']);
-
-
+        $user = new User();
+        $user = $this->setUserFromFields($user, $data);
         $this->userDao->saveOrUpdateUser($user);
 
         $savedUser = $this->userDao->getUserByName($user->getUsername(), $user->getShopid());
@@ -44,12 +49,7 @@ class UserService implements UserServiceInterface
     public function updateUser(array $data): User
     {
         $user = $this->userDao->getUserById($data['id']);
-        foreach ($data as $key => $value) {
-            $user->setField($key, $value);
-        }
-        if (array_key_exists('password', $data)) {
-            $this->setPassword($user, $data['password']);
-        }
+        $user = $this->setUserFromFields($user, $data);
         $this->userDao->saveOrUpdateUser($user);
 
         return $user;
@@ -58,6 +58,27 @@ class UserService implements UserServiceInterface
     public function getUser(string $userId): User
     {
         return $this->userDao->getUserById($userId);
+    }
+
+    private function setUserFromFields(User $user, array $data) {
+
+        foreach ($data as $key => $value) {
+            if ($key === 'password') {
+                $this->setPassword($user, $value);
+                continue;
+            }
+            if ($key === 'address') {
+                $address = new Address();
+                foreach ($value as $addressKey => $addressValue) {
+                    $this->genericFieldResolver->setField($addressKey, $addressValue, $address);
+                }
+                $this->genericFieldResolver->setField($key, $address, $user);
+                continue;
+            }
+            $this->genericFieldResolver->setField($key, $value, $user);
+        }
+
+        return $user;
     }
 
     private function setPassword(User $user, $password)

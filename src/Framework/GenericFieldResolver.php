@@ -8,6 +8,7 @@
 namespace OxidEsales\GraphQl\Framework;
 
 use OxidEsales\GraphQl\Exception\NoSuchGetterException;
+use OxidEsales\GraphQl\Exception\NoSuchSetterException;
 
 class GenericFieldResolver implements GenericFieldResolverInterface
 {
@@ -32,6 +33,27 @@ class GenericFieldResolver implements GenericFieldResolverInterface
 
     /**
      * @param string $fieldname
+     * @param        $value
+     * @param        $dataObject
+     *
+     * @return mixed
+     * @throws NoSuchSetterException
+     */
+    public function setField(string $fieldname, $value, $dataObject) {
+
+        $setterName = $this->createSetterName($fieldname);
+        try {
+            $reflectionMethod = new \ReflectionMethod(get_class($dataObject), $setterName);
+        } catch (\ReflectionException $e) {
+            throw new NoSuchSetterException("Can't set field with name \"$fieldname\".");
+        }
+        $reflectionMethod->invoke($dataObject, $value);
+        return $dataObject;
+
+    }
+
+    /**
+     * @param string $fieldname
      *
      * @return string
      */
@@ -40,4 +62,13 @@ class GenericFieldResolver implements GenericFieldResolverInterface
         return 'get' . ucfirst($fieldname);
     }
 
+    /**
+     * @param string $fieldname
+     *
+     * @return string
+     */
+    private function createSetterName(string $fieldname) {
+
+        return 'set' . ucfirst($fieldname);
+    }
 }

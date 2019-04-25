@@ -32,11 +32,13 @@ class UserMutationProvider implements MutationProviderInterface, QueryProviderIn
     /** @var  PermissionsServiceInterface */
     private $permissionService;
 
-    public function __construct(UserServiceInterface $userService, PermissionsServiceInterface $permissionService)
+    public function __construct(UserServiceInterface $userService,
+                                PermissionsServiceInterface $permissionService,
+                                UserType $userType)
     {
         $this->userService = $userService;
         $this->permissionService = $permissionService;
-        $this->userType = new UserType();
+        $this->userType = $userType;
     }
 
     public function getQueries()

@@ -75,6 +75,15 @@ services:
       - ['addPermission', ['admin', 'mayupdateanyuser']]
     tags: ['graphql_permissions_provider']
 
+  OxidEsales\GraphQl\Type\ObjectType\UserType:
+    class: OxidEsales\GraphQl\Type\ObjectType\UserType
+
+  OxidEsales\GraphQl\Type\ObjectType\LoginType:
+    class: OxidEsales\GraphQl\Type\ObjectType\LoginType
+
+  OxidEsales\GraphQl\Type\ObjectType\AddressType:
+    class: OxidEsales\GraphQl\Type\ObjectType\AddressType
+
   OxidEsales\GraphQl\Type\Provider\LoginQueryProvider:
     class: OxidEsales\GraphQl\Type\Provider\LoginQueryProvider
     tags: ['graphql_query_provider']

@@ -10,9 +10,12 @@ namespace OxidEsales\GraphQl\Tests\Unit\Type;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\User;
+use OxidEsales\GraphQl\Framework\GenericFieldResolver;
 use OxidEsales\GraphQl\Framework\SchemaFactory;
 use OxidEsales\GraphQl\Service\UserService;
 use OxidEsales\GraphQl\Service\UserServiceInterface;
+use OxidEsales\GraphQl\Type\ObjectType\AddressType;
+use OxidEsales\GraphQl\Type\ObjectType\UserType;
 use OxidEsales\GraphQl\Type\Provider\UserMutationProvider;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
@@ -42,8 +45,11 @@ class UserTypeTest extends GraphQlTypeTestCase
         $legacyWrapper->method('encodePassword')->willReturn('somepasswordhash');
         $legacyWrapper->method('createSalt')->willReturn('somesalt');
         $this->userDao = $this->getMockBuilder(UserDaoInterface::class)->getMock();
-        $this->userService = new UserService($this->userDao, $legacyWrapper);
-        $userMutationProvider = new UserMutationProvider($this->userService, $this->permissionsService);
+        $this->userService = new UserService($this->userDao, $legacyWrapper, new GenericFieldResolver());
+        $userMutationProvider = new UserMutationProvider(
+            $this->userService,
+            $this->permissionsService,
+            new UserType(new GenericFieldResolver(), new AddressType()));
 
         $schemaFactory = new SchemaFactory();
         $schemaFactory->addMutationProvider($userMutationProvider);

@@ -28,13 +28,6 @@ class User
     /** @var  Address */
     private $address;
 
-    public function __construct(array $data = null)
-    {
-        if ($data) {
-            $this->setFromDataArray($data);
-        }
-    }
-
     /**
      * @return string
      */
@@ -182,40 +175,4 @@ class User
         $this->address = $address;
     }
 
-    private function setFromDataArray(array $data)
-    {
-        foreach ($data as $key => $value) {
-            if ($key == 'address') {
-                $this->address = new Address($value);
-            }
-            else {
-                $this->$key = $value;
-            }
-        }
-    }
-
-    public function getField(string $fieldname)
-    {
-        if ($fieldname == 'address' and ! $this->address) {
-            return new Address();
-        }
-        return $this->$fieldname;
-    }
-
-    public function setField(string $fieldname, $value)
-    {
-        if ($fieldname == 'address') {
-            if (! $this->address) {
-                $this->address = new Address($value);
-            }
-            else {
-                foreach ($value as $addressField => $addressValue) {
-                    $this->address->setField($addressField, $addressValue);
-                }
-            }
-        }
-        else {
-            $this->$fieldname = $value;
-        }
-    }
 }
