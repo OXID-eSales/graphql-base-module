@@ -25,6 +25,7 @@ services:
       $errorCodeProvider: '@OxidEsales\GraphQl\Framework\ErrorCodeProviderInterface'
       $requestReader: '@OxidEsales\GraphQl\Framework\RequestReaderInterface'
       $responseWriter: '@OxidEsales\GraphQl\Framework\ResponseWriterInterface'
+      $legacyWrapper: '@OxidEsales\GraphQl\Utility\LegacyWrapperInterface'
     public: true
 
   OxidEsales\GraphQl\Framework\ErrorCodeProviderInterface:
@@ -129,4 +130,5 @@ services:
   OxidEsales\GraphQl\Utility\LegacyWrapperInterface:
     class: OxidEsales\GraphQl\Utility\LegacyWrapper
     public: false
-    autowire: true
+    arguments:
+      $logger: '@Psr\Log\LoggerInterface'

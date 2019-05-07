@@ -10,7 +10,6 @@ namespace OxidEsales\GraphQl\Tests\Acceptance;
 use GraphQL\Executor\ExecutionResult;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface;
 use OxidEsales\GraphQl\Framework\RequestReader;
 use OxidEsales\GraphQl\Framework\RequestReaderInterface;
@@ -51,6 +50,12 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
     protected $container;
 
     /** @var  string */
+    protected $lang;
+
+    /** @var  int */
+    protected $shopId;
+
+    /** @var  string */
     protected $signatureKey;
 
     public function responseCallback($result, $httpStatus)
@@ -79,6 +84,7 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
         $this->container->set(RequestReaderInterface::class, $this->requestReader);
         $this->container->set(ResponseWriterInterface::class, $this->responseWriter);
         $this->container->set(LoggerInterface::class, $logger);
+        $this->beforeContainerCompile();
         $this->container->compile();
         $this->environmentService = $this->container->get(EnvironmentServiceInterface::class);
         /** @var KeyRegistryInterface $keyRegistry */
@@ -86,35 +92,9 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
         $this->signatureKey = $keyRegistry->getSignatureKey();
     }
 
-    public function executeQuery($query, $userGroup='anonymous')
+    protected function beforeContainerCompile()
     {
-        $this->requestReader->method('getAuthorizationHeader')
-            ->willReturn($this->createAuthHeader($userGroup));
-        $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
-
-        $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);
-        $queryHandler->executeGraphQlQuery();
-
-    }
-
-    private function createAuthHeader($userGroup)
-    {
-        return 'Bearer ' . $this->createToken($userGroup)->getJwt($this->signatureKey);
-
-    }
-
-    protected function createToken($userGroup) {
-
-        $token = new Token();
-
-        $token->setUserGroup($userGroup);
-        $token->setKey('somekey');
-        $token->setSubject($this->environmentService->getShopUrl());
-        $token->setShopUrl($this->environmentService->getShopUrl());
-        $token->setLang($this->getLang());
-        $token->setShopid($this->getShopId());
-
-        return $token;
+        // Overwrite this in Testsetup if you need to change more in the container
     }
 
     protected function executeQueryWithToken($query, Token $token)
@@ -128,12 +108,39 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 
     }
 
+    public function executeQuery($query)
+    {
+        $token = $this->createToken('anonymous');
+        $this->executeQueryWithToken($query, $token);
+
+    }
+
+    private function createAuthHeader($userGroup, $lang, $shopId)
+    {
+        return 'Bearer ' . $this->createToken($userGroup, $lang, $shopId)->getJwt($this->signatureKey);
+
+    }
+
+    protected function createToken($userGroup) {
+
+        $token = new Token();
+
+        $token->setUserGroup($userGroup);
+        $token->setKey('somekey');
+        $token->setSubject($this->environmentService->getShopUrl());
+        $token->setShopUrl($this->environmentService->getShopUrl());
+        $token->setLang('de');
+        $token->setShopid(1);
+
+        return $token;
+    }
+    
     public function getShopId() {
-        return $this->environmentService->getDefaultShopId();
+        return $this->shopId;
     }
 
     public function getLang() {
-        return $this->environmentService->getDefaultLanguage();
+        return $this->lang;
     }
 
     public function assertErrorMessage(string $message)

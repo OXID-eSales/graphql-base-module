@@ -100,4 +100,25 @@ class AppContext
         $this->shopUrl = $shopUrl;
     }
 
+    public function getCurrentLanguage()
+    {
+        if ($this->hasAuthToken()) {
+            return $this->token->getLang();
+        }
+        else {
+            return $this->getDefaultShopLanguage();
+        }
+
+    }
+
+    public function getCurrentShopId()
+    {
+        if ($this->hasAuthToken()) {
+            return $this->token->getShopid();
+        }
+        else {
+            return $this->getDefaultShopId();
+        }
+    }
+
 }

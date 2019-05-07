@@ -10,6 +10,8 @@ namespace OxidEsales\GraphQl\Tests\Unit\Service;
 use OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker;
 use OxidEsales\Eshop\Core\PasswordSaltGenerator;
 use OxidEsales\GraphQl\Utility\LegacyWrapper;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 
 class LegacyWrapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +20,7 @@ class LegacyWrapperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->legacyWrapper = new LegacyWrapper();
+        $this->legacyWrapper = new LegacyWrapper(new NullLogger());
     }
 
     public function testPasswordEncoding()
