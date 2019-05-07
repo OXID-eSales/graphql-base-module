@@ -32,6 +32,7 @@ class LoginAcceptanceTest extends BaseGraphQlAcceptanceTestCase
         $token = new Token();
         $token->setJwt($this->queryResult['data']['login']['token'], $this->signatureKey);
         $this->assertEquals('anonymous', $token->getUserGroup());
+        print($this->logResult);
         $this->assertTrue(0 == strlen($this->logResult));
     }
 

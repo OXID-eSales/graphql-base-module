@@ -16,6 +16,7 @@ use OxidEsales\GraphQl\Exception\InvalidTokenException;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 use Psr\Log\LoggerInterface;
 
 class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
@@ -35,6 +36,8 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
     private $requestReader;
     /** @var  ResponseWriterInterface */
     private $responseWriter;
+    /** @var  LegacyWrapperInterface $legacyWrapper */
+    private $legacyWrapper;
 
     private $loggingErrorFormatter;
 
@@ -45,7 +48,8 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         SchemaFactoryInterface $schemaFactory,
         ErrorCodeProviderInterface $errorCodeProvider,
         RequestReaderInterface $requestReader,
-        ResponseWriterInterface $responseWriter
+        ResponseWriterInterface $responseWriter,
+        LegacyWrapperInterface $legacyWrapper
     )
     {
         $this->logger = $logger;
@@ -55,6 +59,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $this->errorCodeProvider = $errorCodeProvider;
         $this->requestReader = $requestReader;
         $this->responseWriter = $responseWriter;
+        $this->legacyWrapper = $legacyWrapper;
 
         $this->loggingErrorFormatter = function(Error $error) {
             $this->logger->error($error);
@@ -157,14 +162,24 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
      */
     private function executeQuery(AppContext $context, $queryData)
     {
+        $this->legacyWrapper->setLanguageAndShopId($context->getCurrentLanguage(), $context->getCurrentShopId());
+
         $graphQL = new \GraphQL\GraphQL();
+        $variables = null;
+        if (in_array('variables', $queryData)) {
+            $variables = (array) $queryData['variables'];
+        }
+        $operationName = null;
+        if (in_array('operationName', $queryData)) {
+            $operationName = $queryData['operationName'];
+        }
         $result = $graphQL->executeQuery(
             $this->schemaFactory->getSchema(),
             $queryData['query'],
             null,
             $context,
-            (array) $queryData['variables'],
-            $queryData['operationName']
+            $variables,
+            $operationName
         );
         return $result;
     }

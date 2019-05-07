@@ -13,4 +13,7 @@ interface LegacyWrapperInterface
     public function createSalt(): string;
 
     public function createUid();
+
+    public function setLanguageAndShopId(string $languageShortcut, int $shopId);
+
 }

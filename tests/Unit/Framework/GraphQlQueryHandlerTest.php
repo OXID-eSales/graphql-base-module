@@ -23,6 +23,7 @@ use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Service\PermissionsService;
 use OxidEsales\GraphQl\Type\ObjectType\LoginType;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
+use OxidEsales\GraphQl\Utility\LegacyWrapper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
@@ -83,7 +84,8 @@ class GraphQlQueryHandlerTest extends TestCase
             $schemaFactory,
             new ErrorCodeProvider(),
             $this->requestReader,
-            $this->responseWriter);
+            $this->responseWriter,
+            new LegacyWrapper(new NullLogger()));
     }
 
     public function renderResponse($result, $httpStatus)
