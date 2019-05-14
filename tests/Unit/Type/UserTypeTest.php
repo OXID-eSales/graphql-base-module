@@ -46,10 +46,11 @@ class UserTypeTest extends GraphQlTypeTestCase
         $legacyWrapper->method('createSalt')->willReturn('somesalt');
         $this->userDao = $this->getMockBuilder(UserDaoInterface::class)->getMock();
         $this->userService = new UserService($this->userDao, $legacyWrapper, new GenericFieldResolver());
+        $genericFieldResolver = new GenericFieldResolver();
         $userMutationProvider = new UserMutationProvider(
             $this->userService,
             $this->permissionsService,
-            new UserType(new GenericFieldResolver(), new AddressType()));
+            new UserType($genericFieldResolver, new AddressType($genericFieldResolver)));
 
         $schemaFactory = new SchemaFactory();
         $schemaFactory->addMutationProvider($userMutationProvider);

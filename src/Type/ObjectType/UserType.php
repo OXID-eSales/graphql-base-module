@@ -17,7 +17,7 @@ use OxidEsales\GraphQl\Service\UserServiceInterface;
 class UserType extends ObjectType
 {
     /** @var GenericFieldResolverInterface $genericFieldResolver */
-    private $genericFieldResolver;
+    protected $genericFieldResolver;
     /**
      * UserType constructor.
      *

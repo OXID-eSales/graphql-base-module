@@ -27,16 +27,16 @@ class LoginQueryProvider implements QueryProviderInterface
 {
 
     /** @var AuthenticationServiceInterface $authService */
-    private $authService;
+    protected $authService;
 
     /** @var  KeyRegistryInterface $keyRegistry */
-    private $keyRegistry;
+    protected $keyRegistry;
 
     /** @var  PermissionsServiceInterface $permissionsService */
-    private $permissionsService;
+    protected $permissionsService;
 
     /** @var LoginType $loginType */
-    private $loginType;
+    protected $loginType;
 
     public function __construct(
         AuthenticationServiceInterface $authService,
