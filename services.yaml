@@ -109,6 +109,19 @@ services:
       - ['addPermission', ['admin', 'mayupdateanyuser']]
     tags:
       - {'name': 'graphql_permissions_provider'}
+
+  OxidEsales\GraphQl\Type\ObjectType\UserType:
+    class: OxidEsales\GraphQl\Type\ObjectType\UserType
+    public: false
+    autowire: true
+
+  OxidEsales\GraphQl\Type\ObjectType\LoginType:
+    class: OxidEsales\GraphQl\Type\ObjectType\LoginType
+    public: false
+    autowire: true
+
+  OxidEsales\GraphQl\Type\ObjectType\AddressType:
+    class: OxidEsales\GraphQl\Type\ObjectType\AddressType
     public: false
     autowire: true
 

@@ -21,6 +21,7 @@ use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistry;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Service\PermissionsService;
+use OxidEsales\GraphQl\Type\ObjectType\LoginType;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
 use OxidEsales\GraphQl\Utility\LegacyWrapper;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -70,7 +71,8 @@ class GraphQlQueryHandlerTest extends \PHPUnit_Framework_TestCase
         $loginType = new LoginQueryProvider(
             new AuthenticationService($this->environmentService, $this->userDao),
             $this->keyRegistry,
-            new PermissionsService());
+            new PermissionsService(),
+            new LoginType());
 
         $schemaFactory = new SchemaFactory();
         $schemaFactory->addQueryProvider($loginType);

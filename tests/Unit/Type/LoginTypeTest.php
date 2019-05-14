@@ -12,6 +12,7 @@ use OxidEsales\GraphQl\Framework\AppContext;
 use OxidEsales\GraphQl\Framework\SchemaFactory;
 use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQl\Type\ObjectType\LoginType;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -29,7 +30,11 @@ class LoginTypeTest extends GraphQlTypeTestCase
         /** @var \PHPUnit_Framework_MockObject_MockObject|KeyRegistryInterface $keyRegistry */
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $keyRegistry->method('getSignatureKey')->willReturn($this::SIGNATURE_KEY);
-        $loginQueryProvider = new LoginQueryProvider($authService, $keyRegistry, $this->permissionsService);
+        $loginQueryProvider = new LoginQueryProvider(
+            $authService,
+            $keyRegistry,
+            $this->permissionsService,
+            new LoginType());
 
         $this->addPermission('somegroup', 'mayreaddata');
 

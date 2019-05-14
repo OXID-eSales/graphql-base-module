@@ -27,34 +27,37 @@ class LoginQueryProvider implements QueryProviderInterface
 {
 
     /** @var AuthenticationServiceInterface $authService */
-    private $authService;
+    protected $authService;
 
     /** @var  KeyRegistryInterface $keyRegistry */
-    private $keyRegistry;
+    protected $keyRegistry;
 
     /** @var  PermissionsServiceInterface $permissionsService */
-    private $permissionsService;
+    protected $permissionsService;
+
+    /** @var LoginType $loginType */
+    protected $loginType;
 
     public function __construct(
         AuthenticationServiceInterface $authService,
         KeyRegistryInterface $keyRegistry,
-        PermissionsServiceInterface $permissionsService
+        PermissionsServiceInterface $permissionsService,
+        LoginType $loginType
     )
     {
         $this->authService = $authService;
         $this->keyRegistry = $keyRegistry;
         $this->permissionsService = $permissionsService;
+        $this->loginType = $loginType;
     }
         /**
      * @return array
      */
     public function getQueries()
     {
-        $loginType = new LoginType();
-
         return [
             'login'  => [
-                'type'        => $loginType,
+                'type'        => $this->loginType,
                 'description' => 'Returns a jason web token according to the provide credentials. ' .
                 'If no credentials are given, a token for anonymous login is returned.',
                 'args'        => [
@@ -65,7 +68,7 @@ class LoginQueryProvider implements QueryProviderInterface
                 ],
             ],
             'setlanguage'  => [
-                'type'        => $loginType,
+                'type'        => $this->loginType,
                 'description' => 'Changes the language in the current auth token, signs it again ' .
                 'and returns the changed token.',
                 'args'        => [

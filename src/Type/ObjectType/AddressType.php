@@ -11,12 +11,18 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use OxidEsales\GraphQl\DataObject\Address;
+use OxidEsales\GraphQl\Framework\GenericFieldResolver;
 
 class AddressType extends ObjectType
 {
 
-    public function __construct()
+    protected $genericFieldResolver;
+
+    public function __construct(GenericFieldResolver $genericFieldResolver)
     {
+        /** @var GenericFieldResolver genericFieldResolver */
+        $this->genericFieldResolver = $genericFieldResolver;
+
         $config = [
             'name'         => 'Address',
             'description'  => 'An type for address data',
@@ -29,8 +35,7 @@ class AddressType extends ObjectType
                 'countryshortcut' => Type::string()
             ],
             'resolveField' => function ($value, $args, $context, ResolveInfo $info) {
-                /** @var Address $value */
-                return $value->getField($info->fieldName);
+                return $this->genericFieldResolver->getField($info->fieldName, $value);
             }
         ];
         parent::__construct($config);
