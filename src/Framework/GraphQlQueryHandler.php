@@ -166,11 +166,11 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
 
         $graphQL = new \GraphQL\GraphQL();
         $variables = null;
-        if (in_array('variables', $queryData)) {
+        if (isset($queryData['variables'])) {
             $variables = (array) $queryData['variables'];
         }
         $operationName = null;
-        if (in_array('operationName', $queryData)) {
+        if (isset($queryData['operationName'])) {
             $operationName = $queryData['operationName'];
         }
         $result = $graphQL->executeQuery(
