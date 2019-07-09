@@ -46,6 +46,10 @@ services:
     class: OxidEsales\GraphQl\Service\AuthenticationService
     public: true
 
+  OxidEsales\GraphQl\Service\TokenServiceInterface:
+    class: OxidEsales\GraphQl\Service\TokenService
+    public: true
+
   OxidEsales\GraphQl\Service\UserServiceInterface:
     class: OxidEsales\GraphQl\Service\UserService
 

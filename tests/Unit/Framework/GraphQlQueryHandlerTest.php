@@ -21,6 +21,7 @@ use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistry;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Service\PermissionsService;
+use OxidEsales\GraphQl\Service\TokenService;
 use OxidEsales\GraphQl\Type\ObjectType\LoginType;
 use OxidEsales\GraphQl\Type\Provider\LoginQueryProvider;
 use OxidEsales\GraphQl\Utility\LegacyWrapper;
@@ -80,11 +81,12 @@ class GraphQlQueryHandlerTest extends TestCase
         $this->graphQlQueryHandler = new GraphQlQueryHandler(
             new NullLogger(),
             $this->environmentService,
-            $this->keyRegistry,
             $schemaFactory,
+            $this->keyRegistry,
             new ErrorCodeProvider(),
             $this->requestReader,
             $this->responseWriter,
+            new TokenService($this->requestReader),
             new LegacyWrapper(new NullLogger()));
     }
 
@@ -98,7 +100,7 @@ class GraphQlQueryHandlerTest extends TestCase
     {
         $token = $this->initializeToken();
         $jwt = $token->getJwt('1111111111111111');
-        $this->requestReader->method('getAuthorizationHeader')->willReturn("Bearer $jwt");
+        $this->requestReader->method('getAuthTokenString')->willReturn($jwt);
 
         $this->graphQlQueryHandler->executeGraphQlQuery();
         $this->assertErrorMessage('/Signature verification failed/');
@@ -109,7 +111,7 @@ class GraphQlQueryHandlerTest extends TestCase
     {
         $token = $this->initializeToken(-7);
         $jwt = $token->getJwt($this::SIGNATURE_KEY);
-        $this->requestReader->method('getAuthorizationHeader')->willReturn("Bearer $jwt");
+        $this->requestReader->method('getAuthTokenString')->willReturn($jwt);
 
         $this->graphQlQueryHandler->executeGraphQlQuery();
         $this->assertErrorMessage('/Expired token/');
@@ -129,8 +131,7 @@ query TestLanguage {
     }
 }
 EOQ;
-        $jwt = $this->initializeToken()->getJwt($this::SIGNATURE_KEY);
-        $this->requestReader->method('getAuthorizationHeader')->willReturn("Bearer $jwt");
+        $this->requestReader->method('getAuthTokenString')->willReturn($this->initializeToken()->getJwt($this::SIGNATURE_KEY));
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
 
         $this->graphQlQueryHandler->executeGraphQlQuery();
@@ -144,7 +145,7 @@ EOQ;
         $token = $this->initializeToken();
         $token->setShopUrl('http://anothershop.com');
         $jwt = $token->getJwt($this::SIGNATURE_KEY);
-        $this->requestReader->method('getAuthorizationHeader')->willReturn("Bearer $jwt");
+        $this->requestReader->method('getAuthTokenString')->willReturn($jwt);
 
         $this->graphQlQueryHandler->executeGraphQlQuery();
         $this->assertErrorMessage('/Token issuer is not correct!/');
@@ -162,7 +163,7 @@ EOQ;
         $jwtProperty->setValue($token, $jwtObject);
 
         $jwt = $token->getJwt($this::SIGNATURE_KEY);
-        $this->requestReader->method('getAuthorizationHeader')->willReturn("Bearer $jwt");
+        $this->requestReader->method('getAuthTokenString')->willReturn($jwt);
 
         $this->graphQlQueryHandler->executeGraphQlQuery();
 
@@ -190,7 +191,7 @@ query TestLogin {
     }
 }
 EOQ;
-        $this->requestReader->method('getAuthorizationHeader')
+        $this->requestReader->method('getAuthTokenString')
             ->willThrowException(new NoAuthHeaderException());
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
 
@@ -216,7 +217,7 @@ query TestLogin {
     }
 }
 EOQ;
-        $this->requestReader->method('getAuthorizationHeader')
+        $this->requestReader->method('getAuthTokenString')
             ->willThrowException(new NoAuthHeaderException());
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
 
@@ -243,7 +244,7 @@ query bla TestLogin {
     }
 }
 EOQ;
-        $this->requestReader->method('getAuthorizationHeader')
+        $this->requestReader->method('getAuthTokenString')
             ->willThrowException(new NoAuthHeaderException());
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
 
@@ -266,7 +267,7 @@ query TestLogin {
     }
 }
 EOQ;
-        $this->requestReader->method('getAuthorizationHeader')
+        $this->requestReader->method('getAuthTokenString')
             ->willThrowException(new NoAuthHeaderException());
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
 
@@ -279,7 +280,7 @@ EOQ;
 
     public function testUnknownError()
     {
-        $this->requestReader->method('getAuthorizationHeader')
+        $this->requestReader->method('getAuthTokenString')
             ->willThrowException(new \Exception());
 
         $this->graphQlQueryHandler->executeGraphQlQuery();
@@ -294,7 +295,7 @@ EOQ;
 
         $query = "query login { user {firstname}}";
 
-        $this->requestReader->method('getAuthorizationHeader')
+        $this->requestReader->method('getAuthTokenString')
             ->willThrowException(new NoAuthHeaderException());
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
 

@@ -101,8 +101,9 @@ EOQ;
 
         $userid = $result->data['createUser']['id'];
 
-        $this->assertEquals('some_new_id', $userid, $result->errors[0]);
-        $this->assertEquals('somestreet', $result->data['createUser']['address']['street'], $result->errors[0]);
+        $this->assertEquals('some_new_id', $userid, sizeof($result->errors) > 0 ? $result->errors[0] : "Unknown error");
+        $this->assertEquals('somestreet', $result->data['createUser']['address']['street'],
+            sizeof($result->errors) > 0 ? $result->errors[0] : "Unknown error");
         $this->assertEquals('somepasswordhash', $this->user->getPasswordhash());
         $this->assertEquals('somesalt', $this->user->getPasswordsalt());
 

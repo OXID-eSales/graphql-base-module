@@ -88,7 +88,7 @@ class LoginAcceptanceTest extends BaseGraphQlAcceptanceTestCase
     public function executeQueryWithoutAuthHeader(string $query)
     {
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
-        $this->requestReader->method('getAuthorizationHeader')
+        $this->requestReader->method('getAuthTokenString')
             ->willThrowException(new NoAuthHeaderException());
 
         $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);

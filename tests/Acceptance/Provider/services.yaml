@@ -1,0 +1,9 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\GraphQl\Type\Provider\ConfigTestQueryProvider:
+    class: OxidEsales\GraphQl\Tests\Acceptance\Provider\ConfigTestQueryProvider
+    tags: ['graphql_query_provider']

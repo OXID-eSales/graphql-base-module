@@ -87,10 +87,30 @@ class LoginQueryProvider implements QueryProviderInterface
             'login' => function ($value, $args, $context, ResolveInfo $info) {
                 /** @var AppContext $context */
                 $tokenRequest = new TokenRequest();
-                $tokenRequest->setUsername($args['username'] ? $args['username'] : '');
-                $tokenRequest->setPassword($args['password'] ? $args['password'] : '');
-                $tokenRequest->setLang($args['lang'] ? $args['lang'] : $context->getDefaultShopLanguage());
-                $tokenRequest->setShopid($args['shopid'] ? $args['shopid'] : $context->getDefaultShopId());
+                if (array_key_exists('username', $args)) {
+                    $tokenRequest->setUsername($args['username']);
+                }
+                else {
+                    $tokenRequest->setUsername('');
+                };
+                if (array_key_exists('password', $args)) {
+                    $tokenRequest->setPassword($args['password']);
+                }
+                else {
+                    $tokenRequest->setPassword('');
+                };
+                if (array_key_exists('lang', $args)) {
+                    $tokenRequest->setLang($args['lang']);
+                }
+                else {
+                    $tokenRequest->setLang($context->getDefaultShopLanguage());
+                }
+                if (array_key_exists('shopid', $args)) {
+                    $tokenRequest->setShopid($args['shopid']);
+                }
+                else {
+                    $tokenRequest->setShopid($context->getDefaultShopId());
+                }
                 if ($context->hasAuthToken()) {
                     $tokenRequest->setCurrentToken($context->getAuthToken());
                 }

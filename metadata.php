@@ -32,7 +32,10 @@ $aModule = [
     'author'      => 'OXID eSales',
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
-    'extend'      => [],
+    'extend' => [
+        // Sets the shop id from the GraphQlToken if available
+        \OxidEsales\Eshop\Core\Config::class => \OxidEsales\GraphQl\Core\GraphQlConfig::class
+    ],
     'controllers' => [
         // Widget Controller
         'graphql'       => OxidEsales\GraphQl\Component\Widget\GraphQL::class,

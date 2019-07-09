@@ -16,6 +16,7 @@ use OxidEsales\GraphQl\Exception\InvalidTokenException;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQl\Service\TokenServiceInterface;
 use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 use Psr\Log\LoggerInterface;
 
@@ -26,16 +27,18 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
     private $logger;
     /** @var EnvironmentServiceInterface  */
     private $environmentService;
-    /** @var KeyRegistryInterface */
-    private $keyRegistry;
     /** @var SchemaFactoryInterface  */
     private $schemaFactory;
+    /** @var KeyRegistryInterface  */
+    private $keyRegistry;
     /** @var ErrorCodeProviderInterface  */
     private $errorCodeProvider;
     /** @var  RequestReaderInterface */
     private $requestReader;
     /** @var  ResponseWriterInterface */
     private $responseWriter;
+    /** @var TokenServiceInterface  */
+    private $tokenService;
     /** @var  LegacyWrapperInterface $legacyWrapper */
     private $legacyWrapper;
 
@@ -44,21 +47,23 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
     public function __construct(
         LoggerInterface $logger,
         EnvironmentServiceInterface $environmentService,
-        KeyRegistryInterface $keyRegistry,
         SchemaFactoryInterface $schemaFactory,
+        KeyRegistryInterface $keyRegistry,
         ErrorCodeProviderInterface $errorCodeProvider,
         RequestReaderInterface $requestReader,
         ResponseWriterInterface $responseWriter,
+        TokenServiceInterface $tokenService,
         LegacyWrapperInterface $legacyWrapper
     )
     {
         $this->logger = $logger;
         $this->environmentService = $environmentService;
-        $this->keyRegistry = $keyRegistry;
         $this->schemaFactory = $schemaFactory;
         $this->errorCodeProvider = $errorCodeProvider;
+        $this->keyRegistry = $keyRegistry;
         $this->requestReader = $requestReader;
         $this->responseWriter = $responseWriter;
+        $this->tokenService = $tokenService;
         $this->legacyWrapper = $legacyWrapper;
 
         $this->loggingErrorFormatter = function(Error $error) {
@@ -104,11 +109,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $appContext->setDefaultShopId($this->environmentService->getDefaultShopId());
         $appContext->setDefaultShopLanguage($this->environmentService->getDefaultLanguage());
         try {
-            $jwt = $this->getAuthTokenString();
-            $token = new Token();
-            // This checks that the auth token is valid, i.e. untampered
-            // and valid
-            $token->setJwt($jwt, $this->keyRegistry->getSignatureKey());
+            $token = $this->tokenService->getToken($this->keyRegistry->getSignatureKey());
             $this->verifyToken($token);
             $appContext->setAuthToken($token);
         }
@@ -119,7 +120,11 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         return $appContext;
     }
 
-    private function verifyToken(Token $token)
+    /**
+     * @param Token $token
+     * @throws InvalidTokenException
+     */
+    private function verifyToken(Token $token):void
     {
         if ($token->getIssuer() !== $this->environmentService->getShopUrl())
         {
@@ -143,16 +148,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $error = new Error($msg);
         $result = new ExecutionResult(null, [$error]);
         return $result;
-    }
-
-    private function getAuthTokenString()
-    {
-        $authHeader = $this->requestReader->getAuthorizationHeader();
-        if (! $authHeader) {
-            throw new NoAuthHeaderException();
-        }
-        list($jwt) = sscanf( $authHeader, 'Bearer %s');
-        return $jwt;
     }
 
     /**

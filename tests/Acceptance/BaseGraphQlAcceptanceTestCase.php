@@ -8,6 +8,9 @@
 namespace OxidEsales\GraphQl\Tests\Acceptance;
 
 use GraphQL\Executor\ExecutionResult;
+use OxidEsales\Eshop\Application\Model\Shop;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface;
@@ -17,6 +20,7 @@ use OxidEsales\GraphQl\Framework\ResponseWriter;
 use OxidEsales\GraphQl\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -100,8 +104,8 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 
     protected function executeQueryWithToken($query, Token $token)
     {
-        $this->requestReader->method('getAuthorizationHeader')
-            ->willReturn('Bearer ' . $token->getJwt($this->signatureKey));
+        $this->requestReader->method('getAuthTokenString')
+            ->willReturn($token->getJwt($this->signatureKey));
         $this->requestReader->method('getGraphQLRequestData')->willReturn(['query' => $query]);
 
         $queryHandler = $this->container->get(GraphQlQueryHandlerInterface::class);
@@ -135,7 +139,44 @@ class BaseGraphQlAcceptanceTestCase extends UnitTestCase
 
         return $token;
     }
-    
+
+    protected function createSecondShop()
+    {
+        /** @var LegacyWrapperInterface $legacyWrapper */
+        $legacyWrapper = $this->container->get(LegacyWrapperInterface::class);
+
+        /** @var QueryBuilderFactoryInterface $queryBuilderFactory */
+        $queryBuilderFactory = $this->container->get(QueryBuilderFactoryInterface::class);
+
+        /** @var QueryBuilderFactoryInterface $queryBuilderFactory */
+        $queryBuilder = $queryBuilderFactory->create();
+
+        $queryBuilder->insert('oxshops')->values(['oxid' => 2])->execute();
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $result = $queryBuilder
+            ->select('*')
+            ->from('oxconfig')
+            ->where($queryBuilder->expr()
+                ->eq('oxvarname', "'aLanguages'"))->execute();
+        $row = $result->fetch();
+        $values = [];
+        $values['OXID'] = "'" . $legacyWrapper->createUid() . "'";
+        $values['OXSHOPID'] = 2;
+        $values['OXVARVALUE'] = "'" . $row['OXVARVALUE'] . "'";
+        $values['OXVARNAME'] = "'aLanguages'";
+        $values['OXVARTYPE'] = "'" . $row['OXVARTYPE'] . "'";
+
+        $queryBuilder = $queryBuilderFactory->create();
+        $queryBuilder->insert('oxconfig')->values($values)->execute();
+
+        $shop2 = oxNew(Shop::class);
+        $shop2->load(2);
+        $shop2->generateViews();
+
+    }
+
+
     public function getShopId() {
         return $this->shopId;
     }
