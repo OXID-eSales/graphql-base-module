@@ -7,7 +7,9 @@
 
 namespace OxidEsales\GraphQl\Service;
 
-use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
+use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
+use OxidEsales\GraphQl\Exception\TooManySignatureKeysException;
 
 /**
  * Class KeyRegistry
@@ -20,27 +22,58 @@ use OxidEsales\Eshop\Core\Registry;
 class KeyRegistry implements KeyRegistryInterface
 {
 
-    const SIGNATUREKEY_KEY = 'strAuthTokenSignatureKey';
+    private $tableName = 'graphqlsignaturekey';
+
+    private $columnName = 'signaturekey';
+
+    /** @var QueryBuilderFactoryInterface */
+    private $queryBuilderFactory;
+
+    public function __construct(QueryBuilderFactoryInterface $queryBuilderFactory)
+    {
+        $this->queryBuilderFactory = $queryBuilderFactory;
+    }
 
     public function createSignatureKey()
     {
-        $config = Registry::getConfig();
-        // Never overwrite the signature key because it will be
-        // impossible to decode the existing tokens
-        if ($config->getConfigParam($this::SIGNATUREKEY_KEY) === null) {
+        $this->createTableIfNecessary();
+        try {
+            $this->getSignatureKey();
+        } catch (NoSignatureKeyException $e) {
             $key = base64_encode(openssl_random_pseudo_bytes(64));
-            $config = Registry::getConfig();
-            $config->setConfigParam($this::SIGNATUREKEY_KEY, $key);
-            $config->saveShopConfVar('str', $this::SIGNATUREKEY_KEY, $key);
+            $this->queryBuilderFactory
+                ->create()
+                ->insert($this->tableName)
+                ->values([$this->columnName => '?'])
+                ->setParameter(0, $key)
+                ->execute();
         }
     }
 
-
     public function getSignatureKey()
     {
-        $config = Registry::getConfig();
-        return $config->getConfigParam('strAuthTokenSignatureKey');
+        try {
+            $result = $this->queryBuilderFactory->create()->select($this->columnName)->from($this->tableName)->execute();
+        } catch (\Exception $e) {
+            throw new NoSignatureKeyException();
+        }
+        $rows = $result->fetchAll();
+        if (sizeof($rows) === 0) {
+            throw new NoSignatureKeyException();
+        }
+        if (sizeof($rows) > 1) {
+            throw new TooManySignatureKeysException();
+        }
+        return $rows[0][$this->columnName];
 
+    }
+
+    private function createTableIfNecessary()
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+        $connection = $queryBuilder->getConnection();
+        $connection->exec('CREATE TABLE IF NOT EXISTS ' . $this->tableName .
+            ' (' . $this->columnName . ' VARCHAR(128))');
     }
 
 }

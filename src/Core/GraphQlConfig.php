@@ -8,7 +8,8 @@ namespace OxidEsales\GraphQl\Core;
 
 use OxidEsales\EshopCommunity\Internal\Application\ContainerFactory;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
-use OxidEsales\GraphQl\Service\KeyRegistry;
+use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
+use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Service\TokenServiceInterface;
 
 class GraphQlConfig extends GraphQlConfig_parent
@@ -19,25 +20,18 @@ class GraphQlConfig extends GraphQlConfig_parent
         $container = ContainerFactory::getInstance()->getContainer();
         /** @var \OxidEsales\GraphQl\Service\TokenServiceInterface $tokenService */
         $tokenService = $container->get(TokenServiceInterface::class);
+        /** @var KeyRegistryInterface $keyRegistry */
+        $keyRegistry = $container->get(KeyRegistryInterface::class);
         try {
-            $token = $tokenService->getToken($this->getSignatureKey());
+            $token = $tokenService->getToken($keyRegistry->getSignatureKey());
             return $token->getShopid();
         }
         catch (NoAuthHeaderException $e) {
             // No graph QL request
+        } catch (NoSignatureKeyException $e) {
+            // Not yet initialized
         }
         return parent::calculateActiveShopId();
     }
-
-    private function getSignatureKey()
-    {
-        $this->_loadVarsFromDb(1);
-        if (array_key_exists(KeyRegistry::SIGNATUREKEY_KEY, $this->_aConfigParams)) {
-            return $this->_aConfigParams[KeyRegistry::SIGNATUREKEY_KEY];
-        }
-        throw new NoAuthHeaderException();
-
-    }
-
 
 }

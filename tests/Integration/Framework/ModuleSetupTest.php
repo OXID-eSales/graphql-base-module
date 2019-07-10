@@ -7,17 +7,19 @@
 
 namespace OxidEsales\GraphQl\Tests\Integration\Framework;
 
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\GraphQl\Service\KeyRegistry;
+use OxidEsales\EshopCommunity\Internal\Application\ContainerFactory;
+use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
 class ModuleSetupTest extends UnitTestCase
 {
-
     public function testSignatureKey()
     {
-        $config = Registry::getConfig();
-        $signatureKey = $config->getConfigParam(KeyRegistry::SIGNATUREKEY_KEY);
+        $container = ContainerFactory::getInstance()->getContainer();
+        /** @var KeyRegistryInterface $keyRegistry */
+        $keyRegistry = $container->get(KeyRegistryInterface::class);
+        $signatureKey = $keyRegistry->getSignatureKey();
         $this->assertNotEmpty($signatureKey);
     }
+
 }

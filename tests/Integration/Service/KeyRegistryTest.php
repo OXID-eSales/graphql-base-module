@@ -7,21 +7,19 @@
 
 namespace OxidEsales\GraphQl\Tests\Integration\Service;
 
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\GraphQl\Service\KeyRegistry;
+use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
-use PHPUnit\Framework\TestCase;
 
-class KeyRegistryTest extends TestCase
+class KeyRegistryTest extends UnitTestCase
 {
-    public function setUp()
-    {
-        Registry::getConfig()->setConfigParam(KeyRegistry::SIGNATUREKEY_KEY, null);
-    }
 
     public function testKeyGeneration()
     {
-        $keyRegistry = new KeyRegistry();
+        $containerFactory = new TestContainerFactory();
+        $container = $containerFactory->create();
+        $container->compile();
+        $keyRegistry = $container->get(KeyRegistryInterface::class);
         $keyRegistry->createSignatureKey();
         $key = $keyRegistry->getSignatureKey();
         $this->assertNotNull($key);

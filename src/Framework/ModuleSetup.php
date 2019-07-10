@@ -48,7 +48,7 @@ class ModuleSetup
     /**
      * Deactivation function for the module
      */
-    public static function onDeactive()
+    public static function onDeactivate()
     {
     }
 }
