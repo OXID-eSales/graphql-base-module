@@ -184,7 +184,7 @@ This is an example for the permissions above:
 
 ## The OXID GraphQL framework authorization
 
-Authorization is implemented by using Jason Web Tokens (JWT). So
+Authorization is implemented by using JSON Web Token (JWT). So
 the first step for a consumer of the GraphQL API is to
 obtain such a token. It is just a simple query named
 login that requests a token:
