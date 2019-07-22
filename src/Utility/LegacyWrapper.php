@@ -23,35 +23,20 @@ class LegacyWrapper implements LegacyWrapperInterface
         $this->logger = $logger;
     }
 
-    public function createUid()
+    public function createUid(): string
     {
         return Registry::getUtilsObject()->generateUId();
     }
 
-    public function encodePassword(string $password, string $salt): string
-    {
-        $userModel = oxNew(User::class);
-        return $userModel->encodePassword($password, $salt);
-    }
-
-    public function createSalt(): string
-    {
-        $saltGenerator = new PasswordSaltGenerator(new OpenSSLFunctionalityChecker());
-        return $saltGenerator->generate();
-    }
-
-    public function setLanguageAndShopId(string $languageShortcut, int $shopId)
+    public function setLanguage(string $languageShortcut): void
     {
         $language = Registry::getLang();
-        $availableLanguages = $language->getLanguageIds($shopId);
+        $availableLanguages = $language->getLanguageIds(Registry::getConfig()->getShopId());
 
         $index = array_search($languageShortcut, $availableLanguages);
         if ($index !== false) {
             $language->setBaseLanguage($index);
         }
-
-        $config = Registry::getConfig();
-        $config->setShopId($shopId);
 
     }
 

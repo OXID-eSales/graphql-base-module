@@ -157,7 +157,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
      */
     private function executeQuery(AppContext $context, $queryData)
     {
-        $this->legacyWrapper->setLanguageAndShopId($context->getCurrentLanguage(), $context->getCurrentShopId());
+        $this->legacyWrapper->setLanguage($context->getCurrentLanguage());
 
         $graphQL = new \GraphQL\GraphQL();
         $variables = null;

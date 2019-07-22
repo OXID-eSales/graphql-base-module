@@ -25,6 +25,7 @@ class GraphQL extends \OxidEsales\Eshop\Application\Component\Widget\WidgetContr
 
         /** @var GraphQlQueryHandlerInterface $queryHandler */
         $queryHandler = ContainerFactory::getInstance()->getContainer()->get(GraphQlQueryHandlerInterface::class);
+
         $queryHandler->executeGraphQlQuery();
 
     }

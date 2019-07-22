@@ -8,14 +8,13 @@
 namespace OxidEsales\GraphQl\Dao;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use OxidEsales\EshopCommunity\Internal\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\ObjectNotFoundException;
 use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Exception\UnknownUsergroupException;
-use OxidEsales\GraphQl\Exception\NotFoundException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 
@@ -24,14 +23,18 @@ class UserDao implements UserDaoInterface
 
     /** @var QueryBuilderFactoryInterface $queryBuilderFactory */
     private $queryBuilderFactory;
+    /** @var PasswordServiceBridgeInterface $passwordService */
+    private $passwordService;
     /** @var LegacyWrapperInterface $legacyWrapper */
     private $legacyWrapper;
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
+        PasswordServiceBridgeInterface $passwordService,
         LegacyWrapperInterface $legacyWrapper)
     {
         $this->queryBuilderFactory = $queryBuilderFactory;
+        $this->passwordService = $passwordService;
         $this->legacyWrapper = $legacyWrapper;
     }
 
@@ -57,7 +60,7 @@ class UserDao implements UserDaoInterface
     public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest): TokenRequest
     {
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select('OXID', 'OXRIGHTS', 'OXPASSWORD', 'OXPASSSALT')
+        $queryBuilder->select('OXID', 'OXRIGHTS', 'OXPASSWORD')
             ->from('oxuser')
             ->where(
                 $queryBuilder->expr()->andX(
@@ -67,15 +70,16 @@ class UserDao implements UserDaoInterface
             )
             ->setParameter('name', $tokenRequest->getUsername())
             ->setParameter('shopid', $tokenRequest->getShopid());
+
+
         $result = $queryBuilder->execute()->fetch();
         if (!$result) {
             throw new PasswordMismatchException('User/password combination is not valid.');
         }
-        $storedHashedPassword = $result['OXPASSWORD'];
-        $providedHashedPassword = $this->legacyWrapper->encodePassword($tokenRequest->getPassword(), $result['OXPASSSALT']);
-        if ($storedHashedPassword !== $providedHashedPassword) {
+        if (! $this->passwordService->verifyPassword($tokenRequest->getPassword(), $result['OXPASSWORD'])) {
             throw new PasswordMismatchException('User/password combination is not valid.');
-        }
+        };
+
         $tokenRequest->setUserid($result['OXID']);
         $tokenRequest->setGroup($this->mapGroup($result['OXRIGHTS']));
         return $tokenRequest;
@@ -133,7 +137,6 @@ class UserDao implements UserDaoInterface
             ->update('oxuser', 'u')
             ->set('u.OXUSERNAME', ':username')
             ->set('u.OXPASSWORD', ':passwordhash')
-            ->set('u.OXPASSSALT', ':passwordsalt')
             ->set('u.OXFNAME', ':firstname')
             ->set('u.OXLNAME', ':lastname')
             ->set('u.OXRIGHTS', ':rights')
@@ -156,7 +159,6 @@ class UserDao implements UserDaoInterface
             'OXID' => ':id',
             'OXUSERNAME'  => ':username',
             'OXPASSWORD'  => ':passwordhash',
-            'OXPASSSALT'  => ':passwordsalt',
             'OXFNAME'     => ':firstname',
             'OXLNAME'     => ':lastname',
             'OXRIGHTS'    => ':rights',
@@ -214,7 +216,6 @@ class UserDao implements UserDaoInterface
         $user->setShopid($result['OXSHOPID']);
         $user->setUsername($result['OXUSERNAME']);
         $user->setPasswordhash($result['OXPASSWORD']);
-        $user->setPasswordsalt($result['OXPASSSALT']);
         $user->setFirstname($result['OXFNAME']);
         $user->setLastname($result['OXLNAME']);
         $user->setUsergroup($this->mapGroup($result['OXRIGHTS']));
@@ -237,7 +238,6 @@ class UserDao implements UserDaoInterface
         return [
             'username'       => $user->getUsername(),
             'passwordhash'   => $user->getPasswordhash(),
-            'passwordsalt'   => $user->getPasswordsalt(),
             'firstname'      => $user->getFirstname(),
             'lastname'       => $user->getLastname(),
             'rights'         => $this->unmapGroup($user),

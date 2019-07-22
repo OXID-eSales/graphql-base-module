@@ -7,6 +7,7 @@
 
 namespace OxidEsales\GraphQl\Tests\Unit\Type;
 
+use OxidEsales\EshopCommunity\Internal\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\User;
@@ -18,7 +19,6 @@ use OxidEsales\GraphQl\Type\ObjectType\AddressType;
 use OxidEsales\GraphQl\Type\ObjectType\UserType;
 use OxidEsales\GraphQl\Type\Provider\UserMutationProvider;
 use OxidEsales\GraphQl\Utility\AuthConstants;
-use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 
 class UserTypeTest extends GraphQlTypeTestCase
@@ -40,12 +40,11 @@ class UserTypeTest extends GraphQlTypeTestCase
     {
         parent::setUp();
 
-        /** @var LegacyWrapperInterface|MockObject $legacyWrapper */
-        $legacyWrapper = $this->getMockBuilder(LegacyWrapperInterface::class)->getMock();
-        $legacyWrapper->method('encodePassword')->willReturn('somepasswordhash');
-        $legacyWrapper->method('createSalt')->willReturn('somesalt');
+        /** @var PasswordServiceBridgeInterface|MockObject $passwordService */
+        $passwordService = $this->getMockBuilder(PasswordServiceBridgeInterface::class)->getMock();
+        $passwordService->method('hash')->willReturn('somepasswordhash');
         $this->userDao = $this->getMockBuilder(UserDaoInterface::class)->getMock();
-        $this->userService = new UserService($this->userDao, $legacyWrapper, new GenericFieldResolver());
+        $this->userService = new UserService($this->userDao, $passwordService, new GenericFieldResolver());
         $genericFieldResolver = new GenericFieldResolver();
         $userMutationProvider = new UserMutationProvider(
             $this->userService,
@@ -105,7 +104,6 @@ EOQ;
         $this->assertEquals('somestreet', $result->data['createUser']['address']['street'],
             sizeof($result->errors) > 0 ? $result->errors[0] : "Unknown error");
         $this->assertEquals('somepasswordhash', $this->user->getPasswordhash());
-        $this->assertEquals('somesalt', $this->user->getPasswordsalt());
 
     }
 
@@ -265,6 +263,5 @@ EOQ;
         $this->executeQuery($query);
 
         $this->assertEquals('somepasswordhash', $this->user->getPasswordhash());
-        $this->assertEquals('somesalt', $this->user->getPasswordsalt());
     }
 }

@@ -18,8 +18,6 @@ class User
     /** @var  string */
     private $passwordhash = '';
     /** @var  string */
-    private $passwordsalt = '';
-    /** @var  string */
     private $firstname = '';
     /** @var  string */
     private $lastname = '';
@@ -90,22 +88,6 @@ class User
     public function setPasswordhash(string $passwordhash)
     {
         $this->passwordhash = $passwordhash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPasswordsalt(): string
-    {
-        return $this->passwordsalt;
-    }
-
-    /**
-     * @param string $passwordsalt
-     */
-    public function setPasswordsalt(string $passwordsalt)
-    {
-        $this->passwordsalt = $passwordsalt;
     }
 
     /**

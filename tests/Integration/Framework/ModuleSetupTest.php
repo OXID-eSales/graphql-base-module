@@ -8,6 +8,7 @@
 namespace OxidEsales\GraphQl\Tests\Integration\Framework;
 
 use OxidEsales\EshopCommunity\Internal\Application\ContainerFactory;
+use OxidEsales\GraphQl\Framework\ModuleSetup;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
 

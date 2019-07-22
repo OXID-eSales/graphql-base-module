@@ -7,12 +7,14 @@
 
 namespace OxidEsales\GraphQl\Tests\Integration\Dao;
 
+use OxidEsales\EshopCommunity\Internal\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQl\Dao\UserDao;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
+use OxidEsales\GraphQl\Exception\ObjectNotFoundException;
 use OxidEsales\GraphQl\Exception\PasswordMismatchException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 use PHPUnit\Framework\TestCase;
@@ -22,12 +24,30 @@ class UserDaoTest extends TestCase
     /** @var  UserDao */
     private $userDao;
 
+    /** @var User */
+    private $testUser;
+
     public function setUp()
     {
         $containerFactory = new TestContainerFactory();
         $container = $containerFactory->create();
         $container->compile();
         $this->userDao = $container->get(UserDaoInterface::class);
+        /** @var PasswordServiceBridgeInterface $passwordService */
+        $passwordService = $container->get(PasswordServiceBridgeInterface::class);
+
+        try {
+            $this->testUser = $this->userDao->getUserByName('test', 1);
+        }
+        catch (ObjectNotFoundException $e) {
+            $this->testUser = new User();
+        }
+        $this->testUser->setUsername('test');
+        $this->testUser->setPasswordhash($passwordService->hash('test'));
+        $this->testUser->setUsergroup(AuthConstants::USER_GROUP_CUSTOMER);
+        $this->testUser->setShopid(1);
+        $this->userDao->saveOrUpdateUser($this->testUser);
+        $this->testUser = $this->userDao->getUserByName('test', 1);
     }
 
     public function testUserNotExisting()
@@ -47,7 +67,7 @@ class UserDaoTest extends TestCase
         $this->expectException(PasswordMismatchException::class);
 
         $tokenRequest = new TokenRequest();
-        $tokenRequest->setUsername('admin');
+        $tokenRequest->setUsername('test');
         $tokenRequest->setPassword('password');
         $tokenRequest->setShopid(1);
 
@@ -57,50 +77,51 @@ class UserDaoTest extends TestCase
     public function testCorrectVerification()
     {
         $tokenRequest = new TokenRequest();
-        $tokenRequest->setUsername('admin');
-        $tokenRequest->setPassword('admin');
+        $tokenRequest->setUsername('test');
+        $tokenRequest->setPassword('test');
         $tokenRequest->setShopid(1);
 
         $tokenRequest = $this->userDao->addIdAndUserGroupToTokenRequest($tokenRequest);
 
-        $this->assertEquals('oxdefaultadmin', $tokenRequest->getUserid());
-        $this->assertEquals(AuthConstants::USER_GROUP_ADMIN, $tokenRequest->getGroup());
+        $this->assertEquals($this->testUser->getId(), $tokenRequest->getUserid());
+        $this->assertEquals(AuthConstants::USER_GROUP_CUSTOMER, $tokenRequest->getGroup());
     }
 
     public function testGetUserById()
     {
-        $user = $this->userDao->getUserById('oxdefaultadmin');
+        $user = $this->userDao->getUserById($this->testUser->getId());
         $this->assertNotNull($user);
         $this->assertNotNull($user->getAddress());
-        $this->assertEquals(AuthConstants::USER_GROUP_ADMIN, $user->getUsergroup());
-        $this->assertEquals('admin', $user->getUsername());
-    }
-
-    public function testGetMallUserById()
-    {
-        $user = $this->userDao->getUserById('oxdefaultadmin');
-        $this->assertNotNull($user);
-        $this->assertNotNull($user->getAddress());
-        $this->assertEquals(AuthConstants::USER_GROUP_ADMIN, $user->getUsergroup());
-        $this->assertEquals('admin', $user->getUsername());
+        $this->assertEquals(AuthConstants::USER_GROUP_CUSTOMER, $user->getUsergroup());
+        $this->assertEquals('test', $user->getUsername());
     }
 
     public function testGetUserByName()
     {
-        $user = $this->userDao->getUserByName('admin', 1);
+        $user = $this->userDao->getUserByName('test', 1);
         $this->assertNotNull($user);
         $this->assertNotNull($user->getAddress());
-        $this->assertEquals(AuthConstants::USER_GROUP_ADMIN, $user->getUsergroup());
-        $this->assertEquals('oxdefaultadmin', $user->getId());
+        $this->assertEquals(AuthConstants::USER_GROUP_CUSTOMER, $user->getUsergroup());
+        $this->assertEquals($this->testUser->getId(), $user->getId());
+    }
+
+    public function testGetNotMallUser()
+    {
+        $this->expectException(ObjectNotFoundException::class);
+        $this->userDao->getUserByName('test', 2);
     }
 
     public function testGetMallUserByName()
     {
-        $user = $this->userDao->getUserByName('admin', 2);
+        $this->testUser->setUsergroup(AuthConstants::USER_GROUP_ADMIN);
+        $this->testUser->setShopid(1);
+        $this->userDao->saveOrUpdateUser($this->testUser);
+
+        $user = $this->userDao->getUserByName('test', 2);
         $this->assertNotNull($user);
         $this->assertNotNull($user->getAddress());
         $this->assertEquals(AuthConstants::USER_GROUP_ADMIN, $user->getUsergroup());
-        $this->assertEquals('oxdefaultadmin', $user->getId());
+        $this->assertEquals($this->testUser->getId(), $user->getId());
     }
 
     public function testSaveUser()

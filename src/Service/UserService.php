@@ -7,6 +7,7 @@
 
 namespace OxidEsales\GraphQl\Service;
 
+use OxidEsales\EshopCommunity\Internal\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\User;
@@ -19,19 +20,19 @@ class UserService implements UserServiceInterface
     /** @var  UserDaoInterface */
     private $userDao;
 
-    /** @var  LegacyWrapperInterface */
-    private $legacyWrapper;
+    /** @var  PasswordServiceBridgeInterface */
+    private $passwordService;
 
     /** @var  GenericFieldResolver */
     private $genericFieldResolver;
 
     public function __construct(
         UserDaoInterface $userDao,
-        LegacyWrapperInterface $legacyWrapper,
+        PasswordServiceBridgeInterface $passwordService,
         GenericFieldResolver $genericFieldResolver)
     {
         $this->userDao = $userDao;
-        $this->legacyWrapper = $legacyWrapper;
+        $this->passwordService = $passwordService;
         $this->genericFieldResolver = $genericFieldResolver;
     }
 
@@ -83,8 +84,7 @@ class UserService implements UserServiceInterface
 
     private function setPassword(User $user, $password)
     {
-        $user->setPasswordsalt($this->legacyWrapper->createSalt());
-        $user->setPasswordhash($this->legacyWrapper->encodePassword($password, $user->getPasswordsalt()));
+        $user->setPasswordhash($this->passwordService->hash($password));
     }
 
 }

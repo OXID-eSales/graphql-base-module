@@ -24,15 +24,6 @@ class LegacyWrapperTest extends TestCase
         $this->legacyWrapper = new LegacyWrapper(new NullLogger());
     }
 
-    public function testPasswordEncoding()
-    {
-        $saltGenerator = new PasswordSaltGenerator(new OpenSSLFunctionalityChecker());
-        $salt = $saltGenerator->generate();
-        $hashedPassword = $this->legacyWrapper->encodePassword("SuperPasswort", $salt);
-        $this->assertNotNull($hashedPassword);
-        $this->assertTrue(strlen($hashedPassword) >= 64);
-    }
-
     public function testUidGeneration()
     {
         $uid1 = $this->legacyWrapper->createUid();

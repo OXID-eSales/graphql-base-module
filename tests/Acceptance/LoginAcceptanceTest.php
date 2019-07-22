@@ -7,9 +7,15 @@
 
 namespace OxidEsales\GraphQl\Tests\Acceptance;
 
+use OxidEsales\EshopCommunity\Internal\Authentication\Bridge\PasswordServiceBridgeInterface;
+use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Token;
+use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
+use OxidEsales\GraphQl\Exception\ObjectNotFoundException;
 use OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface;
+use OxidEsales\GraphQl\Utility\AuthConstants;
 
 /**
  * Class LoginAcceptanceTest
@@ -41,14 +47,34 @@ class LoginAcceptanceTest extends BaseGraphQlAcceptanceTestCase
      */
     public function testUserLogin()
     {
-        $query = 'query LoginTest {login (username: "admin", password: "admin") {token} }';
+        $containerFactory = new TestContainerFactory();
+        $container = $containerFactory->create();
+        $container->compile();
+        $userDao = $container->get(UserDaoInterface::class);
+        /** @var PasswordServiceBridgeInterface $passwordService */
+        $passwordService = $container->get(PasswordServiceBridgeInterface::class);
+
+        /** User $testUser */
+        try {
+            $testUser = $userDao->getUserByName('test', 1);
+        }
+        catch (ObjectNotFoundException $e) {
+            $testUser = new User();
+        }
+        $testUser->setUsername('test');
+        $testUser->setPasswordhash($passwordService->hash('test'));
+        $testUser->setUsergroup(AuthConstants::USER_GROUP_CUSTOMER);
+        $testUser->setShopid(1);
+        $userDao->saveOrUpdateUser($testUser);
+
+        $query = 'query LoginTest {login (username: "test", password: "test") {token} }';
 
         $this->executeQueryWithoutAuthHeader($query);
 
         $this->assertEquals(200, $this->httpStatus);
         $token = new Token();
         $token->setJwt($this->queryResult['data']['login']['token'], $this->signatureKey);
-        $this->assertEquals('admin', $token->getUserGroup());
+        $this->assertEquals(AuthConstants::USER_GROUP_CUSTOMER, $token->getUserGroup());
         $this->assertTrue(0 == strlen($this->logResult));
     }
 
