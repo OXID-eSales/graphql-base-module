@@ -72,11 +72,10 @@ class GraphQlQueryHandlerTest extends TestCase
         $loginType = new LoginQueryProvider(
             new AuthenticationService($this->environmentService, $this->userDao),
             $this->keyRegistry,
-            new PermissionsService(),
+            new PermissionsService([]),
             new LoginType());
 
-        $schemaFactory = new SchemaFactory();
-        $schemaFactory->addQueryProvider($loginType);
+        $schemaFactory = new SchemaFactory([$loginType], []);
 
         $this->graphQlQueryHandler = new GraphQlQueryHandler(
             new NullLogger(),

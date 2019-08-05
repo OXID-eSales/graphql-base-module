@@ -51,8 +51,7 @@ class UserTypeTest extends GraphQlTypeTestCase
             $this->permissionsService,
             new UserType($genericFieldResolver, new AddressType($genericFieldResolver)));
 
-        $schemaFactory = new SchemaFactory();
-        $schemaFactory->addMutationProvider($userMutationProvider);
+        $schemaFactory = new SchemaFactory([],[$userMutationProvider]);
 
         $this->schema = $schemaFactory->getSchema();
     }

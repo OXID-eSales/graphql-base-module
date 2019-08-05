@@ -29,6 +29,7 @@ services:
 
   OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
     class: OxidEsales\GraphQl\Framework\SchemaFactory
+    arguments: [!tagged graphql_query_provider, !tagged graphql_mutation_provider]
 
   OxidEsales\GraphQl\Framework\GenericFieldResolverInterface:
     class: OxidEsales\GraphQl\Framework\GenericFieldResolver
@@ -55,6 +56,7 @@ services:
 
   OxidEsales\GraphQl\Service\PermissionsServiceInterface:
     class: OxidEsales\GraphQl\Service\PermissionsService
+    arguments: [!tagged graphql_permissions_provider]
 
   OxidEsales\GraphQl\Service\LoginPermissionsProvider:
     class: OxidEsales\GraphQl\Service\PermissionsProvider

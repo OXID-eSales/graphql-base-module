@@ -20,7 +20,14 @@ class PermissionsService  implements PermissionsServiceInterface
 
     private $acceptDeveloperChecks = false;
 
-    public function addPermissionsProvider(PermissionsProvider $provider)
+    public function __construct(iterable $permissionsProviders)
+    {
+        foreach ($permissionsProviders as $permissionsProvider) {
+            $this->addPermissionsProvider($permissionsProvider);
+        }
+    }
+
+    private function addPermissionsProvider(PermissionsProvider $provider)
     {
         foreach ($provider->getPermissions() as $group => $permissions) {
             if ($group === AuthConstants::USER_GROUP_DEVELOPER) {

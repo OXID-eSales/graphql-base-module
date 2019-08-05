@@ -28,10 +28,9 @@ class SchemaTest extends TestCase
         $authService = $this->getMockBuilder(AuthenticationServiceInterface::class)->getMock();
         /** @var MockObject|KeyRegistryInterface $keyRegistry */
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
-        $loginType = new LoginQueryProvider($authService, $keyRegistry, new PermissionsService(), new LoginType());
+        $loginType = new LoginQueryProvider($authService, $keyRegistry, new PermissionsService([]), new LoginType());
 
-        $schemaFactory = new SchemaFactory();
-        $schemaFactory->addQueryProvider($loginType);
+        $schemaFactory = new SchemaFactory([$loginType], []);
 
         $schema = $schemaFactory->getSchema();
 

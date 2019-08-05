@@ -31,7 +31,7 @@ class GraphQlTypeTestCase extends TestCase
 
     public function setUp()
     {
-        $this->permissionsService = new PermissionsService();
+        $this->permissionsService = new PermissionsService([]);
         $this->token = $this->createDefaultToken();
 
     }
@@ -40,7 +40,11 @@ class GraphQlTypeTestCase extends TestCase
     {
         $permissionsProvider = new PermissionsProvider();
         $permissionsProvider->addPermission($group, $permission);
-        $this->permissionsService->addPermissionsProvider($permissionsProvider);
+
+        $reflectionClass = new \ReflectionClass(PermissionsService::class);
+        $reflectionMethod = $reflectionClass->getMethod('addPermissionsProvider');
+        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->invoke($this->permissionsService, $permissionsProvider);
 
     }
 

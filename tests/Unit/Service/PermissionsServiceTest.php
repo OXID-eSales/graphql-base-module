@@ -29,8 +29,7 @@ class PermissionsServiceTest extends TestCase
         $permissionsProvider->addPermission("group1", "perm1");
         $permissionsProvider->addPermission("group1", "perm2");
         $permissionsProvider->addPermission("group2", "perm3");
-        $this->permissionsService = new PermissionsService();
-        $this->permissionsService->addPermissionsProvider($permissionsProvider);
+        $this->permissionsService = new PermissionsService([$permissionsProvider]);
 
     }
 

@@ -38,8 +38,7 @@ class LoginTypeTest extends GraphQlTypeTestCase
 
         $this->addPermission('somegroup', 'mayreaddata');
 
-        $schemaFactory = new SchemaFactory();
-        $schemaFactory->addQueryProvider($loginQueryProvider);
+        $schemaFactory = new SchemaFactory([$loginQueryProvider], []);
 
         $this->schema = $schemaFactory->getSchema();
 

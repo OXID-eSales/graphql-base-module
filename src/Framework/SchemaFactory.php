@@ -28,20 +28,10 @@ class SchemaFactory implements SchemaFactoryInterface
 
     private $mutationProviders = [];
 
-    /**
-     * @param BaseType $type
-     */
-    public function addQueryProvider(QueryProviderInterface $provider)
+    public function __construct(iterable $queryProviders, iterable $mutationProviders)
     {
-        $this->queryProviders[] = $provider;
-    }
-
-    /**
-     * @param BaseType $type
-     */
-    public function addMutationProvider(MutationProviderInterface $provider)
-    {
-        $this->mutationProviders[] = $provider;
+        $this->queryProviders = $queryProviders;
+        $this->mutationProviders = $mutationProviders;
     }
 
     /**
