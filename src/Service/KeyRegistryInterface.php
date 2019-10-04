@@ -17,8 +17,5 @@ namespace OxidEsales\GraphQl\Service;
  */
 interface KeyRegistryInterface
 {
-
-    public function createSignatureKey();
-
     public function getSignatureKey();
 }

@@ -10,10 +10,6 @@ services:
   OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker:
     class: OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker
 
-  OxidEsales\GraphQl\Framework\ModuleSetup:
-    class: OxidEsales\GraphQl\Framework\ModuleSetup
-    public: true
-
   OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
     class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
     public: true

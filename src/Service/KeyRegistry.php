@@ -7,9 +7,8 @@
 
 namespace OxidEsales\GraphQl\Service;
 
-use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
-use OxidEsales\GraphQl\Exception\TooManySignatureKeysException;
+use OxidEsales\EshopCommunity\Core\Registry;
 
 /**
  * Class KeyRegistry
@@ -22,18 +21,7 @@ use OxidEsales\GraphQl\Exception\TooManySignatureKeysException;
 class KeyRegistry implements KeyRegistryInterface
 {
 
-    private $tableName = 'graphqlsignaturekey';
-
-    private $columnName = 'signaturekey';
-
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
-
-    public function __construct(QueryBuilderFactoryInterface $queryBuilderFactory)
-    {
-        $this->queryBuilderFactory = $queryBuilderFactory;
-    }
-
+    /*
     public function createSignatureKey()
     {
         $this->createTableIfNecessary();
@@ -49,31 +37,18 @@ class KeyRegistry implements KeyRegistryInterface
                 ->execute();
         }
     }
+     */
 
-    public function getSignatureKey()
+    /**
+     * @throws NoSignatureKeyException
+     */
+    public function getSignatureKey(): string
     {
-        try {
-            $result = $this->queryBuilderFactory->create()->select($this->columnName)->from($this->tableName)->execute();
-        } catch (\Exception $e) {
+        $config = Registry::getConfig();
+        $signature = $config->getConfigParam('sJsonWebTokenSignature');
+        if (!is_string($signature) || !strlen($signature) >= 64) {
             throw new NoSignatureKeyException();
         }
-        $rows = $result->fetchAll();
-        if (sizeof($rows) === 0) {
-            throw new NoSignatureKeyException();
-        }
-        if (sizeof($rows) > 1) {
-            throw new TooManySignatureKeysException();
-        }
-        return $rows[0][$this->columnName];
-
+        return $signature;
     }
-
-    private function createTableIfNecessary()
-    {
-        $queryBuilder = $this->queryBuilderFactory->create();
-        $connection = $queryBuilder->getConnection();
-        $connection->exec('CREATE TABLE IF NOT EXISTS ' . $this->tableName .
-            ' (' . $this->columnName . ' VARCHAR(128))');
-    }
-
 }

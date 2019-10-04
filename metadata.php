@@ -45,9 +45,13 @@ $aModule = [
     'blocks'      => [
     ],
     'settings'    => [
+        [
+            'group' => 'graphql_base',
+            'name'  => 'sJsonWebTokenSignature',
+            'type'  => 'str',
+            'value' => 'CHANGE ME'
+        ]
     ],
     'events'      => [
-        'onActivate'   => 'OxidEsales\\GraphQl\\Framework\\ModuleSetup::onActivate',
-        'onDeactivate' => 'OxidEsales\\GraphQl\\Framework\\ModuleSetup::onDeactivate'
     ]
 ];
