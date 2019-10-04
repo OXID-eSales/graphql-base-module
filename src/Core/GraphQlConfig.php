@@ -6,7 +6,7 @@
 
 namespace OxidEsales\GraphQl\Core;
 
-use OxidEsales\EshopCommunity\Internal\Application\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;

@@ -7,7 +7,7 @@
 
 namespace OxidEsales\GraphQl\Service;
 
-use OxidEsales\EshopCommunity\Internal\Authentication\Bridge\PasswordServiceBridgeInterface;
+use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\User;

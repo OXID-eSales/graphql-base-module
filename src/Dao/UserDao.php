@@ -8,8 +8,8 @@
 namespace OxidEsales\GraphQl\Dao;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use OxidEsales\EshopCommunity\Internal\Authentication\Bridge\PasswordServiceBridgeInterface;
-use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
