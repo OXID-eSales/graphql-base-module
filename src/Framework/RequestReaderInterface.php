@@ -21,13 +21,6 @@ interface RequestReaderInterface
     public function getAuthTokenString(): string;
 
     /**
-     *  Get header Authorization
-     *
-     * @return $aHeaders array
-     */
-    public function getAuthorizationHeader();
-
-    /**
      * Get the Request data
      *
      * @return array

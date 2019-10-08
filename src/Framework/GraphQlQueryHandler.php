@@ -83,12 +83,11 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
             $result = $this->executeQuery($context, $queryData);
         } catch (\Exception $e) {
             $reflectionClass = new \ReflectionClass($e);
-            if (is_subclass_of($e, HttpErrorInterface::class)) {
+            if ($e instanceof HttpErrorInterface) {
                 // Thank god. Our own exceptions provide a http status.
                 /** @var HttpErrorInterface $e */
                 $httpStatus = $e->getHttpStatus();
-            }
-            elseif ($reflectionClass->getNamespaceName() == 'Firebase\JWT') {
+            } elseif ($reflectionClass->getNamespaceName() == 'Firebase\JWT') {
                 // Authentication failed. Something with the token went wrong.
                 $httpStatus = 401;
             }

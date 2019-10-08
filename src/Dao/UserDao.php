@@ -130,7 +130,7 @@ class UserDao implements UserDaoInterface
         }
     }
 
-    private function updateUser(User $user)
+    public function updateUser(User $user)
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder
@@ -152,11 +152,11 @@ class UserDao implements UserDaoInterface
             ->execute();
     }
 
-    private function saveUser(User $user)
+    public function saveUser(User $user)
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $values = [
-            'OXID' => ':id',
+            'OXID'        => ':id',
             'OXUSERNAME'  => ':username',
             'OXPASSWORD'  => ':passwordhash',
             'OXFNAME'     => ':firstname',
@@ -168,11 +168,15 @@ class UserDao implements UserDaoInterface
             'OXCITY'      => ':city',
             'OXZIP'       => ':zip',
             'OXCOUNTRYID' => ':countryid',
-            'OXSHOPID'    => ':shopid'];
+            'OXSHOPID'    => ':shopid'
+        ];
         $parameters = $this->mapUserToArray($user);
-        $parameters['id'] = $this->legacyWrapper->createUid();
-        $queryBuilder->insert('oxuser')->values($values)
-            ->setParameters($parameters)->execute();
+        // $parameters['id'] = $this->legacyWrapper->createUid();
+        $parameters['id'] = $user->getId();
+        $queryBuilder->insert('oxuser')
+                     ->values($values)
+                     ->setParameters($parameters)
+                     ->execute();
     }
 
     private function fetchCountryIdFromShortcut($countryShortcut)
@@ -211,14 +215,6 @@ class UserDao implements UserDaoInterface
 
     private function mapUserFromDatabaseResult($result)
     {
-        $user = new User();
-        $user->setId($result['OXID']);
-        $user->setShopid($result['OXSHOPID']);
-        $user->setUsername($result['OXUSERNAME']);
-        $user->setPasswordhash($result['OXPASSWORD']);
-        $user->setFirstname($result['OXFNAME']);
-        $user->setLastname($result['OXLNAME']);
-        $user->setUsergroup($this->mapGroup($result['OXRIGHTS']));
         $address = new Address();
         $address->setStreet($result['OXSTREET']);
         $address->setStreetnr($result['OXSTREETNR']);
@@ -226,16 +222,29 @@ class UserDao implements UserDaoInterface
         $address->setCity($result['OXCITY']);
         $address->setZip($result['OXZIP']);
         $address->setCountryshortcut($result['OXCOUNTRYSHORTCUT']);
-        $user->setAddress($address);
+ 
+        $user = new User(
+            $result['OXID'],
+            (int)$result['OXSHOPID'],
+            $result['OXUSERNAME'],
+            $result['OXPASSWORD'],
+            $result['OXFNAME'],
+            $result['OXLNAME'],
+            $this->mapGroup($result['OXRIGHTS']),
+            $address
+        );
 
         return $user;
     }
 
-    private function mapUserToArray(User $user)
+    private function mapUserToArray(User $user): array
     {
         $address = $user->getAddress();
+        if ($address === null) {
+            $address = new Address;
+        }
 
-        return [
+        $ret = [
             'username'       => $user->getUsername(),
             'passwordhash'   => $user->getPasswordhash(),
             'firstname'      => $user->getFirstname(),
@@ -247,7 +256,10 @@ class UserDao implements UserDaoInterface
             'city'           => $address->getCity(),
             'zip'            => $address->getZip(),
             'countryid'      => $this->fetchCountryIdFromShortcut($address->getCountryshortcut()),
-            'shopid'         => $user->getShopid()];
+            'shopid'         => $user->getShopid()
+        ];
+
+        return $ret;
     }
 
     private function mapGroup(string $oxrights): string

@@ -6,8 +6,7 @@
 
 namespace OxidEsales\GraphQl\Framework;
 
-use GraphQL\Type\Schema;
-
+use TheCodingMachine\GraphQLite\Schema;
 
 /**
  * Class SchemaFactory

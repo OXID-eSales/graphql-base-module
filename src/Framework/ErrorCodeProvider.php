@@ -26,9 +26,9 @@ class ErrorCodeProvider implements ErrorCodeProviderInterface
     public function getHttpReturnCode(ExecutionResult $result): int
     {
         // TODO: The problem is, that the exceptions are already
-        //       transformed to a GraphQL error when we receive the
-        //       result. So we would need take the message to determine
-        //       which is the correct http status.
+        // transformed to a GraphQL error when we receive the
+        // result. So we would need take the message to determine
+        // which is the correct http status.
 
         if (sizeof($result->errors) == 0) {
             return 200; // OK

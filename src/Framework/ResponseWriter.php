@@ -11,14 +11,10 @@ class ResponseWriter implements ResponseWriterInterface
 {
     /**
      * Return a JSON Object with the graphql results
-     *
-     * @param $aResult
      */
-    public function renderJsonResponse($result, $httpStatus)
+    public function renderJsonResponse(array $result, int $httpStatus): void
     {
-        $_GET['renderPartial'] = 1;
-        header('Content-Type: application/json', true, $httpStatus);
-        exit(json_encode($result));
-
+        \header('Content-Type: application/json', true, $httpStatus);
+        exit(\json_encode($result));
     }
 }

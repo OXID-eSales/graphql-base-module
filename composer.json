@@ -18,7 +18,9 @@
   "version": "0.0.1",
   "require": {
     "php": "^7.1",
-    "webonyx/graphql-php": "^0.12.6",
+    "ext-json": "*",
+    "ext-openssl": "*",
+    "thecodingmachine/graphqlite": "^3",
     "firebase/php-jwt": "^5.0"
   },
   "require-dev": {

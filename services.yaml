@@ -10,6 +10,10 @@ services:
   OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker:
     class: OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker
 
+  OxidEsales\GraphQl\Framework\AppContext:
+    factory: ['OxidEsales\GraphQl\Framework\AppContext', 'createAppContext']
+    class: OxidEsales\GraphQl\Framework\AppContext
+
   OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
     class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
     public: true
@@ -35,6 +39,7 @@ services:
 
   OxidEsales\GraphQl\Service\KeyRegistryInterface:
     class: OxidEsales\GraphQl\Service\KeyRegistry
+    public: true
 
   OxidEsales\GraphQl\Service\EnvironmentServiceInterface:
     class: OxidEsales\GraphQl\Service\EnvironmentService
@@ -77,22 +82,10 @@ services:
       - ['addPermission', ['admin', 'mayupdateanyuser']]
     tags: ['graphql_permissions_provider']
 
-  OxidEsales\GraphQl\Type\ObjectType\UserType:
-    class: OxidEsales\GraphQl\Type\ObjectType\UserType
-
-  OxidEsales\GraphQl\Type\ObjectType\LoginType:
-    class: OxidEsales\GraphQl\Type\ObjectType\LoginType
-
-  OxidEsales\GraphQl\Type\ObjectType\AddressType:
-    class: OxidEsales\GraphQl\Type\ObjectType\AddressType
-
-  OxidEsales\GraphQl\Type\Provider\LoginQueryProvider:
-    class: OxidEsales\GraphQl\Type\Provider\LoginQueryProvider
-    tags: ['graphql_query_provider']
-
-  OxidEsales\GraphQl\Type\Provider\UserMutationProvider:
-    class: OxidEsales\GraphQl\Type\Provider\UserMutationProvider
-    tags: ['graphql_mutation_provider', 'graphql_query_provider']
-
   OxidEsales\GraphQl\Utility\LegacyWrapperInterface:
     class: OxidEsales\GraphQl\Utility\LegacyWrapper
+
+
+  OxidEsales\GraphQl\Controllers\:
+    resource: 'src/Controllers/*'
+    public: true

@@ -7,12 +7,9 @@
 
 namespace OxidEsales\GraphQl\Framework;
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Schema;
-use OxidEsales\GraphQl\Type\BaseType;
-use OxidEsales\GraphQl\Type\Provider\MutationProviderInterface;
-use OxidEsales\GraphQl\Type\Provider\QueryProviderInterface;
+use TheCodingMachine\GraphQLite\Schema;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
 /**
  * Class SchemaFactory
@@ -24,16 +21,6 @@ class SchemaFactory implements SchemaFactoryInterface
 
     private $schema = null;
 
-    private $queryProviders = [];
-
-    private $mutationProviders = [];
-
-    public function __construct(iterable $queryProviders, iterable $mutationProviders)
-    {
-        $this->queryProviders = $queryProviders;
-        $this->mutationProviders = $mutationProviders;
-    }
-
     /**
      * @return Schema
      */
@@ -43,66 +30,17 @@ class SchemaFactory implements SchemaFactoryInterface
             return $this->schema;
         }
 
-        $executableSchema = [
-            'query'    => $this->createQueryType(),
-            'mutation' => $this->createMutationType()
-        ];
+        $factory = new GraphQLiteSchemaFactory(
+            new \Symfony\Component\Cache\Simple\NullCache(),
+            ContainerFactory::getInstance()->getContainer()
+        );
+        $factory->addControllerNamespace('\\OxidEsales\\GraphQl\\Controllers')
+                ->addTypeNamespace('\\OxidEsales\\GraphQl\\');
 
-        $this->schema = new Schema($executableSchema);
+        // TODO: call all modules and give them the factory,
+        // so they can register their controller and type
+        // namespaces
 
-        return $this->schema;
-    }
-
-    private function createQueryType()
-    {
-        $fields = [];
-        $fieldHandlers = [];
-
-        foreach ($this->queryProviders as $provider) {
-            foreach ($provider->getQueries() as $fieldName => $field) {
-                $fields[$fieldName] = $field;
-            }
-            foreach ($provider->getQueryResolvers() as $handlerName => $handler) {
-                $fieldHandlers[$handlerName] = $handler;
-            }
-        }
-
-        $config = [
-            'name' => 'query',
-            'description' => 'The base query type',
-            'fields' => $fields,
-            'resolveField' => function ($val, $args, $context, ResolveInfo $info) use ($fieldHandlers) {
-                return $fieldHandlers[$info->fieldName]($val, $args, $context, $info);
-            },
-        ];
-
-        return new ObjectType($config);
-    }
-
-    private function createMutationType()
-    {
-        $fields = [];
-        $fieldHandlers = [];
-
-        foreach ($this->mutationProviders as $provider) {
-            foreach ($provider->getMutations() as $fieldName => $field) {
-                $fields[$fieldName] = $field;
-            }
-            foreach ($provider->getMutationResolvers() as $handlerName => $handler) {
-                $fieldHandlers[$handlerName] = $handler;
-            }
-        }
-
-        $config = [
-            'name' => 'mutation',
-            'description' => 'The base mutation type',
-            'fields' => $fields,
-            'resolveField' => function ($val, $args, $context, ResolveInfo $info) use ($fieldHandlers) {
-                return $fieldHandlers[$info->fieldName]($val, $args, $context, $info);
-            },
-        ];
-
-        return new ObjectType($config);
-
+        return $this->schema = $factory->createSchema();
     }
 }

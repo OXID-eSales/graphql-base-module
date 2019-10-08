@@ -8,6 +8,5 @@ namespace OxidEsales\GraphQl\Framework;
 
 interface GraphQlQueryHandlerInterface
 {
-
     public function executeGraphQlQuery();
 }

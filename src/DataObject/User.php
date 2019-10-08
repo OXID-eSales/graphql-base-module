@@ -7,27 +7,62 @@
 
 namespace OxidEsales\GraphQl\DataObject;
 
+use TheCodingMachine\GraphQLite\Annotations\Field;
+use TheCodingMachine\GraphQLite\Annotations\Type;
+use OxidEsales\GraphQl\Utility\AuthConstants;
+
+/**
+ * @Type()
+ */
 class User
 {
     /** @var  string */
     private $id = '';
+
     /** @var  int|null */
     private $shopid = null;
+
     /** @var  string */
     private $username = '';
+
     /** @var  string */
     private $passwordhash = '';
+
     /** @var  string */
     private $firstname = '';
+
     /** @var  string */
     private $lastname = '';
+
     /** @var  string */
     private $usergroup = '';
+
     /** @var  Address */
     private $address;
 
+    public function __construct(
+        string $id,
+        int $shopid,
+        string $username,
+        string $passwordhash,
+        string $firstname,
+        string $lastname,
+        string $usergroup = AuthConstants::USER_GROUP_CUSTOMER,
+        Address $address = null
+    )
+    {
+        $this->id = $id;
+        $this->shopid = $shopid;
+        $this->username = $username;
+        $this->passwordhash = $passwordhash;
+        $this->firstname = $firstname;
+        $this->lastname = $lastname;
+        $this->usergroup = $usergroup;
+        $this->address = $address;
+    }
+
     /**
-     * @return string
+     * @Field(outputType="ID")
      */
     public function getId(): string
     {
@@ -35,31 +70,15 @@ class User
     }
 
     /**
-     * @return int|null
+     * @Field()
      */
-    public function getShopid()
+    public function getShopid(): ?int
     {
         return $this->shopid;
     }
 
     /**
-     * @param int|null $shopid
-     */
-    public function setShopid($shopid)
-    {
-        $this->shopid = $shopid;
-    }
-
-    /**
-     * @param string $id
-     */
-    public function setId(string $id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
+     * @Field()
      */
     public function getUsername(): string
     {
@@ -67,15 +86,7 @@ class User
     }
 
     /**
-     * @param string $username
-     */
-    public function setUsername(string $username)
-    {
-        $this->username = $username;
-    }
-
-    /**
-     * @return string
+     * @Field()
      */
     public function getPasswordhash(): string
     {
@@ -83,15 +94,7 @@ class User
     }
 
     /**
-     * @param string $passwordhash
-     */
-    public function setPasswordhash(string $passwordhash)
-    {
-        $this->passwordhash = $passwordhash;
-    }
-
-    /**
-     * @return string
+     * @Field()
      */
     public function getFirstname(): string
     {
@@ -99,15 +102,7 @@ class User
     }
 
     /**
-     * @param string $firstname
-     */
-    public function setFirstname(string $firstname)
-    {
-        $this->firstname = $firstname;
-    }
-
-    /**
-     * @return string
+     * @Field()
      */
     public function getLastname(): string
     {
@@ -115,46 +110,19 @@ class User
     }
 
     /**
-     * @param string $lastname
+     * @Field()
      */
-    public function setLastname(string $lastname)
-    {
-        $this->lastname = $lastname;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsergroup(): string
+    public function getUsergroup(): ?string
     {
         return $this->usergroup;
     }
 
     /**
-     * @param string $usergroup
+     * @Field()
      */
-    public function setUsergroup(string $usergroup)
+    public function getAddress(): ?Address
     {
-        $this->usergroup = $usergroup;
-    }
-
-    /**
-     * @return Address
-     */
-    public function getAddress(): Address
-    {
-        if (! $this->address) {
-            return new Address();
-        }
         return $this->address;
-    }
-
-    /**
-     * @param Address $address
-     */
-    public function setAddress(Address $address)
-    {
-        $this->address = $address;
     }
 
 }

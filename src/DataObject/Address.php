@@ -7,18 +7,29 @@
 
 namespace OxidEsales\GraphQl\DataObject;
 
+use TheCodingMachine\GraphQLite\Annotations\Field;
+use TheCodingMachine\GraphQLite\Annotations\Type;
+
+/**
+ * @Type()
+ */
 class Address
 {
     /** @var  string */
     private $street = '';
+
     /** @var  string */
     private $streetnr = '';
+
     /** @var  string */
     private $additionalinfo = '';
+
     /** @var  string */
     private $city = '';
+
     /** @var  string */
     private $zip = '';
+
     /** @var  string */
     private $countryshortcut = '';
 
@@ -30,108 +41,96 @@ class Address
     }
 
     /**
-     * @return string
+     * @Field()
      */
     public function getStreet(): string
     {
         return $this->street;
     }
 
-    /**
-     * @param string $street
-     */
     public function setStreet(string $street)
     {
         $this->street = $street;
     }
 
     /**
-     * @return string
+     * @Field()
      */
     public function getStreetnr(): string
     {
         return $this->streetnr;
     }
 
-    /**
-     * @param string $streetnr
-     */
     public function setStreetnr(string $streetnr)
     {
         $this->streetnr = $streetnr;
     }
 
     /**
-     * @return string
+     * @Field()
      */
     public function getAdditionalinfo(): string
     {
         return $this->additionalinfo;
     }
 
-    /**
-     * @param string $additionalinfo
-     */
     public function setAdditionalinfo(string $additionalinfo)
     {
         $this->additionalinfo = $additionalinfo;
     }
 
     /**
-     * @return string
+     * @Field()
      */
     public function getCity(): string
     {
         return $this->city;
     }
 
-    /**
-     * @param string $city
-     */
     public function setCity(string $city)
     {
         $this->city = $city;
     }
 
     /**
-     * @return string
+     * @Field()
      */
     public function getZip(): string
     {
         return $this->zip;
     }
 
-    /**
-     * @param string $zip
-     */
     public function setZip(string $zip)
     {
         $this->zip = $zip;
     }
 
     /**
-     * @return string
+     * @Field()
      */
     public function getCountryshortcut(): string
     {
         return $this->countryshortcut;
     }
 
-    /**
-     * @param string $countryshortcut
-     */
-    public function setCountryshortcut(string $countryshortcut)
+    public function setCountryshortcut(string $countryshortcut): void
     {
         $this->countryshortcut = $countryshortcut;
     }
 
-    private function setFromDataArray(array $data)
+    /**
+     * @param array<string, mixed>
+     */
+    private function setFromDataArray(array $data): void
     {
         foreach ($data as $key => $value) {
             $this->$key = $value;
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function getField(string $fieldname)
     {
         return $this->$fieldname;

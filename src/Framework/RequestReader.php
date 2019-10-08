@@ -22,39 +22,48 @@ class RequestReader implements RequestReaderInterface
     public function getAuthTokenString(): string
     {
         $authHeader = $this->getAuthorizationHeader();
-        if (! $authHeader) {
+        if ($authHeader === null) {
             throw new NoAuthHeaderException();
         }
-        list($jwt) = sscanf( $authHeader, 'Bearer %s');
+        list($jwt) = sscanf($authHeader, 'Bearer %s');
+        if (!$jwt) {
+            throw new NoAuthHeaderException();
+        }
         return $jwt;
     }
 
     /**
      *  Get header Authorization
      *
-     *  @return $aHeaders array
+     *  @return string|null
      */
-    public function getAuthorizationHeader(){
-
-        $authHeader = null;
-
-        if (isset($_SERVER['Authorization'])) {
-            $authHeader = trim($_SERVER["Authorization"]);
+    private function getAuthorizationHeader(): ?string
+    {
+        // should work in most cases
+        if (isset($_SERVER['AUTHORIZATION'])) {
+            return trim($_SERVER["AUTHORIZATION"]);
         }
-        else if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            //Nginx or fast CGI
-            $authHeader = trim($_SERVER["HTTP_AUTHORIZATION"]);
-        } elseif (function_exists('apache_request_headers')) {
-            $requestHeaders = apache_request_headers();
+        // FastCGI
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            return trim($_SERVER["HTTP_AUTHORIZATION"]);
+        }
+        if (\function_exists('apache_request_headers')) {
+            $requestHeaders = \apache_request_headers();
             // Server-side fix
             //(a nice side-effect of this fix means we don't care about capitalization for Authorization)
-            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+            $requestHeaders = array_combine(
+                array_map(
+                    'ucwords',
+                    array_keys($requestHeaders)
+                ),
+                array_values($requestHeaders)
+            );
 
             if (isset($requestHeaders['Authorization'])) {
-                $authHeader = trim($requestHeaders['Authorization']);
+                return trim($requestHeaders['Authorization']);
             }
         }
-        return $authHeader;
+        return null;
     }
 
     /**
@@ -62,21 +71,23 @@ class RequestReader implements RequestReaderInterface
      *
      * @return array
      */
-    public function getGraphQLRequestData()
+    public function getGraphQLRequestData(): array
     {
         if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-            $raw = file_get_contents('php://input') ?: '';
-            $data = json_decode($raw, true) ?: [];
-            //throw new \Exception(print_r($_SERVER, true));
+            $raw = file_get_contents('php://input') ? : '';
+            $data = json_decode($raw, true) ? : [];
         } else {
             $data = $_REQUEST;
-            //throw new \Exception(print_r($_SERVER, true));
         }
 
-        $data += ['query' => null, 'variables' => null, 'operationName' => null];
+        $data += [
+            'query'         => null,
+            'variables'     => null,
+            'operationName' => null
+        ];
 
         if (null === $data['query']) {
-            $Data['query'] = '{welcome}';
+            $data['query'] = '{welcome}';
         }
 
         return $data;
