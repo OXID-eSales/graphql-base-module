@@ -215,13 +215,15 @@ class UserDao implements UserDaoInterface
 
     private function mapUserFromDatabaseResult($result)
     {
-        $address = new Address();
-        $address->setStreet($result['OXSTREET']);
-        $address->setStreetnr($result['OXSTREETNR']);
-        $address->setAdditionalinfo($result['OXADDINFO']);
-        $address->setCity($result['OXCITY']);
-        $address->setZip($result['OXZIP']);
-        $address->setCountryshortcut($result['OXCOUNTRYSHORTCUT']);
+        $address = new Address(
+            $result['OXSTREET'],
+            $result['OXSTREETNR'],
+            $result['OXADDINFO'],
+            $result['OXCITY'],
+            $result['OXZIP'],
+            $result['OXCOUNTRYSHORTCUT']
+        );
+        # $address->setCountryshortcut($result['OXCOUNTRYSHORTCUT']);
  
         $user = new User(
             $result['OXID'],
