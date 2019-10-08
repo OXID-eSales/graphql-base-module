@@ -9,6 +9,7 @@ namespace OxidEsales\GraphQl\DataObject;
 
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 /**
  * @Type()
@@ -33,11 +34,43 @@ class Address
     /** @var  string */
     private $countryshortcut = '';
 
-    public function __construct(array $data = null)
+    public function __construct(
+        string $street = null,
+        string $streetnr = null,
+        string $additionalinfo = null,
+        string $city = null,
+        string $zip = null,
+        string $countryshortcut = null
+    )
     {
-        if ($data) {
-            $this->setFromDataArray($data);
-        }
+        $this->street = $street;
+        $this->streetnr = $streetnr;
+        $this->additionalinfo = $additionalinfo;
+        $this->city = $city;
+        $this->zip = $zip;
+        $this->countryshortcut = $countryshortcut;
+    }
+
+    /**
+     * @Factory()
+     */
+    public static function createAddress(
+        string $street = null,
+        string $streetnr = null,
+        string $additionalinfo = null,
+        string $city = null,
+        string $zip = null,
+        string $countryshortcut = null
+    ): self
+    {
+        return new self(
+            $street,
+            $streetnr,
+            $additionalinfo,
+            $city,
+            $zip,
+            $countryshortcut
+        );
     }
 
     /**
@@ -48,22 +81,12 @@ class Address
         return $this->street;
     }
 
-    public function setStreet(string $street)
-    {
-        $this->street = $street;
-    }
-
     /**
      * @Field()
      */
     public function getStreetnr(): string
     {
         return $this->streetnr;
-    }
-
-    public function setStreetnr(string $streetnr)
-    {
-        $this->streetnr = $streetnr;
     }
 
     /**
@@ -74,22 +97,12 @@ class Address
         return $this->additionalinfo;
     }
 
-    public function setAdditionalinfo(string $additionalinfo)
-    {
-        $this->additionalinfo = $additionalinfo;
-    }
-
     /**
      * @Field()
      */
     public function getCity(): string
     {
         return $this->city;
-    }
-
-    public function setCity(string $city)
-    {
-        $this->city = $city;
     }
 
     /**
@@ -100,44 +113,11 @@ class Address
         return $this->zip;
     }
 
-    public function setZip(string $zip)
-    {
-        $this->zip = $zip;
-    }
-
     /**
      * @Field()
      */
     public function getCountryshortcut(): string
     {
         return $this->countryshortcut;
-    }
-
-    public function setCountryshortcut(string $countryshortcut): void
-    {
-        $this->countryshortcut = $countryshortcut;
-    }
-
-    /**
-     * @param array<string, mixed>
-     */
-    private function setFromDataArray(array $data): void
-    {
-        foreach ($data as $key => $value) {
-            $this->$key = $value;
-        }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getField(string $fieldname)
-    {
-        return $this->$fieldname;
-    }
-
-    public function setField(string $fieldname, $value)
-    {
-        return $this->$fieldname = $value;
     }
 }

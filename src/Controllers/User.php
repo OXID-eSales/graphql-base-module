@@ -41,17 +41,10 @@ class User
     /**
      * @Mutation
      */
-    public function userRegister(string $username, string $password, string $firstname, string $lastname): UserDataObject
+    public function userRegister(UserDataObject $user): UserDataObject
     {
-        $user = new UserDataObject(
-            'ID',
-            0,
-            $username,
-            $password,
-            $firstname,
-            $lastname
-        );
         $this->userDao->saveUser($user);
         return $user;
     }
+    // public function userRegister(string $username, string $password, string $firstname, string $lastname): UserDataObject
 }

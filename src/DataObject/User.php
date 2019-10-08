@@ -9,6 +9,7 @@ namespace OxidEsales\GraphQl\DataObject;
 
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 
 /**
@@ -59,6 +60,35 @@ class User
         $this->lastname = $lastname;
         $this->usergroup = $usergroup;
         $this->address = $address;
+    }
+
+    /**
+     * @Factory()
+     */
+    public static function createUser(
+        string $id = null,
+        int $shopid,
+        string $username,
+        string $passwordhash,
+        string $firstname,
+        string $lastname,
+        string $usergroup = null,
+        Address $address = null
+    ): self
+    {
+        if ($id === null) {
+            $id = Registry::getUtilsObject()->generateUId();
+        }
+        return new self(
+            $id,
+            $shopid,
+            $username,
+            $passwordhash,
+            $firstname,
+            $lastname,
+            $usergroup,
+            $address
+        );
     }
 
     /**
