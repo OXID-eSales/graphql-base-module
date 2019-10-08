@@ -35,7 +35,10 @@ class User
      */
     public function user(string $username = null): UserDataObject
     {
-        return $this->userDao->getUserByName($username, 0);
+        return $this->userDao->getUserByName(
+            $username,
+            $this->context->getCurrentShopId()
+        );
     }
 
     /**
@@ -46,5 +49,4 @@ class User
         $this->userDao->saveUser($user);
         return $user;
     }
-    // public function userRegister(string $username, string $password, string $firstname, string $lastname): UserDataObject
 }
