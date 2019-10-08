@@ -11,6 +11,9 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 use OxidEsales\GraphQl\Utility\AuthConstants;
+use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\Eshop\Core\Registry;
 
 /**
  * @Type()
@@ -69,7 +72,7 @@ class User
         string $id = null,
         int $shopid,
         string $username,
-        string $passwordhash,
+        string $password,
         string $firstname,
         string $lastname,
         string $usergroup = null,
@@ -78,6 +81,13 @@ class User
     {
         if ($id === null) {
             $id = Registry::getUtilsObject()->generateUId();
+        }
+        $passwordhash = ContainerFactory::getInstance()
+             ->getContainer()
+             ->get(PasswordServiceBridgeInterface::class)
+             ->hash($password);
+        if ($usergroup === null) {
+            $usergroup = AuthConstants::USER_GROUP_CUSTOMER;
         }
         return new self(
             $id,

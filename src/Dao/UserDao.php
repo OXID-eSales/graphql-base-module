@@ -179,7 +179,7 @@ class UserDao implements UserDaoInterface
                      ->execute();
     }
 
-    private function fetchCountryIdFromShortcut($countryShortcut)
+    private function fetchCountryIdFromShortcut(string $countryShortcut)
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select('c.OXID')
@@ -257,7 +257,7 @@ class UserDao implements UserDaoInterface
             'additionalinfo' => $address->getAdditionalinfo(),
             'city'           => $address->getCity(),
             'zip'            => $address->getZip(),
-            'countryid'      => $this->fetchCountryIdFromShortcut($address->getCountryshortcut()),
+            'countryid'      => $address->getCountryshortcut() ? $this->fetchCountryIdFromShortcut($address->getCountryshortcut()) : '',
             'shopid'         => $user->getShopid()
         ];
 
