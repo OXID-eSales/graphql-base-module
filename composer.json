@@ -20,7 +20,7 @@
     "php": "^7.1",
     "ext-json": "*",
     "ext-openssl": "*",
-    "thecodingmachine/graphqlite": "^3",
+    "thecodingmachine/graphqlite": "dev-make-classNameMapper-injectable-in-3.0",
     "firebase/php-jwt": "^5.0"
   },
   "require-dev": {
