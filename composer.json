@@ -34,10 +34,10 @@
     }
   ],
   "autoload": {
-      "psr-4": {
-          "OxidEsales\\GraphQl\\": "src",
-          "OxidEsales\\GraphQl\\Tests\\": "tests"
-      }
+    "psr-4": {
+      "OxidEsales\\GraphQl\\": "src",
+      "OxidEsales\\GraphQl\\Tests\\": "tests"
+    }
   },
   "scripts": {
     "lint": "php-cs-fixer fix -v",
