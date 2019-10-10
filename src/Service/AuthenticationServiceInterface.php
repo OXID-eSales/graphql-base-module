@@ -18,5 +18,4 @@ interface AuthenticationServiceInterface
      * @return Token
      */
     public function getToken(TokenRequest $tokenRequest): Token;
-
 }

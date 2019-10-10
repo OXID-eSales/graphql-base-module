@@ -41,14 +41,11 @@ class Token
             $signatureKey, // The signing key
             $this::ALGORITHM     // Algorithm used to sign the token, see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3
         );
-
     }
 
     public function setJwt(string $jwt, string $signatureKey)
     {
-
         $this->jwtObject = JWT::decode($jwt, $signatureKey, [$this::ALGORITHM]);
-
     }
 
     public function verifyData()

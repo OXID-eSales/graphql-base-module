@@ -24,8 +24,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function __construct(
         EnvironmentServiceInterface $environmentService,
         UserDaoInterface $userDao
-    )
-    {
+    ) {
         $this->environmentService = $environmentService;
         $this->userDao = $userDao;
     }
@@ -52,7 +51,6 @@ class AuthenticationService implements AuthenticationServiceInterface
         $tokenRequest->setUserid('developerid');
         $tokenRequest->setUsername('developer');
         return $this->createToken($tokenRequest);
-
     }
 
     private function getAnonymousToken(TokenRequest $tokenRequest)
@@ -96,6 +94,5 @@ class AuthenticationService implements AuthenticationServiceInterface
         $token->setUserName($tokenRequest->getUsername());
 
         return $token;
-
     }
 }

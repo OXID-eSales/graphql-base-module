@@ -25,5 +25,4 @@ class InvalidTokenException extends \Exception implements HttpErrorInterface, Cl
     {
         return ErrorCategories::TOKENERRORS;
     }
-
 }

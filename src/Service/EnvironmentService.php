@@ -26,5 +26,4 @@ class EnvironmentService implements EnvironmentServiceInterface
     {
         return \OxidEsales\Eshop\Core\ShopIdCalculator::BASE_SHOP_ID;
     }
-
 }

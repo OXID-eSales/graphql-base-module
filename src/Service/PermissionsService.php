@@ -11,9 +11,8 @@ use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\Exception\MissingPermissionException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 
-class PermissionsService  implements PermissionsServiceInterface
+class PermissionsService implements PermissionsServiceInterface
 {
-
     const PermissionHeader = 'Missing Permission';
 
     private $permissions = [];
@@ -53,8 +52,7 @@ class PermissionsService  implements PermissionsServiceInterface
      */
     public function checkPermission($token, $permissions)
     {
-        if (! is_array($permissions))
-        {
+        if (! is_array($permissions)) {
             $permissions = [$permissions];
         }
         if (! $token) {
@@ -66,8 +64,7 @@ class PermissionsService  implements PermissionsServiceInterface
         if ($this->acceptDeveloperChecks && $group == AuthConstants::USER_GROUP_DEVELOPER) {
             return;
         }
-        if (! array_key_exists($group, $this->permissions))
-        {
+        if (! array_key_exists($group, $this->permissions)) {
             throw new MissingPermissionException($this::PermissionHeader . ": User " . $token->getUserName() . " with group " .
                                                  $token->getUserGroup() . " has no permissions at all.");
         }
@@ -80,14 +77,13 @@ class PermissionsService  implements PermissionsServiceInterface
 
         throw new MissingPermissionException($this::PermissionHeader . ": User " . $token->getUserName() . " does not have permission " .
                                              $this->formatPermissions($permissions));
-
     }
 
     private function formatPermissions(array $permissions)
     {
         $joiner = '';
         $result = '';
-        foreach ($permissions as $permission){
+        foreach ($permissions as $permission) {
             $result .= "$joiner\"$permission\"";
             $joiner = ' or ';
         }

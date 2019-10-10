@@ -19,8 +19,8 @@ class GenericFieldResolver implements GenericFieldResolverInterface
      *
      * @return mixed
      */
-    public function getField(string $fieldname, $dataObject) {
-
+    public function getField(string $fieldname, $dataObject)
+    {
         $getterName = $this->createGetterName($fieldname);
         try {
             $reflectionMethod = new \ReflectionMethod(get_class($dataObject), $getterName);
@@ -28,7 +28,6 @@ class GenericFieldResolver implements GenericFieldResolverInterface
             throw new NoSuchGetterException("Can't resolve field with name \"$fieldname\".");
         }
         return $reflectionMethod->invoke($dataObject);
-
     }
 
     /**
@@ -39,8 +38,8 @@ class GenericFieldResolver implements GenericFieldResolverInterface
      * @return mixed
      * @throws NoSuchSetterException
      */
-    public function setField(string $fieldname, $value, $dataObject) {
-
+    public function setField(string $fieldname, $value, $dataObject)
+    {
         $setterName = $this->createSetterName($fieldname);
         try {
             $reflectionMethod = new \ReflectionMethod(get_class($dataObject), $setterName);
@@ -49,7 +48,6 @@ class GenericFieldResolver implements GenericFieldResolverInterface
         }
         $reflectionMethod->invoke($dataObject, $value);
         return $dataObject;
-
     }
 
     /**
@@ -57,8 +55,8 @@ class GenericFieldResolver implements GenericFieldResolverInterface
      *
      * @return string
      */
-    private function createGetterName(string $fieldname) {
-
+    private function createGetterName(string $fieldname)
+    {
         return 'get' . ucfirst($fieldname);
     }
 
@@ -67,8 +65,8 @@ class GenericFieldResolver implements GenericFieldResolverInterface
      *
      * @return string
      */
-    private function createSetterName(string $fieldname) {
-
+    private function createSetterName(string $fieldname)
+    {
         return 'set' . ucfirst($fieldname);
     }
 }

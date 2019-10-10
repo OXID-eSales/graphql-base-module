@@ -11,5 +11,4 @@ interface LegacyWrapperInterface
     public function createUid(): string;
 
     public function setLanguage(string $languageShortcut): void;
-
 }

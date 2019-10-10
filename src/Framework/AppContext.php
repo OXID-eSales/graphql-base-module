@@ -32,8 +32,7 @@ class AppContext
         EnvironmentServiceInterface $environmentService,
         KeyRegistryInterface $keyRegistry,
         TokenServiceInterface $tokenService
-    ): AppContext
-    {
+    ): AppContext {
         $appContext = new AppContext();
         $appContext->setShopUrl($environmentService->getShopUrl());
         $appContext->setDefaultShopId($environmentService->getDefaultShopId());
@@ -42,8 +41,7 @@ class AppContext
             $token = $tokenService->getToken($keyRegistry->getSignatureKey());
             // $this->verifyToken($token);
             $appContext->setAuthToken($token);
-        } catch (NoAuthHeaderException $e)
-        { //pass
+        } catch (NoAuthHeaderException $e) { //pass
         }
         return $appContext;
     }
@@ -52,8 +50,7 @@ class AppContext
     {
         if ($this->token) {
             return $this->token->getUserGroup();
-        }
-        else {
+        } else {
             return 'unknown';
         }
     }
@@ -128,21 +125,17 @@ class AppContext
     {
         if ($this->hasAuthToken()) {
             return $this->token->getLang();
-        }
-        else {
+        } else {
             return $this->getDefaultShopLanguage();
         }
-
     }
 
     public function getCurrentShopId()
     {
         if ($this->hasAuthToken()) {
             return $this->token->getShopid();
-        }
-        else {
+        } else {
             return $this->getDefaultShopId();
         }
     }
-
 }

@@ -7,7 +7,6 @@
 
 namespace OxidEsales\GraphQl\Utility;
 
-
 class AuthConstants
 {
     const USER_GROUP_ANONMYOUS = 'anonymous';

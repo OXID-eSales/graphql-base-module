@@ -16,8 +16,8 @@ class TokenService implements TokenServiceInterface
     private $requestReader;
 
     public function __construct(
-        RequestReaderInterface $requestReader)
-    {
+        RequestReaderInterface $requestReader
+    ) {
         $this->requestReader = $requestReader;
     }
 

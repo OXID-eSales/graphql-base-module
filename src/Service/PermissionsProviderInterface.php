@@ -8,7 +8,6 @@ namespace OxidEsales\GraphQl\Service;
 
 interface PermissionsProviderInterface
 {
-
     public function addPermission($group, $permission);
 
     public function getPermissions();

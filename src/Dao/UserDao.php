@@ -31,8 +31,8 @@ class UserDao implements UserDaoInterface
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
         PasswordServiceBridgeInterface $passwordService,
-        LegacyWrapperInterface $legacyWrapper)
-    {
+        LegacyWrapperInterface $legacyWrapper
+    ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->passwordService = $passwordService;
         $this->legacyWrapper = $legacyWrapper;
@@ -292,5 +292,4 @@ class UserDao implements UserDaoInterface
         }
         throw new \Exception("Can't map usergroup \"$usergroup\" to any known oxright.");
     }
-
 }

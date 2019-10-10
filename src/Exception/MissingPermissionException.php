@@ -25,5 +25,4 @@ class MissingPermissionException extends \Exception implements ClientAware, Http
     {
         return ErrorCategories::PERMISSIONERRORS;
     }
-
 }

@@ -25,5 +25,4 @@ class NoSuchGetterException extends \Exception implements ClientAware, HttpError
     {
         return ErrorCategories::CONFIGURATIONERROR;
     }
-
 }

@@ -53,8 +53,7 @@ class User
         string $lastname,
         string $usergroup = AuthConstants::USER_GROUP_CUSTOMER,
         Address $address = null
-    )
-    {
+    ) {
         $this->id = $id;
         $this->shopid = $shopid;
         $this->username = $username;
@@ -77,8 +76,7 @@ class User
         string $lastname,
         string $usergroup = null,
         Address $address = null
-    ): self
-    {
+    ): self {
         if ($id === null) {
             $id = Registry::getUtilsObject()->generateUId();
         }
@@ -164,5 +162,4 @@ class User
     {
         return $this->address;
     }
-
 }

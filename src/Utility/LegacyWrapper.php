@@ -37,7 +37,5 @@ class LegacyWrapper implements LegacyWrapperInterface
         if ($index !== false) {
             $language->setBaseLanguage($index);
         }
-
     }
-
 }

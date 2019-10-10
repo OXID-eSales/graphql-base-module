@@ -18,5 +18,4 @@ interface UserDaoInterface
     public function getUserByName(string $username, int $shopid): User;
 
     public function saveOrUpdateUser(User $user);
-
 }

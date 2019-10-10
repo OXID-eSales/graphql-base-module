@@ -12,5 +12,4 @@ interface ResponseWriterInterface
      * Return a JSON Object with the graphql results
      */
     public function renderJsonResponse(array $result, int $httpStatus): void;
-
 }

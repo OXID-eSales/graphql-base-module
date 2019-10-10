@@ -26,5 +26,4 @@ interface RequestReaderInterface
      * @return array
      */
     public function getGraphQLRequestData();
-
 }

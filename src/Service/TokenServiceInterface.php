@@ -17,5 +17,4 @@ interface TokenServiceInterface
      * @throws \OxidEsales\GraphQl\Exception\NoAuthHeaderException
      */
     public function getToken(string $signatureKey): Token;
-
 }

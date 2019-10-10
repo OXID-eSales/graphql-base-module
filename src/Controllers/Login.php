@@ -28,8 +28,7 @@ class Login
         AuthenticationServiceInterface $authService,
         KeyRegistryInterface $keyRegistry,
         AppContext $context
-    )
-    {
+    ) {
         $this->authService = $authService;
         $this->keyRegistry = $keyRegistry;
         $this->context     = $context;
@@ -60,5 +59,4 @@ class Login
         $signatureKey = $this->keyRegistry->getSignatureKey();
         return $token->getJwt($signatureKey);
     }
-
 }

@@ -41,8 +41,7 @@ class Address
         string $city = null,
         string $zip = null,
         string $countryshortcut = null
-    )
-    {
+    ) {
         $this->street = $street;
         $this->streetnr = $streetnr;
         $this->additionalinfo = $additionalinfo;
@@ -61,8 +60,7 @@ class Address
         string $city = null,
         string $zip = null,
         string $countryshortcut = null
-    ): self
-    {
+    ): self {
         return new self(
             $street,
             $streetnr,

@@ -6,7 +6,6 @@
 
 namespace OxidEsales\GraphQl\Service;
 
-
 /**
  * Class KeyRegistry
  *

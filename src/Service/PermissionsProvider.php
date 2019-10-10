@@ -23,5 +23,4 @@ class PermissionsProvider implements PermissionsProviderInterface
     {
         return $this->permissions;
     }
-
 }

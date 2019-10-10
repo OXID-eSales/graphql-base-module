@@ -11,7 +11,6 @@ use GraphQL\Error\ClientAware;
 
 class InsufficientData extends \Exception implements HttpErrorInterface, ClientAware
 {
-
     public function getHttpStatus()
     {
         return 400;
@@ -26,5 +25,4 @@ class InsufficientData extends \Exception implements HttpErrorInterface, ClientA
     {
         return ErrorCategories::TOKENERRORS;
     }
-
 }

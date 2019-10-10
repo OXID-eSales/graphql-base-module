@@ -24,8 +24,7 @@ class User
     public function __construct(
         AppContext $context,
         UserDaoInterface $userDao
-    )
-    {
+    ) {
         $this->context = $context;
         $this->userDao = $userDao;
     }

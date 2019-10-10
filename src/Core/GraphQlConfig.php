@@ -14,7 +14,6 @@ use OxidEsales\GraphQl\Service\TokenServiceInterface;
 
 class GraphQlConfig extends GraphQlConfig_parent
 {
-
     protected function calculateActiveShopId()
     {
         $container = ContainerFactory::getInstance()->getContainer();
@@ -25,13 +24,11 @@ class GraphQlConfig extends GraphQlConfig_parent
         try {
             $token = $tokenService->getToken($keyRegistry->getSignatureKey());
             return $token->getShopid();
-        }
-        catch (NoAuthHeaderException $e) {
+        } catch (NoAuthHeaderException $e) {
             // No graph QL request
         } catch (NoSignatureKeyException $e) {
             // Not yet initialized
         }
         return parent::calculateActiveShopId();
     }
-
 }

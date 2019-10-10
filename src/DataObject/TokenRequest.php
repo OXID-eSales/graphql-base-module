@@ -135,5 +135,4 @@ class TokenRequest
     {
         $this->currentToken = $currentToken;
     }
-
 }

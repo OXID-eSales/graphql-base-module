@@ -31,5 +31,4 @@ class GraphQL extends WidgetController
             ->get(GraphQlQueryHandlerInterface::class)
             ->executeGraphQlQuery();
     }
-
 }

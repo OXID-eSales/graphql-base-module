@@ -8,5 +8,4 @@ namespace OxidEsales\GraphQl\Exception;
 
 class NoSignatureKeyException extends \Exception
 {
-
 }

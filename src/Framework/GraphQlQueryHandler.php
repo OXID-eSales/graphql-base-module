@@ -54,8 +54,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         ResponseWriterInterface $responseWriter,
         TokenServiceInterface $tokenService,
         LegacyWrapperInterface $legacyWrapper
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->environmentService = $environmentService;
         $this->schemaFactory = $schemaFactory;
@@ -66,11 +65,10 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $this->tokenService = $tokenService;
         $this->legacyWrapper = $legacyWrapper;
 
-        $this->loggingErrorFormatter = function(Error $error) {
+        $this->loggingErrorFormatter = function (Error $error) {
             $this->logger->error($error);
             return FormattedError::createFromException($error);
         };
-
     }
 
     public function executeGraphQlQuery()
@@ -98,7 +96,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         }
         $result->setErrorFormatter($this->loggingErrorFormatter);
         $this->responseWriter->renderJsonResponse($result->toArray(), $httpStatus);
-
     }
 
     private function initializeAppContext()
@@ -111,9 +108,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
             $token = $this->tokenService->getToken($this->keyRegistry->getSignatureKey());
             $this->verifyToken($token);
             $appContext->setAuthToken($token);
-        }
-        catch (NoAuthHeaderException $e)
-        { //pass
+        } catch (NoAuthHeaderException $e) { //pass
         }
 
         return $appContext;
@@ -125,12 +120,10 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
      */
     private function verifyToken(Token $token):void
     {
-        if ($token->getIssuer() !== $this->environmentService->getShopUrl())
-        {
+        if ($token->getIssuer() !== $this->environmentService->getShopUrl()) {
             throw new InvalidTokenException('Token issuer is not correct!');
         }
-        if ($token->getAudience() !== $this->environmentService->getShopUrl())
-        {
+        if ($token->getAudience() !== $this->environmentService->getShopUrl()) {
             throw new InvalidTokenException('Token audience is not correct!');
         }
         // We probably could also check if language and shopid are permitted,
@@ -177,5 +170,4 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         );
         return $result;
     }
-
 }

@@ -9,5 +9,4 @@ namespace OxidEsales\GraphQl\Exception;
 
 class NoAuthHeaderException extends \Exception
 {
-
 }
