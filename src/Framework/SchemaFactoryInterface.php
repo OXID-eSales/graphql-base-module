@@ -15,9 +15,5 @@ use TheCodingMachine\GraphQLite\Schema;
  */
 interface SchemaFactoryInterface
 {
-
-    /**
-     * @return Schema
-     */
     public function getSchema(): Schema;
 }

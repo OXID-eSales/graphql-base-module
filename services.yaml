@@ -27,10 +27,6 @@ services:
   OxidEsales\GraphQl\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQl\Framework\ResponseWriter
 
-  OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
-    class: OxidEsales\GraphQl\Framework\SchemaFactory
-    arguments: [!tagged graphql_query_provider, !tagged graphql_mutation_provider]
-
   OxidEsales\GraphQl\Framework\GenericFieldResolverInterface:
     class: OxidEsales\GraphQl\Framework\GenericFieldResolver
 
@@ -82,7 +78,14 @@ services:
   OxidEsales\GraphQl\Utility\LegacyWrapperInterface:
     class: OxidEsales\GraphQl\Utility\LegacyWrapper
 
-
   OxidEsales\GraphQl\Controllers\:
     resource: 'src/Controllers/*'
     public: true
+
+  OxidEsales\GraphQl\Framework\NamespaceMapper:
+    class: OxidEsales\GraphQl\Framework\NamespaceMapper
+    tags: ['graphql_namespace_mapper']
+
+  OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
+    class: OxidEsales\GraphQl\Framework\SchemaFactory
+    arguments: [!tagged graphql_namespace_mapper]

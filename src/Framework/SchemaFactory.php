@@ -19,34 +19,49 @@ use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
  */
 class SchemaFactory implements SchemaFactoryInterface
 {
+    /** @var Schema */
     private $schema = null;
 
-    /**
-     * @return Schema
-     */
+    private $namespaceMappers = null;
+
+    public function __construct(iterable $namespaceMappers)
+    {
+        $this->namespaceMappers = $namespaceMappers;
+    }
+
     public function getSchema(): Schema
     {
         if (null !== $this->schema) {
             return $this->schema;
         }
 
-        $classNameMapper = new ClassNameMapper();
-        $classNameMapper->registerPsr4Namespace(
-            '\\OxidEsales\\GraphQl',
-            __DIR__.'/../'
-        );
-
         $factory = new GraphQLiteSchemaFactory(
             new \Symfony\Component\Cache\Simple\NullCache(),
             ContainerFactory::getInstance()->getContainer()
         );
-        $factory->addControllerNamespace('\\OxidEsales\\GraphQl\\Controllers')
-                ->addTypeNamespace('\\OxidEsales\\GraphQl\\DataObject')
-                ->setClassNameMapper($classNameMapper);
 
-        // TODO: call all modules and give them the factory,
-        // so they can register their controller and type
-        // namespaces
+        $classNameMapper = new ClassNameMapper();
+
+        foreach ($this->namespaceMappers as $namespaceMapper) {
+            /** @var $namespaceMapper NamespaceMapperInterface */
+            foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace=>$path) {
+                $classNameMapper->registerPsr4Namespace(
+                    $namespace,
+                    $path
+                );
+                $factory->addControllerNameSpace($namespace);
+            }
+            /** @var $namespaceMapper NamespaceMapperInterface */
+            foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace=>$path) {
+                $classNameMapper->registerPsr4Namespace(
+                    $namespace,
+                    $path
+                );
+                $factory->addTypeNameSpace($namespace);
+            }
+        }
+
+        $factory->setClassNameMapper($classNameMapper);
 
         return $this->schema = $factory->createSchema();
     }
