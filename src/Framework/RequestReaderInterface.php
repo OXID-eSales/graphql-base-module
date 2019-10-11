@@ -7,7 +7,6 @@
 namespace OxidEsales\GraphQl\Framework;
 
 use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\Exception\InvalidTokenException;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 
 interface RequestReaderInterface

@@ -7,9 +7,6 @@
 
 namespace OxidEsales\GraphQl\Utility;
 
-use OxidEsales\Eshop\Application\Model\User;
-use OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker;
-use OxidEsales\Eshop\Core\PasswordSaltGenerator;
 use OxidEsales\Eshop\Core\Registry;
 use Psr\Log\LoggerInterface;
 

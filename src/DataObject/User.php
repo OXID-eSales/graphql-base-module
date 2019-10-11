@@ -7,13 +7,13 @@
 
 namespace OxidEsales\GraphQl\DataObject;
 
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
+use OxidEsales\GraphQl\Utility\AuthConstants;
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
-use TheCodingMachine\GraphQLite\Annotations\Factory;
-use OxidEsales\GraphQl\Utility\AuthConstants;
-use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\Eshop\Core\Registry;
 
 /**
  * @Type()

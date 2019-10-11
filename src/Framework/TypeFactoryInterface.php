@@ -6,8 +6,6 @@
 
 namespace OxidEsales\GraphQl\Framework;
 
-use OxidEsales\GraphQl\Type\BaseType;
-
 /**
  * Class MutationTypeFactory
  *

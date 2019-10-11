@@ -8,10 +8,10 @@
 namespace OxidEsales\GraphQl\Controllers;
 
 use OxidEsales\GraphQl\DataObject\TokenRequest;
+use OxidEsales\GraphQl\Framework\AppContext;
 use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
-use OxidEsales\GraphQl\Framework\AppContext;
 
 class Login
 {

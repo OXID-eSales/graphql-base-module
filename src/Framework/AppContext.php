@@ -8,10 +8,10 @@
 namespace  OxidEsales\GraphQl\Framework;
 
 use OxidEsales\GraphQl\DataObject\Token;
+use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
 use OxidEsales\GraphQl\Service\TokenServiceInterface;
-use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 
 class AppContext
 {

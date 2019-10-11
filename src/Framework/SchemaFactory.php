@@ -8,8 +8,8 @@
 namespace OxidEsales\GraphQl\Framework;
 
 use Mouf\Composer\ClassNameMapper;
-use TheCodingMachine\GraphQLite\Schema;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
 /**

@@ -5,9 +5,9 @@
  */
 namespace OxidEsales\GraphQl\Component\Widget;
 
+use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface;
-use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 
 /**
  * Class GraphQL

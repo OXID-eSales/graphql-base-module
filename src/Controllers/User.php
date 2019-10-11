@@ -7,11 +7,11 @@
 
 namespace OxidEsales\GraphQl\Controllers;
 
-use TheCodingMachine\GraphQLite\Annotations\Query;
-use TheCodingMachine\GraphQLite\Annotations\Mutation;
-use OxidEsales\GraphQl\Framework\AppContext;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\User as UserDataObject;
+use OxidEsales\GraphQl\Framework\AppContext;
+use TheCodingMachine\GraphQLite\Annotations\Mutation;
+use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class User
 {

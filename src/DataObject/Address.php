@@ -7,9 +7,9 @@
 
 namespace OxidEsales\GraphQl\DataObject;
 
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
-use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 /**
  * @Type()
