@@ -14,10 +14,9 @@ interface RequestReaderInterface
     /**
      * Returns the encoded token from the authorization header
      *
-     * @return string
      * @throws NoAuthHeaderException
      */
-    public function getAuthTokenString(): string;
+    public function getAuthToken(): string;
 
     /**
      * Get the Request data

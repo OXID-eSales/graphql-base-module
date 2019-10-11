@@ -7,38 +7,109 @@
 
 namespace OxidEsales\GraphQl\Service;
 
+# use OxidEsales\GraphQl\DataObject\Token;
+# use OxidEsales\GraphQl\DataObject\TokenRequest;
+# use OxidEsales\GraphQl\DataObject\User;
+# use OxidEsales\GraphQl\Exception\PasswordMismatchException;
+# use OxidEsales\GraphQl\Utility\AuthConstants;
+
+use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Signer\Hmac\Sha512;
+use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Token;
+use Lcobucci\JWT\ValidationData;
+use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\DataObject\TokenRequest;
-use OxidEsales\GraphQl\DataObject\User;
-use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Framework\AppContext;
-use OxidEsales\GraphQl\Utility\AuthConstants;
+use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
+use OxidEsales\GraphQl\Framework\RequestReaderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
-    /** @var AppContext */
-    protected $context;
+    /** @var KeyRegistryInterface */
+    protected $keyRegistry;
+
+    /** @var RequestReaderInterface */
+    private $requestReader;
 
     /** @var UserDaoInterface */
     protected $userDao;
 
     public function __construct(
-        AppContext $context,
+        KeyRegistryInterface $keyRegistry,
+        RequestReaderInterface $requestReader,
         UserDaoInterface $userDao
     ) {
-        $this->context = $context;
+        $this->keyRegistry = $keyRegistry;
+        $this->requestReader = $requestReader;
         $this->userDao = $userDao;
     }
  
     public function isLogged(): bool
     {
-        return false;
+        try {
+            $token = $this->requestReader->getAuthToken();
+        } catch (NoAuthHeaderException $e) {
+            return false;
+        }
+        return $this->isValidToken($token);
     }
 
     public function isAllowed(string $right): bool
     {
         return false;
+    }
+
+    public function createToken(string $username = '', string $password = '', string $lang = null, int $shopid = null): Token
+    {
+        // todo login
+        $token = $this->createBasicToken();
+        return $token;
+    }
+
+    private function createBasicToken(): Token
+    {
+        $time = time();
+        $token = (new Builder())
+            ->issuedBy(Registry::getConfig()->getShopUrl())
+            ->permittedFor(Registry::getConfig()->getShopUrl())
+            ->issuedAt($time)
+            ->canOnlyBeUsedAfter($time)
+            ->expiresAt($time + 3600)
+            ->withClaim('shopid', Registry::getConfig()->getShopId())
+            ->withClaim('lang', Registry::getLang()->getBaseLanguage())
+            ->getToken(
+                $this->getSigner(),
+                $this->getSignatureKey()
+            );
+        return $token;
+    }
+
+    private function isValidToken(string $token): bool
+    {
+        $token = (new Parser())->parse($token);
+        if (!$token->verify($this->getSigner(), $this->getSignatureKey())) {
+            return false;
+        }
+        $validation = new ValidationData();
+        $validation->setIssuer(Registry::getConfig()->getShopUrl());
+        $validation->setAudience(Registry::getConfig()->getShopUrl());
+        if (!$token->validate($validation)) {
+            return false;
+        }
+        // todo: check shop and lang
+        return true;
+    }
+
+    private function getSignatureKey(): Key
+    {
+        return new Key($this->keyRegistry->getSignatureKey());
+    }
+
+    private function getSigner(): Signer
+    {
+        return new Sha512();
     }
 
     /*

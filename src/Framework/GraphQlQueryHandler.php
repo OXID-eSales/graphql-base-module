@@ -10,13 +10,9 @@ namespace OxidEsales\GraphQl\Framework;
 use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Executor\ExecutionResult;
-use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\Exception\HttpErrorInterface;
-use OxidEsales\GraphQl\Exception\InvalidTokenException;
-use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
-use OxidEsales\GraphQl\Service\TokenServiceInterface;
 use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 use Psr\Log\LoggerInterface;
 
@@ -37,8 +33,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
     private $requestReader;
     /** @var  ResponseWriterInterface */
     private $responseWriter;
-    /** @var TokenServiceInterface  */
-    private $tokenService;
     /** @var  LegacyWrapperInterface $legacyWrapper */
     private $legacyWrapper;
 
@@ -52,7 +46,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         ErrorCodeProviderInterface $errorCodeProvider,
         RequestReaderInterface $requestReader,
         ResponseWriterInterface $responseWriter,
-        TokenServiceInterface $tokenService,
         LegacyWrapperInterface $legacyWrapper
     ) {
         $this->logger = $logger;
@@ -62,7 +55,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $this->keyRegistry = $keyRegistry;
         $this->requestReader = $requestReader;
         $this->responseWriter = $responseWriter;
-        $this->tokenService = $tokenService;
         $this->legacyWrapper = $legacyWrapper;
 
         $this->loggingErrorFormatter = function (Error $error) {
@@ -76,18 +68,14 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $httpStatus = null;
 
         try {
-            $context = $this->initializeAppContext();
             $queryData = $this->requestReader->getGraphQLRequestData();
-            $result = $this->executeQuery($context, $queryData);
+            $result = $this->executeQuery($queryData);
         } catch (\Exception $e) {
             $reflectionClass = new \ReflectionClass($e);
             if ($e instanceof HttpErrorInterface) {
                 // Thank god. Our own exceptions provide a http status.
                 /** @var HttpErrorInterface $e */
                 $httpStatus = $e->getHttpStatus();
-            } elseif ($reflectionClass->getNamespaceName() == 'Firebase\JWT') {
-                // Authentication failed. Something with the token went wrong.
-                $httpStatus = 401;
             }
             $result = $this->createErrorResult($e);
         }
@@ -96,39 +84,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         }
         $result->setErrorFormatter($this->loggingErrorFormatter);
         $this->responseWriter->renderJsonResponse($result->toArray(), $httpStatus);
-    }
-
-    private function initializeAppContext()
-    {
-        $appContext = new AppContext();
-        $appContext->setShopUrl($this->environmentService->getShopUrl());
-        $appContext->setDefaultShopId($this->environmentService->getDefaultShopId());
-        $appContext->setDefaultShopLanguage($this->environmentService->getDefaultLanguage());
-        try {
-            $token = $this->tokenService->getToken($this->keyRegistry->getSignatureKey());
-            $this->verifyToken($token);
-            $appContext->setAuthToken($token);
-        } catch (NoAuthHeaderException $e) { //pass
-        }
-
-        return $appContext;
-    }
-
-    /**
-     * @param Token $token
-     * @throws InvalidTokenException
-     */
-    private function verifyToken(Token $token):void
-    {
-        if ($token->getIssuer() !== $this->environmentService->getShopUrl()) {
-            throw new InvalidTokenException('Token issuer is not correct!');
-        }
-        if ($token->getAudience() !== $this->environmentService->getShopUrl()) {
-            throw new InvalidTokenException('Token audience is not correct!');
-        }
-        // We probably could also check if language and shopid are permitted,
-        // but if not, the request will fail anyway some way further down the
-        // line, so we leave this expensive check out.
     }
 
     private function createErrorResult(\Exception $e): ExecutionResult
@@ -147,10 +102,8 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
      *
      * @throws \Throwable
      */
-    private function executeQuery(AppContext $context, $queryData)
+    private function executeQuery($queryData)
     {
-        $this->legacyWrapper->setLanguage($context->getCurrentLanguage());
-
         $graphQL = new \GraphQL\GraphQL();
         $variables = null;
         if (isset($queryData['variables'])) {
@@ -164,7 +117,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
             $this->schemaFactory->getSchema(),
             $queryData['query'],
             null,
-            $context,
+            null,
             $variables,
             $operationName
         );

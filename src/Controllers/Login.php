@@ -38,7 +38,12 @@ class Login
      */
     public function login(string $username = '', string $password = '', string $lang = null, int $shopid = null): string
     {
-        return '';
+        return (string) $this->authService->createToken(
+            $username,
+            $password,
+            $lang,
+            $shopid
+        );
         /*
         $tokenRequest = new TokenRequest();
         $tokenRequest->setUsername($username);

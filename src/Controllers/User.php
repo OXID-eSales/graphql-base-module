@@ -44,6 +44,7 @@ class User
 
     /**
      * @Mutation
+     * @Logged
      */
     public function userRegister(UserDataObject $user): UserDataObject
     {

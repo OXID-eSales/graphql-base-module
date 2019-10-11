@@ -43,10 +43,6 @@ services:
   OxidEsales\GraphQl\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQl\Service\AuthenticationService
 
-  OxidEsales\GraphQl\Service\TokenServiceInterface:
-    class: OxidEsales\GraphQl\Service\TokenService
-    public: true
-
   OxidEsales\GraphQl\Service\PermissionsServiceInterface:
     class: OxidEsales\GraphQl\Service\PermissionsService
     arguments: [!tagged graphql_permissions_provider]

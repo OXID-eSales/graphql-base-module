@@ -8,10 +8,8 @@
 namespace  OxidEsales\GraphQl\Framework;
 
 use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
-use OxidEsales\GraphQl\Service\TokenServiceInterface;
 
 class AppContext
 {
@@ -30,19 +28,12 @@ class AppContext
 
     public static function createAppContext(
         EnvironmentServiceInterface $environmentService,
-        KeyRegistryInterface $keyRegistry,
-        TokenServiceInterface $tokenService
-    ): AppContext {
-        $appContext = new AppContext();
+        KeyRegistryInterface $keyRegistry
+    ): self {
+        $appContext = new self();
         $appContext->setShopUrl($environmentService->getShopUrl());
         $appContext->setDefaultShopId($environmentService->getDefaultShopId());
         $appContext->setDefaultShopLanguage($environmentService->getDefaultLanguage());
-        try {
-            $token = $tokenService->getToken($keyRegistry->getSignatureKey());
-            // $this->verifyToken($token);
-            $appContext->setAuthToken($token);
-        } catch (NoAuthHeaderException $e) { //pass
-        }
         return $appContext;
     }
 

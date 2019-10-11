@@ -18,7 +18,7 @@ class RequestReader implements RequestReaderInterface
      * @return string
      * @throws NoAuthHeaderException
      */
-    public function getAuthTokenString(): string
+    public function getAuthToken(): string
     {
         $authHeader = $this->getAuthorizationHeader();
         if ($authHeader === null) {
