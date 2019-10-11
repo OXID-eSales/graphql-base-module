@@ -7,7 +7,6 @@
 
 namespace OxidEsales\GraphQl\Controllers;
 
-use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\Framework\AppContext;
 use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
@@ -39,6 +38,8 @@ class Login
      */
     public function login(string $username = '', string $password = '', string $lang = null, int $shopid = null): string
     {
+        return '';
+        /*
         $tokenRequest = new TokenRequest();
         $tokenRequest->setUsername($username);
         $tokenRequest->setPassword($password);
@@ -58,5 +59,6 @@ class Login
         $token = $this->authService->getToken($tokenRequest);
         $signatureKey = $this->keyRegistry->getSignatureKey();
         return $token->getJwt($signatureKey);
+        */
     }
 }

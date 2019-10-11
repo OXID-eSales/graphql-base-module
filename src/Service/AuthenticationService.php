@@ -12,28 +12,36 @@ use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\Exception\PasswordMismatchException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
+use OxidEsales\GraphQl\DataObject\User;
+use OxidEsales\GraphQl\Framework\AppContext;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
-    /** @var  EnvironmentServiceInterface $environmentService */
-    private $environmentService;
+    /** @var AppContext */
+    protected $context;
 
-    /** @var  UserDaoInterface $userDao */
-    private $userDao;
+    /** @var UserDaoInterface */
+    protected $userDao;
 
     public function __construct(
-        EnvironmentServiceInterface $environmentService,
+        AppContext $context,
         UserDaoInterface $userDao
     ) {
-        $this->environmentService = $environmentService;
+        $this->context = $context;
         $this->userDao = $userDao;
     }
+ 
+    public function isLogged(): bool
+    {
+        return false;
+    }
 
-    /**
-     * @param TokenRequest $tokenRequest
-     *
-     * @return string
-     */
+    public function isAllowed(string $right): bool
+    {
+        return false;
+    }
+
+    /*
     public function getToken(TokenRequest $tokenRequest): Token
     {
         $token = null;
@@ -95,4 +103,5 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         return $token;
     }
+     */
 }

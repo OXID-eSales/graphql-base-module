@@ -42,7 +42,6 @@ services:
 
   OxidEsales\GraphQl\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQl\Service\AuthenticationService
-    public: true
 
   OxidEsales\GraphQl\Service\TokenServiceInterface:
     class: OxidEsales\GraphQl\Service\TokenService
@@ -88,4 +87,5 @@ services:
 
   OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
     class: OxidEsales\GraphQl\Framework\SchemaFactory
-    arguments: [!tagged graphql_namespace_mapper]
+    arguments:
+      $namespaceMappers: !tagged graphql_namespace_mapper
