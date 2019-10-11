@@ -10,10 +10,10 @@ namespace OxidEsales\GraphQl\Service;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\Token;
 use OxidEsales\GraphQl\DataObject\TokenRequest;
-use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Utility\AuthConstants;
 use OxidEsales\GraphQl\DataObject\User;
+use OxidEsales\GraphQl\Exception\PasswordMismatchException;
 use OxidEsales\GraphQl\Framework\AppContext;
+use OxidEsales\GraphQl\Utility\AuthConstants;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {

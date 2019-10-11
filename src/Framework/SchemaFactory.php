@@ -9,9 +9,9 @@ namespace OxidEsales\GraphQl\Framework;
 
 use Mouf\Composer\ClassNameMapper;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
-use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
 
 /**
  * Class SchemaFactory

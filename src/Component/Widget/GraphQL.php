@@ -21,8 +21,6 @@ class GraphQL extends WidgetController
 {
     /**
      * Init function
-     *
-     * @return void
      */
     public function init(): void
     {

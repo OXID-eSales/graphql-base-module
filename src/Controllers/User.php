@@ -10,10 +10,9 @@ namespace OxidEsales\GraphQl\Controllers;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\DataObject\User as UserDataObject;
 use OxidEsales\GraphQl\Framework\AppContext;
+use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
-use TheCodingMachine\GraphQLite\Annotations\Logged;
-use TheCodingMachine\GraphQLite\Annotations\FailWith;
 
 class User
 {
