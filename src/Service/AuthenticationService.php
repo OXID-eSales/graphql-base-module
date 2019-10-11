@@ -20,6 +20,7 @@ use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
+use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\GraphQl\Dao\UserDaoInterface;
 use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
@@ -63,12 +64,19 @@ class AuthenticationService implements AuthenticationServiceInterface
 
     public function createToken(string $username = '', string $password = '', string $lang = null, int $shopid = null): Token
     {
-        // todo login
-        $token = $this->createBasicToken();
-        return $token;
+        // throws an exception if something goes wrong
+        oxNew(User::class)->login($username, $password, false);
+
+        // now get the builder and create a token
+        $builder = $this->createBasicToken();
+        $token = $builder->withClaim('username', $username);
+        return $token->getToken(
+            $this->getSigner(),
+            $this->getSignatureKey()
+        );
     }
 
-    private function createBasicToken(): Token
+    private function createBasicToken(): Builder
     {
         $time = time();
         $token = (new Builder())
@@ -78,14 +86,16 @@ class AuthenticationService implements AuthenticationServiceInterface
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($time + 3600)
             ->withClaim('shopid', Registry::getConfig()->getShopId())
-            ->withClaim('lang', Registry::getLang()->getBaseLanguage())
-            ->getToken(
-                $this->getSigner(),
-                $this->getSignatureKey()
-            );
+            ->withClaim('lang', Registry::getLang()->getBaseLanguage());
         return $token;
     }
 
+    /**
+     * Checks if given token is valid:
+     * - has valid signature
+     * - has valid issuer and audience
+     * - has valid shop claim
+     */
     private function isValidToken(string $token): bool
     {
         $token = (new Parser())->parse($token);
@@ -98,7 +108,9 @@ class AuthenticationService implements AuthenticationServiceInterface
         if (!$token->validate($validation)) {
             return false;
         }
-        // todo: check shop and lang
+        if ($token->getClaim('shopid') !== Registry::getConfig()->getShopId()) {
+            return false;
+        }
         return true;
     }
 
