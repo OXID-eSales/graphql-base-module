@@ -50,5 +50,7 @@ $aModule = [
         ]
     ],
     'events'      => [
+        'onActivate'   => 'OxidEsales\\GraphQl\\Framework\\ModuleSetup::onActivate',
+        'onDeactivate' => 'OxidEsales\\GraphQl\\Framework\\ModuleSetup::onDeactivate'
     ]
 ];

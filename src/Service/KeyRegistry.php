@@ -21,23 +21,10 @@ use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
 class KeyRegistry implements KeyRegistryInterface
 {
 
-    /*
-    public function createSignatureKey()
+    public function generateSignatureKey(): string
     {
-        $this->createTableIfNecessary();
-        try {
-            $this->getSignatureKey();
-        } catch (NoSignatureKeyException $e) {
-            $key = base64_encode(openssl_random_pseudo_bytes(64));
-            $this->queryBuilderFactory
-                ->create()
-                ->insert($this->tableName)
-                ->values([$this->columnName => '?'])
-                ->setParameter(0, $key)
-                ->execute();
-        }
+        return bin2hex(openssl_random_pseudo_bytes(64));
     }
-     */
 
     /**
      * @throws NoSignatureKeyException
@@ -46,7 +33,7 @@ class KeyRegistry implements KeyRegistryInterface
     {
         $config = Registry::getConfig();
         $signature = $config->getConfigParam('sJsonWebTokenSignature');
-        if (!is_string($signature) || !strlen($signature) >= 64) {
+        if (!is_string($signature) || strlen($signature) < 64) {
             throw new NoSignatureKeyException();
         }
         return $signature;
