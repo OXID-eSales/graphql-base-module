@@ -20,7 +20,6 @@ use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
  */
 class KeyRegistry implements KeyRegistryInterface
 {
-
     public const signatureKeyName = 'sJsonWebTokenSignature';
 
     public function generateSignatureKey(): string
