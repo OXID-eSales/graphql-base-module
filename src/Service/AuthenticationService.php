@@ -7,7 +7,6 @@
 
 namespace OxidEsales\GraphQL\Service;
 
-# use OxidEsales\GraphQL\DataObject\Token;
 # use OxidEsales\GraphQL\DataObject\TokenRequest;
 # use OxidEsales\GraphQL\DataObject\User;
 # use OxidEsales\GraphQL\Utility\AuthConstants;
@@ -17,7 +16,7 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
-use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\DataObject\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
@@ -68,7 +67,7 @@ class AuthenticationService implements AuthenticationServiceInterface
 
         // now get the builder and create a token
         $builder = $this->createBasicToken();
-        $token = $builder->withClaim('username', $username);
+        $token = $builder->withClaim(Token::CLAIM_USERNAME, $username);
         return $token->getToken(
             $this->getSigner(),
             $this->getSignatureKey()
@@ -84,8 +83,8 @@ class AuthenticationService implements AuthenticationServiceInterface
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($time + 3600)
-            ->withClaim('shopid', Registry::getConfig()->getShopId())
-            ->withClaim('lang', Registry::getLang()->getBaseLanguage());
+            ->withClaim(Token::CLAIM_SHOPID, Registry::getConfig()->getShopId())
+            ->withClaim(Token::CLAIM_LANGID, Registry::getLang()->getBaseLanguage());
         return $token;
     }
 
@@ -107,7 +106,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         if (!$token->validate($validation)) {
             return false;
         }
-        if ($token->getClaim('shopid') !== Registry::getConfig()->getShopId()) {
+        if ($token->getShopId() !== Registry::getConfig()->getShopId()) {
             return false;
         }
         return true;
