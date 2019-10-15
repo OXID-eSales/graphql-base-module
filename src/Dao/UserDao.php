@@ -69,16 +69,7 @@ class UserDao implements UserDaoInterface
         );
     }
 
-    public function saveOrUpdateUser(User $user)
-    {
-        if ($user->getId()) {
-            $this->updateUser($user);
-        } else {
-            $this->saveUser($user);
-        }
-    }
-
-    public function updateUser(User $user)
+    public function updateUser(User $user): void
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder
@@ -100,7 +91,7 @@ class UserDao implements UserDaoInterface
             ->execute();
     }
 
-    public function saveUser(User $user)
+    public function saveUser(User $user): void
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $values = [
