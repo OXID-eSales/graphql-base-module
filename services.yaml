@@ -31,9 +31,6 @@ services:
   OxidEsales\GraphQl\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQl\Framework\ResponseWriter
 
-  OxidEsales\GraphQl\Framework\GenericFieldResolverInterface:
-    class: OxidEsales\GraphQl\Framework\GenericFieldResolver
-
   OxidEsales\GraphQl\Dao\UserDaoInterface:
     class: OxidEsales\GraphQl\Dao\UserDao
 
@@ -73,9 +70,6 @@ services:
       - ['addPermission', ['admin', 'maycreateuserforothershop']]
       - ['addPermission', ['admin', 'mayupdateanyuser']]
     tags: ['graphql_permissions_provider']
-
-  OxidEsales\GraphQl\Utility\LegacyWrapperInterface:
-    class: OxidEsales\GraphQl\Utility\LegacyWrapper
 
   OxidEsales\GraphQl\Controllers\:
     resource: 'src/Controllers/*'
