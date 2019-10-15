@@ -158,7 +158,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             throw new PasswordMismatchException();
         }
 
-        $tokenRequest = $this->userDao->addIdAndUserGroupToTokenRequest($tokenRequest);
+        # $tokenRequest = $this->userDao->addIdAndUserGroupToTokenRequest($tokenRequest);
 
         $token = $this->createToken($tokenRequest);
 

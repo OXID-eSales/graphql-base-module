@@ -11,8 +11,6 @@ use OxidEsales\GraphQl\DataObject\User;
 
 interface UserDaoInterface
 {
-    public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest): TokenRequest;
-
     public function getUserById(string $userid): User;
 
     public function getUserByName(string $username, int $shopid): User;

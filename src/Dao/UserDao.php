@@ -33,53 +33,6 @@ class UserDao implements UserDaoInterface
         $this->passwordService = $passwordService;
     }
 
-    /**
-     * Checks if there is a working user/password/shopid combination, otherwise
-     * throw an exception. Then determine
-     * the user id and group and add them to the token request.
-     *
-     * This does not exactly honors the Single-Responsibility-Principle, but
-     * we want can do this in one database request, so we mingle some responsibilities.
-     *
-     * If not, an exception is thrown. If yes, the group the user
-     * belongs to is returned.
-     *
-     * TODO: Improve the user group mechanism
-     *
-     * @param TokenRequest $tokenRequest
-     *
-     * @return TokenRequest
-     * @throws PasswordMismatchException
-     * @throws ObjectNotFoundException
-     */
-    public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest): TokenRequest
-    {
-        $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select('OXID', 'OXRIGHTS', 'OXPASSWORD')
-            ->from('oxuser')
-            ->where(
-                $queryBuilder->expr()->andX(
-                    $queryBuilder->expr()->eq('OXUSERNAME', ':name'),
-                    $queryBuilder->expr()->eq('OXSHOPID', ':shopid')
-                )
-            )
-            ->setParameter('name', $tokenRequest->getUsername())
-            ->setParameter('shopid', $tokenRequest->getShopid());
-
-
-        $result = $queryBuilder->execute()->fetch();
-        if (!$result) {
-            throw new PasswordMismatchException('User/password combination is not valid.');
-        }
-        if (! $this->passwordService->verifyPassword($tokenRequest->getPassword(), $result['OXPASSWORD'])) {
-            throw new PasswordMismatchException('User/password combination is not valid.');
-        };
-
-        $tokenRequest->setUserid($result['OXID']);
-        $tokenRequest->setGroup($this->mapGroup($result['OXRIGHTS']));
-        return $tokenRequest;
-    }
-
     public function getUserById(string $userid): User
     {
         $queryBuilder = $this->queryBuilderFactory->create();
