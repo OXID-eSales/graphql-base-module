@@ -16,7 +16,6 @@ use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\ObjectNotFoundException;
 use OxidEsales\GraphQl\Exception\PasswordMismatchException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
-use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 
 class UserDao implements UserDaoInterface
 {
@@ -25,17 +24,13 @@ class UserDao implements UserDaoInterface
     private $queryBuilderFactory;
     /** @var PasswordServiceBridgeInterface $passwordService */
     private $passwordService;
-    /** @var LegacyWrapperInterface $legacyWrapper */
-    private $legacyWrapper;
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
         PasswordServiceBridgeInterface $passwordService,
-        LegacyWrapperInterface $legacyWrapper
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->passwordService = $passwordService;
-        $this->legacyWrapper = $legacyWrapper;
     }
 
     /**
@@ -171,7 +166,6 @@ class UserDao implements UserDaoInterface
             'OXSHOPID'    => ':shopid'
         ];
         $parameters = $this->mapUserToArray($user);
-        // $parameters['id'] = $this->legacyWrapper->createUid();
         $parameters['id'] = $user->getId();
         $queryBuilder->insert('oxuser')
                      ->values($values)

@@ -13,7 +13,6 @@ use GraphQL\Executor\ExecutionResult;
 use OxidEsales\GraphQl\Exception\HttpErrorInterface;
 use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQl\Service\KeyRegistryInterface;
-use OxidEsales\GraphQl\Utility\LegacyWrapperInterface;
 use Psr\Log\LoggerInterface;
 
 class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
@@ -33,8 +32,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
     private $requestReader;
     /** @var  ResponseWriterInterface */
     private $responseWriter;
-    /** @var  LegacyWrapperInterface $legacyWrapper */
-    private $legacyWrapper;
 
     private $loggingErrorFormatter;
 
@@ -46,7 +43,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         ErrorCodeProviderInterface $errorCodeProvider,
         RequestReaderInterface $requestReader,
         ResponseWriterInterface $responseWriter,
-        LegacyWrapperInterface $legacyWrapper
     ) {
         $this->logger = $logger;
         $this->environmentService = $environmentService;
@@ -55,7 +51,6 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         $this->keyRegistry = $keyRegistry;
         $this->requestReader = $requestReader;
         $this->responseWriter = $responseWriter;
-        $this->legacyWrapper = $legacyWrapper;
 
         $this->loggingErrorFormatter = function (Error $error) {
             $this->logger->error($error);
