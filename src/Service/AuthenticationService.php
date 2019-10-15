@@ -10,7 +10,6 @@ namespace OxidEsales\GraphQl\Service;
 # use OxidEsales\GraphQl\DataObject\Token;
 # use OxidEsales\GraphQl\DataObject\TokenRequest;
 # use OxidEsales\GraphQl\DataObject\User;
-# use OxidEsales\GraphQl\Exception\PasswordMismatchException;
 # use OxidEsales\GraphQl\Utility\AuthConstants;
 
 use Lcobucci\JWT\Builder;

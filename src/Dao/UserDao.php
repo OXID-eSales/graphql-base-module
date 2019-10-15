@@ -12,7 +12,6 @@ use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServ
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQl\DataObject\Address;
 use OxidEsales\GraphQl\DataObject\User;
-use OxidEsales\GraphQl\Exception\ObjectNotFoundException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 
 class UserDao implements UserDaoInterface
@@ -125,7 +124,7 @@ class UserDao implements UserDaoInterface
         $result = $queryBuilder->execute()->fetch();
 
         if (!$result) {
-            throw new ObjectNotFoundException("Did not find country with shortcut \"$countryShortcut\"");
+            return null;
         }
 
         return $result['OXID'];
@@ -136,7 +135,7 @@ class UserDao implements UserDaoInterface
         $result = $queryBuilder->execute()->fetch();
 
         if (!$result) {
-            throw new ObjectNotFoundException('Could not find requested user.');
+            return null;
         }
 
         return $this->mapUserFromDatabaseResult($result);
