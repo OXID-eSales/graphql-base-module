@@ -11,10 +11,8 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQl\DataObject\Address;
-use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
 use OxidEsales\GraphQl\Exception\ObjectNotFoundException;
-use OxidEsales\GraphQl\Exception\PasswordMismatchException;
 use OxidEsales\GraphQl\Utility\AuthConstants;
 
 class UserDao implements UserDaoInterface
@@ -27,7 +25,7 @@ class UserDao implements UserDaoInterface
 
     public function __construct(
         QueryBuilderFactoryInterface $queryBuilderFactory,
-        PasswordServiceBridgeInterface $passwordService,
+        PasswordServiceBridgeInterface $passwordService
     ) {
         $this->queryBuilderFactory = $queryBuilderFactory;
         $this->passwordService = $passwordService;

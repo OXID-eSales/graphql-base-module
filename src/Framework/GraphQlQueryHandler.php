@@ -42,7 +42,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         KeyRegistryInterface $keyRegistry,
         ErrorCodeProviderInterface $errorCodeProvider,
         RequestReaderInterface $requestReader,
-        ResponseWriterInterface $responseWriter,
+        ResponseWriterInterface $responseWriter
     ) {
         $this->logger = $logger;
         $this->environmentService = $environmentService;

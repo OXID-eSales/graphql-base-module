@@ -6,7 +6,6 @@
 
 namespace OxidEsales\GraphQl\Dao;
 
-use OxidEsales\GraphQl\DataObject\TokenRequest;
 use OxidEsales\GraphQl\DataObject\User;
 
 interface UserDaoInterface
