@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Controllers;
+namespace OxidEsales\GraphQL\Controllers;
 
-use OxidEsales\GraphQl\Framework\AppContext;
-use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Framework\AppContext;
+use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login

@@ -5,10 +5,10 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Service;
+namespace OxidEsales\GraphQL\Service;
 
 use OxidEsales\EshopCommunity\Core\Registry;
-use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
+use OxidEsales\GraphQL\Exception\NoSignatureKeyException;
 
 /**
  * Class KeyRegistry
@@ -16,7 +16,7 @@ use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
  * The current implementation stores the signature key in
  * the config table. This should be changed eventually.
  *
- * @package OxidEsales\GraphQl\Service
+ * @package OxidEsales\GraphQL\Service
  */
 class KeyRegistry implements KeyRegistryInterface
 {

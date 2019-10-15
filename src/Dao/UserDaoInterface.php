@@ -4,9 +4,9 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Dao;
+namespace OxidEsales\GraphQL\Dao;
 
-use OxidEsales\GraphQl\DataObject\User;
+use OxidEsales\GraphQL\DataObject\User;
 
 interface UserDaoInterface
 {

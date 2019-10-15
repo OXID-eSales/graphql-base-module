@@ -4,7 +4,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Exception;
+namespace OxidEsales\GraphQL\Exception;
 
 class NoSignatureKeyException extends \Exception
 {

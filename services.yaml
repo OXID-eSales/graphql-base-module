@@ -10,46 +10,46 @@ services:
   OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker:
     class: OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker
 
-  OxidEsales\GraphQl\Framework\ModuleSetup:
-    class: OxidEsales\GraphQl\Framework\ModuleSetup
+  OxidEsales\GraphQL\Framework\ModuleSetup:
+    class: OxidEsales\GraphQL\Framework\ModuleSetup
     public: true
 
-  OxidEsales\GraphQl\Framework\AppContext:
-    factory: ['OxidEsales\GraphQl\Framework\AppContext', 'createAppContext']
-    class: OxidEsales\GraphQl\Framework\AppContext
+  OxidEsales\GraphQL\Framework\AppContext:
+    factory: ['OxidEsales\GraphQL\Framework\AppContext', 'createAppContext']
+    class: OxidEsales\GraphQL\Framework\AppContext
 
-  OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
-    class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
+  OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface:
+    class: OxidEsales\GraphQL\Framework\GraphQLQueryHandler
     public: true
 
-  OxidEsales\GraphQl\Framework\ErrorCodeProviderInterface:
-    class: OxidEsales\GraphQl\Framework\ErrorCodeProvider
+  OxidEsales\GraphQL\Framework\ErrorCodeProviderInterface:
+    class: OxidEsales\GraphQL\Framework\ErrorCodeProvider
 
-  OxidEsales\GraphQl\Framework\RequestReaderInterface:
-    class: OxidEsales\GraphQl\Framework\RequestReader
+  OxidEsales\GraphQL\Framework\RequestReaderInterface:
+    class: OxidEsales\GraphQL\Framework\RequestReader
 
-  OxidEsales\GraphQl\Framework\ResponseWriterInterface:
-    class: OxidEsales\GraphQl\Framework\ResponseWriter
+  OxidEsales\GraphQL\Framework\ResponseWriterInterface:
+    class: OxidEsales\GraphQL\Framework\ResponseWriter
 
-  OxidEsales\GraphQl\Dao\UserDaoInterface:
-    class: OxidEsales\GraphQl\Dao\UserDao
+  OxidEsales\GraphQL\Dao\UserDaoInterface:
+    class: OxidEsales\GraphQL\Dao\UserDao
 
-  OxidEsales\GraphQl\Service\KeyRegistryInterface:
-    class: OxidEsales\GraphQl\Service\KeyRegistry
+  OxidEsales\GraphQL\Service\KeyRegistryInterface:
+    class: OxidEsales\GraphQL\Service\KeyRegistry
     public: true
 
-  OxidEsales\GraphQl\Service\EnvironmentServiceInterface:
-    class: OxidEsales\GraphQl\Service\EnvironmentService
+  OxidEsales\GraphQL\Service\EnvironmentServiceInterface:
+    class: OxidEsales\GraphQL\Service\EnvironmentService
 
-  OxidEsales\GraphQl\Service\AuthenticationServiceInterface:
-    class: OxidEsales\GraphQl\Service\AuthenticationService
+  OxidEsales\GraphQL\Service\AuthenticationServiceInterface:
+    class: OxidEsales\GraphQL\Service\AuthenticationService
 
-  OxidEsales\GraphQl\Service\PermissionsServiceInterface:
-    class: OxidEsales\GraphQl\Service\PermissionsService
+  OxidEsales\GraphQL\Service\PermissionsServiceInterface:
+    class: OxidEsales\GraphQL\Service\PermissionsService
     arguments: [!tagged graphql_permissions_provider]
 
-  OxidEsales\GraphQl\Service\LoginPermissionsProvider:
-    class: OxidEsales\GraphQl\Service\PermissionsProvider
+  OxidEsales\GraphQL\Service\LoginPermissionsProvider:
+    class: OxidEsales\GraphQL\Service\PermissionsProvider
     calls:
       - ['addPermission', ['anonymous', 'mayreaddata']]
       - ['addPermission', ['customer', 'mayreaddata']]
@@ -57,8 +57,8 @@ services:
       - ['addPermission', ['shopadmin', 'mayreaddata']]
     tags: ['graphql_permissions_provider']
 
-  OxidEsales\GraphQl\Service\UserPermissionsProvider:
-    class: OxidEsales\GraphQl\Service\PermissionsProvider
+  OxidEsales\GraphQL\Service\UserPermissionsProvider:
+    class: OxidEsales\GraphQL\Service\PermissionsProvider
     calls:
       - ['addPermission', ['anonymous', 'maycreatecustomer']]
       - ['addPermission', ['customer', 'mayupdateself']]
@@ -71,15 +71,15 @@ services:
       - ['addPermission', ['admin', 'mayupdateanyuser']]
     tags: ['graphql_permissions_provider']
 
-  OxidEsales\GraphQl\Controllers\:
+  OxidEsales\GraphQL\Controllers\:
     resource: 'src/Controllers/*'
     public: true
 
-  OxidEsales\GraphQl\Framework\NamespaceMapper:
-    class: OxidEsales\GraphQl\Framework\NamespaceMapper
+  OxidEsales\GraphQL\Framework\NamespaceMapper:
+    class: OxidEsales\GraphQL\Framework\NamespaceMapper
     tags: ['graphql_namespace_mapper']
 
-  OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
-    class: OxidEsales\GraphQl\Framework\SchemaFactory
+  OxidEsales\GraphQL\Framework\SchemaFactoryInterface:
+    class: OxidEsales\GraphQL\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper

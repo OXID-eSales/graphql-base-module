@@ -5,21 +5,21 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Framework;
 
 class NamespaceMapper implements NamespaceMapperInterface
 {
     public function getControllerNamespaceMapping(): array
     {
         return [
-            '\\OxidEsales\\GraphQl\\Controllers' => __DIR__.'/../Controllers/'
+            '\\OxidEsales\\GraphQL\\Controllers' => __DIR__.'/../Controllers/'
         ];
     }
 
     public function getTypeNamespaceMapping(): array
     {
         return [
-            '\\OxidEsales\\GraphQl\\DataObject' => __DIR__.'/../DataObject/'
+            '\\OxidEsales\\GraphQL\\DataObject' => __DIR__.'/../DataObject/'
         ];
     }
 }

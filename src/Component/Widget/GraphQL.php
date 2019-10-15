@@ -3,11 +3,11 @@
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
-namespace OxidEsales\GraphQl\Component\Widget;
+namespace OxidEsales\GraphQL\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface;
+use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
 
 /**
  * Class GraphQL
@@ -15,7 +15,7 @@ use OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface;
  * Implements the GraphQL widget for the OXID eShop to make all
  * of this callable via a SEO Url or via widget.php?cl=graphql
  *
- * @package OxidEsales\GraphQl\Component\Widget
+ * @package OxidEsales\GraphQL\Component\Widget
  */
 class GraphQL extends WidgetController
 {
@@ -26,7 +26,7 @@ class GraphQL extends WidgetController
     {
         ContainerFactory::getInstance()
             ->getContainer()
-            ->get(GraphQlQueryHandlerInterface::class)
-            ->executeGraphQlQuery();
+            ->get(GraphQLQueryHandlerInterface::class)
+            ->executeGraphQLQuery();
     }
 }

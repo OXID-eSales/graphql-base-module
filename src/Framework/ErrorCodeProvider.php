@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Framework;
 
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\ExecutionResult;
-use OxidEsales\GraphQl\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Exception\HttpErrorInterface;
 
 /**
  * Class ErrorCodeProvider
@@ -19,7 +19,7 @@ use OxidEsales\GraphQl\Exception\HttpErrorInterface;
  *
  * TODO: Think of something more sophisticated
  *
- * @package OxidEsales\GraphQl\Framework
+ * @package OxidEsales\GraphQL\Framework
  */
 class ErrorCodeProvider implements ErrorCodeProviderInterface
 {

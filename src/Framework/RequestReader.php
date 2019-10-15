@@ -5,10 +5,10 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Framework;
 
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
+use OxidEsales\GraphQL\DataObject\Token;
+use OxidEsales\GraphQL\Exception\NoAuthHeaderException;
 
 class RequestReader implements RequestReaderInterface
 {

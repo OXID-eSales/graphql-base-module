@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Controllers;
+namespace OxidEsales\GraphQL\Controllers;
 
-use OxidEsales\GraphQl\Dao\UserDaoInterface;
-use OxidEsales\GraphQl\DataObject\User as UserDataObject;
-use OxidEsales\GraphQl\Framework\AppContext;
+use OxidEsales\GraphQL\Dao\UserDaoInterface;
+use OxidEsales\GraphQL\DataObject\User as UserDataObject;
+use OxidEsales\GraphQL\Framework\AppContext;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;

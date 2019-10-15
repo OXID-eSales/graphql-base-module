@@ -5,12 +5,12 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Service;
+namespace OxidEsales\GraphQL\Service;
 
-# use OxidEsales\GraphQl\DataObject\Token;
-# use OxidEsales\GraphQl\DataObject\TokenRequest;
-# use OxidEsales\GraphQl\DataObject\User;
-# use OxidEsales\GraphQl\Utility\AuthConstants;
+# use OxidEsales\GraphQL\DataObject\Token;
+# use OxidEsales\GraphQL\DataObject\TokenRequest;
+# use OxidEsales\GraphQL\DataObject\User;
+# use OxidEsales\GraphQL\Utility\AuthConstants;
 
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -21,9 +21,9 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
-use OxidEsales\GraphQl\Dao\UserDaoInterface;
-use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
-use OxidEsales\GraphQl\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Dao\UserDaoInterface;
+use OxidEsales\GraphQL\Exception\NoAuthHeaderException;
+use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {

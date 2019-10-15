@@ -4,9 +4,9 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Framework;
 
-interface GraphQlQueryHandlerInterface
+interface GraphQLQueryHandlerInterface
 {
-    public function executeGraphQlQuery();
+    public function executeGraphQLQuery();
 }

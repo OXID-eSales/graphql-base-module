@@ -5,17 +5,17 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Framework;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Executor\ExecutionResult;
-use OxidEsales\GraphQl\Exception\HttpErrorInterface;
-use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
-use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Service\EnvironmentServiceInterface;
+use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use Psr\Log\LoggerInterface;
 
-class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
+class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
 {
 
     /** @var LoggerInterface  */
@@ -58,7 +58,7 @@ class GraphQlQueryHandler implements GraphQlQueryHandlerInterface
         };
     }
 
-    public function executeGraphQlQuery()
+    public function executeGraphQLQuery()
     {
         $httpStatus = null;
 

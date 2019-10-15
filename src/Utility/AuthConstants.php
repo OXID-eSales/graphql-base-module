@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Utility;
+namespace OxidEsales\GraphQL\Utility;
 
 class AuthConstants
 {

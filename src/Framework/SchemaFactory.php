@@ -5,18 +5,18 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Framework;
 
 use Mouf\Composer\ClassNameMapper;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\GraphQl\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
 /**
  * Class SchemaFactory
  *
- * @package OxidProfessionalServices\GraphQl\Core\Schema
+ * @package OxidProfessionalServices\GraphQL\Core\Schema
  */
 class SchemaFactory implements SchemaFactoryInterface
 {

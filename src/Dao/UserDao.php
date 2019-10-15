@@ -5,14 +5,14 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Dao;
+namespace OxidEsales\GraphQL\Dao;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQl\DataObject\Address;
-use OxidEsales\GraphQl\DataObject\User;
-use OxidEsales\GraphQl\Utility\AuthConstants;
+use OxidEsales\GraphQL\DataObject\Address;
+use OxidEsales\GraphQL\DataObject\User;
+use OxidEsales\GraphQL\Utility\AuthConstants;
 
 class UserDao implements UserDaoInterface
 {

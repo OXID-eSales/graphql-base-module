@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Service;
+namespace OxidEsales\GraphQL\Service;
 
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\Exception\MissingPermissionException;
-use OxidEsales\GraphQl\Utility\AuthConstants;
+use OxidEsales\GraphQL\DataObject\Token;
+use OxidEsales\GraphQL\Exception\MissingPermissionException;
+use OxidEsales\GraphQL\Utility\AuthConstants;
 
 class PermissionsService implements PermissionsServiceInterface
 {

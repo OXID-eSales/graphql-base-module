@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace  OxidEsales\GraphQl\Framework;
+namespace  OxidEsales\GraphQL\Framework;
 
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
-use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\DataObject\Token;
+use OxidEsales\GraphQL\Service\EnvironmentServiceInterface;
+use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 
 class AppContext
 {

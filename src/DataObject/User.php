@@ -5,12 +5,12 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\DataObject;
+namespace OxidEsales\GraphQL\DataObject;
 
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
-use OxidEsales\GraphQl\Utility\AuthConstants;
+use OxidEsales\GraphQL\Utility\AuthConstants;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;

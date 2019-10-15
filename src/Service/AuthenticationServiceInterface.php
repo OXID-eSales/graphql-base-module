@@ -5,11 +5,11 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Service;
+namespace OxidEsales\GraphQL\Service;
 
 /*
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\DataObject\TokenRequest;
+use OxidEsales\GraphQL\DataObject\Token;
+use OxidEsales\GraphQL\DataObject\TokenRequest;
  */
 
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface as GraphQLiteAuthenticationServiceInterface;

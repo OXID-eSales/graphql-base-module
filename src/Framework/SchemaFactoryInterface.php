@@ -4,14 +4,14 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Framework;
 
 use TheCodingMachine\GraphQLite\Schema;
 
 /**
  * Class SchemaFactory
  *
- * @package OxidProfessionalServices\GraphQl\Core\Schema
+ * @package OxidProfessionalServices\GraphQL\Core\Schema
  */
 interface SchemaFactoryInterface
 {
