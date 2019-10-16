@@ -16,33 +16,43 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
-use OxidEsales\GraphQL\DataObject\Token;
+use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
-use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\GraphQL\Dao\UserDaoInterface;
+use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\NoAuthHeaderException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
+    const CLAIM_SHOPID   = 'shopid';
+    const CLAIM_USERNAME = 'username';
+    const CLAIM_GROUP    = 'group';
+
     /** @var KeyRegistryInterface */
-    protected $keyRegistry;
+    private $keyRegistry;
 
     /** @var RequestReaderInterface */
     private $requestReader;
 
     /** @var UserDaoInterface */
-    protected $userDao;
+    private $userDao;
+
+    /** @var PasswordServiceBridgeInterface */
+    private $passwordService;
 
     public function __construct(
         KeyRegistryInterface $keyRegistry,
         RequestReaderInterface $requestReader,
-        UserDaoInterface $userDao
+        UserDaoInterface $userDao,
+        PasswordServiceBridgeInterface $passwordService
     ) {
         $this->keyRegistry = $keyRegistry;
         $this->requestReader = $requestReader;
         $this->userDao = $userDao;
+        $this->passwordService = $passwordService;
     }
  
     public function isLogged(): bool
@@ -60,14 +70,20 @@ class AuthenticationService implements AuthenticationServiceInterface
         return false;
     }
 
-    public function createToken(string $username = '', string $password = '', string $lang = null, int $shopid = null): Token
+    public function createToken(string $username, string $password, int $shopid = null): Token
     {
-        // throws an exception if something goes wrong
-        oxNew(User::class)->login($username, $password, false);
+        $user = $this->userDao->getUserByName($username, $shopid);
+        if (!$user ||
+            !$this->passwordService->verifyPassword(
+                $password,
+                $user->getPasswordHash()
+            )) {
+            throw new InvalidLoginException('Username/password combination is invalid');
+        }
 
         // now get the builder and create a token
         $builder = $this->createBasicToken();
-        $token = $builder->withClaim(Token::CLAIM_USERNAME, $username);
+        $token = $builder->withClaim(self::CLAIM_USERNAME, $username);
         return $token->getToken(
             $this->getSigner(),
             $this->getSignatureKey()
@@ -83,8 +99,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($time + 3600 * 8)
-            ->withClaim(Token::CLAIM_SHOPID, Registry::getConfig()->getShopId())
-            ->withClaim(Token::CLAIM_LANGID, Registry::getLang()->getBaseLanguage());
+            ->withClaim(self::CLAIM_SHOPID, Registry::getConfig()->getShopId());
         return $token;
     }
 
@@ -106,7 +121,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         if (!$token->validate($validation)) {
             return false;
         }
-        if ($token->getShopId() !== Registry::getConfig()->getShopId()) {
+        if ($token->getClaim(self::CLAIM_SHOPID) !== Registry::getConfig()->getShopId()) {
             return false;
         }
         return true;

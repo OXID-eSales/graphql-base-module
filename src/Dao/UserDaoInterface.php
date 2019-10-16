@@ -10,9 +10,9 @@ use OxidEsales\GraphQL\DataObject\User;
 
 interface UserDaoInterface
 {
-    public function getUserById(string $userid): User;
+    public function getUserById(string $userid): ?User;
 
-    public function getUserByName(string $username, int $shopid): User;
+    public function getUserByName(string $username, int $shopid): ?User;
 
     public function updateUser(User $user): void;
 

@@ -36,12 +36,14 @@ class Login
     /**
      * @Query
      */
-    public function login(string $username = '', string $password = '', string $lang = null, int $shopid = null): string
+    public function login(string $username, string $password, int $shopid = null): string
     {
+        if ($shopid === null) {
+            $shopid = $this->context->getCurrentShopId();
+        }
         return (string) $this->authService->createToken(
             $username,
             $password,
-            $lang,
             $shopid
         );
         /*

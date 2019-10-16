@@ -30,7 +30,7 @@ class UserDao implements UserDaoInterface
         $this->passwordService = $passwordService;
     }
 
-    public function getUserById(string $userid): User
+    public function getUserById(string $userid): ?User
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $this->configureBaseQuery($queryBuilder);
@@ -40,7 +40,7 @@ class UserDao implements UserDaoInterface
         return $this->executeQuery($queryBuilder);
     }
 
-    public function getUserByName(string $username, int $shopid): User
+    public function getUserByName(string $username, int $shopid): ?User
     {
         $queryBuilder = $this->queryBuilderFactory->create();
         $this->configureBaseQuery($queryBuilder);
