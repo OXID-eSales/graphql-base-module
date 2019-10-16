@@ -8,25 +8,21 @@
 namespace OxidEsales\GraphQL\Framework;
 
 use OxidEsales\GraphQL\DataObject\Token;
-use OxidEsales\GraphQL\Exception\NoAuthHeaderException;
 
 class RequestReader implements RequestReaderInterface
 {
     /**
      * Returns the encoded token from the authorization header
-     *
-     * @return string
-     * @throws NoAuthHeaderException
      */
-    public function getAuthToken(): string
+    public function getAuthToken(): ?string
     {
         $authHeader = $this->getAuthorizationHeader();
         if ($authHeader === null) {
-            throw new NoAuthHeaderException();
+            return null;
         }
         list($jwt) = sscanf($authHeader, 'Bearer %s');
         if (!$jwt) {
-            throw new NoAuthHeaderException();
+            return null;
         }
         return $jwt;
     }
@@ -67,8 +63,6 @@ class RequestReader implements RequestReaderInterface
 
     /**
      * Get the Request data
-     *
-     * @return array
      */
     public function getGraphQLRequestData(): array
     {
