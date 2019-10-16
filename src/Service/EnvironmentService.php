@@ -16,14 +16,14 @@ class EnvironmentService implements EnvironmentServiceInterface
         return Registry::getConfig()->getShopUrl();
     }
 
-    public function getDefaultLanguage(): string
+    public function getLanguage(): string
     {
         $language = Registry::getLang();
         return $language->getLanguageAbbr($language->getBaseLanguage());
     }
 
-    public function getDefaultShopId(): int
+    public function getShopId(): int
     {
-        return \OxidEsales\Eshop\Core\ShopIdCalculator::BASE_SHOP_ID;
+        return Registry::getConfig()->getShopId();
     }
 }

@@ -14,10 +14,6 @@ services:
     class: OxidEsales\GraphQL\Framework\ModuleSetup
     public: true
 
-  OxidEsales\GraphQL\Framework\AppContext:
-    factory: ['OxidEsales\GraphQL\Framework\AppContext', 'createAppContext']
-    class: OxidEsales\GraphQL\Framework\AppContext
-
   OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface:
     class: OxidEsales\GraphQL\Framework\GraphQLQueryHandler
     public: true

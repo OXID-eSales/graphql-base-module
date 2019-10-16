@@ -7,30 +7,30 @@
 
 namespace OxidEsales\GraphQL\Controllers;
 
-use OxidEsales\GraphQL\Framework\AppContext;
 use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Service\EnvironmentServiceInterface;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
 {
     /** @var AuthenticationServiceInterface */
-    protected $authenticationService;
+    protected $authentication;
 
     /** @var  KeyRegistryInterface */
     protected $keyRegistry;
 
-    /** @var AppContext */
-    protected $context;
+    /** @var EnvironmentServiceInterface */
+    protected $environment;
 
     public function __construct(
-        AuthenticationServiceInterface $authenticationService,
-        KeyRegistryInterface $keyRegistry,
-        AppContext $context
+        EnvironmentServiceInterface $environment,
+        AuthenticationServiceInterface $authentication,
+        KeyRegistryInterface $keyRegistry
     ) {
-        $this->authenticationService = $authenticationService;
+        $this->environment = $environment;
+        $this->authentication= $authentication;
         $this->keyRegistry = $keyRegistry;
-        $this->context     = $context;
     }
  
     /**
@@ -39,9 +39,9 @@ class Login
     public function login(string $username, string $password, int $shopid = null): string
     {
         if ($shopid === null) {
-            $shopid = $this->context->getCurrentShopId();
+            $shopid = $this->environment->getShopId();
         }
-        return (string) $this->authenticationService->createToken(
+        return (string) $this->authentication->createToken(
             $username,
             $password,
             $shopid

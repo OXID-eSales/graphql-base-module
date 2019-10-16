@@ -9,24 +9,24 @@ namespace OxidEsales\GraphQL\Controllers;
 
 use OxidEsales\GraphQL\Dao\UserDaoInterface;
 use OxidEsales\GraphQL\DataObject\User as UserDataObject;
-use OxidEsales\GraphQL\Framework\AppContext;
+use OxidEsales\GraphQL\Service\EnvironmentServiceInterface;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class User
 {
-    /** @var AppContext */
-    protected $context;
+    /** @var EnvironmentServiceInterface */
+    protected $environment;
 
     /** @var UserDaoInterface */
     protected $userDao;
 
     public function __construct(
-        AppContext $context,
+        EnvironmentServiceInterface $environment,
         UserDaoInterface $userDao
     ) {
-        $this->context = $context;
+        $this->environment = $environment;
         $this->userDao = $userDao;
     }
  
@@ -38,7 +38,7 @@ class User
     {
         return $this->userDao->getUserByName(
             $username,
-            $this->context->getCurrentShopId()
+            $this->environment->getShopId()
         );
     }
 

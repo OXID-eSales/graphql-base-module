@@ -11,8 +11,6 @@ use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Executor\ExecutionResult;
 use OxidEsales\GraphQL\Exception\HttpErrorInterface;
-use OxidEsales\GraphQL\Service\EnvironmentServiceInterface;
-use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use Psr\Log\LoggerInterface;
 
 class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
@@ -20,16 +18,16 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
 
     /** @var LoggerInterface  */
     private $logger;
-    /** @var EnvironmentServiceInterface  */
-    private $environmentService;
+
     /** @var SchemaFactoryInterface  */
     private $schemaFactory;
-    /** @var KeyRegistryInterface  */
-    private $keyRegistry;
+
     /** @var ErrorCodeProviderInterface  */
     private $errorCodeProvider;
+
     /** @var  RequestReaderInterface */
     private $requestReader;
+
     /** @var  ResponseWriterInterface */
     private $responseWriter;
 
@@ -37,18 +35,14 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
 
     public function __construct(
         LoggerInterface $logger,
-        EnvironmentServiceInterface $environmentService,
         SchemaFactoryInterface $schemaFactory,
-        KeyRegistryInterface $keyRegistry,
         ErrorCodeProviderInterface $errorCodeProvider,
         RequestReaderInterface $requestReader,
         ResponseWriterInterface $responseWriter
     ) {
         $this->logger = $logger;
-        $this->environmentService = $environmentService;
         $this->schemaFactory = $schemaFactory;
         $this->errorCodeProvider = $errorCodeProvider;
-        $this->keyRegistry = $keyRegistry;
         $this->requestReader = $requestReader;
         $this->responseWriter = $responseWriter;
 
