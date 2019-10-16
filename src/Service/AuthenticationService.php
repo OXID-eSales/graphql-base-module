@@ -82,7 +82,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             ->permittedFor(Registry::getConfig()->getShopUrl())
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time)
-            ->expiresAt($time + 3600)
+            ->expiresAt($time + 3600 * 8)
             ->withClaim(Token::CLAIM_SHOPID, Registry::getConfig()->getShopId())
             ->withClaim(Token::CLAIM_LANGID, Registry::getLang()->getBaseLanguage());
         return $token;
