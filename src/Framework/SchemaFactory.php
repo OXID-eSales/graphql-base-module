@@ -10,6 +10,7 @@ namespace OxidEsales\GraphQL\Framework;
 use Mouf\Composer\ClassNameMapper;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Service\AuthorizationServiceInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
@@ -24,14 +25,22 @@ class SchemaFactory implements SchemaFactoryInterface
     private $schema = null;
 
     /** @var AuthenticationServiceInterface */
-    private $authService = null;
+    private $authenticationService = null;
 
+    /** @var AuthorizationServiceInterface */
+    private $authorizationService = null;
+
+    /** @var NamespaceMapperInterface[] */
     private $namespaceMappers = null;
 
-    public function __construct(iterable $namespaceMappers, AuthenticationServiceInterface $authService)
-    {
+    public function __construct(
+        iterable $namespaceMappers,
+        AuthenticationServiceInterface $authenticationService,
+        AuthorizationServiceInterface $authorizationService
+    ) {
         $this->namespaceMappers = $namespaceMappers;
-        $this->authService = $authService;
+        $this->authenticationService = $authenticationService;
+        $this->authorizationService = $authorizationService;
     }
 
     public function getSchema(): Schema
@@ -68,8 +77,8 @@ class SchemaFactory implements SchemaFactoryInterface
 
         $factory->setClassNameMapper($classNameMapper);
 
-        $factory->setAuthenticationService($this->authService)
-                ->setAuthorizationService($this->authService);
+        $factory->setAuthenticationService($this->authenticationService)
+                ->setAuthorizationService($this->authorizationService);
 
         return $this->schema = $factory->createSchema();
     }

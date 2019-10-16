@@ -7,10 +7,6 @@
 
 namespace OxidEsales\GraphQL\Service;
 
-# use OxidEsales\GraphQL\DataObject\TokenRequest;
-# use OxidEsales\GraphQL\DataObject\User;
-# use OxidEsales\GraphQL\Utility\AuthConstants;
-
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;

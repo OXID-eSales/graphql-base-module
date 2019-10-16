@@ -12,7 +12,7 @@ use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServ
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\DataObject\Address;
 use OxidEsales\GraphQL\DataObject\User;
-use OxidEsales\GraphQL\Utility\AuthConstants;
+use OxidEsales\GraphQL\Service\AuthorizationService;
 
 class UserDao implements UserDaoInterface
 {
@@ -202,13 +202,13 @@ class UserDao implements UserDaoInterface
     private function mapGroup(string $oxrights): string
     {
         if ($oxrights === 'user') {
-            return AuthConstants::USER_GROUP_CUSTOMER;
+            return AuthorizationService::USER_GROUP_CUSTOMER;
         }
         if ($oxrights === 'malladmin') {
-            return AuthConstants::USER_GROUP_ADMIN;
+            return AuthorizationService::USER_GROUP_ADMIN;
         }
         if (preg_match("/^\d+$/", $oxrights)) {
-            return AuthConstants::USER_GROUP_SHOPADMIN;
+            return AuthorizationService::USER_GROUP_SHOPADMIN;
         }
         throw new \Exception("Can't map oxrights \"$oxrights\" to any known usergroup.");
     }
@@ -216,13 +216,13 @@ class UserDao implements UserDaoInterface
     private function unmapGroup(User $user): string
     {
         $usergroup = $user->getUsergroup();
-        if ($usergroup === AuthConstants::USER_GROUP_CUSTOMER) {
+        if ($usergroup === AuthorizationService::USER_GROUP_CUSTOMER) {
             return 'user';
         }
-        if ($usergroup === AuthConstants::USER_GROUP_ADMIN) {
+        if ($usergroup === AuthorizationService::USER_GROUP_ADMIN) {
             return 'malladmin';
         }
-        if ($usergroup === AuthConstants::USER_GROUP_SHOPADMIN) {
+        if ($usergroup === AuthorizationService::USER_GROUP_SHOPADMIN) {
             return "" . $user->getShopid();
         }
         throw new \Exception("Can't map usergroup \"$usergroup\" to any known oxright.");

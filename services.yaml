@@ -44,39 +44,21 @@ services:
   OxidEsales\GraphQL\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQL\Service\AuthenticationService
 
-  OxidEsales\GraphQL\Service\PermissionsServiceInterface:
-    class: OxidEsales\GraphQL\Service\PermissionsService
-    arguments: [!tagged graphql_permissions_provider]
-
-  OxidEsales\GraphQL\Service\LoginPermissionsProvider:
-    class: OxidEsales\GraphQL\Service\PermissionsProvider
-    calls:
-      - ['addPermission', ['anonymous', 'mayreaddata']]
-      - ['addPermission', ['customer', 'mayreaddata']]
-      - ['addPermission', ['admin', 'mayreaddata']]
-      - ['addPermission', ['shopadmin', 'mayreaddata']]
-    tags: ['graphql_permissions_provider']
-
-  OxidEsales\GraphQL\Service\UserPermissionsProvider:
-    class: OxidEsales\GraphQL\Service\PermissionsProvider
-    calls:
-      - ['addPermission', ['anonymous', 'maycreatecustomer']]
-      - ['addPermission', ['customer', 'mayupdateself']]
-      - ['addPermission', ['customer', 'maygetself']]
-      - ['addPermission', ['shopadmin', 'maycreateanyuser']]
-      - ['addPermission', ['shopadmin', 'maygetshopuser']]
-      - ['addPermission', ['admin', 'maycreateanyuser']]
-      - ['addPermission', ['admin', 'maygetanyuser']]
-      - ['addPermission', ['admin', 'maycreateuserforothershop']]
-      - ['addPermission', ['admin', 'mayupdateanyuser']]
-    tags: ['graphql_permissions_provider']
+  OxidEsales\GraphQL\Service\AuthorizationServiceInterface:
+    class: OxidEsales\GraphQL\Service\AuthorizationService
+    arguments:
+        $permissionProviders: [!tagged graphql_permission_provider]
 
   OxidEsales\GraphQL\Controllers\:
     resource: 'src/Controllers/*'
     public: true
 
-  OxidEsales\GraphQL\Framework\NamespaceMapper:
-    class: OxidEsales\GraphQL\Framework\NamespaceMapper
+  OxidEsales\GraphQL\Service\PermissionProvider:
+    class: OxidEsales\GraphQL\Service\PermissionProvider
+    tags: ['graphql_permission_provider']
+
+  OxidEsales\GraphQL\Service\NamespaceMapper:
+    class: OxidEsales\GraphQL\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']
 
   OxidEsales\GraphQL\Framework\SchemaFactoryInterface:

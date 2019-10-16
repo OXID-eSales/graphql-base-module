@@ -10,7 +10,7 @@ namespace OxidEsales\GraphQL\DataObject;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
-use OxidEsales\GraphQL\Utility\AuthConstants;
+use OxidEsales\GraphQL\Service\AuthorizationService;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
@@ -51,7 +51,7 @@ class User
         string $passwordhash,
         string $firstname,
         string $lastname,
-        string $usergroup = AuthConstants::USER_GROUP_CUSTOMER,
+        string $usergroup = AuthorizationService::USER_GROUP_CUSTOMER,
         Address $address = null
     ) {
         $this->id = $id;
@@ -85,7 +85,7 @@ class User
              ->get(PasswordServiceBridgeInterface::class)
              ->hash($password);
         if ($usergroup === null) {
-            $usergroup = AuthConstants::USER_GROUP_CUSTOMER;
+            $usergroup = AuthorizationService::USER_GROUP_CUSTOMER;
         }
         return new self(
             $id,

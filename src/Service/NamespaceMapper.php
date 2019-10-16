@@ -5,7 +5,9 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Framework;
+namespace OxidEsales\GraphQL\Service;
+
+use \OxidEsales\GraphQL\Framework\NamespaceMapperInterface;
 
 class NamespaceMapper implements NamespaceMapperInterface
 {
