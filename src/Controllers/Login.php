@@ -36,7 +36,7 @@ class Login
     /**
      * @Query
      */
-    public function login(string $username, string $password, int $shopid = null): string
+    public function token(string $username, string $password, int $shopid = null): string
     {
         if ($shopid === null) {
             $shopid = $this->environment->getShopId();
