@@ -46,11 +46,23 @@ HTTP `Authorization` header like this:
 Authorization: Bearer a-very-long-jwt
 ```
 
-## Tests
+## Testing
+
+### Linting and Syntax check
 
 ```bash
-$ composer install
 $ composer test
+```
+
+### Unit tests
+
+- install this module into a running OXID eShop
+- change the `test_config.yml`
+  - add `oe/graphql-base` to the `partial_module_paths`
+  - set `activate_all_modules` to `true`
+
+```bash
+$ ./vendor/bin/runtests
 ```
 
 ## Build with
