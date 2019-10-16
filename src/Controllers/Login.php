@@ -15,7 +15,7 @@ use TheCodingMachine\GraphQLite\Annotations\Query;
 class Login
 {
     /** @var AuthenticationServiceInterface */
-    protected $authService;
+    protected $authenticationService;
 
     /** @var  KeyRegistryInterface */
     protected $keyRegistry;
@@ -24,11 +24,11 @@ class Login
     protected $context;
 
     public function __construct(
-        AuthenticationServiceInterface $authService,
+        AuthenticationServiceInterface $authenticationService,
         KeyRegistryInterface $keyRegistry,
         AppContext $context
     ) {
-        $this->authService = $authService;
+        $this->authenticationService = $authenticationService;
         $this->keyRegistry = $keyRegistry;
         $this->context     = $context;
     }
@@ -41,31 +41,10 @@ class Login
         if ($shopid === null) {
             $shopid = $this->context->getCurrentShopId();
         }
-        return (string) $this->authService->createToken(
+        return (string) $this->authenticationService->createToken(
             $username,
             $password,
             $shopid
         );
-        /*
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setUsername($username);
-        $tokenRequest->setPassword($password);
-        if ($lang !== null) {
-            $tokenRequest->setLang($lang);
-        } else {
-            $tokenRequest->setLang($this->context->getDefaultShopLanguage());
-        }
-        if ($shopid !== null) {
-            $tokenRequest->setShopid($shopid);
-        } else {
-            $tokenRequest->setShopid($this->context->getDefaultShopId());
-        }
-        if ($this->context->hasAuthToken()) {
-            $tokenRequest->setCurrentToken($this->context->getAuthToken());
-        }
-        $token = $this->authService->getToken($tokenRequest);
-        $signatureKey = $this->keyRegistry->getSignatureKey();
-        return $token->getJwt($signatureKey);
-        */
     }
 }
