@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Controllers;
+namespace OxidEsales\GraphQL\Controller;
 
 use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Service\EnvironmentServiceInterface;
