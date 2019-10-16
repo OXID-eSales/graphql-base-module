@@ -9,7 +9,7 @@ namespace OxidEsales\GraphQL\Service;
 
 use \OxidEsales\GraphQL\Framework\PermissionProviderInterface;
 
-class NamespaceMapper implements PermissionProviderInterface
+class PermissionProvider implements PermissionProviderInterface
 {
     public function getPermissions(): array
     {

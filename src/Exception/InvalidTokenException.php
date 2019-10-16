@@ -9,11 +9,11 @@ namespace OxidEsales\GraphQL\Exception;
 
 use GraphQL\Error\ClientAware;
 
-class InvalidLoginException extends \Exception implements ClientAware, HttpErrorInterface
+class InvalidTokenException extends \Exception implements ClientAware, HttpErrorInterface
 {
     public function getHttpStatus()
     {
-        return 401;
+        return 403;
     }
 
     public function isClientSafe()

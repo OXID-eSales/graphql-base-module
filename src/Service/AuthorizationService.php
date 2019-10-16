@@ -19,14 +19,17 @@ class AuthorizationService implements AuthorizationServiceInterface
     /** @var RequestReaderInterface */
     private $requestReader;
 
-    /** @var PermissionProvidersInterface[] */
-    private $permissionProviders;
+    /** @var array<string, string> */
+    private $permissions = [];
 
     public function __construct(
         iterable $permissionProviders,
         RequestReaderInterface $requestReader
     ) {
-        $this->permissionProviders = $permissionProviders;
+        /** @var $permissionProvider \OxidEsales\GraphQL\Framework\PermissionProviderInterface */
+        foreach ($permissionProviders as $permissionProvider) {
+            $permissions = $permissionProvider->getPermissions();
+        }
         $this->requestReader = $requestReader;
     }
  

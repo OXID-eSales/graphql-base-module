@@ -47,7 +47,7 @@ services:
   OxidEsales\GraphQL\Service\AuthorizationServiceInterface:
     class: OxidEsales\GraphQL\Service\AuthorizationService
     arguments:
-        $permissionProviders: [!tagged graphql_permission_provider]
+        $permissionProviders: !tagged graphql_permission_provider
 
   OxidEsales\GraphQL\Controllers\:
     resource: 'src/Controllers/*'

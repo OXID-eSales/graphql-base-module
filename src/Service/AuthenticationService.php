@@ -18,7 +18,7 @@ use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\GraphQL\Dao\UserDaoInterface;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
-use OxidEsales\GraphQL\Exception\NoAuthHeaderException;
+use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
@@ -28,16 +28,16 @@ class AuthenticationService implements AuthenticationServiceInterface
     const CLAIM_GROUP    = 'group';
 
     /** @var KeyRegistryInterface */
-    private $keyRegistry;
+    private $keyRegistry = null;
 
-    /** @var RequestReaderInterface */
-    private $requestReader;
+    /** @var Token */
+    private $token = null;
 
-    /** @var UserDaoInterface */
-    private $userDao;
+    /** @var UserDaoInterface|null */
+    private $userDao = null;
 
     /** @var PasswordServiceBridgeInterface */
-    private $passwordService;
+    private $passwordService = null;
 
     public function __construct(
         KeyRegistryInterface $keyRegistry,
@@ -46,19 +46,24 @@ class AuthenticationService implements AuthenticationServiceInterface
         PasswordServiceBridgeInterface $passwordService
     ) {
         $this->keyRegistry = $keyRegistry;
-        $this->requestReader = $requestReader;
+        try {
+            $this->token = (new Parser())->parse($requestReader->getAuthToken());
+        } catch (\Exception $e) {
+            $this->token = null;
+        }
         $this->userDao = $userDao;
         $this->passwordService = $passwordService;
     }
  
     public function isLogged(): bool
     {
-        try {
-            $token = $this->requestReader->getAuthToken();
-        } catch (NoAuthHeaderException $e) {
+        if ($this->token === null) {
             return false;
         }
-        return $this->isValidToken($token);
+        if ($this->isValidToken($this->token)) {
+            return true;
+        }
+        throw new InvalidTokenException('The token is invalid');
     }
 
     public function isAllowed(string $right): bool
@@ -105,9 +110,8 @@ class AuthenticationService implements AuthenticationServiceInterface
      * - has valid issuer and audience
      * - has valid shop claim
      */
-    private function isValidToken(string $token): bool
+    private function isValidToken(Token $token): bool
     {
-        $token = (new Parser())->parse($token);
         if (!$token->verify($this->getSigner(), $this->getSignatureKey())) {
             return false;
         }
