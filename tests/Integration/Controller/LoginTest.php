@@ -17,12 +17,11 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             400,
-            $this->queryResult['status']
+            self::$queryResult['status']
         );
 
         unset($_REQUEST['query']);
     }
-
 
     public function testLoginWithWrongCredentials()
     {
@@ -30,7 +29,7 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             401,
-            $this->queryResult['status']
+            self::$queryResult['status']
         );
 
         unset($_REQUEST['query']);
@@ -42,7 +41,7 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             200,
-            $this->queryResult['status']
+            self::$queryResult['status']
         );
         
         unset($_REQUEST['query']);

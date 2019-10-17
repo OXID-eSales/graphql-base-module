@@ -31,8 +31,8 @@ class AuthenticationService implements AuthenticationServiceInterface
     /** @var KeyRegistryInterface */
     private $keyRegistry = null;
 
-    /** @var Token */
-    private $token = null;
+    /** @var RequestReaderInterface */
+    private $requestReader = null;
 
     /** @var UserDaoInterface|null */
     private $userDao = null;
@@ -47,29 +47,26 @@ class AuthenticationService implements AuthenticationServiceInterface
         PasswordServiceBridgeInterface $passwordService
     ) {
         $this->keyRegistry = $keyRegistry;
-        try {
-            $this->token = (new Parser())->parse($requestReader->getAuthToken());
-        } catch (\Exception $e) {
-            $this->token = null;
-        }
+        $this->requestReader = $requestReader;
         $this->userDao = $userDao;
         $this->passwordService = $passwordService;
     }
  
     public function isLogged(): bool
     {
-        if ($this->token === null) {
+        $token = null;
+        try {
+            $token = (new Parser())->parse($this->requestReader->getAuthToken());
+        } catch (\Exception $e) {
             return false;
         }
-        if ($this->isValidToken($this->token)) {
+        if ($token === null) {
+            return false;
+        }
+        if ($this->isValidToken($token)) {
             return true;
         }
         throw new InvalidTokenException('The token is invalid');
-    }
-
-    public function isAllowed(string $right): bool
-    {
-        return false;
     }
 
     public function createToken(string $username, string $password, int $shopid = null): Token

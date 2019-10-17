@@ -18,51 +18,71 @@ use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
 
 abstract class TestCase extends PHPUnitTestCase
 {
-    protected $queryResult = null;
-    protected $logResult = null;
-    protected $container = null;
+    protected static $queryResult = null;
+    protected static $logResult = null;
+    protected static $container = null;
 
-    public function responseCallback($body, $status)
+    public static function responseCallback($body, $status)
     {
-        $this->queryResult = [
+        self::$queryResult = [
             'status' => $status,
-            'body' => $result
+            'body' => $body
         ];
     }
 
-    public function loggerCallback(string $message)
+    public static function loggerCallback(string $message)
     {
-        $this->logResult .= $message;
+        self::$logResult .= $message;
+    }
+
+    /**
+     * this empty methods prevents phpunit from resetting
+     * invocation mocker and therefore we can use the same
+     * mocks for all tests and do not need to reinitialize
+     * the container for every test in this file which
+     * makes the whole thing pretty fast :-)
+     */
+    protected function verifyMockObjects()
+    {
+    }
+
+    protected function tearDown(): void
+    {
+        static::$queryResult = null;
+        static::$logResult = null;
     }
 
     protected function setUp(): void
     {
+        if (self::$container !== null) {
+            return;
+        }
         $containerFactory = new TestContainerFactory();
-        $this->container = $containerFactory->create();
+        self::$container = $containerFactory->create();
 
         $responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)->getMock();
         $responseWriter->method('renderJsonResponse')
                        ->willReturnCallback([
-                           $this,
+                           TestCase::class,
                            'responseCallback'
                        ]);
-        $this->container->set(
+        self::$container->set(
             ResponseWriterInterface::class,
             $responseWriter
         );
-        $this->container->autowire(
+        self::$container->autowire(
             ResponseWriterInterface::class,
             ResponseWriter::class
         );
 
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $keyRegistry->method('getSignatureKey')
-                    ->willReturn('as8dhfasuhef.a8hefa8hefiauhefaishefo9sh4of89h4o8fhso84hf.oas8h4fo8wh4foawfasdfaskdhf.asdfa');
-        $this->container->set(
+                    ->willReturn(base64_encode(random_bytes(64)));
+        self::$container->set(
             KeyRegistryInterface::class,
             $keyRegistry
         );
-        $this->container->autowire(
+        self::$container->autowire(
             KeyRegistryInterface::class,
             KeyRegistry::class
         );
@@ -70,19 +90,19 @@ abstract class TestCase extends PHPUnitTestCase
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->method('error')
                ->willReturnCallback([
-                   $this,
+                   TestCase::class,
                    'loggerCallback'
                ]);
-        $this->container->set(
+        self::$container->set(
             LoggerInterface::class,
             $logger
         );
-        $this->container->autowire(
+        self::$container->autowire(
             LoggerInterface::class,
             get_class($logger)
         );
 
-        $this->container->compile();
+        self::$container->compile();
         
         unset($_REQUEST['query']);
     }
@@ -90,7 +110,7 @@ abstract class TestCase extends PHPUnitTestCase
     protected function execQuery(string $query)
     {
         $_REQUEST['query'] = $query;
-        $this->container->get(GraphQLQueryHandlerInterface::class)
+        self::$container->get(GraphQLQueryHandlerInterface::class)
                         ->executeGraphQLQuery();
         unset($_REQUEST['query']);
     }
