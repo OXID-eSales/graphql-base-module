@@ -5,9 +5,9 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Tests\Acceptance\Controller;
+namespace OxidEsales\GraphQL\Tests\Integration\Controller;
 
-use OxidEsales\GraphQL\Tests\Acceptance\TestCase;
+use OxidEsales\GraphQL\Tests\Integration\TestCase;
 
 class LoginTest extends TestCase
 {
@@ -38,7 +38,7 @@ class LoginTest extends TestCase
 
     public function testLoginWithValidCredentials()
     {
-        $this->execQuery('query { token (username: "test", password: "test") }');
+        $this->execQuery('query { token (username: "admin", password: "admin") }');
 
         $this->assertEquals(
             200,
