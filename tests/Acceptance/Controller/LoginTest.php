@@ -7,54 +7,13 @@
 
 namespace OxidEsales\GraphQL\Tests\Acceptance\Controller;
 
-use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
-use OxidEsales\GraphQL\Framework\ResponseWriter;
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Tests\Acceptance\TestCase;
 
 class LoginTest extends TestCase
 {
-
-    protected $queryResult = null;
-    protected $container = null;
-
-    public function responseCallback($body, $status)
-    {
-        $this->queryResult = [
-            'status' => $status,
-            'body' => $result
-        ];
-    }
-
-    public function setUp()
-    {
-        $containerFactory = new TestContainerFactory();
-        $this->container = $containerFactory->create();
-
-        $responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)->getMock();
-        $responseWriter->method('renderJsonResponse')
-                       ->willReturnCallback([$this, 'responseCallback']);
-        $this->container->set(
-            ResponseWriterInterface::class,
-            $responseWriter
-        );
-
-        $this->container->autowire(
-            ResponseWriterInterface::class,
-            ResponseWriter::class
-        );
-
-        $this->container->compile();
-
-    }
-
     public function testLoginWithMissingCredentials()
     {
-        $_REQUEST['query'] = "query { token }";
-
-        $this->container->get(GraphQLQueryHandlerInterface::class)
-                        ->executeGraphQLQuery();
+        $this->execQuery('query { token }');
 
         $this->assertEquals(
             400,
@@ -67,10 +26,7 @@ class LoginTest extends TestCase
 
     public function testLoginWithWrongCredentials()
     {
-        $_REQUEST['query'] = "query { token (username: \"foo\", password: \"bar\") }";
-
-        $this->container->get(GraphQLQueryHandlerInterface::class)
-                        ->executeGraphQLQuery();
+        $this->execQuery('query { token (username: "foo", password: "bar") }');
 
         $this->assertEquals(
             401,
@@ -82,10 +38,7 @@ class LoginTest extends TestCase
 
     public function testLoginWithValidCredentials()
     {
-        $_REQUEST['query'] = "query { token (username: \"test\", password: \"test\") }";
-
-        $this->container->get(GraphQLQueryHandlerInterface::class)
-                        ->executeGraphQLQuery();
+        $this->execQuery('query { token (username: "test", password: "test") }');
 
         $this->assertEquals(
             200,
