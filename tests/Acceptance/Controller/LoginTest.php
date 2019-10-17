@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Tests\Integration\Controller;
+namespace OxidEsales\GraphQL\Tests\Acceptance\Controller;
 
 use PHPUnit\Framework\TestCase;
 use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
