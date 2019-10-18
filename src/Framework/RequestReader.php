@@ -64,10 +64,10 @@ class RequestReader implements RequestReaderInterface
     /**
      * Get the Request data
      */
-    public function getGraphQLRequestData(): array
+    public function getGraphQLRequestData(string $inputFile = 'php://input'): array
     {
         if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-            $raw = file_get_contents('php://input') ? : '';
+            $raw = file_get_contents($inputFile) ? : '';
             $data = json_decode($raw, true) ? : [];
         } else {
             $data = $_REQUEST;
@@ -78,10 +78,6 @@ class RequestReader implements RequestReaderInterface
             'variables'     => null,
             'operationName' => null
         ];
-
-        if (null === $data['query']) {
-            $data['query'] = '{welcome}';
-        }
 
         return $data;
     }
