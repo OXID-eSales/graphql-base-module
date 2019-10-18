@@ -10,9 +10,9 @@ namespace OxidEsales\GraphQL\Framework;
 use Mouf\Composer\ClassNameMapper;
 use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Service\AuthorizationServiceInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class SchemaFactory

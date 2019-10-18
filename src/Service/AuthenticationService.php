@@ -59,7 +59,7 @@ class AuthenticationService implements AuthenticationServiceInterface
             return false;
         }
         try {
-           $token = (new Parser())->parse($token);
+            $token = (new Parser())->parse($token);
         } catch (\Exception $e) {
             throw new InvalidTokenException('The token is invalid');
         }

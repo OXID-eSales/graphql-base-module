@@ -7,17 +7,16 @@
 
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
-use PHPUnit\Framework\TestCase;
+use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Exception\NoSignatureKeyException;
-use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use OxidEsales\GraphQL\Service\KeyRegistry;
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Core\Config;
+use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use PHPUnit\Framework\TestCase;
 
 class KeyRegistryTest extends TestCase
 {
-
     protected static $container = null;
 
     protected static $keyRegistry = null;
@@ -56,7 +55,7 @@ class KeyRegistryTest extends TestCase
     {
         $iterations = 5;
         $keys = [];
-        for ($i = 0; $i < $iterations; $i ++){
+        for ($i = 0; $i < $iterations; $i ++) {
             $key = self::$keyRegistry->generateSignatureKey();
             $this->assertGreaterThanOrEqual(
                 64,
@@ -116,5 +115,4 @@ class KeyRegistryTest extends TestCase
         }
         Registry::set(Config::class, $oldConfig);
     }
-
 }

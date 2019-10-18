@@ -7,22 +7,20 @@
 
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
-use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Service\AuthenticationService;
-use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Framework\RequestReaderInterface;
-use OxidEsales\GraphQL\Framework\RequestReader;
+use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
-use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Framework\RequestReader;
+use OxidEsales\GraphQL\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Service\KeyRegistry;
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\Eshop\Core\Config;
+use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use PHPUnit\Framework\TestCase;
 
 class AuthenticationServiceTest extends TestCase
 {
-
     protected static $authentication = null;
 
     protected static $token = null;
@@ -61,7 +59,7 @@ class AuthenticationServiceTest extends TestCase
 
         $requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
         $requestReader->method('getAuthToken')
-                      ->will($this->returnCallback(function() {
+                      ->will($this->returnCallback(function () {
                           return AuthenticationServiceTest::getToken();
                       }));
         self::$container->set(
@@ -179,5 +177,4 @@ class AuthenticationServiceTest extends TestCase
         );
         Registry::set(Config::class, $oldConfig);
     }
-
 }

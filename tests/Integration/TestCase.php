@@ -7,14 +7,14 @@
 
 namespace OxidEsales\GraphQL\Tests\Integration;
 
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
-use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
-use OxidEsales\GraphQL\Framework\ResponseWriter;
-use OxidEsales\GraphQL\Service\KeyRegistryInterface;
-use OxidEsales\GraphQL\Service\KeyRegistry;
-use Psr\Log\LoggerInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Framework\ResponseWriter;
+use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
+use OxidEsales\GraphQL\Service\KeyRegistry;
+use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use Psr\Log\LoggerInterface;
 
 abstract class TestCase extends PHPUnitTestCase
 {

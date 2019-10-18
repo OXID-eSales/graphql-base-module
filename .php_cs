@@ -2,6 +2,7 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in('src/')
+    ->in('tests/')
 ;
 
 return PhpCsFixer\Config::create()

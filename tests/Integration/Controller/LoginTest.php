@@ -46,5 +46,4 @@ class LoginTest extends TestCase
         
         unset($_REQUEST['query']);
     }
-
 }
