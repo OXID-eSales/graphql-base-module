@@ -65,6 +65,18 @@ $ composer test
 $ ./vendor/bin/runtests
 ```
 
+## Trouble shooting
+
+### Apache HTTP Authorization
+
+php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default.
+For this workaround to work, add these lines to your .htaccess file:
+
+```
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+```
+
 ## Build with
 
 - [GraphQLite](https://graphqlite.thecodingmachine.io/)

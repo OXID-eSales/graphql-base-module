@@ -77,8 +77,8 @@ class RequestReaderTest extends TestCase
     public function testGetAuthTokenWithCorrectFormat()
     {
         $headers = [
-            'AUTHORIZATION',
-            'HTTP_AUTHORIZATION'
+            'HTTP_AUTHORIZATION',
+            'REDIRECT_HTTP_AUTHORIZATION'
         ];
         foreach ($headers as $header) {
             $_SERVER[$header] = 'Bearer authtoken';

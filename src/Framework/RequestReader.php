@@ -28,35 +28,21 @@ class RequestReader implements RequestReaderInterface
     }
 
     /**
-     *  Get header Authorization
+     * Get HTTP-Authorization header
      *
-     *  @return string|null
+     * php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default
+     * For this workaround to work, add these lines to your .htaccess file:
+     * RewriteCond %{HTTP:Authorization} ^(.+)$
+     * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+     *
+     * @return string|null
      */
     private function getAuthorizationHeader(): ?string
     {
-        // should work in most cases
-        if (isset($_SERVER['AUTHORIZATION'])) {
-            return trim($_SERVER["AUTHORIZATION"]);
-        }
-        // FastCGI
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             return trim($_SERVER["HTTP_AUTHORIZATION"]);
-        }
-        if (\function_exists('apache_request_headers')) {
-            $requestHeaders = \apache_request_headers();
-            // Server-side fix
-            //(a nice side-effect of this fix means we don't care about capitalization for Authorization)
-            $requestHeaders = array_combine(
-                array_map(
-                    'ucwords',
-                    array_keys($requestHeaders)
-                ),
-                array_values($requestHeaders)
-            );
-
-            if (isset($requestHeaders['Authorization'])) {
-                return trim($requestHeaders['Authorization']);
-            }
+        } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            return trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
         }
         return null;
     }
