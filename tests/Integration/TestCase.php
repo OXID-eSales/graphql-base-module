@@ -9,10 +9,10 @@ namespace OxidEsales\GraphQL\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Framework\RequestReader;
+use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
-use OxidEsales\GraphQL\Framework\RequestReaderInterface;
-use OxidEsales\GraphQL\Framework\RequestReader;
 use OxidEsales\GraphQL\Service\KeyRegistry;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
@@ -157,5 +157,4 @@ abstract class TestCase extends PHPUnitTestCase
         self::$container->get(GraphQLQueryHandlerInterface::class)
                         ->executeGraphQLQuery();
     }
-
 }

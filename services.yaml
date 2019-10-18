@@ -4,12 +4,6 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\Eshop\Core\PasswordSaltGenerator:
-    class: OxidEsales\Eshop\Core\PasswordSaltGenerator
-
-  OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker:
-    class: OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker
-
   OxidEsales\GraphQL\Framework\ModuleSetup:
     class: OxidEsales\GraphQL\Framework\ModuleSetup
     public: true
@@ -33,9 +27,6 @@ services:
   OxidEsales\GraphQL\Service\KeyRegistryInterface:
     class: OxidEsales\GraphQL\Service\KeyRegistry
     public: true
-
-  OxidEsales\GraphQL\Service\EnvironmentServiceInterface:
-    class: OxidEsales\GraphQL\Service\EnvironmentService
 
   OxidEsales\GraphQL\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQL\Service\AuthenticationService

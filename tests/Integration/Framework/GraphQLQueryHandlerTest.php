@@ -19,7 +19,6 @@ class GraphQLQueryHandlerTest extends TestCase
             200,
             self::$queryResult['status']
         );
-
     }
 
     public function testExceptionInRoute()

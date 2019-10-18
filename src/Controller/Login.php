@@ -7,8 +7,8 @@
 
 namespace OxidEsales\GraphQL\Controller;
 
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Service\EnvironmentServiceInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
@@ -16,14 +16,9 @@ class Login
     /** @var AuthenticationServiceInterface */
     protected $authentication;
 
-    /** @var EnvironmentServiceInterface */
-    protected $environment;
-
     public function __construct(
-        EnvironmentServiceInterface $environment,
         AuthenticationServiceInterface $authentication
     ) {
-        $this->environment = $environment;
         $this->authentication= $authentication;
     }
  
@@ -35,7 +30,7 @@ class Login
         return (string) $this->authentication->createToken(
             $username,
             $password,
-            $this->environment->getShopId()
+            Registry::getConfig()->getShopId()
         );
     }
 }

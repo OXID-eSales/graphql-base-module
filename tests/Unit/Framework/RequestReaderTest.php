@@ -11,7 +11,6 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
-use OxidEsales\GraphQL\Framework\RequestReader;
 use PHPUnit\Framework\TestCase;
 
 class RequestReaderTest extends TestCase
@@ -115,5 +114,4 @@ class RequestReaderTest extends TestCase
         );
         unset($_SERVER['CONTENT_TYPE']);
     }
-
 }
