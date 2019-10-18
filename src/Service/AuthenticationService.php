@@ -71,19 +71,6 @@ class AuthenticationService implements AuthenticationServiceInterface
 
     public function createToken(string $username, string $password, int $shopid = null): Token
     {
-        /**
-         * this is not working with the "old" md5 passworts from testing library
-         * so we could douplicate the code from User::login() or just call it for
-         * the time being and live with it ;-)
-        $user = $this->userDao->getUserByName($username, $shopid);
-        if (!$user ||
-            !$this->passwordService->verifyPassword(
-                $password,
-                $user->getPasswordhash()
-            )) {
-            throw new InvalidLoginException('Username/password combination is invalid');
-        }
-         */
         try {
             oxNew(User::class)->login($username, $password, false);
         } catch (\Exception $e) {
