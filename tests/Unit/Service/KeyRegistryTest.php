@@ -86,7 +86,7 @@ class KeyRegistryTest extends TestCase
             ['a8sohflkashdflkjashdfkjashdfkljahsdlkfjhaskldjfhakjlsdfhlkjasdhflkajshdflkajsdhflkjashdflkjashdlfkjahsldkfjhalkjdsfasdf', true]
         ];
     }
-    
+
     /**
      * @dataProvider signatureKeyProvider
      */

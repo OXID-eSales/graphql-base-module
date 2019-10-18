@@ -24,7 +24,7 @@ class AuthenticationServiceTest extends TestCase
     protected static $authentication = null;
 
     protected static $token = null;
-    
+
     protected static $signature = null;
 
     protected static $container = null;

@@ -19,8 +19,6 @@ class LoginTest extends TestCase
             400,
             self::$queryResult['status']
         );
-
-        unset($_REQUEST['query']);
     }
 
     public function testLoginWithWrongCredentials()
@@ -31,8 +29,6 @@ class LoginTest extends TestCase
             401,
             self::$queryResult['status']
         );
-
-        unset($_REQUEST['query']);
     }
 
     public function testLoginWithValidCredentials()
@@ -43,7 +39,21 @@ class LoginTest extends TestCase
             200,
             self::$queryResult['status']
         );
-        
-        unset($_REQUEST['query']);
+    }
+
+    public function testLoginWithValidCredentialsInVariables()
+    {
+        $this->execQuery(
+            'query ($username: String!, $password: String!) { token (username: $username, password: $password) }',
+            [
+                'username' => 'admin',
+                'password' => 'admin'
+            ]
+        );
+
+        $this->assertEquals(
+            200,
+            self::$queryResult['status']
+        );
     }
 }

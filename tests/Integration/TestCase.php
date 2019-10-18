@@ -11,6 +11,8 @@ use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
 use OxidEsales\GraphQL\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
+use OxidEsales\GraphQL\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Framework\RequestReader;
 use OxidEsales\GraphQL\Service\KeyRegistry;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
@@ -21,6 +23,8 @@ abstract class TestCase extends PHPUnitTestCase
     protected static $queryResult = null;
     protected static $logResult = null;
     protected static $container = null;
+    protected static $token = null;
+    protected static $query = null;
 
     public static function responseCallback($body, $status)
     {
@@ -33,6 +37,22 @@ abstract class TestCase extends PHPUnitTestCase
     public static function loggerCallback(string $message)
     {
         self::$logResult .= $message;
+    }
+
+    public static function getAuthToken(): ?string
+    {
+        if (self::$token === null) {
+            return null;
+        }
+        return (string) self::$token;
+    }
+
+    public static function getGraphQLRequestData(): array
+    {
+        if (self::$query === null) {
+            return [];
+        }
+        return self::$query;
     }
 
     /**
@@ -50,6 +70,8 @@ abstract class TestCase extends PHPUnitTestCase
     {
         static::$queryResult = null;
         static::$logResult = null;
+        static::$query = null;
+        static::$token = null;
     }
 
     protected function setUp(): void
@@ -73,6 +95,26 @@ abstract class TestCase extends PHPUnitTestCase
         self::$container->autowire(
             ResponseWriterInterface::class,
             ResponseWriter::class
+        );
+
+        $requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
+        $requestReader->method('getAuthToken')
+                      ->willReturnCallback([
+                           TestCase::class,
+                          'getAuthToken'
+                      ]);
+        $requestReader->method('getGraphQLRequestData')
+                      ->willReturnCallback([
+                           TestCase::class,
+                          'getGraphQLRequestData'
+                      ]);
+        self::$container->set(
+            RequestReaderInterface::class,
+            $requestReader
+        );
+        self::$container->autowire(
+            RequestReaderInterface::class,
+            RequestReader::class
         );
 
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
@@ -103,20 +145,17 @@ abstract class TestCase extends PHPUnitTestCase
         );
 
         self::$container->compile();
-        
-        unset($_REQUEST['query']);
     }
 
-    protected function execQuery(string $query)
+    protected function execQuery(string $query, array $variables = null, string $operationName = null)
     {
-        $_REQUEST['query'] = $query;
+        self::$query = [
+            'query' => $query,
+            'variables' => $variables,
+            'operationName' => $operationName
+        ];
         self::$container->get(GraphQLQueryHandlerInterface::class)
                         ->executeGraphQLQuery();
-        unset($_REQUEST['query']);
     }
 
-    public static function tearDownAfterClass(): void
-    {
-        unset($_REQUEST['query']);
-    }
 }

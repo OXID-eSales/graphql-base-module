@@ -60,10 +60,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
             $queryData = $this->requestReader->getGraphQLRequestData();
             $result = $this->executeQuery($queryData);
         } catch (\Exception $e) {
-            $reflectionClass = new \ReflectionClass($e);
             if ($e instanceof HttpErrorInterface) {
-                // Thank god. Our own exceptions provide a http status.
-                /** @var HttpErrorInterface $e */
                 $httpStatus = $e->getHttpStatus();
             }
             $result = $this->createErrorResult($e);
@@ -77,13 +74,12 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
 
     private function createErrorResult(\Exception $e): ExecutionResult
     {
-        $msg = $e->getMessage();
-        if (! $msg) {
-            $msg = 'Unknown error: ' . $e->getTraceAsString();
-        }
-        $error = new Error($msg);
-        $result = new ExecutionResult(null, [$error]);
-        return $result;
+        return new ExecutionResult(
+            null,
+            [
+                new Error($e->getMessage())
+            ]
+        );
     }
 
     /**
@@ -96,12 +92,13 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
         $graphQL = new \GraphQL\GraphQL();
         $variables = null;
         if (isset($queryData['variables'])) {
-            $variables = (array) $queryData['variables'];
+            $variables = $queryData['variables'];
         }
         $operationName = null;
         if (isset($queryData['operationName'])) {
             $operationName = $queryData['operationName'];
         }
+
         $result = $graphQL->executeQuery(
             $this->schemaFactory->getSchema(),
             $queryData['query'],
