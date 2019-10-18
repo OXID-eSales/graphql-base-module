@@ -17,6 +17,8 @@ use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use OxidEsales\GraphQL\Service\KeyRegistry;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\Config;
 
 class AuthenticationServiceTest extends TestCase
 {
@@ -90,13 +92,29 @@ class AuthenticationServiceTest extends TestCase
 
     public function testCreateTokenWithInvalidCredentials()
     {
+        self::$token = null;
         $this->expectException(InvalidLoginException::class);
         self::$authentication->createToken('foo', 'bar', 999);
     }
 
     public function testIsLoggedWithoutToken()
     {
+        self::$token = null;
         $this->assertFalse(self::$authentication->isLogged());
+    }
+
+    public function testIsLoggedWithInvalidToken()
+    {
+        self::$token = 'invalid';
+        $this->expectException(InvalidTokenException::class);
+        self::$authentication->isLogged();
+    }
+
+    public function testIsLoggedWithFormallyCorrectButInvalidToken()
+    {
+        $this->expectException(InvalidTokenException::class);
+        self::$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+        self::$authentication->isLogged();
     }
 
     public function testCreateTokenWithValidCredentials()
@@ -114,6 +132,52 @@ class AuthenticationServiceTest extends TestCase
     public function testIsLoggedWithValidToken()
     {
         $this->assertTrue(self::$authentication->isLogged());
+    }
+
+    /**
+     * @depends testCreateTokenWithValidCredentials
+     *
+     * can not use expectException due to needed cleanup in registry config
+     */
+    public function testIsLoggedWithValidForAnotherShopIdToken()
+    {
+        $oldConfig = Registry::getConfig();
+        $config = $this->getMockBuilder(Config::class)->getMock();
+        $config->method('getShopId')
+               ->willReturn(-1);
+        Registry::set(Config::class, $config);
+        try {
+            self::$authentication->isLogged();
+        } catch (InvalidTokenException $e) {
+        }
+        $this->assertInstanceOf(
+            InvalidTokenException::class,
+            $e
+        );
+        Registry::set(Config::class, $oldConfig);
+    }
+
+    /**
+     * @depends testCreateTokenWithValidCredentials
+     *
+     * can not use expectException due to needed cleanup in registry config
+     */
+    public function testIsLoggedWithValidForAnotherShopUrlToken()
+    {
+        $oldConfig = Registry::getConfig();
+        $config = $this->getMockBuilder(Config::class)->getMock();
+        $config->method('getShopUrl')
+               ->willReturn('invalid');
+        Registry::set(Config::class, $config);
+        try {
+            self::$authentication->isLogged();
+        } catch (InvalidTokenException $e) {
+        }
+        $this->assertInstanceOf(
+            InvalidTokenException::class,
+            $e
+        );
+        Registry::set(Config::class, $oldConfig);
     }
 
 }

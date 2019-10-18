@@ -54,14 +54,14 @@ class AuthenticationService implements AuthenticationServiceInterface
  
     public function isLogged(): bool
     {
-        $token = null;
-        try {
-            $token = (new Parser())->parse($this->requestReader->getAuthToken());
-        } catch (\Exception $e) {
-            return false;
-        }
+        $token = $this->requestReader->getAuthToken();
         if ($token === null) {
             return false;
+        }
+        try {
+           $token = (new Parser())->parse($token);
+        } catch (\Exception $e) {
+            throw new InvalidTokenException('The token is invalid');
         }
         if ($this->isValidToken($token)) {
             return true;
