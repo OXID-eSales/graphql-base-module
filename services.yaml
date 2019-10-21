@@ -21,9 +21,6 @@ services:
   OxidEsales\GraphQL\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQL\Framework\ResponseWriter
 
-  OxidEsales\GraphQL\Dao\UserDaoInterface:
-    class: OxidEsales\GraphQL\Dao\UserDao
-
   OxidEsales\GraphQL\Service\KeyRegistryInterface:
     class: OxidEsales\GraphQL\Service\KeyRegistry
     public: true
