@@ -16,7 +16,8 @@ use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Service\AuthenticationService;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
-use PHPUnit\Framework\TestCase;
+# use PHPUnit\Framework\TestCase;
+use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 
 class AuthenticationServiceTest extends TestCase
 {

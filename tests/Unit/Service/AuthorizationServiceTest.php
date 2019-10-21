@@ -11,7 +11,8 @@ use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Service\AuthenticationService;
 use OxidEsales\GraphQL\Service\AuthorizationService;
-use PHPUnit\Framework\TestCase;
+# use PHPUnit\Framework\TestCase;
+use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 
 class AuthorizationServiceTest extends TestCase
 {

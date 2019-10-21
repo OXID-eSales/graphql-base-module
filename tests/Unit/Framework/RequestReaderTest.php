@@ -11,7 +11,8 @@ use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
-use PHPUnit\Framework\TestCase;
+# use PHPUnit\Framework\TestCase;
+use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 
 class RequestReaderTest extends TestCase
 {

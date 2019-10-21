@@ -61,6 +61,4 @@ class GraphQLQueryHandlerTest extends TestCase
             self::$queryResult['status']
         );
     }
-
-
 }

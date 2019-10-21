@@ -15,7 +15,8 @@ use OxidEsales\GraphQL\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQL\Service\KeyRegistry;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
-use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+#use PHPUnit\Framework\TestCase as PHPUnitTestCase;
+use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 
 abstract class TestCase extends PHPUnitTestCase
