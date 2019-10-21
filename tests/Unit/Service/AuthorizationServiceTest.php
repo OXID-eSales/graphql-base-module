@@ -7,15 +7,14 @@
 
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
+use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Service\AuthenticationService;
 use OxidEsales\GraphQL\Service\AuthorizationService;
-use OxidEsales\GraphQL\Framework\PermissionProviderInterface;
 use PHPUnit\Framework\TestCase;
-use Lcobucci\JWT\Token;
 
 class AuthorizationServiceTest extends TestCase
 {
-
     private function getTokenMock(): Token
     {
         $token = $this->getMockBuilder(Token::class)->getMock();
@@ -80,5 +79,4 @@ class AuthorizationServiceTest extends TestCase
         $this->assertTrue($auth->isAllowed('permission2'), 'Permission "permission2" must be granted to group "group"');
         $this->assertFalse($auth->isAllowed('permission1'), 'Permission "permission1" must not be granted to group "group"');
     }
-
 }

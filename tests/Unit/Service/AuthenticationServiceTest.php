@@ -7,6 +7,8 @@
 
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
@@ -14,8 +16,6 @@ use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Service\AuthenticationService;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
-use Lcobucci\JWT\Token;
-use Lcobucci\JWT\Parser;
 use PHPUnit\Framework\TestCase;
 
 class AuthenticationServiceTest extends TestCase
@@ -83,7 +83,7 @@ class AuthenticationServiceTest extends TestCase
         $this->expectException(InvalidTokenException::class);
         $auth = $this->getAuthenticationService();
         $auth->setToken(
-           (new Parser())->parse(self::$invalidToken) 
+            (new Parser())->parse(self::$invalidToken)
         );
         $auth->isLogged();
     }

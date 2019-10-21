@@ -16,7 +16,6 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
-use OxidEsales\GraphQL\Dao\UserDaoInterface;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
