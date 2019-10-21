@@ -21,6 +21,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
+    /*
     public function testExceptionInRoute()
     {
         self::$container = null;
@@ -33,6 +34,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
         self::$container = null;
     }
+     */
 
     public function testLoginWithValidCredentialsWithOperationName()
     {
