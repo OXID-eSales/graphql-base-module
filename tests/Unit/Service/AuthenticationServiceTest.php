@@ -9,14 +9,10 @@ namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
-use OxidEsales\GraphQL\Framework\RequestReader;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
-use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Service\AuthenticationService;
-use OxidEsales\GraphQL\Service\KeyRegistry;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Parser;
@@ -24,59 +20,23 @@ use PHPUnit\Framework\TestCase;
 
 class AuthenticationServiceTest extends TestCase
 {
-    protected static $authentication = null;
-
     protected static $token = null;
 
     protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
 
-    protected static $signature = null;
-
-    protected static $container = null;
-
-    public static function getToken(): ?string
+    private function getKeyRegistryMock(): KeyRegistryInterface
     {
-        if (self::$token === null) {
-            return null;
-        }
-        return (string) self::$token;
-    }
-
-    /**
-     * this empty methods prevents phpunit from resetting
-     * invocation mocker and therefore we can use the same
-     * mocks for all tests and do not need to reinitialize
-     * the container for every test in this file which
-     * makes the whole thing pretty fast :-)
-     */
-    protected function verifyMockObjects()
-    {
-    }
-
-    public function setUp(): void
-    {
-        if (self::$container !== null) {
-            return;
-        }
-
-        $containerFactory = new TestContainerFactory();
-        self::$container = $containerFactory->create();
-
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $keyRegistry->method('getSignatureKey')
                     ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
-        self::$container->set(
-            KeyRegistryInterface::class,
-            $keyRegistry
-        );
-        self::$container->autowire(
-            KeyRegistryInterface::class,
-            KeyRegistry::class
-        );
+        return $keyRegistry;
+    }
 
-        self::$container->compile();
-
-        self::$authentication = self::$container->get(AuthenticationServiceInterface::class);
+    private function getAuthenticationService(): AuthenticationService
+    {
+        return new AuthenticationService(
+            $this->getKeyRegistryMock()
+        );
     }
 
     public function testCreateTokenFromRequest()
@@ -84,9 +44,9 @@ class AuthenticationServiceTest extends TestCase
         $requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
         $requestReader->method('getAuthToken')
                       ->will($this->onConsecutiveCalls(
-                        null,
-                        'invalid',
-                        self::$invalidToken
+                          null,
+                          'invalid',
+                          self::$invalidToken
                       ));
         $this->assertNull(AuthenticationService::createTokenFromRequest($requestReader));
         $e = null;
@@ -106,28 +66,32 @@ class AuthenticationServiceTest extends TestCase
 
     public function testCreateTokenWithInvalidCredentials()
     {
+        $auth = $this->getAuthenticationService();
         $this->expectException(InvalidLoginException::class);
-        self::$authentication->createToken('foo', 'bar', 999);
+        $auth->createToken('foo', 'bar', 999);
     }
 
     public function testIsLoggedWithoutToken()
     {
-        self::$authentication->setToken(null);
-        $this->assertFalse(self::$authentication->isLogged());
+        $auth = $this->getAuthenticationService();
+        $auth->setToken(null);
+        $this->assertFalse($auth->isLogged());
     }
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken()
     {
         $this->expectException(InvalidTokenException::class);
-        self::$authentication->setToken(
+        $auth = $this->getAuthenticationService();
+        $auth->setToken(
            (new Parser())->parse(self::$invalidToken) 
         );
-        self::$authentication->isLogged();
+        $auth->isLogged();
     }
 
     public function testCreateTokenWithValidCredentials()
     {
-        self::$token = self::$authentication->createToken('admin', 'admin', 1);
+        $auth = $this->getAuthenticationService();
+        self::$token = $auth->createToken('admin', 'admin', 1);
         $this->assertInstanceOf(
             \Lcobucci\JWT\Token::class,
             self::$token
@@ -139,10 +103,11 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsLoggedWithValidToken()
     {
-        self::$authentication->setToken(
+        $auth = $this->getAuthenticationService();
+        $auth->setToken(
             self::$token
         );
-        $this->assertTrue(self::$authentication->isLogged());
+        $this->assertTrue($auth->isLogged());
     }
 
     /**
@@ -157,8 +122,13 @@ class AuthenticationServiceTest extends TestCase
         $config->method('getShopId')
                ->willReturn(-1);
         Registry::set(Config::class, $config);
+
+        $auth = $this->getAuthenticationService();
+        $auth->setToken(
+            self::$token
+        );
         try {
-            self::$authentication->isLogged();
+            $auth->isLogged();
         } catch (InvalidTokenException $e) {
         }
         $this->assertInstanceOf(
@@ -180,8 +150,13 @@ class AuthenticationServiceTest extends TestCase
         $config->method('getShopUrl')
                ->willReturn('invalid');
         Registry::set(Config::class, $config);
+
+        $auth = $this->getAuthenticationService();
+        $auth->setToken(
+            self::$token
+        );
         try {
-            self::$authentication->isLogged();
+            $auth->isLogged();
         } catch (InvalidTokenException $e) {
         }
         $this->assertInstanceOf(
