@@ -33,4 +33,34 @@ class GraphQLQueryHandlerTest extends TestCase
         );
         self::$container = null;
     }
+
+    public function testLoginWithValidCredentialsWithOperationName()
+    {
+        $this->execQuery(
+            'query loginOperation { token (username: "admin", password: "admin") }',
+            null,
+            'loginOperation'
+        );
+
+        $this->assertEquals(
+            200,
+            self::$queryResult['status']
+        );
+    }
+
+    public function testLoginWithValidCredentialsWithWrongOperationName()
+    {
+        $this->execQuery(
+            'query loginOperation { token (username: "admin", password: "admin") }',
+            null,
+            'noOp'
+        );
+
+        $this->assertEquals(
+            400,
+            self::$queryResult['status']
+        );
+    }
+
+
 }
