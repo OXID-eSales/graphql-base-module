@@ -14,7 +14,7 @@ class AuthorizationService implements AuthorizationServiceInterface
     /** @var Token */
     private $token = null;
 
-    /** @var array<string, string> */
+    /** @var array<string, array<string>> */
     private $permissions = [];
 
     public function __construct(
@@ -22,7 +22,10 @@ class AuthorizationService implements AuthorizationServiceInterface
     ) {
         /** @var $permissionProvider \OxidEsales\GraphQL\Framework\PermissionProviderInterface */
         foreach ($permissionProviders as $permissionProvider) {
-            $permissions = $permissionProvider->getPermissions();
+            $this->permissions = array_merge_recursive(
+                $this->permissions,
+                $permissionProvider->getPermissions()
+            );
         }
     }
 
@@ -39,6 +42,13 @@ class AuthorizationService implements AuthorizationServiceInterface
         if ($this->token === null) {
             return false;
         }
-        return false;
+        $group = $this->token->getClaim(AuthenticationService::CLAIM_GROUP);
+        if (!isset($this->permissions[$group])) {
+            return false;
+        }
+        if (array_search($right, $this->permissions[$group], true) === false) {
+            return false;
+        }
+        return true;
     }
 }

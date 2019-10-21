@@ -10,7 +10,7 @@ namespace OxidEsales\GraphQL\Framework;
 interface PermissionProviderInterface
 {
     /**
-     * @return array<string, string>
+     * @return array<string, array<string>>
      */
     public function getPermissions(): array;
 }

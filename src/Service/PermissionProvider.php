@@ -14,7 +14,9 @@ class PermissionProvider implements PermissionProviderInterface
     public function getPermissions(): array
     {
         return [
-            'admin' => 'user_get_self'
+            'admin' => [
+                'user_get_self'
+            ]
         ];
     }
 }
