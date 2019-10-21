@@ -8,59 +8,66 @@
 namespace OxidEsales\GraphQL\Tests\Integration\Framework;
 
 use OxidEsales\GraphQL\Tests\Integration\TestCase;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class GraphQLQueryHandlerTest extends TestCase
 {
-    public function testVariablesWithQuery()
-    {
-        $this->execQuery('query { token (username: "admin", password: "admin") }');
 
-        $this->assertEquals(
-            200,
-            self::$queryResult['status']
-        );
+    protected static function beforeContainerCompile()
+    {
+        $loader = new YamlFileLoader(static::$container, new FileLocator());
+        $serviceFile = __DIR__ . DIRECTORY_SEPARATOR . 'services.yml';
+        $loader->load($serviceFile);
     }
 
-    /*
     public function testExceptionInRoute()
     {
-        self::$container = null;
+        static::$container = null;
         $this->setUp();
-        self::$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
-        $this->execQuery('query { token }');
+        static::$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+        $this->execQuery('query { testQuery(foo: "bar") }');
         $this->assertEquals(
             403,
-            self::$queryResult['status']
+            static::$queryResult['status']
         );
-        self::$container = null;
+        static::$container = null;
     }
-     */
 
     public function testLoginWithValidCredentialsWithOperationName()
     {
         $this->execQuery(
-            'query loginOperation { token (username: "admin", password: "admin") }',
+            'query fooBar { testQuery(foo: "bar") }',
             null,
-            'loginOperation'
+            'fooBar'
         );
 
         $this->assertEquals(
             200,
-            self::$queryResult['status']
+            static::$queryResult['status']
         );
     }
 
     public function testLoginWithValidCredentialsWithWrongOperationName()
     {
         $this->execQuery(
-            'query loginOperation { token (username: "admin", password: "admin") }',
+            'query fooBar { testQuery(foo: "bar") }',
             null,
             'noOp'
         );
 
         $this->assertEquals(
             400,
-            self::$queryResult['status']
+            static::$queryResult['status']
+        );
+    }
+
+    public function testNonExistantQuery()
+    {
+        $this->execQuery('query { nonExistant }');
+        $this->assertEquals(
+            400,
+            static::$queryResult['status']
         );
     }
 }

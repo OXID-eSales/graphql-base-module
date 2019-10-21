@@ -17,7 +17,7 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             400,
-            self::$queryResult['status']
+            static::$queryResult['status']
         );
     }
 
@@ -27,7 +27,7 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             401,
-            self::$queryResult['status']
+            static::$queryResult['status']
         );
     }
 
@@ -37,7 +37,7 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             200,
-            self::$queryResult['status']
+            static::$queryResult['status']
         );
     }
 
@@ -53,7 +53,7 @@ class LoginTest extends TestCase
 
         $this->assertEquals(
             200,
-            self::$queryResult['status']
+            static::$queryResult['status']
         );
     }
 }

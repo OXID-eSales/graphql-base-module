@@ -54,31 +54,14 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
 
     public function executeGraphQLQuery()
     {
-        $httpStatus = null;
-
-        try {
-            $queryData = $this->requestReader->getGraphQLRequestData();
-            $result = $this->executeQuery($queryData);
-        } catch (\Exception $e) {
-            if ($e instanceof HttpErrorInterface) {
-                $httpStatus = $e->getHttpStatus();
-            }
-            $result = $this->createErrorResult($e);
-        }
-        if (is_null($httpStatus)) {
-            $httpStatus = $this->errorCodeProvider->getHttpReturnCode($result);
-        }
+        $result = $this->executeQuery(
+            $this->requestReader->getGraphQLRequestData()
+        );
+        $httpStatus = $this->errorCodeProvider->getHttpReturnCode($result);
         $result->setErrorFormatter($this->loggingErrorFormatter);
-        $this->responseWriter->renderJsonResponse($result->toArray(), $httpStatus);
-    }
-
-    private function createErrorResult(\Exception $e): ExecutionResult
-    {
-        return new ExecutionResult(
-            null,
-            [
-                new Error($e->getMessage())
-            ]
+        $this->responseWriter->renderJsonResponse(
+            $result->toArray(),
+            $httpStatus
         );
     }
 

@@ -29,7 +29,7 @@ abstract class TestCase extends PHPUnitTestCase
 
     public static function responseCallback($body, $status)
     {
-        self::$queryResult = [
+        static::$queryResult = [
             'status' => $status,
             'body' => $body
         ];
@@ -37,23 +37,23 @@ abstract class TestCase extends PHPUnitTestCase
 
     public static function loggerCallback(string $message)
     {
-        self::$logResult .= $message;
+        static::$logResult .= $message;
     }
 
     public static function getAuthToken(): ?string
     {
-        if (self::$token === null) {
+        if (static::$token === null) {
             return null;
         }
-        return (string) self::$token;
+        return (string) static::$token;
     }
 
     public static function getGraphQLRequestData(): array
     {
-        if (self::$query === null) {
+        if (static::$query === null) {
             return [];
         }
-        return self::$query;
+        return static::$query;
     }
 
     /**
@@ -77,11 +77,11 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected function setUp(): void
     {
-        if (self::$container !== null) {
+        if (static::$container !== null) {
             return;
         }
         $containerFactory = new TestContainerFactory();
-        self::$container = $containerFactory->create();
+        static::$container = $containerFactory->create();
 
         $responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)->getMock();
         $responseWriter->method('renderJsonResponse')
@@ -89,11 +89,11 @@ abstract class TestCase extends PHPUnitTestCase
                            TestCase::class,
                            'responseCallback'
                        ]);
-        self::$container->set(
+        static::$container->set(
             ResponseWriterInterface::class,
             $responseWriter
         );
-        self::$container->autowire(
+        static::$container->autowire(
             ResponseWriterInterface::class,
             ResponseWriter::class
         );
@@ -109,11 +109,11 @@ abstract class TestCase extends PHPUnitTestCase
                            TestCase::class,
                           'getGraphQLRequestData'
                       ]);
-        self::$container->set(
+        static::$container->set(
             RequestReaderInterface::class,
             $requestReader
         );
-        self::$container->autowire(
+        static::$container->autowire(
             RequestReaderInterface::class,
             RequestReader::class
         );
@@ -121,11 +121,11 @@ abstract class TestCase extends PHPUnitTestCase
         $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $keyRegistry->method('getSignatureKey')
                     ->willReturn(base64_encode(random_bytes(64)));
-        self::$container->set(
+        static::$container->set(
             KeyRegistryInterface::class,
             $keyRegistry
         );
-        self::$container->autowire(
+        static::$container->autowire(
             KeyRegistryInterface::class,
             KeyRegistry::class
         );
@@ -136,26 +136,32 @@ abstract class TestCase extends PHPUnitTestCase
                    TestCase::class,
                    'loggerCallback'
                ]);
-        self::$container->set(
+        static::$container->set(
             LoggerInterface::class,
             $logger
         );
-        self::$container->autowire(
+        static::$container->autowire(
             LoggerInterface::class,
             get_class($logger)
         );
 
-        self::$container->compile();
+        static::beforeContainerCompile();
+
+        static::$container->compile();
+    }
+
+    protected static function beforeContainerCompile()
+    {
     }
 
     protected function execQuery(string $query, array $variables = null, string $operationName = null)
     {
-        self::$query = [
+        static::$query = [
             'query' => $query,
             'variables' => $variables,
             'operationName' => $operationName
         ];
-        self::$container->get(GraphQLQueryHandlerInterface::class)
+        static::$container->get(GraphQLQueryHandlerInterface::class)
                         ->executeGraphQLQuery();
     }
 }
