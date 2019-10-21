@@ -11,6 +11,8 @@ class ResponseWriter implements ResponseWriterInterface
 {
     /**
      * Return a JSON Object with the graphql results
+     *
+     * @codeCoverageIgnore
      */
     public function renderJsonResponse(array $result, int $httpStatus): void
     {
