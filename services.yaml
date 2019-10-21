@@ -28,13 +28,21 @@ services:
     class: OxidEsales\GraphQL\Service\KeyRegistry
     public: true
 
+  Lcobucci\JWT\Token:
+    factory: ['@OxidEsales\GraphQL\Service\AuthenticationServiceInterface', createTokenFromRequest]
+    arguments: ['@OxidEsales\GraphQL\Framework\RequestReaderInterface']
+
   OxidEsales\GraphQL\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQL\Service\AuthenticationService
+    calls:
+      - [setToken, ['@?Lcobucci\JWT\Token']]
 
   OxidEsales\GraphQL\Service\AuthorizationServiceInterface:
     class: OxidEsales\GraphQL\Service\AuthorizationService
     arguments:
         $permissionProviders: !tagged graphql_permission_provider
+    calls:
+      - [setToken, ['@?Lcobucci\JWT\Token']]
 
   OxidEsales\GraphQL\Controller\:
     resource: 'src/Controller/*'

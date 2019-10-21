@@ -16,7 +16,6 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
-use OxidEsales\EshopCommunity\Internal\Domain\Authentication\Bridge\PasswordServiceBridgeInterface;
 use OxidEsales\GraphQL\Dao\UserDaoInterface;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
@@ -31,39 +30,40 @@ class AuthenticationService implements AuthenticationServiceInterface
     /** @var KeyRegistryInterface */
     private $keyRegistry = null;
 
-    /** @var RequestReaderInterface */
-    private $requestReader = null;
-
-    /** @var UserDaoInterface|null */
-    private $userDao = null;
-
-    /** @var PasswordServiceBridgeInterface */
-    private $passwordService = null;
+    /** @var Token */
+    private $token = null;
 
     public function __construct(
-        KeyRegistryInterface $keyRegistry,
-        RequestReaderInterface $requestReader,
-        UserDaoInterface $userDao,
-        PasswordServiceBridgeInterface $passwordService
+        KeyRegistryInterface $keyRegistry
     ) {
         $this->keyRegistry = $keyRegistry;
-        $this->requestReader = $requestReader;
-        $this->userDao = $userDao;
-        $this->passwordService = $passwordService;
     }
- 
-    public function isLogged(): bool
+
+    public static function createTokenFromRequest(RequestReaderInterface $requestReader): ?Token
     {
-        $token = $this->requestReader->getAuthToken();
+        $token = $requestReader->getAuthToken();
         if ($token === null) {
-            return false;
+            return null;
         }
         try {
             $token = (new Parser())->parse($token);
         } catch (\Exception $e) {
             throw new InvalidTokenException('The token is invalid');
         }
-        if ($this->isValidToken($token)) {
+        return $token;
+    }
+
+    public function setToken(?Token $token = null)
+    {
+        $this->token = $token;
+    }
+ 
+    public function isLogged(): bool
+    {
+        if ($this->token === null) {
+            return false;
+        }
+        if ($this->isValidToken($this->token)) {
             return true;
         }
         throw new InvalidTokenException('The token is invalid');

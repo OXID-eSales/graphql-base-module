@@ -7,34 +7,38 @@
 
 namespace OxidEsales\GraphQL\Service;
 
-use OxidEsales\GraphQL\Framework\RequestReaderInterface;
+use Lcobucci\JWT\Token;
 
 class AuthorizationService implements AuthorizationServiceInterface
 {
-    const USER_GROUP_ANONMYOUS = 'anonymous';
-    const USER_GROUP_CUSTOMER  = 'customer';
-    const USER_GROUP_ADMIN     = 'admin';
-    const USER_GROUP_SHOPADMIN = 'shopadmin';
-
-    /** @var RequestReaderInterface */
-    private $requestReader;
+    /** @var Token */
+    private $token = null;
 
     /** @var array<string, string> */
     private $permissions = [];
 
     public function __construct(
-        iterable $permissionProviders,
-        RequestReaderInterface $requestReader
+        iterable $permissionProviders
     ) {
         /** @var $permissionProvider \OxidEsales\GraphQL\Framework\PermissionProviderInterface */
         foreach ($permissionProviders as $permissionProvider) {
             $permissions = $permissionProvider->getPermissions();
         }
-        $this->requestReader = $requestReader;
+    }
+
+    /**
+     * TODO: validate token!!
+     */
+    public function setToken(?Token $token = null)
+    {
+        $this->token = $token;
     }
  
     public function isAllowed(string $right): bool
     {
+        if ($this->token === null) {
+            return false;
+        }
         return false;
     }
 }
