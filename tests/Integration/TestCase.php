@@ -162,6 +162,6 @@ abstract class TestCase extends PHPUnitTestCase
             'operationName' => $operationName
         ];
         static::$container->get(GraphQLQueryHandlerInterface::class)
-                        ->executeGraphQLQuery();
+                          ->executeGraphQLQuery();
     }
 }

@@ -14,6 +14,11 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 class GraphQLQueryHandlerTest extends TestCase
 {
 
+    public static function setUpBeforeClass(): void
+    {
+        static::$container = null;
+    }
+
     protected static function beforeContainerCompile()
     {
         $loader = new YamlFileLoader(static::$container, new FileLocator());
@@ -21,20 +26,33 @@ class GraphQLQueryHandlerTest extends TestCase
         $loader->load($serviceFile);
     }
 
-    public function testExceptionInRoute()
+    public function testClientAwareExceptionInRoute()
     {
-        static::$container = null;
-        $this->setUp();
-        static::$token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
-        $this->execQuery('query { testQuery(foo: "bar") }');
+        $this->execQuery('query { clientAwareExceptionQuery(foo: "bar") }');
         $this->assertEquals(
             403,
             static::$queryResult['status']
         );
-        static::$container = null;
+        $this->assertEquals(
+            'invalid token message',
+            static::$queryResult['body']['errors'][0]['message']
+        );
     }
 
-    public function testLoginWithValidCredentialsWithOperationName()
+    public function testExceptionInRoute()
+    {
+        $this->execQuery('query { exceptionQuery(foo: "bar") }');
+        $this->assertEquals(
+            400,
+            static::$queryResult['status']
+        );
+        $this->assertEquals(
+            'Internal server error',
+            static::$queryResult['body']['errors'][0]['message']
+        );
+    }
+
+    public function testQueryWithOperationName()
     {
         $this->execQuery(
             'query fooBar { testQuery(foo: "bar") }',
@@ -43,12 +61,19 @@ class GraphQLQueryHandlerTest extends TestCase
         );
 
         $this->assertEquals(
-            200,
-            static::$queryResult['status']
+            [
+                'status' => 200,
+                'body' => [
+                    'data' => [
+                        'testQuery' => 'bar'
+                    ]
+                ]
+            ],
+            static::$queryResult
         );
     }
 
-    public function testLoginWithValidCredentialsWithWrongOperationName()
+    public function testQueryWithWrongOperationName()
     {
         $this->execQuery(
             'query fooBar { testQuery(foo: "bar") }',
