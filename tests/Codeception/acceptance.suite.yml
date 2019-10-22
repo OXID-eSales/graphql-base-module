@@ -1,0 +1,10 @@
+# suite config
+actor: AcceptanceTester
+path: Acceptance
+modules:
+  enabled:
+    - Asserts
+    - REST:
+        url: '%SHOP_URL%'
+        depends: PhpBrowser
+        part: Json
