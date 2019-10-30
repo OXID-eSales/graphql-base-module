@@ -20,8 +20,12 @@ class AuthorizationServiceTest extends TestCase
     {
         $token = $this->getMockBuilder(Token::class)->getMock();
         $token->method('getClaim')
-              ->with(AuthenticationService::CLAIM_GROUP)
-              ->willReturn('group');
+            ->will($this->returnCallback(
+                function ($claim) {
+                    if ($claim == AuthenticationService::CLAIM_GROUP) { return "group"; };
+                    if ($claim == AuthenticationService::CLAIM_USERNAME) { return "testuser"; };
+                }
+            ));
         return $token;
     }
 
@@ -37,7 +41,8 @@ class AuthorizationServiceTest extends TestCase
         $b->method('getPermissions')
           ->willReturn([
               'group' => ['permission2'],
-              'group2' => ['permission2']
+              'group2' => ['permission2'],
+              'developer' => ['all']
           ]);
         return [
             $a,
@@ -79,5 +84,38 @@ class AuthorizationServiceTest extends TestCase
         $this->assertTrue($auth->isAllowed('permission'), 'Permission "permission" must be granted to group "group"');
         $this->assertTrue($auth->isAllowed('permission2'), 'Permission "permission2" must be granted to group "group"');
         $this->assertFalse($auth->isAllowed('permission1'), 'Permission "permission1" must not be granted to group "group"');
+    }
+
+    public function testIsAllowedWithDeveloperToken()
+    {
+        $token = $this->getMockBuilder(Token::class)->getMock();
+        $token->method('getClaim')
+            ->will($this->returnCallback(
+                function ($claim) {
+                    if ($claim == AuthenticationService::CLAIM_GROUP) { return "group"; };
+                    if ($claim == AuthenticationService::CLAIM_USERNAME) { return "developer"; };
+                }
+            ));
+        $auth = new AuthorizationService(
+            $this->getPermissionMocks()
+        );
+        $auth->setToken(
+            $token
+        );
+        $this->assertTrue($auth->isAllowed('anypermission'), 'Developer should have any permission');
+    }
+
+    public function testIsNotAllowedWithDeveloperToken()
+    {
+        $token = $this->getMockBuilder(Token::class)->getMock();
+        $token->method('getClaim')
+            ->will($this->returnCallback(
+                function ($claim) {
+                    if ($claim == AuthenticationService::CLAIM_GROUP) { return "group"; };
+                    if ($claim == AuthenticationService::CLAIM_USERNAME) { return "developer"; };
+                }
+            ));
+        $auth = new AuthorizationService([]);
+        $this->assertFalse($auth->isAllowed('permission'), 'Developer shouldn\'t have any permission');
     }
 }

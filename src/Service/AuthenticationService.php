@@ -16,6 +16,7 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
@@ -29,13 +30,18 @@ class AuthenticationService implements AuthenticationServiceInterface
     /** @var KeyRegistryInterface */
     private $keyRegistry = null;
 
+    /** @var LegacyServiceInterface */
+    private $legacyService = null;
+
     /** @var Token */
     private $token = null;
 
     public function __construct(
-        KeyRegistryInterface $keyRegistry
+        KeyRegistryInterface $keyRegistry,
+        LegacyServiceInterface $legacyService
     ) {
         $this->keyRegistry = $keyRegistry;
+        $this->legacyService = $legacyService;
     }
 
     public static function createTokenFromRequest(RequestReaderInterface $requestReader): ?Token
@@ -68,33 +74,37 @@ class AuthenticationService implements AuthenticationServiceInterface
         throw new InvalidTokenException('The token is invalid');
     }
 
-    public function createToken(string $username, string $password, int $shopid = null): Token
+    public function createAuthenticatedToken(string $username, string $password): Token
     {
-        try {
-            oxNew(User::class)->login($username, $password, false);
-        } catch (\Exception $e) {
-            throw new InvalidLoginException('Username/password combination is invalid');
+        $this->legacyService->checkCredentials($username, $password);
+        return $this->createUnauthenticatedToken($username);
+    }
+
+    public function createUnauthenticatedToken(string $username, string $usergroup = null): Token
+    {
+        if ($usergroup === null) {
+            $usergroup = $this->legacyService->getUserGroup($username);
         }
 
-        // now get the builder and create a token
-        $builder = $this->createBasicToken();
-        $token = $builder->withClaim(self::CLAIM_USERNAME, $username);
-        return $token->getToken(
+        $builder = $this->getInitializedTokenBuilder()->withClaim(self::CLAIM_USERNAME, $username)
+            ->withClaim(self::CLAIM_GROUP, $usergroup);
+
+        return $builder->getToken(
             $this->getSigner(),
             $this->getSignatureKey()
         );
     }
 
-    private function createBasicToken(): Builder
+    private function getInitializedTokenBuilder(): Builder
     {
         $time = time();
         $token = (new Builder())
-            ->issuedBy(Registry::getConfig()->getShopUrl())
-            ->permittedFor(Registry::getConfig()->getShopUrl())
+            ->issuedBy($this->legacyService->getShopUrl())
+            ->permittedFor($this->legacyService->getShopUrl())
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($time + 3600 * 8)
-            ->withClaim(self::CLAIM_SHOPID, Registry::getConfig()->getShopId());
+            ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId());
         return $token;
     }
 
@@ -110,12 +120,12 @@ class AuthenticationService implements AuthenticationServiceInterface
             return false;
         }
         $validation = new ValidationData();
-        $validation->setIssuer(Registry::getConfig()->getShopUrl());
-        $validation->setAudience(Registry::getConfig()->getShopUrl());
+        $validation->setIssuer($this->legacyService->getShopUrl());
+        $validation->setAudience($this->legacyService->getShopUrl());
         if (!$token->validate($validation)) {
             return false;
         }
-        if ($token->getClaim(self::CLAIM_SHOPID) !== Registry::getConfig()->getShopId()) {
+        if ($token->getClaim(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
             return false;
         }
         return true;

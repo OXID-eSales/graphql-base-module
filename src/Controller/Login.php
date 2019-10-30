@@ -27,10 +27,9 @@ class Login
      */
     public function token(string $username, string $password): string
     {
-        return (string) $this->authentication->createToken(
+        return (string) $this->authentication->createAuthenticatedToken(
             $username,
-            $password,
-            Registry::getConfig()->getShopId()
+            $password
         );
     }
 }
