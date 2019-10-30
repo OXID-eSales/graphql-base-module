@@ -63,7 +63,7 @@ class GraphQLQueryHandlerTest extends TestCase
         $this->assertEquals(
             [
                 'status' => 200,
-                'body' => [
+                'body'   => [
                     'data' => [
                         'testQuery' => 'bar'
                     ]
@@ -95,4 +95,14 @@ class GraphQLQueryHandlerTest extends TestCase
             static::$queryResult['status']
         );
     }
+
+    public function testInvalidQuery()
+    {
+        $this->execQuery('FOOBAR');
+        $this->assertEquals(
+            400,
+            static::$queryResult['status']
+        );
+    }
+
 }
