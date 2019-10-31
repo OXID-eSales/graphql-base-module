@@ -45,8 +45,8 @@ class LegacyService implements LegacyServiceInterface
      * @return string
      * @throws InvalidLoginException
      */
-    public function getUserGroup(string $username): string {
-
+    public function getUserGroup(string $username): string
+    {
         $queryBuilder = $this->queryBuilderFactory->create();
         $result =$queryBuilder->select('OXRIGHTS')
             ->from('oxuser')
@@ -58,7 +58,6 @@ class LegacyService implements LegacyServiceInterface
         }
         # In fact this should not happen because the credentials should already have been checked
         throw new InvalidLoginException('User does not exist.');
-
     }
 
     /**

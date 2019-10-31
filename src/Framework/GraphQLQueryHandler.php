@@ -60,7 +60,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
         $httpStatus = $this->errorCodeProvider->getHttpReturnCode($result);
         $result->setErrorFormatter($this->loggingErrorFormatter);
         $this->responseWriter->renderJsonResponse(
-            $result->toArray(),
+            $result->toArray(true),
             $httpStatus
         );
     }
