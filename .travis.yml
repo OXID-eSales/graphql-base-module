@@ -11,11 +11,15 @@ php:
     - "7.3"
     - "7.4snapshot"
 
+cache:
+    directories:
+        - $HOME/.composer/cache/files
+
 matrix:
     fast_finish: true
 
 before_script:
-    - composer install
+    - composer install --prefer-dist
 
 script:
     - composer test:syntax
