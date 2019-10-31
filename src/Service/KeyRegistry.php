@@ -20,11 +20,20 @@ use OxidEsales\GraphQL\Exception\NoSignatureKeyException;
  */
 class KeyRegistry implements KeyRegistryInterface
 {
+    /** @var LegacyServiceInterface */
+    private $legacyService = null;
+
     public const signatureKeyName = 'sJsonWebTokenSignature';
+
+    public function __construct(
+        LegacyServiceInterface $legacyService
+    ) {
+        $this->legacyService = $legacyService;
+    }
 
     public function generateSignatureKey(): string
     {
-        return bin2hex(openssl_random_pseudo_bytes(64));
+        return \bin2hex(\random_bytes(64));
     }
 
     /**
@@ -33,8 +42,7 @@ class KeyRegistry implements KeyRegistryInterface
     public function getSignatureKey(): string
     {
         // TODO: legacy wrapper
-        $config = Registry::getConfig();
-        $signature = $config->getConfigParam(self::signatureKeyName);
+        $signature = $this->legacyService->getConfigParam(static::signatureKeyName);
         if (!is_string($signature) || strlen($signature) < 64) {
             throw new NoSignatureKeyException();
         }

@@ -11,7 +11,7 @@ use Lcobucci\JWT\Token;
 
 class AuthorizationService implements AuthorizationServiceInterface
 {
-    /** @var Token */
+    /** @var ?Token */
     private $token = null;
 
     /** @var array<string, array<string>> */
@@ -20,7 +20,7 @@ class AuthorizationService implements AuthorizationServiceInterface
     public function __construct(
         iterable $permissionProviders
     ) {
-        /** @var $permissionProvider \OxidEsales\GraphQL\Framework\PermissionProviderInterface */
+        /** @var \OxidEsales\GraphQL\Framework\PermissionProviderInterface $permissionProvider */
         foreach ($permissionProviders as $permissionProvider) {
             $this->permissions = array_merge_recursive(
                 $this->permissions,
@@ -36,7 +36,7 @@ class AuthorizationService implements AuthorizationServiceInterface
     {
         $this->token = $token;
     }
- 
+
     public function isAllowed(string $right): bool
     {
         if ($this->token === null) {

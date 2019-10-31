@@ -10,6 +10,7 @@ namespace OxidEsales\GraphQL\Framework;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Service\KeyRegistry;
 
 class ModuleSetup
 {
@@ -33,7 +34,7 @@ class ModuleSetup
     public function runSetup(): void
     {
         $this->moduleSettings->save(
-            $this->keyRegistry::signatureKeyName,
+            KeyRegistry::signatureKeyName,
             $this->keyRegistry->generateSignatureKey(),
             'oe/graphql-base'
         );

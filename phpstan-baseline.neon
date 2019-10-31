@@ -1,0 +1,55 @@
+
+
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Property OxidEsales\\\\GraphQL\\\\Framework\\\\ModuleSetup\\:\\:\\$moduleSettings has unknown class OxidEsales\\\\EshopCommunity\\\\Internal\\\\Framework\\\\Module\\\\Configuration\\\\Bridge\\\\ModuleSettingBridgeInterface as its type\\.$#"
+			count: 1
+			path: src/Framework/ModuleSetup.php
+
+		-
+			message: "#^Parameter \\$moduleSettings of method OxidEsales\\\\GraphQL\\\\Framework\\\\ModuleSetup\\:\\:__construct\\(\\) has invalid typehint type OxidEsales\\\\EshopCommunity\\\\Internal\\\\Framework\\\\Module\\\\Configuration\\\\Bridge\\\\ModuleSettingBridgeInterface\\.$#"
+			count: 1
+			path: src/Framework/ModuleSetup.php
+
+		-
+			message: "#^Call to method save\\(\\) on an unknown class OxidEsales\\\\EshopCommunity\\\\Internal\\\\Framework\\\\Module\\\\Configuration\\\\Bridge\\\\ModuleSettingBridgeInterface\\.$#"
+			count: 1
+			path: src/Framework/ModuleSetup.php
+
+		-
+			message: "#^Call to static method getInstance\\(\\) on an unknown class OxidEsales\\\\EshopCommunity\\\\Internal\\\\Container\\\\ContainerFactory\\.$#"
+			count: 1
+			path: src/Framework/ModuleSetup.php
+
+		-
+			message: "#^Property OxidEsales\\\\GraphQL\\\\Framework\\\\SchemaFactory\\:\\:\\$container has unknown class Symfony\\\\Component\\\\DependencyInjection\\\\ContainerInterface as its type\\.$#"
+			count: 1
+			path: src/Framework/SchemaFactory.php
+
+		-
+			message: "#^Parameter \\$container of method OxidEsales\\\\GraphQL\\\\Framework\\\\SchemaFactory\\:\\:__construct\\(\\) has invalid typehint type Symfony\\\\Component\\\\DependencyInjection\\\\ContainerInterface\\.$#"
+			count: 1
+			path: src/Framework/SchemaFactory.php
+
+		-
+			message: "#^Parameter \\#1 \\$cache of class TheCodingMachine\\\\GraphQLite\\\\SchemaFactory constructor expects Psr\\\\SimpleCache\\\\CacheInterface, Symfony\\\\Component\\\\Cache\\\\Simple\\\\NullCache given\\.$#"
+			count: 1
+			path: src/Framework/SchemaFactory.php
+
+		-
+			message: "#^Parameter \\#2 \\$container of class TheCodingMachine\\\\GraphQLite\\\\SchemaFactory constructor expects Psr\\\\Container\\\\ContainerInterface, Symfony\\\\Component\\\\DependencyInjection\\\\ContainerInterface given\\.$#"
+			count: 1
+			path: src/Framework/SchemaFactory.php
+
+		-
+			message: "#^Instantiated class Symfony\\\\Component\\\\Cache\\\\Simple\\\\NullCache not found\\.$#"
+			count: 1
+			path: src/Framework/SchemaFactory.php
+
+		-
+			message: "#^Cannot call method getClaim\\(\\) on Lcobucci\\\\JWT\\\\Token\\|null\\.$#"
+			count: 1
+			path: src/Service/AuthorizationService.php
+
+

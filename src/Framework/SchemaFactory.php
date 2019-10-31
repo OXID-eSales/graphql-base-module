@@ -42,7 +42,9 @@ class SchemaFactory implements SchemaFactoryInterface
         AuthorizationServiceInterface $authorizationService,
         ContainerInterface $container
     ) {
-        $this->namespaceMappers = $namespaceMappers;
+        foreach ($namespaceMappers as $namespaceMapper) {
+            $this->namespaceMappers[] = $namespaceMapper;
+        }
         $this->authenticationService = $authenticationService;
         $this->authorizationService = $authorizationService;
         $this->container = $container;
@@ -62,7 +64,6 @@ class SchemaFactory implements SchemaFactoryInterface
         $classNameMapper = new ClassNameMapper();
 
         foreach ($this->namespaceMappers as $namespaceMapper) {
-            /** @var $namespaceMapper NamespaceMapperInterface */
             foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace=>$path) {
                 $classNameMapper->registerPsr4Namespace(
                     $namespace,
@@ -70,7 +71,6 @@ class SchemaFactory implements SchemaFactoryInterface
                 );
                 $factory->addControllerNameSpace($namespace);
             }
-            /** @var $namespaceMapper NamespaceMapperInterface */
             foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace=>$path) {
                 $classNameMapper->registerPsr4Namespace(
                     $namespace,

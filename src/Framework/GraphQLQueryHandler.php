@@ -45,7 +45,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
         $this->responseWriter = $responseWriter;
 
         $this->loggingErrorFormatter = function (Error $error) {
-            $this->logger->error($error);
+            $this->logger->error((string)$error);
             return FormattedError::createFromException($error);
         };
     }

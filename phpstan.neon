@@ -1,0 +1,10 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    memory-limit: -1
+    level: max
+    inferPrivatePropertyTypeFromConstructor: true
+    excludes_analyse:
+        - *Service/LegacyService.php
+        - *Component/Widget/GraphQL.php

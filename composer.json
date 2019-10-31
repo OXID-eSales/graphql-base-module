@@ -26,7 +26,8 @@
   "require-dev": {
     "phpunit/phpunit": "~6",
     "friendsofphp/php-cs-fixer": "^2",
-    "jakub-onderka/php-parallel-lint": "^1.0"
+    "jakub-onderka/php-parallel-lint": "^1",
+    "phpstan/phpstan": "^0.11"
   },
   "autoload": {
     "psr-4": {
@@ -38,6 +39,7 @@
     "lint": "php-cs-fixer fix -v",
     "test:lint": "php-cs-fixer fix -v --dry-run",
     "test:syntax": "parallel-lint src/ tests/",
+    "test:static": "phpstan analyse src/",
     "test": [
       "@test:syntax",
       "@test:lint"

@@ -29,7 +29,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /** @var LegacyServiceInterface */
     private $legacyService = null;
 
-    /** @var Token */
+    /** @var ?Token */
     private $token = null;
 
     public function __construct(
@@ -58,7 +58,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $this->token = $token;
     }
- 
+
     public function isLogged(): bool
     {
         if ($this->token === null) {
@@ -112,7 +112,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     private function isValidToken(Token $token): bool
     {
-        if (!$token->verify($this->getSigner(), $this->getSignatureKey())) {
+        if (!$token->verify($this->getSigner(), $this->getSignatureKey()->getContent())) {
             return false;
         }
         $validation = new ValidationData();

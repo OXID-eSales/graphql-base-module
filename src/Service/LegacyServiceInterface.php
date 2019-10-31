@@ -10,26 +10,18 @@ interface LegacyServiceInterface
     const GROUP_CUSTOMERS = 'customer';
 
     /**
-     * @param string $username
-     * @param string $password
      * @throws InvalidLoginException
      */
     public function checkCredentials(string $username, string $password);
 
     /**
-     * @param string $username
-     * @return string
      * @throws InvalidLoginException
      */
     public function getUserGroup(string $username): string;
 
-    /**
-     * @return string
-     */
+    public function getConfigParam(string $param);
+
     public function getShopUrl(): string;
 
-    /**
-     * @return int
-     */
     public function getShopId(): int;
 }

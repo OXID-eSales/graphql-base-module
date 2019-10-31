@@ -27,8 +27,6 @@ class LegacyService implements LegacyServiceInterface
     }
 
     /**
-     * @param string $username
-     * @param string $password
      * @throws InvalidLoginException
      */
     public function checkCredentials(string $username, string $password)
@@ -41,8 +39,6 @@ class LegacyService implements LegacyServiceInterface
     }
 
     /**
-     * @param string $username
-     * @return string
      * @throws InvalidLoginException
      */
     public function getUserGroup(string $username): string
@@ -60,25 +56,22 @@ class LegacyService implements LegacyServiceInterface
         throw new InvalidLoginException('User does not exist.');
     }
 
-    /**
-     * @return string
-     */
+    public function getConfigParam(string $param)
+    {
+        return Registry::getConfig()->getConfigParam($param);
+    }
+
     public function getShopUrl(): string
     {
         return Registry::getConfig()->getShopUrl();
     }
 
-    /**
-     * @return int
-     */
     public function getShopId(): int
     {
         return $this->context->getCurrentShopId();
     }
 
     /**
-     * @param string|null $dbGroup
-     * @return string
      * @throws InvalidLoginException
      */
     private function mapUserGroup(?string $dbGroup): string
