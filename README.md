@@ -50,7 +50,7 @@ Authorization: Bearer a-very-long-jwt
 
 ## Testing
 
-### Linting and Syntax check
+### Linting, Syntax and static analysis
 
 ```bash
 $ composer test
@@ -67,7 +67,7 @@ $ composer test
 $ ./vendor/bin/runtests
 ```
 
-## Trouble shooting
+## Troubleshooting
 
 ### Apache HTTP Authorization
 

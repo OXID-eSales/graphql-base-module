@@ -2,9 +2,9 @@
   "name": "oxid-esales/graphql-base",
   "description": "OXID GraphQL Base",
   "type": "oxideshop-module",
-  "keywords": ["oxid", "modules", "eShop"],
+  "keywords": ["oxid", "modules", "eShop", "GraphQL"],
   "homepage": "https://www.oxid-esales.com",
-  "license": ["GPL-3.0", "proprietary"],
+  "license": ["GPL-3.0"],
   "extra": {
     "oxideshop": {
       "target-directory": "oe/graphql-base",
@@ -19,7 +19,6 @@
   "require": {
     "php": "^7.1",
     "ext-json": "*",
-    "ext-openssl": "*",
     "thecodingmachine/graphqlite": "^3.1",
     "lcobucci/jwt": "^3"
   },
