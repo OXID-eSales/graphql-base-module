@@ -1,5 +1,7 @@
 # oxid-esales/graphql-base
 
+[![Build Status](https://img.shields.io/travis/OXID-eSales/graph-ql-base-module.svg?style=for-the-badge&logo=travis)](https://travis-ci.com/OXID-eSales/graph-ql-base-module) [![PHP Version](https://img.shields.io/packagist/php-v/OXID-eSales/graph-ql-base-module.svg?style=for-the-badge)](https://github.com/OXID-eSales/graph-ql-base-module) [![Stable Version](https://img.shields.io/packagist/v/OXID-eSales/graph-ql-base-module.svg?style=for-the-badge&label=Latest)](https://packagist.org/packages/OXID-eSales/graph-ql-base-module)
+
 This module provides:
 - a basic GraphQL implementation for OXID eShop
 - authorization and authentication using JWT
