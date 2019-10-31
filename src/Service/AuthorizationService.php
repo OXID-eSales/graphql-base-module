@@ -8,6 +8,8 @@
 namespace OxidEsales\GraphQL\Service;
 
 use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\Event\BeforeAuthorizationEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AuthorizationService implements AuthorizationServiceInterface
 {
@@ -17,8 +19,12 @@ class AuthorizationService implements AuthorizationServiceInterface
     /** @var array<string, array<string>> */
     private $permissions = [];
 
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher = null;
+
     public function __construct(
-        iterable $permissionProviders
+        iterable $permissionProviders,
+        EventDispatcherInterface $eventDispatcher
     ) {
         /** @var \OxidEsales\GraphQL\Framework\PermissionProviderInterface $permissionProvider */
         foreach ($permissionProviders as $permissionProvider) {
@@ -27,6 +33,7 @@ class AuthorizationService implements AuthorizationServiceInterface
                 $permissionProvider->getPermissions()
             );
         }
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -40,6 +47,23 @@ class AuthorizationService implements AuthorizationServiceInterface
     public function isAllowed(string $right): bool
     {
         if ($this->token === null) {
+            return false;
+        }
+
+        $event = new BeforeAuthorizationEvent(
+            $this->token,
+            $right
+        );
+
+        $this->eventDispatcher->dispatch(
+            BeforeAuthorizationEvent::NAME,
+            $event
+        );
+
+        $authByEvent = $event->getAuthorized();
+        if ($authByEvent === true) {
+            return true;
+        } elseif ($authByEvent === false) {
             return false;
         }
 

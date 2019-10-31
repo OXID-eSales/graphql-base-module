@@ -27,7 +27,8 @@
     "phpunit/phpunit": "~6",
     "friendsofphp/php-cs-fixer": "^2",
     "jakub-onderka/php-parallel-lint": "^1",
-    "phpstan/phpstan": "^0.11"
+    "phpstan/phpstan": "^0.11",
+    "oxid-esales/oxideshop-ce": "^6.4"
   },
   "autoload": {
     "psr-4": {

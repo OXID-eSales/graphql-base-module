@@ -8,11 +8,15 @@
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\Event\BeforeAuthorizationEvent;
 use OxidEsales\GraphQL\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Service\AuthenticationService;
 use OxidEsales\GraphQL\Service\AuthorizationService;
-# use PHPUnit\Framework\TestCase;
 use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+# use PHPUnit\Framework\TestCase;
 
 class AuthorizationServiceTest extends TestCase
 {
@@ -54,15 +58,27 @@ class AuthorizationServiceTest extends TestCase
         ];
     }
 
+    private function getEventDispatcherMock(): EventDispatcherInterface
+    {
+        $eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+        return $eventDispatcher;
+    }
+
     public function testIsNotAllowedWithoutPermissionsAndWithoutToken()
     {
-        $auth = new AuthorizationService([]);
+        $auth = new AuthorizationService(
+            [],
+            $this->getEventDispatcherMock()
+        );
         $this->assertFalse($auth->isAllowed(''));
     }
 
     public function testIsNotAllowedWithoutPermissionsButWithToken()
     {
-        $auth = new AuthorizationService([]);
+        $auth = new AuthorizationService(
+            [],
+            $this->getEventDispatcherMock()
+        );
         $auth->setToken(
             $this->getTokenMock()
         );
@@ -72,7 +88,8 @@ class AuthorizationServiceTest extends TestCase
     public function testIsNotAllowedWithPermissionsButWithoutToken()
     {
         $auth = new AuthorizationService(
-            $this->getPermissionMocks()
+            $this->getPermissionMocks(),
+            $this->getEventDispatcherMock()
         );
         $this->assertFalse($auth->isAllowed('permission'));
     }
@@ -80,13 +97,56 @@ class AuthorizationServiceTest extends TestCase
     public function testIsAllowedWithPermissionsAndWithToken()
     {
         $auth = new AuthorizationService(
-            $this->getPermissionMocks()
+            $this->getPermissionMocks(),
+            $this->getEventDispatcherMock()
         );
         $auth->setToken(
             $this->getTokenMock()
         );
         $this->assertTrue($auth->isAllowed('permission'), 'Permission "permission" must be granted to group "group"');
         $this->assertTrue($auth->isAllowed('permission2'), 'Permission "permission2" must be granted to group "group"');
+        $this->assertFalse($auth->isAllowed('permission1'), 'Permission "permission1" must not be granted to group "group"');
+    }
+
+    public function testPositiveOverrideAuthBasedOnEvent()
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addListener(
+            BeforeAuthorizationEvent::NAME,
+            function (BeforeAuthorizationEvent $event) {
+                $event->setAuthorized(true);
+            }
+        );
+        $auth = new AuthorizationService(
+            $this->getPermissionMocks(),
+            $eventDispatcher
+        );
+        $auth->setToken(
+            $this->getTokenMock()
+        );
+        $this->assertTrue($auth->isAllowed('permission'), 'Permission "permission" must be granted to group "group"');
+        $this->assertTrue($auth->isAllowed('permission2'), 'Permission "permission2" must be granted to group "group"');
+        $this->assertTrue($auth->isAllowed('permission1'), 'Permission "permission1" must be granted to group "group"');
+    }
+
+    public function testNegativeOverrideAuthBasedOnEvent()
+    {
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addListener(
+            BeforeAuthorizationEvent::NAME,
+            function (BeforeAuthorizationEvent $event) {
+                $event->setAuthorized(false);
+            }
+        );
+        $auth = new AuthorizationService(
+            $this->getPermissionMocks(),
+            $eventDispatcher
+        );
+        $auth->setToken(
+            $this->getTokenMock()
+        );
+        $this->assertFalse($auth->isAllowed('permission'), 'Permission "permission" must not be granted to group "group"');
+        $this->assertFalse($auth->isAllowed('permission2'), 'Permission "permission2" must not be granted to group "group"');
         $this->assertFalse($auth->isAllowed('permission1'), 'Permission "permission1" must not be granted to group "group"');
     }
 }
