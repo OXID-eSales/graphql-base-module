@@ -39,8 +39,8 @@
     "test:lint": "php-cs-fixer fix -v --dry-run",
     "test:syntax": "parallel-lint src/ tests/",
     "test": [
-        "@test:syntax",
-        "@test:lint"
+      "@test:syntax",
+      "@test:lint"
     ]
   }
 }
