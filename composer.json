@@ -42,7 +42,8 @@
     "test:static": "phpstan analyse src/",
     "test": [
       "@test:syntax",
-      "@test:lint"
+      "@test:lint",
+      "@test:static"
     ]
   }
 }
