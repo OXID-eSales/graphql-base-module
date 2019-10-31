@@ -7,7 +7,6 @@
 
 namespace OxidEsales\GraphQL\Service;
 
-use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\GraphQL\Exception\NoSignatureKeyException;
 
 /**
