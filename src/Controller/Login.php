@@ -20,13 +20,13 @@ class Login
     ) {
         $this->authentication= $authentication;
     }
- 
+
     /**
      * @Query
      */
     public function token(string $username, string $password): string
     {
-        return (string) $this->authentication->createAuthenticatedToken(
+        return (string) $this->authentication->createToken(
             $username,
             $password
         );

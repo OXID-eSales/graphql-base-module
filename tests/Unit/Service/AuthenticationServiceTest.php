@@ -74,7 +74,7 @@ class AuthenticationServiceTest extends TestCase
     {
         $this->expectException(InvalidLoginException::class);
         $this->legacyService->method('checkCredentials')->willThrowException(new InvalidLoginException());
-        $this->authenticationService->createAuthenticatedToken('foo', 'bar');
+        $this->authenticationService->createToken('foo', 'bar');
     }
 
     public function testIsLoggedWithoutToken()
@@ -99,7 +99,7 @@ class AuthenticationServiceTest extends TestCase
         $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
         $this->legacyService->method('getShopId')->willReturn(1);
 
-        self::$token = $this->authenticationService->createAuthenticatedToken('admin', 'admin');
+        self::$token = $this->authenticationService->createToken('admin', 'admin');
         $this->assertInstanceOf(
             \Lcobucci\JWT\Token::class,
             self::$token
@@ -148,13 +148,6 @@ class AuthenticationServiceTest extends TestCase
         $this->authenticationService->setToken(
             self::$token
         );
-        $this->authenticationService->isLogged();
-    }
-
-    public function testDeveloperToken()
-    {
-        $token = $this->authenticationService->createUnauthenticatedToken('developer', 'developer');
-        $this->authenticationService->setToken($token);
         $this->authenticationService->isLogged();
     }
 }

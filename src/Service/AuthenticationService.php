@@ -14,6 +14,7 @@ use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
+use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 
@@ -70,19 +71,14 @@ class AuthenticationService implements AuthenticationServiceInterface
         throw new InvalidTokenException('The token is invalid');
     }
 
-    public function createAuthenticatedToken(string $username, string $password): Token
+    /**
+     * @throws InvalidLoginException
+     */
+    public function createToken(string $username, string $password): Token
     {
         $this->legacyService->checkCredentials($username, $password);
-        return $this->createUnauthenticatedToken($username);
-    }
-
-    public function createUnauthenticatedToken(string $username, string $usergroup = null): Token
-    {
-        if ($usergroup === null) {
-            $usergroup = $this->legacyService->getUserGroup($username);
-        }
-
-        $builder = $this->getInitializedTokenBuilder()->withClaim(self::CLAIM_USERNAME, $username)
+        $usergroup = $this->legacyService->getUserGroup($username);
+        $builder = $this->getTokenBuilder()->withClaim(self::CLAIM_USERNAME, $username)
             ->withClaim(self::CLAIM_GROUP, $usergroup);
 
         return $builder->getToken(
@@ -91,7 +87,10 @@ class AuthenticationService implements AuthenticationServiceInterface
         );
     }
 
-    private function getInitializedTokenBuilder(): Builder
+    /**
+     * @internal
+     */
+    protected function getTokenBuilder(): Builder
     {
         $time = time();
         $token = (new Builder())
