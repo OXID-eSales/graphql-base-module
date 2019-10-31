@@ -47,9 +47,3 @@ parameters:
 			count: 1
 			path: src/Framework/SchemaFactory.php
 
-		-
-			message: "#^Cannot call method getClaim\\(\\) on Lcobucci\\\\JWT\\\\Token\\|null\\.$#"
-			count: 1
-			path: src/Service/AuthorizationService.php
-
-

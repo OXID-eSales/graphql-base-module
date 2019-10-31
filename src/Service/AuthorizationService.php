@@ -43,10 +43,6 @@ class AuthorizationService implements AuthorizationServiceInterface
             return false;
         }
 
-        if ($this->isDeveloperModuleRequest()) {
-            return true;
-        }
-
         $group = $this->token->getClaim(AuthenticationService::CLAIM_GROUP);
         if (!isset($this->permissions[$group])) {
             return false;
@@ -55,25 +51,5 @@ class AuthorizationService implements AuthorizationServiceInterface
             return false;
         }
         return true;
-    }
-
-    /**
-     * Checks if the user name is 'developer' and the developer module is active
-     *
-     * The check if the module is active is done using permissions. The module
-     * sets the permission 'all' for the group 'developers'. So if this permission
-     * is not set, the module is not active.
-     *
-     * @return bool
-     */
-    private function isDeveloperModuleRequest()
-    {
-        $username = $this->token->getClaim(AuthenticationService::CLAIM_USERNAME);
-        if ($username === 'developer' and isset($this->permissions['developer'])) {
-            if (array_search('all', $this->permissions['developer'], true) !== false) {
-                return true;
-            }
-        }
-        return false;
     }
 }
