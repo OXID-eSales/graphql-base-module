@@ -14,10 +14,6 @@ use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
-use OxidEsales\EshopCommunity\Application\Model\User;
-use OxidEsales\EshopCommunity\Core\Registry;
-use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 

@@ -8,7 +8,6 @@ namespace OxidEsales\GraphQL\Tests\Integration\Service;
 
 use oxfield;
 use OxidEsales\EshopCommunity\Application\Model\User;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Service\LegacyService;
@@ -97,5 +96,4 @@ class LegacyServiceTest extends UnitTestCase
         $oUser->oxuser__oxrights = new oxField($dbusergroup, oxField::T_RAW);
         $oUser->createUser();
     }
-
 }

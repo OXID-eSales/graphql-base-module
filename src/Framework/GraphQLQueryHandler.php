@@ -9,8 +9,6 @@ namespace OxidEsales\GraphQL\Framework;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
-use GraphQL\Executor\ExecutionResult;
-use OxidEsales\GraphQL\Exception\HttpErrorInterface;
 use Psr\Log\LoggerInterface;
 
 class GraphQLQueryHandler implements GraphQLQueryHandlerInterface

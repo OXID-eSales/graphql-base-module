@@ -13,6 +13,7 @@ class PermissionProvider implements PermissionProviderInterface
 {
     public function getPermissions(): array
     {
+        // TODO: no permissions needed in base module
         return [
             'admin' => [
                 'user_get_self'

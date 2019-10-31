@@ -32,5 +32,4 @@ interface LegacyServiceInterface
      * @return int
      */
     public function getShopId(): int;
-
 }

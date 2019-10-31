@@ -7,9 +7,8 @@
 
 namespace OxidEsales\GraphQL\Tests\Integration\Framework\Controller;
 
-use TheCodingMachine\GraphQLite\Annotations\Query;
-use TheCodingMachine\GraphQLite\Annotations\Logged;
 use OxidEsales\GraphQL\Exception\InvalidTokenException;
+use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class TestController
 {

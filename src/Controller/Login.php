@@ -7,7 +7,6 @@
 
 namespace OxidEsales\GraphQL\Controller;
 
-use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 

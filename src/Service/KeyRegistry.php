@@ -32,6 +32,7 @@ class KeyRegistry implements KeyRegistryInterface
      */
     public function getSignatureKey(): string
     {
+        // TODO: legacy wrapper
         $config = Registry::getConfig();
         $signature = $config->getConfigParam(self::signatureKeyName);
         if (!is_string($signature) || strlen($signature) < 64) {

@@ -13,7 +13,6 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class GraphQLQueryHandlerTest extends TestCase
 {
-
     public static function setUpBeforeClass(): void
     {
         static::$container = null;
@@ -104,5 +103,4 @@ class GraphQLQueryHandlerTest extends TestCase
             static::$queryResult['status']
         );
     }
-
 }

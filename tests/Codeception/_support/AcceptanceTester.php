@@ -6,7 +6,6 @@
 
 namespace OxidEsales\GraphQL\Tests\Codeception;
 
-
 /**
  * Inherited Methods
  * @method void wantToTest($text)
@@ -26,7 +25,7 @@ class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    /**
+     * Define custom actions here
+     */
 }

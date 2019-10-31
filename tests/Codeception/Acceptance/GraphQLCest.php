@@ -11,7 +11,6 @@ use OxidEsales\GraphQL\Tests\Codeception\AcceptanceTester;
 
 class GraphQLCest
 {
-
     public function testLoginWithInvalidCredentials(AcceptanceTester $I)
     {
         $I->haveHTTPHeader('Content-Type', 'application/json');
@@ -34,5 +33,4 @@ class GraphQLCest
         $I->seeResponseContains('data');
         $I->seeResponseContains('token');
     }
-
 }

@@ -22,8 +22,12 @@ class AuthorizationServiceTest extends TestCase
         $token->method('getClaim')
             ->will($this->returnCallback(
                 function ($claim) {
-                    if ($claim == AuthenticationService::CLAIM_GROUP) { return "group"; };
-                    if ($claim == AuthenticationService::CLAIM_USERNAME) { return "testuser"; };
+                    if ($claim == AuthenticationService::CLAIM_GROUP) {
+                        return "group";
+                    };
+                    if ($claim == AuthenticationService::CLAIM_USERNAME) {
+                        return "testuser";
+                    };
                 }
             ));
         return $token;
@@ -92,8 +96,12 @@ class AuthorizationServiceTest extends TestCase
         $token->method('getClaim')
             ->will($this->returnCallback(
                 function ($claim) {
-                    if ($claim == AuthenticationService::CLAIM_GROUP) { return "group"; };
-                    if ($claim == AuthenticationService::CLAIM_USERNAME) { return "developer"; };
+                    if ($claim == AuthenticationService::CLAIM_GROUP) {
+                        return "group";
+                    };
+                    if ($claim == AuthenticationService::CLAIM_USERNAME) {
+                        return "developer";
+                    };
                 }
             ));
         $auth = new AuthorizationService(
@@ -111,8 +119,12 @@ class AuthorizationServiceTest extends TestCase
         $token->method('getClaim')
             ->will($this->returnCallback(
                 function ($claim) {
-                    if ($claim == AuthenticationService::CLAIM_GROUP) { return "group"; };
-                    if ($claim == AuthenticationService::CLAIM_USERNAME) { return "developer"; };
+                    if ($claim == AuthenticationService::CLAIM_GROUP) {
+                        return "group";
+                    };
+                    if ($claim == AuthenticationService::CLAIM_USERNAME) {
+                        return "developer";
+                    };
                 }
             ));
         $auth = new AuthorizationService([]);
