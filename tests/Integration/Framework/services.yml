@@ -1,0 +1,13 @@
+services:
+
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController
+    public: true
+
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper
+    tags: ['graphql_namespace_mapper']

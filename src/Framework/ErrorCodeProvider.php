@@ -1,15 +1,17 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+declare(strict_types=1);
+
+namespace OxidEsales\GraphQL\Base\Framework;
 
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\ExecutionResult;
-use OxidEsales\GraphQl\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 
 /**
  * Class ErrorCodeProvider
@@ -19,16 +21,16 @@ use OxidEsales\GraphQl\Exception\HttpErrorInterface;
  *
  * TODO: Think of something more sophisticated
  *
- * @package OxidEsales\GraphQl\Framework
+ * @package OxidEsales\GraphQL\Base\Framework
  */
 class ErrorCodeProvider implements ErrorCodeProviderInterface
 {
     public function getHttpReturnCode(ExecutionResult $result): int
     {
         // TODO: The problem is, that the exceptions are already
-        //       transformed to a GraphQL error when we receive the
-        //       result. So we would need take the message to determine
-        //       which is the correct http status.
+        // transformed to a GraphQL error when we receive the
+        // result. So we would need take the message to determine
+        // which is the correct http status.
 
         if (sizeof($result->errors) == 0) {
             return 200; // OK

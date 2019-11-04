@@ -1,101 +1,137 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Service;
+declare(strict_types=1);
 
-use OxidEsales\GraphQl\Dao\UserDaoInterface;
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\DataObject\TokenRequest;
-use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Utility\AuthConstants;
+namespace OxidEsales\GraphQL\Base\Service;
+
+use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Signer\Hmac\Sha512;
+use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Token;
+use Lcobucci\JWT\ValidationData;
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
-    /** @var  EnvironmentServiceInterface $environmentService */
-    private $environmentService;
+    public const CLAIM_SHOPID   = 'shopid';
+    public const CLAIM_USERNAME = 'username';
+    public const CLAIM_GROUP    = 'group';
 
-    /** @var  UserDaoInterface $userDao */
-    private $userDao;
+    /** @var KeyRegistryInterface */
+    private $keyRegistry = null;
+
+    /** @var LegacyServiceInterface */
+    private $legacyService = null;
+
+    /** @var ?Token */
+    private $token = null;
 
     public function __construct(
-        EnvironmentServiceInterface $environmentService,
-        UserDaoInterface $userDao
-    )
+        KeyRegistryInterface $keyRegistry,
+        LegacyServiceInterface $legacyService
+    ) {
+        $this->keyRegistry   = $keyRegistry;
+        $this->legacyService = $legacyService;
+    }
+
+    public function setToken(?Token $token = null)
     {
-        $this->environmentService = $environmentService;
-        $this->userDao = $userDao;
+        $this->token = $token;
     }
 
     /**
-     * @param TokenRequest $tokenRequest
-     *
-     * @return string
+     * @uses RequestReaderInterface::getAuthToken
+     * @throws InvalidTokenException
      */
-    public function getToken(TokenRequest $tokenRequest): Token
+    public function isLogged(): bool
     {
-        $token = null;
-        if ($tokenRequest->getGroup() == AuthConstants::USER_GROUP_DEVELOPER) {
-            return $this->getDeveloperToken($tokenRequest);
+        if ($this->token === null) {
+            return false;
         }
-        if ($tokenRequest->getUsername()) {
-            return $this->getUserToken($tokenRequest);
+        if ($this->isValidToken($this->token)) {
+            return true;
         }
-        return $this->getAnonymousToken($tokenRequest);
+        throw new InvalidTokenException('The token is invalid');
     }
 
-    private function getDeveloperToken(TokenRequest $tokenRequest)
+    /**
+     * @throws InvalidLoginException
+     */
+    public function createToken(string $username, string $password): Token
     {
-        $tokenRequest->setUserid('developerid');
-        $tokenRequest->setUsername('developer');
-        return $this->createToken($tokenRequest);
+        $this->legacyService->checkCredentials($username, $password);
+        $usergroup = $this->legacyService->getUserGroup($username);
+        $builder = $this->getTokenBuilder()->withClaim(self::CLAIM_USERNAME, $username)
+            ->withClaim(self::CLAIM_GROUP, $usergroup);
 
+        return $builder->getToken(
+            $this->getSigner(),
+            $this->getSignatureKey()
+        );
     }
 
-    private function getAnonymousToken(TokenRequest $tokenRequest)
+    /**
+     * @internal
+     */
+    protected function getTokenBuilder(): Builder
     {
-        $tokenRequest->setUserid('anonymousid');
-        $tokenRequest->setUsername('anonymous');
-        $tokenRequest->setGroup('anonymous');
-        return $this->createToken($tokenRequest);
-    }
-
-    private function getUserToken(TokenRequest $tokenRequest)
-    {
-        if (! $tokenRequest->getPassword() || ! $tokenRequest->getShopid()) {
-            throw new PasswordMismatchException();
-        }
-
-        $tokenRequest = $this->userDao->addIdAndUserGroupToTokenRequest($tokenRequest);
-
-        $token = $this->createToken($tokenRequest);
-
-        // Retain token id when the user was already logged in anonymously
-        // and the logged in user is a simple customer
-        $authToken = $tokenRequest->getCurrentToken();
-        if ($authToken != null &&
-            $authToken->getUserGroup() == AuthConstants::USER_GROUP_ANONMYOUS &&
-            $token->getUserGroup() == AuthConstants::USER_GROUP_CUSTOMER) {
-            $token->setKey($authToken->getKey());
-        }
-
+        $time = time();
+        $token = (new Builder())
+            ->issuedBy($this->legacyService->getShopUrl())
+            ->permittedFor($this->legacyService->getShopUrl())
+            ->issuedAt($time)
+            ->canOnlyBeUsedAfter($time)
+            ->expiresAt($time + 3600 * 8)
+            ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId());
         return $token;
     }
 
-    private function createToken(TokenRequest $tokenRequest)
+    /**
+     * Checks if given token is valid:
+     * - has valid signature
+     * - has valid issuer and audience
+     * - has valid shop claim
+     *
+     * @internal
+     */
+    protected function isValidToken(Token $token): bool
     {
-        $token = new Token();
-        $token->setSubject($tokenRequest->getUserid());
-        $token->setUserGroup($tokenRequest->getGroup());
-        $token->setLang($tokenRequest->getLang());
-        $token->setShopid($tokenRequest->getShopid());
-        $token->setShopUrl($this->environmentService->getShopUrl());
-        $token->setUserName($tokenRequest->getUsername());
+        if (!$token->verify($this->getSigner(), $this->getSignatureKey()->getContent())) {
+            return false;
+        }
+        $validation = new ValidationData();
+        $validation->setIssuer($this->legacyService->getShopUrl());
+        $validation->setAudience($this->legacyService->getShopUrl());
+        if (!$token->validate($validation)) {
+            return false;
+        }
+        if ($token->getClaim(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
+            return false;
+        }
+        return true;
+    }
 
-        return $token;
+    /**
+     * @internal
+     */
+    protected function getSignatureKey(): Key
+    {
+        return new Key($this->keyRegistry->getSignatureKey());
+    }
 
+    /**
+     * @internal
+     */
+    protected function getSigner(): Signer
+    {
+        return new Sha512();
     }
 }

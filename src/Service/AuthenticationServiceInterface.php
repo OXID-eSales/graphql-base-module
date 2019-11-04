@@ -1,22 +1,18 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Service;
+declare(strict_types=1);
 
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\DataObject\TokenRequest;
+namespace OxidEsales\GraphQL\Base\Service;
 
-interface AuthenticationServiceInterface
+use Lcobucci\JWT\Token;
+use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface as GraphQLiteAuthenticationServiceInterface;
+
+interface AuthenticationServiceInterface extends GraphQLiteAuthenticationServiceInterface
 {
-    /**
-     * @param TokenRequest $tokenRequest
-     *
-     * @return Token
-     */
-    public function getToken(TokenRequest $tokenRequest): Token;
-
+    public function createToken(string $username, string $password): Token;
 }

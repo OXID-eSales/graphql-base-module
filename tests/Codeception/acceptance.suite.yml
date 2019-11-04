@@ -1,0 +1,11 @@
+# suite config
+actor: AcceptanceTester
+path: Acceptance
+modules:
+  enabled:
+    - Asserts
+    - \OxidEsales\Codeception\Module\OxideshopModules
+    - REST:
+        url: '%SHOP_URL%'
+        depends: PhpBrowser
+        part: Json

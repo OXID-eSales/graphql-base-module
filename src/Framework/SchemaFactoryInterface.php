@@ -1,24 +1,20 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+namespace OxidEsales\GraphQL\Base\Framework;
 
-use GraphQL\Type\Schema;
-
+use TheCodingMachine\GraphQLite\Schema;
 
 /**
  * Class SchemaFactory
  *
- * @package OxidProfessionalServices\GraphQl\Core\Schema
+ * @package OxidProfessionalServices\GraphQL\Core\Schema
  */
 interface SchemaFactoryInterface
 {
-
-    /**
-     * @return Schema
-     */
     public function getSchema(): Schema;
 }

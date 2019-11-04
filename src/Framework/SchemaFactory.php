@@ -1,108 +1,92 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+declare(strict_types=1);
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Schema;
-use OxidEsales\GraphQl\Type\BaseType;
-use OxidEsales\GraphQl\Type\Provider\MutationProviderInterface;
-use OxidEsales\GraphQl\Type\Provider\QueryProviderInterface;
+namespace OxidEsales\GraphQL\Base\Framework;
+
+use Mouf\Composer\ClassNameMapper;
+use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use TheCodingMachine\GraphQLite\Schema;
+use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
 /**
  * Class SchemaFactory
  *
- * @package OxidProfessionalServices\GraphQl\Core\Schema
+ * @package OxidProfessionalServices\GraphQL\Core\Schema
  */
 class SchemaFactory implements SchemaFactoryInterface
 {
-
+    /** @var Schema */
     private $schema = null;
 
-    private $queryProviders = [];
+    /** @var AuthenticationServiceInterface */
+    private $authenticationService = null;
 
-    private $mutationProviders = [];
+    /** @var AuthorizationServiceInterface */
+    private $authorizationService = null;
 
-    public function __construct(iterable $queryProviders, iterable $mutationProviders)
-    {
-        $this->queryProviders = $queryProviders;
-        $this->mutationProviders = $mutationProviders;
+    /** @var NamespaceMapperInterface[] */
+    private $namespaceMappers = null;
+
+    /** @var ContainerInterface */
+    private $container = null;
+
+    public function __construct(
+        iterable $namespaceMappers,
+        AuthenticationServiceInterface $authenticationService,
+        AuthorizationServiceInterface $authorizationService,
+        ContainerInterface $container
+    ) {
+        foreach ($namespaceMappers as $namespaceMapper) {
+            $this->namespaceMappers[] = $namespaceMapper;
+        }
+        $this->authenticationService = $authenticationService;
+        $this->authorizationService = $authorizationService;
+        $this->container = $container;
     }
 
-    /**
-     * @return Schema
-     */
     public function getSchema(): Schema
     {
         if (null !== $this->schema) {
             return $this->schema;
         }
 
-        $executableSchema = [
-            'query'    => $this->createQueryType(),
-            'mutation' => $this->createMutationType()
-        ];
+        $factory = new GraphQLiteSchemaFactory(
+            new \Symfony\Component\Cache\Simple\NullCache(),
+            $this->container
+        );
 
-        $this->schema = new Schema($executableSchema);
+        $classNameMapper = new ClassNameMapper();
 
-        return $this->schema;
-    }
-
-    private function createQueryType()
-    {
-        $fields = [];
-        $fieldHandlers = [];
-
-        foreach ($this->queryProviders as $provider) {
-            foreach ($provider->getQueries() as $fieldName => $field) {
-                $fields[$fieldName] = $field;
+        foreach ($this->namespaceMappers as $namespaceMapper) {
+            foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace => $path) {
+                $classNameMapper->registerPsr4Namespace(
+                    $namespace,
+                    $path
+                );
+                $factory->addControllerNameSpace($namespace);
             }
-            foreach ($provider->getQueryResolvers() as $handlerName => $handler) {
-                $fieldHandlers[$handlerName] = $handler;
-            }
-        }
-
-        $config = [
-            'name' => 'query',
-            'description' => 'The base query type',
-            'fields' => $fields,
-            'resolveField' => function ($val, $args, $context, ResolveInfo $info) use ($fieldHandlers) {
-                return $fieldHandlers[$info->fieldName]($val, $args, $context, $info);
-            },
-        ];
-
-        return new ObjectType($config);
-    }
-
-    private function createMutationType()
-    {
-        $fields = [];
-        $fieldHandlers = [];
-
-        foreach ($this->mutationProviders as $provider) {
-            foreach ($provider->getMutations() as $fieldName => $field) {
-                $fields[$fieldName] = $field;
-            }
-            foreach ($provider->getMutationResolvers() as $handlerName => $handler) {
-                $fieldHandlers[$handlerName] = $handler;
+            foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace => $path) {
+                $classNameMapper->registerPsr4Namespace(
+                    $namespace,
+                    $path
+                );
+                $factory->addTypeNameSpace($namespace);
             }
         }
 
-        $config = [
-            'name' => 'mutation',
-            'description' => 'The base mutation type',
-            'fields' => $fields,
-            'resolveField' => function ($val, $args, $context, ResolveInfo $info) use ($fieldHandlers) {
-                return $fieldHandlers[$info->fieldName]($val, $args, $context, $info);
-            },
-        ];
+        $factory->setClassNameMapper($classNameMapper);
 
-        return new ObjectType($config);
+        $factory->setAuthenticationService($this->authenticationService)
+                ->setAuthorizationService($this->authorizationService);
 
+        return $this->schema = $factory->createSchema();
     }
 }

@@ -1,15 +1,15 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Service;
+declare(strict_types=1);
 
-use OxidEsales\EshopCommunity\Internal\Common\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQl\Exception\NoSignatureKeyException;
-use OxidEsales\GraphQl\Exception\TooManySignatureKeysException;
+namespace OxidEsales\GraphQL\Base\Service;
+
+use OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException;
 
 /**
  * Class KeyRegistry
@@ -17,63 +17,36 @@ use OxidEsales\GraphQl\Exception\TooManySignatureKeysException;
  * The current implementation stores the signature key in
  * the config table. This should be changed eventually.
  *
- * @package OxidEsales\GraphQl\Service
+ * @package OxidEsales\GraphQL\Base\Service
  */
 class KeyRegistry implements KeyRegistryInterface
 {
+    /** @var LegacyServiceInterface */
+    private $legacyService = null;
 
-    private $tableName = 'graphqlsignaturekey';
+    public const SIGNATUREKEYNAME = 'sJsonWebTokenSignature';
 
-    private $columnName = 'signaturekey';
-
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
-
-    public function __construct(QueryBuilderFactoryInterface $queryBuilderFactory)
-    {
-        $this->queryBuilderFactory = $queryBuilderFactory;
+    public function __construct(
+        LegacyServiceInterface $legacyService
+    ) {
+        $this->legacyService = $legacyService;
     }
 
-    public function createSignatureKey()
+    public function generateSignatureKey(): string
     {
-        $this->createTableIfNecessary();
-        try {
-            $this->getSignatureKey();
-        } catch (NoSignatureKeyException $e) {
-            $key = base64_encode(openssl_random_pseudo_bytes(64));
-            $this->queryBuilderFactory
-                ->create()
-                ->insert($this->tableName)
-                ->values([$this->columnName => '?'])
-                ->setParameter(0, $key)
-                ->execute();
-        }
+        return \bin2hex(\random_bytes(64));
     }
 
-    public function getSignatureKey()
+    /**
+     * @throws NoSignatureKeyException
+     */
+    public function getSignatureKey(): string
     {
-        try {
-            $result = $this->queryBuilderFactory->create()->select($this->columnName)->from($this->tableName)->execute();
-        } catch (\Exception $e) {
+        // TODO: legacy wrapper
+        $signature = $this->legacyService->getConfigParam(static::SIGNATUREKEYNAME);
+        if (!is_string($signature) || strlen($signature) < 64) {
             throw new NoSignatureKeyException();
         }
-        $rows = $result->fetchAll();
-        if (sizeof($rows) === 0) {
-            throw new NoSignatureKeyException();
-        }
-        if (sizeof($rows) > 1) {
-            throw new TooManySignatureKeysException();
-        }
-        return $rows[0][$this->columnName];
-
+        return $signature;
     }
-
-    private function createTableIfNecessary()
-    {
-        $queryBuilder = $this->queryBuilderFactory->create();
-        $connection = $queryBuilder->getConnection();
-        $connection->exec('CREATE TABLE IF NOT EXISTS ' . $this->tableName .
-            ' (' . $this->columnName . ' VARCHAR(128))');
-    }
-
 }

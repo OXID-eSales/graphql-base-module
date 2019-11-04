@@ -4,99 +4,58 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\Eshop\Core\PasswordSaltGenerator:
-    class: OxidEsales\Eshop\Core\PasswordSaltGenerator
-
-  OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker:
-    class: OxidEsales\Eshop\Core\OpenSSLFunctionalityChecker
-
-  OxidEsales\GraphQl\Framework\ModuleSetup:
-    class: OxidEsales\GraphQl\Framework\ModuleSetup
+  OxidEsales\GraphQL\Base\Framework\ModuleSetup:
+    class: OxidEsales\GraphQL\Base\Framework\ModuleSetup
     public: true
 
-  OxidEsales\GraphQl\Framework\GraphQlQueryHandlerInterface:
-    class: OxidEsales\GraphQl\Framework\GraphQlQueryHandler
+  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface:
+    class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
     public: true
 
-  OxidEsales\GraphQl\Framework\ErrorCodeProviderInterface:
-    class: OxidEsales\GraphQl\Framework\ErrorCodeProvider
+  OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface:
+    class: OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider
 
-  OxidEsales\GraphQl\Framework\RequestReaderInterface:
-    class: OxidEsales\GraphQl\Framework\RequestReader
+  OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
+    class: OxidEsales\GraphQL\Base\Framework\RequestReader
 
-  OxidEsales\GraphQl\Framework\ResponseWriterInterface:
-    class: OxidEsales\GraphQl\Framework\ResponseWriter
+  OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
+    class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
-  OxidEsales\GraphQl\Framework\SchemaFactoryInterface:
-    class: OxidEsales\GraphQl\Framework\SchemaFactory
-    arguments: [!tagged graphql_query_provider, !tagged graphql_mutation_provider]
-
-  OxidEsales\GraphQl\Framework\GenericFieldResolverInterface:
-    class: OxidEsales\GraphQl\Framework\GenericFieldResolver
-
-  OxidEsales\GraphQl\Dao\UserDaoInterface:
-    class: OxidEsales\GraphQl\Dao\UserDao
-
-  OxidEsales\GraphQl\Service\KeyRegistryInterface:
-    class: OxidEsales\GraphQl\Service\KeyRegistry
-
-  OxidEsales\GraphQl\Service\EnvironmentServiceInterface:
-    class: OxidEsales\GraphQl\Service\EnvironmentService
-
-  OxidEsales\GraphQl\Service\AuthenticationServiceInterface:
-    class: OxidEsales\GraphQl\Service\AuthenticationService
+  OxidEsales\GraphQL\Base\Service\KeyRegistryInterface:
+    class: OxidEsales\GraphQL\Base\Service\KeyRegistry
     public: true
 
-  OxidEsales\GraphQl\Service\TokenServiceInterface:
-    class: OxidEsales\GraphQl\Service\TokenService
-    public: true
+  Lcobucci\JWT\Token:
+    factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReaderInterface', 'getAuthToken']
 
-  OxidEsales\GraphQl\Service\UserServiceInterface:
-    class: OxidEsales\GraphQl\Service\UserService
-
-  OxidEsales\GraphQl\Service\PermissionsServiceInterface:
-    class: OxidEsales\GraphQl\Service\PermissionsService
-    arguments: [!tagged graphql_permissions_provider]
-
-  OxidEsales\GraphQl\Service\LoginPermissionsProvider:
-    class: OxidEsales\GraphQl\Service\PermissionsProvider
+  OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\AuthenticationService
     calls:
-      - ['addPermission', ['anonymous', 'mayreaddata']]
-      - ['addPermission', ['customer', 'mayreaddata']]
-      - ['addPermission', ['admin', 'mayreaddata']]
-      - ['addPermission', ['shopadmin', 'mayreaddata']]
-    tags: ['graphql_permissions_provider']
+      - [setToken, ['@?Lcobucci\JWT\Token']]
 
-  OxidEsales\GraphQl\Service\UserPermissionsProvider:
-    class: OxidEsales\GraphQl\Service\PermissionsProvider
+  OxidEsales\GraphQL\Base\Service\LegacyServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\LegacyService
+
+  OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\AuthorizationService
+    arguments:
+        $permissionProviders: !tagged graphql_permission_provider
     calls:
-      - ['addPermission', ['anonymous', 'maycreatecustomer']]
-      - ['addPermission', ['customer', 'mayupdateself']]
-      - ['addPermission', ['customer', 'maygetself']]
-      - ['addPermission', ['shopadmin', 'maycreateanyuser']]
-      - ['addPermission', ['shopadmin', 'maygetshopuser']]
-      - ['addPermission', ['admin', 'maycreateanyuser']]
-      - ['addPermission', ['admin', 'maygetanyuser']]
-      - ['addPermission', ['admin', 'maycreateuserforothershop']]
-      - ['addPermission', ['admin', 'mayupdateanyuser']]
-    tags: ['graphql_permissions_provider']
+      - [setToken, ['@?Lcobucci\JWT\Token']]
 
-  OxidEsales\GraphQl\Type\ObjectType\UserType:
-    class: OxidEsales\GraphQl\Type\ObjectType\UserType
+  OxidEsales\GraphQL\Base\Controller\:
+    resource: 'src/Controller/*'
+    public: true
 
-  OxidEsales\GraphQl\Type\ObjectType\LoginType:
-    class: OxidEsales\GraphQl\Type\ObjectType\LoginType
+  OxidEsales\GraphQL\Base\Service\PermissionProvider:
+    class: OxidEsales\GraphQL\Base\Service\PermissionProvider
+    tags: ['graphql_permission_provider']
 
-  OxidEsales\GraphQl\Type\ObjectType\AddressType:
-    class: OxidEsales\GraphQl\Type\ObjectType\AddressType
+  OxidEsales\GraphQL\Base\Service\NamespaceMapper:
+    class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
+    tags: ['graphql_namespace_mapper']
 
-  OxidEsales\GraphQl\Type\Provider\LoginQueryProvider:
-    class: OxidEsales\GraphQl\Type\Provider\LoginQueryProvider
-    tags: ['graphql_query_provider']
-
-  OxidEsales\GraphQl\Type\Provider\UserMutationProvider:
-    class: OxidEsales\GraphQl\Type\Provider\UserMutationProvider
-    tags: ['graphql_mutation_provider', 'graphql_query_provider']
-
-  OxidEsales\GraphQl\Utility\LegacyWrapperInterface:
-    class: OxidEsales\GraphQl\Utility\LegacyWrapper
+  OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
+    arguments:
+      $namespaceMappers: !tagged graphql_namespace_mapper

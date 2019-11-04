@@ -1,213 +1,132 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Tests\Unit\Service;
+declare(strict_types=1);
 
-use Firebase\JWT\JWT;
-use OxidEsales\GraphQl\Dao\UserDaoInterface;
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\DataObject\TokenRequest;
-use OxidEsales\GraphQl\Exception\InsufficientData;
-use OxidEsales\GraphQl\Exception\PasswordMismatchException;
-use OxidEsales\GraphQl\Service\AuthenticationService;
-use OxidEsales\GraphQl\Service\EnvironmentServiceInterface;
-use OxidEsales\GraphQl\Utility\AuthConstants;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
+
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token;
+use OxidEsales\Eshop\Core\Config;
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Base\Service\AuthenticationService;
+use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
+# use PHPUnit\Framework\TestCase;
+use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
+use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 
 class AuthenticationServiceTest extends TestCase
 {
+    protected static $token = null;
 
-    const TESTKEY = '1234567890123456';
-    /**
-     * @var AuthenticationService $authService
-     */
-    private $authService;
+    // phpcs:disable
+    protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+    // phpcs:enable
 
-    /** @var  MockObject|UserDaoInterface $userDao */
-    private $userDao;
+    /** @var KeyRegistryInterface|MockObject */
+    private $keyRegistry;
 
-    private $testUserId = 'adminid';
-    private $testUserGroup = AuthConstants::USER_GROUP_ADMIN;
+    /** @var LegacyServiceInterface|MockObject */
+    private $legacyService;
+
+    /** @var AuthenticationService */
+    private $authenticationService;
 
     public function setUp()
     {
-        /** @var EnvironmentServiceInterface|MockObject $environmentService */
-        $environmentService = $this->getMockBuilder(EnvironmentServiceInterface::class)->getMock();
-        $environmentService->method('getShopUrl')->willReturn('https://myshop.de');
-        /** @var UserDaoInterface|MockObject $userDao */
-        $this->userDao = $this->getMockBuilder(UserDaoInterface::class)->getMock();
-        $this->authService = new AuthenticationService($environmentService, $this->userDao);
+        $this->keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
+        $this->keyRegistry->method('getSignatureKey')
+            ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
+        $this->legacyService = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
+        $this->authenticationService = new AuthenticationService($this->keyRegistry, $this->legacyService);
     }
 
-    public function testAnonymousToken()
+    public function testCreateTokenWithInvalidCredentials()
     {
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setLang('de');
-        $tokenRequest->setShopid(1);
-        $tokenRequest->setGroup('');
-
-        $token = $this->authService->getToken($tokenRequest);
-        $this->assertEquals('anonymousid', $token->getSubject());
-        $this->assertEquals('anonymous', $token->getUserGroup());
-        $this->assertEquals('de', $token->getLang());
-        $this->assertEquals(1, $token->getShopid());
-
-        $tokenString = $token->getJwt($this::TESTKEY);
-        $tokenObject = JWT::decode($tokenString, $this::TESTKEY, [$token::ALGORITHM]);
-        $this->assertNotEmpty($tokenObject->jti);
+        $this->expectException(InvalidLoginException::class);
+        $this->legacyService->method('checkCredentials')->willThrowException(new InvalidLoginException());
+        $this->authenticationService->createToken('foo', 'bar');
     }
 
-    public function testAnonymousTokenNonDefaultLangAndShopId()
+    public function testIsLoggedWithoutToken()
     {
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setLang('lt');
-        $tokenRequest->setShopid(25);
-        $tokenRequest->setGroup('');
-
-        $token = $this->authService->getToken($tokenRequest);
-        $this->assertEquals('anonymousid', $token->getSubject());
-        $this->assertEquals('anonymous', $token->getUserGroup());
-        $this->assertEquals('lt', $token->getLang());
-        $this->assertEquals(25, $token->getShopid());
-
-        $tokenString = $token->getJwt($this::TESTKEY);
-        $tokenObject = JWT::decode($tokenString, $this::TESTKEY, [$token::ALGORITHM]);
-        $this->assertNotEmpty($tokenObject->jti);
+        $this->authenticationService->setToken(null);
+        $this->assertFalse($this->authenticationService->isLogged());
     }
 
-    public function addIdAndUserGroupToTokenRequest(TokenRequest $tokenRequest)
+    public function testIsLoggedWithFormallyCorrectButInvalidToken()
     {
-        $tokenRequest->setUserid($this->testUserId);
-        $tokenRequest->setGroup($this->testUserGroup);
-        return $tokenRequest;
+        $this->expectException(InvalidTokenException::class);
+        $this->authenticationService->setToken(
+            (new Parser())->parse(self::$invalidToken)
+        );
+        $this->authenticationService->isLogged();
     }
 
-    public function testUserToken()
+    public function testCreateTokenWithValidCredentials()
     {
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setLang('de');
-        $tokenRequest->setShopid(1);
-        $tokenRequest->setUsername('admin');
-        $tokenRequest->setPassword('somepassword');
+        $this->legacyService->method('checkCredentials');
+        $this->legacyService->method('getUserGroup')->willReturn(LegacyServiceInterface::GROUP_ADMIN);
+        $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
+        $this->legacyService->method('getShopId')->willReturn(1);
 
-        $this->userDao->method('addIdAndUserGroupToTokenRequest')
-            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
-
-
-        $token = $this->authService->getToken($tokenRequest);
-
-        $this->assertEquals('adminid', $token->getSubject());
-        $this->assertEquals('admin', $token->getUserGroup());
-
-        $tokenString = $token->getJwt($this::TESTKEY);
-        $tokenObject = JWT::decode($tokenString, $this::TESTKEY, [$token::ALGORITHM]);
-        $this->assertNotEmpty($tokenObject->jti);
-        $this->assertEquals(24, strlen($tokenObject->jti));
+        self::$token = $this->authenticationService->createToken('admin', 'admin');
+        $this->assertInstanceOf(
+            \Lcobucci\JWT\Token::class,
+            self::$token
+        );
     }
 
-    public function testUserTokenWithAnonymouyLogin()
+    /**
+     * @depends testCreateTokenWithValidCredentials
+     */
+    public function testIsLoggedWithValidToken()
     {
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setLang('de');
-        $tokenRequest->setShopid(1);
-        $tokenRequest->setUsername('simplecustomer');
-        $tokenRequest->setPassword('somepassword');
-
-        $authToken = new Token();
-        $authToken->setKey('anonymouskey');
-        $authToken->setUserGroup(AuthConstants::USER_GROUP_ANONMYOUS);
-        $tokenRequest->setCurrentToken($authToken);
-
-        $this->testUserId = 'simplecustomerid';
-        $this->testUserGroup = AuthConstants::USER_GROUP_CUSTOMER;
-        $this->userDao->method('addIdAndUserGroupToTokenRequest')
-            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
-
-
-        $token = $this->authService->getToken($tokenRequest);
-
-        $this->assertEquals($this->testUserId, $token->getSubject());
-        $this->assertEquals(AuthConstants::USER_GROUP_CUSTOMER, $token->getUserGroup());
-
-        $tokenString = $token->getJwt($this::TESTKEY);
-        $tokenObject = JWT::decode($tokenString, $this::TESTKEY, [$token::ALGORITHM]);
-        $this->assertEquals('anonymouskey', $tokenObject->jti);
+        $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
+        $this->legacyService->method('getShopId')->willReturn(1);
+        $this->authenticationService->setToken(
+            self::$token
+        );
+        $this->assertTrue($this->authenticationService->isLogged());
     }
 
-    public function testUserTokenWithAdminLogin()
+    /**
+     * @depends testCreateTokenWithValidCredentials
+     */
+    public function testIsLoggedWithValidForAnotherShopIdToken()
     {
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setLang('de');
-        $tokenRequest->setShopid(1);
-        $tokenRequest->setGroup('');
-        $tokenRequest->setUsername('admin');
-        $tokenRequest->setPassword('somepassword');
-        $tokenRequest->setGroup('admin');
-
-        $authToken = new Token();
-        $authToken->setKey('anonymouskey');
-        $authToken->setUserGroup(AuthConstants::USER_GROUP_ADMIN);
-        $tokenRequest->setCurrentToken($authToken);
-
-        $this->userDao->method('addIdAndUserGroupToTokenRequest')
-            ->willReturnCallback([$this, 'addIdAndUserGroupToTokenRequest']);
-
-
-        $token = $this->authService->getToken($tokenRequest);
-
-        $this->assertEquals('adminid', $token->getSubject());
-        $this->assertEquals('admin', $token->getUserGroup());
-
-        $tokenString = $token->getJwt($this::TESTKEY);
-        $tokenObject = JWT::decode($tokenString, $this::TESTKEY, [$token::ALGORITHM]);
-        $this->assertEquals(24, strlen($tokenObject->jti));
-
+        $this->expectException(InvalidTokenException::class);
+        $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
+        $this->legacyService->method('getShopId')->willReturn(-1);
+        $this->authenticationService->setToken(
+            self::$token
+        );
+        $this->authenticationService->isLogged();
     }
 
-    public function testMissingLanguage()
+    /**
+     * @depends testCreateTokenWithValidCredentials
+     *
+     * can not use expectException due to needed cleanup in registry config
+     */
+    public function testIsLoggedWithValidForAnotherShopUrlToken()
     {
-        $this->expectException(InsufficientData::class);
+        $this->expectException(InvalidTokenException::class);
 
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setShopid(1);
-        $tokenRequest->setUsername('admin');
-        $tokenRequest->setPassword('somepassword');
-        $tokenRequest->setGroup('admin');
+        $this->legacyService->method('getShopUrl')->willReturn('https:/other.com');
+        $this->legacyService->method('getShopId')->willReturn(1);
 
-        $this->authService->getToken($tokenRequest)->getJwt($this::TESTKEY);
+        $this->authenticationService->setToken(
+            self::$token
+        );
+        $this->authenticationService->isLogged();
     }
-
-    public function testMissingShopId()
-    {
-        $this->expectException(PasswordMismatchException::class);
-
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setLang('de');
-        $tokenRequest->setUsername('admin');
-        $tokenRequest->setPassword('somepassword');
-        $tokenRequest->setGroup('admin');
-
-        $this->authService->getToken($tokenRequest)->getJwt($this::TESTKEY);
-
-    }
-
-    public function testMissingGroup()
-    {
-        $this->expectException(InsufficientData::class);
-
-        $tokenRequest = new TokenRequest();
-        $tokenRequest->setLang('de');
-        $tokenRequest->setShopid(1);
-        $tokenRequest->setUsername('admin');
-        $tokenRequest->setPassword('somepassword');
-
-        $this->authService->getToken($tokenRequest)->getJwt($this::TESTKEY);
-
-    }
-
 }

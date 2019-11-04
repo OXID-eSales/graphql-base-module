@@ -1,19 +1,21 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Exception;
+declare(strict_types=1);
+
+namespace OxidEsales\GraphQL\Base\Exception;
 
 use GraphQL\Error\ClientAware;
 
-class InvalidTokenException extends \Exception implements HttpErrorInterface, ClientAware
+class InvalidTokenException extends \Exception implements ClientAware, HttpErrorInterface
 {
     public function getHttpStatus()
     {
-        return 401;
+        return 403;
     }
 
     public function isClientSafe()
@@ -23,7 +25,6 @@ class InvalidTokenException extends \Exception implements HttpErrorInterface, Cl
 
     public function getCategory()
     {
-        return ErrorCategories::TOKENERRORS;
+        return ErrorCategories::PERMISSIONERRORS;
     }
-
 }

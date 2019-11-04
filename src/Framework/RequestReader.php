@@ -1,83 +1,81 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+declare(strict_types=1);
 
-use OxidEsales\GraphQl\DataObject\Token;
-use OxidEsales\GraphQl\Exception\InvalidTokenException;
-use OxidEsales\GraphQl\Exception\NoAuthHeaderException;
+namespace OxidEsales\GraphQL\Base\Framework;
+
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
 
 class RequestReader implements RequestReaderInterface
 {
     /**
      * Returns the encoded token from the authorization header
      *
-     * @return string
-     * @throws NoAuthHeaderException
+     * @throws InvalidTokenException
      */
-    public function getAuthTokenString(): string
+    public function getAuthToken(): ?Token
     {
+        $token = null;
         $authHeader = $this->getAuthorizationHeader();
-        if (! $authHeader) {
-            throw new NoAuthHeaderException();
+        if ($authHeader === null) {
+            return null;
         }
-        list($jwt) = sscanf( $authHeader, 'Bearer %s');
-        return $jwt;
+        list($jwt) = sscanf($authHeader, 'Bearer %s');
+        if (!$jwt) {
+            return null;
+        }
+        try {
+            $token = (new Parser())->parse($jwt);
+        } catch (\Exception $e) {
+            throw new InvalidTokenException('The token is invalid');
+        }
+        return $token;
     }
 
     /**
-     *  Get header Authorization
+     * Get HTTP-Authorization header
      *
-     *  @return $aHeaders array
+     * php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default
+     * For this workaround to work, add these lines to your .htaccess file:
+     * RewriteCond %{HTTP:Authorization} ^(.+)$
+     * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+     *
+     * @return string|null
      */
-    public function getAuthorizationHeader(){
-
-        $authHeader = null;
-
-        if (isset($_SERVER['Authorization'])) {
-            $authHeader = trim($_SERVER["Authorization"]);
+    private function getAuthorizationHeader(): ?string
+    {
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            return trim($_SERVER["HTTP_AUTHORIZATION"]);
+        } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            return trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
         }
-        else if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            //Nginx or fast CGI
-            $authHeader = trim($_SERVER["HTTP_AUTHORIZATION"]);
-        } elseif (function_exists('apache_request_headers')) {
-            $requestHeaders = apache_request_headers();
-            // Server-side fix
-            //(a nice side-effect of this fix means we don't care about capitalization for Authorization)
-            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
-
-            if (isset($requestHeaders['Authorization'])) {
-                $authHeader = trim($requestHeaders['Authorization']);
-            }
-        }
-        return $authHeader;
+        return null;
     }
 
     /**
      * Get the Request data
-     *
-     * @return array
      */
-    public function getGraphQLRequestData()
+    public function getGraphQLRequestData(string $inputFile = 'php://input'): array
     {
         if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-            $raw = file_get_contents('php://input') ?: '';
-            $data = json_decode($raw, true) ?: [];
-            //throw new \Exception(print_r($_SERVER, true));
+            $raw = file_get_contents($inputFile) ? : '';
+            $data = json_decode($raw, true) ? : [];
         } else {
             $data = $_REQUEST;
-            //throw new \Exception(print_r($_SERVER, true));
         }
 
-        $data += ['query' => null, 'variables' => null, 'operationName' => null];
-
-        if (null === $data['query']) {
-            $Data['query'] = '{welcome}';
-        }
+        $data += [
+            'query'         => null,
+            'variables'     => null,
+            'operationName' => null
+        ];
 
         return $data;
     }

@@ -1,44 +1,51 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQl\Framework;
+declare(strict_types=1);
 
-use OxidEsales\EshopCommunity\Internal\Application\ContainerFactory;
-use OxidEsales\GraphQl\Service\KeyRegistryInterface;
+namespace OxidEsales\GraphQL\Base\Framework;
+
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
+use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 
 class ModuleSetup
 {
-    /** @var  KeyRegistryInterface $keyRegistry */
-    private $keyRegistry;
+    /** @var KeyRegistryInterface */
+    private $keyRegistry = null;
+
+    /** @var ModuleSettingBridgeInterface */
+    private $moduleSettings = null;
 
     /**
      * ModuleSetup constructor.
      *
      * @param KeyRegistryInterface $keyRegistry
      */
-    public function __construct(KeyRegistryInterface $keyRegistry)
+    public function __construct(KeyRegistryInterface $keyRegistry, ModuleSettingBridgeInterface $moduleSettings)
     {
         $this->keyRegistry = $keyRegistry;
+        $this->moduleSettings = $moduleSettings;
     }
 
-    private function createSignatureKey()
+    public function runSetup(): void
     {
-        $this->keyRegistry->createSignatureKey();
-    }
-
-    public function runSetup()
-    {
-        $this->createSignatureKey();
+        $this->moduleSettings->save(
+            KeyRegistry::SIGNATUREKEYNAME,
+            $this->keyRegistry->generateSignatureKey(),
+            'oe/graphql-base'
+        );
     }
 
     /**
      * Activation function for the module
      */
-    public static function onActivate()
+    public static function onActivate(): void
     {
         /** @var ModuleSetup $moduleSetup */
         $moduleSetup = ContainerFactory::getInstance()->getContainer()->get(ModuleSetup::class);
@@ -48,7 +55,7 @@ class ModuleSetup
     /**
      * Deactivation function for the module
      */
-    public static function onDeactivate()
+    public static function onDeactivate(): void
     {
     }
 }

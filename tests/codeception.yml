@@ -1,0 +1,21 @@
+namespace: OxidEsales\GraphQL\Base\Tests\Codeception
+
+params:
+    - Codeception/params.php
+
+paths:
+    tests: Codeception
+    output: Codeception/_output
+    data: Codeception/_data
+    support: Codeception/_support
+    envs: Codeception/_envs
+    actor_suffix: Tester
+
+settings:
+    colors: true
+    log: true
+    shuffle: true
+
+extensions:
+  enabled:
+    - Codeception\Extension\RunFailed
