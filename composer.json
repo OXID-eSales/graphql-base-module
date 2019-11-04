@@ -35,8 +35,8 @@
     }
   },
   "scripts": {
-    "fix": "phpcbf --standard=PSR12 -p src/ tests/",
-    "test:lint": "phpcs --standard=PSR12 -p src/ tests/",
+    "fix": "phpcbf --standard=PSR12 --extensions=php -p src/ tests/",
+    "test:lint": "phpcs --standard=PSR12 --extensions=php -p src/ tests/",
     "test:syntax": "parallel-lint src/ tests/",
     "test:static": "phpstan analyse src/",
     "test": [
