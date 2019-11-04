@@ -49,31 +49,6 @@ class AuthenticationServiceTest extends TestCase
         $this->authenticationService = new AuthenticationService($this->keyRegistry, $this->legacyService);
     }
 
-    public function testCreateTokenFromRequest()
-    {
-        $requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
-        $requestReader->method('getAuthToken')
-                      ->will($this->onConsecutiveCalls(
-                          null,
-                          'invalid',
-                          self::$invalidToken
-                      ));
-        $this->assertNull(AuthenticationService::createTokenFromRequest($requestReader));
-        $e = null;
-        try {
-            AuthenticationService::createTokenFromRequest($requestReader);
-        } catch (\Exception $e) {
-        }
-        $this->assertInstanceOf(
-            InvalidTokenException::class,
-            $e
-        );
-        $this->assertInstanceOf(
-            Token::class,
-            AuthenticationService::createTokenFromRequest($requestReader)
-        );
-    }
-
     public function testCreateTokenWithInvalidCredentials()
     {
         $this->expectException(InvalidLoginException::class);

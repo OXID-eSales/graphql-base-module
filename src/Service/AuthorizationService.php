@@ -11,18 +11,19 @@ namespace OxidEsales\GraphQL\Service;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Event\BeforeAuthorizationEvent;
+use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AuthorizationService implements AuthorizationServiceInterface
 {
-    /** @var ?Token */
-    private $token = null;
-
     /** @var array<string, array<string>> */
     private $permissions = [];
 
     /** @var EventDispatcherInterface */
     private $eventDispatcher = null;
+
+    /** @var ?Token */
+    private $token = null;
 
     public function __construct(
         iterable $permissionProviders,
@@ -38,9 +39,6 @@ class AuthorizationService implements AuthorizationServiceInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    /**
-     * TODO: validate token!!
-     */
     public function setToken(?Token $token = null)
     {
         $this->token = $token;

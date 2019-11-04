@@ -7,14 +7,14 @@
 
 namespace OxidEsales\GraphQL\Framework;
 
-use OxidEsales\GraphQL\DataObject\Token;
+use Lcobucci\JWT\Token;
 
 interface RequestReaderInterface
 {
     /**
      * Returns the encoded token from the authorization header
      */
-    public function getAuthToken(): ?string;
+    public function getAuthToken(): ?Token;
 
     /**
      * Get the Request data

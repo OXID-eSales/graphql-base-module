@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Tests\Unit\Framework;
 
+use Lcobucci\JWT\Token;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\GraphQL\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 # use PHPUnit\Framework\TestCase;
 use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
@@ -21,6 +23,10 @@ class RequestReaderTest extends TestCase
     protected static $container = null;
 
     protected static $requestReader = null;
+
+    // phpcs:disable
+    protected static $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+    // phpcs:enable
 
     /**
      * this empty methods prevents phpunit from resetting
@@ -63,14 +69,35 @@ class RequestReaderTest extends TestCase
     public function testGetAuthTokenWithWrongFormattedHeader()
     {
         $headers = [
-            'AUTHORIZATION',
-            'HTTP_AUTHORIZATION'
+            'HTTP_AUTHORIZATION',
+            'REDIRECT_HTTP_AUTHORIZATION'
         ];
         foreach ($headers as $header) {
             $_SERVER[$header] = 'authtoken';
             $this->assertEquals(
                 null,
                 self::$requestReader->getAuthToken()
+            );
+            unset($_SERVER[$header]);
+        }
+    }
+
+    public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT()
+    {
+        $headers = [
+            'HTTP_AUTHORIZATION',
+            'REDIRECT_HTTP_AUTHORIZATION'
+        ];
+        foreach ($headers as $header) {
+            $e = null;
+            $_SERVER[$header] = 'Bearer invalidjwt';
+            try {
+                self::$requestReader->getAuthToken();
+            } catch (\Exception $e) {
+            }
+            $this->assertInstanceOf(
+                InvalidTokenException::class,
+                $e
             );
             unset($_SERVER[$header]);
         }
@@ -83,9 +110,9 @@ class RequestReaderTest extends TestCase
             'REDIRECT_HTTP_AUTHORIZATION'
         ];
         foreach ($headers as $header) {
-            $_SERVER[$header] = 'Bearer authtoken';
-            $this->assertEquals(
-                'authtoken',
+            $_SERVER[$header] = 'Bearer ' . self::$token;
+            $this->assertInstanceOf(
+                Token::class,
                 self::$requestReader->getAuthToken()
             );
             unset($_SERVER[$header]);

@@ -26,8 +26,7 @@ services:
     public: true
 
   Lcobucci\JWT\Token:
-    factory: ['@OxidEsales\GraphQL\Service\AuthenticationServiceInterface', createTokenFromRequest]
-    arguments: ['@OxidEsales\GraphQL\Framework\RequestReaderInterface']
+    factory: ['@OxidEsales\GraphQL\Framework\RequestReaderInterface', 'getAuthToken']
 
   OxidEsales\GraphQL\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQL\Service\AuthenticationService

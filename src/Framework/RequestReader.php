@@ -9,15 +9,20 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Framework;
 
-use OxidEsales\GraphQL\DataObject\Token;
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\Exception\InvalidTokenException;
 
 class RequestReader implements RequestReaderInterface
 {
     /**
      * Returns the encoded token from the authorization header
+     *
+     * @throws InvalidTokenException
      */
-    public function getAuthToken(): ?string
+    public function getAuthToken(): ?Token
     {
+        $token = null;
         $authHeader = $this->getAuthorizationHeader();
         if ($authHeader === null) {
             return null;
@@ -26,7 +31,12 @@ class RequestReader implements RequestReaderInterface
         if (!$jwt) {
             return null;
         }
-        return $jwt;
+        try {
+            $token = (new Parser())->parse($jwt);
+        } catch (\Exception $e) {
+            throw new InvalidTokenException('The token is invalid');
+        }
+        return $token;
     }
 
     /**

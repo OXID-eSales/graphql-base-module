@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Service;
 
 use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
@@ -39,22 +38,8 @@ class AuthenticationService implements AuthenticationServiceInterface
         KeyRegistryInterface $keyRegistry,
         LegacyServiceInterface $legacyService
     ) {
-        $this->keyRegistry = $keyRegistry;
+        $this->keyRegistry   = $keyRegistry;
         $this->legacyService = $legacyService;
-    }
-
-    public static function createTokenFromRequest(RequestReaderInterface $requestReader): ?Token
-    {
-        $token = $requestReader->getAuthToken();
-        if ($token === null) {
-            return null;
-        }
-        try {
-            $token = (new Parser())->parse($token);
-        } catch (\Exception $e) {
-            throw new InvalidTokenException('The token is invalid');
-        }
-        return $token;
     }
 
     public function setToken(?Token $token = null)
@@ -62,6 +47,10 @@ class AuthenticationService implements AuthenticationServiceInterface
         $this->token = $token;
     }
 
+    /**
+     * @uses RequestReaderInterface::getAuthToken
+     * @throws InvalidTokenException
+     */
     public function isLogged(): bool
     {
         if ($this->token === null) {
@@ -92,7 +81,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @internal
      */
-    protected function getTokenBuilder(): Builder
+    private function getTokenBuilder(): Builder
     {
         $time = time();
         $token = (new Builder())
