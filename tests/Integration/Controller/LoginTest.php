@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Integration\Controller;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Controller;
 
-use OxidEsales\GraphQL\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 class LoginTest extends TestCase
 {

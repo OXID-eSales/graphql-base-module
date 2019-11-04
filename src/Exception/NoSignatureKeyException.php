@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Exception;
+namespace OxidEsales\GraphQL\Base\Exception;
 
 class NoSignatureKeyException extends \Exception
 {

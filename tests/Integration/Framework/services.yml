@@ -4,10 +4,10 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\GraphQL\Tests\Integration\Framework\Controller\TestController:
-    class: OxidEsales\GraphQL\Tests\Integration\Framework\Controller\TestController
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController
     public: true
 
-  OxidEsales\GraphQL\Tests\Integration\Framework\Service\NamespaceMapper:
-    class: OxidEsales\GraphQL\Tests\Integration\Framework\Service\NamespaceMapper
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']

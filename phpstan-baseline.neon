@@ -3,12 +3,12 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property OxidEsales\\\\GraphQL\\\\Framework\\\\ModuleSetup\\:\\:\\$moduleSettings has unknown class OxidEsales\\\\EshopCommunity\\\\Internal\\\\Framework\\\\Module\\\\Configuration\\\\Bridge\\\\ModuleSettingBridgeInterface as its type\\.$#"
+			message: "#^Property OxidEsales\\\\GraphQL\\\\Base\\\\Framework\\\\ModuleSetup\\:\\:\\$moduleSettings has unknown class OxidEsales\\\\EshopCommunity\\\\Internal\\\\Framework\\\\Module\\\\Configuration\\\\Bridge\\\\ModuleSettingBridgeInterface as its type\\.$#"
 			count: 1
 			path: src/Framework/ModuleSetup.php
 
 		-
-			message: "#^Parameter \\$moduleSettings of method OxidEsales\\\\GraphQL\\\\Framework\\\\ModuleSetup\\:\\:__construct\\(\\) has invalid typehint type OxidEsales\\\\EshopCommunity\\\\Internal\\\\Framework\\\\Module\\\\Configuration\\\\Bridge\\\\ModuleSettingBridgeInterface\\.$#"
+			message: "#^Parameter \\$moduleSettings of method OxidEsales\\\\GraphQL\\\\Base\\\\Framework\\\\ModuleSetup\\:\\:__construct\\(\\) has invalid typehint type OxidEsales\\\\EshopCommunity\\\\Internal\\\\Framework\\\\Module\\\\Configuration\\\\Bridge\\\\ModuleSettingBridgeInterface\\.$#"
 			count: 1
 			path: src/Framework/ModuleSetup.php
 

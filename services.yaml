@@ -4,58 +4,58 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\GraphQL\Framework\ModuleSetup:
-    class: OxidEsales\GraphQL\Framework\ModuleSetup
+  OxidEsales\GraphQL\Base\Framework\ModuleSetup:
+    class: OxidEsales\GraphQL\Base\Framework\ModuleSetup
     public: true
 
-  OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface:
-    class: OxidEsales\GraphQL\Framework\GraphQLQueryHandler
+  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface:
+    class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
     public: true
 
-  OxidEsales\GraphQL\Framework\ErrorCodeProviderInterface:
-    class: OxidEsales\GraphQL\Framework\ErrorCodeProvider
+  OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface:
+    class: OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider
 
-  OxidEsales\GraphQL\Framework\RequestReaderInterface:
-    class: OxidEsales\GraphQL\Framework\RequestReader
+  OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
+    class: OxidEsales\GraphQL\Base\Framework\RequestReader
 
-  OxidEsales\GraphQL\Framework\ResponseWriterInterface:
-    class: OxidEsales\GraphQL\Framework\ResponseWriter
+  OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
+    class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
-  OxidEsales\GraphQL\Service\KeyRegistryInterface:
-    class: OxidEsales\GraphQL\Service\KeyRegistry
+  OxidEsales\GraphQL\Base\Service\KeyRegistryInterface:
+    class: OxidEsales\GraphQL\Base\Service\KeyRegistry
     public: true
 
   Lcobucci\JWT\Token:
-    factory: ['@OxidEsales\GraphQL\Framework\RequestReaderInterface', 'getAuthToken']
+    factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReaderInterface', 'getAuthToken']
 
-  OxidEsales\GraphQL\Service\AuthenticationServiceInterface:
-    class: OxidEsales\GraphQL\Service\AuthenticationService
+  OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\AuthenticationService
     calls:
       - [setToken, ['@?Lcobucci\JWT\Token']]
 
-  OxidEsales\GraphQL\Service\LegacyServiceInterface:
-    class: OxidEsales\GraphQL\Service\LegacyService
+  OxidEsales\GraphQL\Base\Service\LegacyServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\LegacyService
 
-  OxidEsales\GraphQL\Service\AuthorizationServiceInterface:
-    class: OxidEsales\GraphQL\Service\AuthorizationService
+  OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\AuthorizationService
     arguments:
         $permissionProviders: !tagged graphql_permission_provider
     calls:
       - [setToken, ['@?Lcobucci\JWT\Token']]
 
-  OxidEsales\GraphQL\Controller\:
+  OxidEsales\GraphQL\Base\Controller\:
     resource: 'src/Controller/*'
     public: true
 
-  OxidEsales\GraphQL\Service\PermissionProvider:
-    class: OxidEsales\GraphQL\Service\PermissionProvider
+  OxidEsales\GraphQL\Base\Service\PermissionProvider:
+    class: OxidEsales\GraphQL\Base\Service\PermissionProvider
     tags: ['graphql_permission_provider']
 
-  OxidEsales\GraphQL\Service\NamespaceMapper:
-    class: OxidEsales\GraphQL\Service\NamespaceMapper
+  OxidEsales\GraphQL\Base\Service\NamespaceMapper:
+    class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']
 
-  OxidEsales\GraphQL\Framework\SchemaFactoryInterface:
-    class: OxidEsales\GraphQL\Framework\SchemaFactory
+  OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Framework;
+namespace OxidEsales\GraphQL\Base\Framework;
 
 interface PermissionProviderInterface
 {

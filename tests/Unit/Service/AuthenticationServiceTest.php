@@ -7,19 +7,19 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Unit\Service;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\GraphQL\Exception\InvalidLoginException;
-use OxidEsales\GraphQL\Exception\InvalidTokenException;
-use OxidEsales\GraphQL\Framework\RequestReaderInterface;
-use OxidEsales\GraphQL\Service\AuthenticationService;
-use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Base\Service\AuthenticationService;
+use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 # use PHPUnit\Framework\TestCase;
-use OxidEsales\GraphQL\Service\LegacyServiceInterface;
+use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
 use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 

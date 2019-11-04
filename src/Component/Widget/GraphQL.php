@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Component\Widget;
+namespace OxidEsales\GraphQL\Base\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
 
 /**
  * Class GraphQL
@@ -19,7 +19,7 @@ use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
  * Implements the GraphQL widget for the OXID eShop to make all
  * of this callable via a SEO Url or via widget.php?cl=graphql
  *
- * @package OxidEsales\GraphQL\Component\Widget
+ * @package OxidEsales\GraphQL\Base\Component\Widget
  */
 class GraphQL extends WidgetController
 {

@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Integration\Service;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Service;
 
 use oxfield;
 use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Exception\InvalidLoginException;
-use OxidEsales\GraphQL\Service\LegacyService;
-use OxidEsales\GraphQL\Service\LegacyServiceInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Service\LegacyService;
+use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
 class LegacyServiceTest extends UnitTestCase

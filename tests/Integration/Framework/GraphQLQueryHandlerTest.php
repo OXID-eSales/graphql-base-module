@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Integration\Framework;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework;
 
-use OxidEsales\GraphQL\Tests\Integration\TestCase;
+use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 

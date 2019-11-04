@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Event;
+namespace OxidEsales\GraphQL\Base\Event;
 
 use Lcobucci\JWT\Token;
 use Symfony\Component\EventDispatcher\Event;

@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Codeception\Acceptance;
+namespace OxidEsales\GraphQL\Base\Tests\Codeception\Acceptance;
 
-use OxidEsales\GraphQL\Tests\Codeception\AcceptanceTester;
+use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
 class GraphQLCest
 {

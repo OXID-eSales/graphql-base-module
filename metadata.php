@@ -35,7 +35,7 @@ $aModule = [
     ],
     'controllers' => [
         // Widget Controller
-        'graphql'       => OxidEsales\GraphQL\Component\Widget\GraphQL::class,
+        'graphql'       => OxidEsales\GraphQL\Base\Component\Widget\GraphQL::class,
     ],
     'templates'   => [
     ],
@@ -50,7 +50,7 @@ $aModule = [
         ]
     ],
     'events'      => [
-        'onActivate'   => 'OxidEsales\\GraphQL\\Framework\\ModuleSetup::onActivate',
-        'onDeactivate' => 'OxidEsales\\GraphQL\\Framework\\ModuleSetup::onDeactivate'
+        'onActivate'   => 'OxidEsales\\GraphQL\\Base\\Framework\\ModuleSetup::onActivate',
+        'onDeactivate' => 'OxidEsales\\GraphQL\\Base\\Framework\\ModuleSetup::onDeactivate'
     ]
 ];

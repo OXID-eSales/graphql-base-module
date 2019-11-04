@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Unit\Service;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
-use OxidEsales\GraphQL\Event\BeforeAuthorizationEvent;
-use OxidEsales\GraphQL\Framework\PermissionProviderInterface;
-use OxidEsales\GraphQL\Service\AuthenticationService;
-use OxidEsales\GraphQL\Service\AuthorizationService;
+use OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent;
+use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
+use OxidEsales\GraphQL\Base\Service\AuthenticationService;
+use OxidEsales\GraphQL\Base\Service\AuthorizationService;
 use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

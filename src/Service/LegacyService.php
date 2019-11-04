@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Service;
+namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\GraphQL\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
 
 class LegacyService implements LegacyServiceInterface
 {

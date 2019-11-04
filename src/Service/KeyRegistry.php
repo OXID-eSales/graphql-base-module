@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Service;
+namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Exception\NoSignatureKeyException;
+use OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException;
 
 /**
  * Class KeyRegistry
@@ -17,7 +17,7 @@ use OxidEsales\GraphQL\Exception\NoSignatureKeyException;
  * The current implementation stores the signature key in
  * the config table. This should be changed eventually.
  *
- * @package OxidEsales\GraphQL\Service
+ * @package OxidEsales\GraphQL\Base\Service
  */
 class KeyRegistry implements KeyRegistryInterface
 {

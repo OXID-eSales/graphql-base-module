@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Framework;
+namespace OxidEsales\GraphQL\Base\Framework;
 
 use GraphQL\Executor\ExecutionResult;
 

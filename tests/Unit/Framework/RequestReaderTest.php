@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Unit\Framework;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Exception\InvalidTokenException;
-use OxidEsales\GraphQL\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 # use PHPUnit\Framework\TestCase;
 use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 

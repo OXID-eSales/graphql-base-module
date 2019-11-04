@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Controller;
+namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login

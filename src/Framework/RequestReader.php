@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Framework;
+namespace OxidEsales\GraphQL\Base\Framework;
 
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
-use OxidEsales\GraphQL\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
 
 class RequestReader implements RequestReaderInterface
 {

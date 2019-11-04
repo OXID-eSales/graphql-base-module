@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Tests\Codeception;
+namespace OxidEsales\GraphQL\Base\Tests\Codeception;
 
 /**
  * Inherited Methods

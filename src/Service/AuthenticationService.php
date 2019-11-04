@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Service;
+namespace OxidEsales\GraphQL\Base\Service;
 
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer;
@@ -15,9 +15,9 @@ use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
-use OxidEsales\GraphQL\Exception\InvalidLoginException;
-use OxidEsales\GraphQL\Exception\InvalidTokenException;
-use OxidEsales\GraphQL\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {

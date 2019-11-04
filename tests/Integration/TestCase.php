@@ -7,16 +7,16 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Integration;
+namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Framework\GraphQLQueryHandlerInterface;
-use OxidEsales\GraphQL\Framework\RequestReader;
-use OxidEsales\GraphQL\Framework\RequestReaderInterface;
-use OxidEsales\GraphQL\Framework\ResponseWriter;
-use OxidEsales\GraphQL\Framework\ResponseWriterInterface;
-use OxidEsales\GraphQL\Service\KeyRegistry;
-use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Base\Framework\RequestReader;
+use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
+use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
+use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
+use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 #use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;

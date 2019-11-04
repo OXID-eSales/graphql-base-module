@@ -7,11 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Framework;
+namespace OxidEsales\GraphQL\Base\Framework;
 
 use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\ExecutionResult;
-use OxidEsales\GraphQL\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 
 /**
  * Class ErrorCodeProvider
@@ -21,7 +21,7 @@ use OxidEsales\GraphQL\Exception\HttpErrorInterface;
  *
  * TODO: Think of something more sophisticated
  *
- * @package OxidEsales\GraphQL\Framework
+ * @package OxidEsales\GraphQL\Base\Framework
  */
 class ErrorCodeProvider implements ErrorCodeProviderInterface
 {

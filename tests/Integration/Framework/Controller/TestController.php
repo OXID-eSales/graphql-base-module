@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Integration\Framework\Controller;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller;
 
-use OxidEsales\GraphQL\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class TestController

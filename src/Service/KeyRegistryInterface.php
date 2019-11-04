@@ -5,10 +5,10 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Service;
+namespace OxidEsales\GraphQL\Base\Service;
 
 /**
- * @package OxidEsales\GraphQL\Service
+ * @package OxidEsales\GraphQL\Base\Service
  */
 interface KeyRegistryInterface
 {

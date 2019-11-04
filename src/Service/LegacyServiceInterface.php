@@ -1,8 +1,8 @@
 <?php
 
-namespace OxidEsales\GraphQL\Service;
+namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
 
 interface LegacyServiceInterface
 {

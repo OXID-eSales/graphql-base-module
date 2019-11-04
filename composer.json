@@ -30,8 +30,8 @@
   },
   "autoload": {
     "psr-4": {
-      "OxidEsales\\GraphQL\\": "src",
-      "OxidEsales\\GraphQL\\Tests\\": "tests"
+      "OxidEsales\\GraphQL\\Base\\": "src",
+      "OxidEsales\\GraphQL\\Base\\Tests\\": "tests"
     }
   },
   "scripts": {

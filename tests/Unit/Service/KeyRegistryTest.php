@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Tests\Unit\Service;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Exception\NoSignatureKeyException;
-use OxidEsales\GraphQL\Service\KeyRegistry;
-use OxidEsales\GraphQL\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException;
+use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 # use PHPUnit\Framework\TestCase;
 use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 
