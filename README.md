@@ -48,6 +48,10 @@ HTTP `Authorization` header like this:
 Authorization: Bearer a-very-long-jwt
 ```
 
+### How to extend
+
+See [oxid-esales/graphql-example](https://github.com/OXID-eSales/graphql-example-module) for an exemplary implementation.
+
 ## Testing
 
 ### Linting, Syntax and static analysis
