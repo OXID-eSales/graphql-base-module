@@ -117,12 +117,18 @@ class AuthenticationService implements AuthenticationServiceInterface
         return true;
     }
 
-    private function getSignatureKey(): Key
+    /**
+     * @internal
+     */
+    protected function getSignatureKey(): Key
     {
         return new Key($this->keyRegistry->getSignatureKey());
     }
 
-    private function getSigner(): Signer
+    /**
+     * @internal
+     */
+    protected function getSigner(): Signer
     {
         return new Sha512();
     }
