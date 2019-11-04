@@ -81,7 +81,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @internal
      */
-    private function getTokenBuilder(): Builder
+    protected function getTokenBuilder(): Builder
     {
         $time = time();
         $token = (new Builder())
@@ -99,8 +99,10 @@ class AuthenticationService implements AuthenticationServiceInterface
      * - has valid signature
      * - has valid issuer and audience
      * - has valid shop claim
+     *
+     * @internal
      */
-    private function isValidToken(Token $token): bool
+    protected function isValidToken(Token $token): bool
     {
         if (!$token->verify($this->getSigner(), $this->getSignatureKey()->getContent())) {
             return false;
