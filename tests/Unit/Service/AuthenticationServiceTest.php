@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
@@ -25,7 +27,9 @@ class AuthenticationServiceTest extends TestCase
 {
     protected static $token = null;
 
+    // phpcs:disable
     protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+    // phpcs:enable
 
     /** @var KeyRegistryInterface|MockObject */
     private $keyRegistry;

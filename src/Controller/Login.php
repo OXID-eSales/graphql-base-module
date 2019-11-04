@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Controller;
 
@@ -18,7 +20,7 @@ class Login
     public function __construct(
         AuthenticationServiceInterface $authentication
     ) {
-        $this->authentication= $authentication;
+        $this->authentication = $authentication;
     }
 
     /**

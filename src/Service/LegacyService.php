@@ -1,8 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Service;
 
@@ -44,7 +47,7 @@ class LegacyService implements LegacyServiceInterface
     public function getUserGroup(string $username): string
     {
         $queryBuilder = $this->queryBuilderFactory->create();
-        $result =$queryBuilder->select('OXRIGHTS')
+        $result = $queryBuilder->select('OXRIGHTS')
             ->from('oxuser')
             ->where($queryBuilder->expr()->eq('OXUSERNAME', ':username'))
             ->setParameter('username', $username)

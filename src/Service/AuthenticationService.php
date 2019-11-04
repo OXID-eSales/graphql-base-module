@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Service;
 
@@ -20,9 +22,9 @@ use OxidEsales\GraphQL\Framework\RequestReaderInterface;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
-    const CLAIM_SHOPID   = 'shopid';
-    const CLAIM_USERNAME = 'username';
-    const CLAIM_GROUP    = 'group';
+    public const CLAIM_SHOPID   = 'shopid';
+    public const CLAIM_USERNAME = 'username';
+    public const CLAIM_GROUP    = 'group';
 
     /** @var KeyRegistryInterface */
     private $keyRegistry = null;

@@ -6,8 +6,8 @@ use OxidEsales\GraphQL\Exception\InvalidLoginException;
 
 interface LegacyServiceInterface
 {
-    const GROUP_ADMIN = 'admin';
-    const GROUP_CUSTOMERS = 'customer';
+    public const GROUP_ADMIN = 'admin';
+    public const GROUP_CUSTOMERS = 'customer';
 
     /**
      * @throws InvalidLoginException

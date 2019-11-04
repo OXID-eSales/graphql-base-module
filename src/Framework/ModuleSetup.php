@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Framework;
 
@@ -34,7 +36,7 @@ class ModuleSetup
     public function runSetup(): void
     {
         $this->moduleSettings->save(
-            KeyRegistry::signatureKeyName,
+            KeyRegistry::SIGNATUREKEYNAME,
             $this->keyRegistry->generateSignatureKey(),
             'oe/graphql-base'
         );

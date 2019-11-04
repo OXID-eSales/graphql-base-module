@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
@@ -103,9 +105,18 @@ class AuthorizationServiceTest extends TestCase
         $auth->setToken(
             $this->getTokenMock()
         );
-        $this->assertTrue($auth->isAllowed('permission'), 'Permission "permission" must be granted to group "group"');
-        $this->assertTrue($auth->isAllowed('permission2'), 'Permission "permission2" must be granted to group "group"');
-        $this->assertFalse($auth->isAllowed('permission1'), 'Permission "permission1" must not be granted to group "group"');
+        $this->assertTrue(
+            $auth->isAllowed('permission'),
+            'Permission "permission" must be granted to group "group"'
+        );
+        $this->assertTrue(
+            $auth->isAllowed('permission2'),
+            'Permission "permission2" must be granted to group "group"'
+        );
+        $this->assertFalse(
+            $auth->isAllowed('permission1'),
+            'Permission "permission1" must not be granted to group "group"'
+        );
     }
 
     public function testPositiveOverrideAuthBasedOnEvent()
@@ -124,9 +135,18 @@ class AuthorizationServiceTest extends TestCase
         $auth->setToken(
             $this->getTokenMock()
         );
-        $this->assertTrue($auth->isAllowed('permission'), 'Permission "permission" must be granted to group "group"');
-        $this->assertTrue($auth->isAllowed('permission2'), 'Permission "permission2" must be granted to group "group"');
-        $this->assertTrue($auth->isAllowed('permission1'), 'Permission "permission1" must be granted to group "group"');
+        $this->assertTrue(
+            $auth->isAllowed('permission'),
+            'Permission "permission" must be granted to group "group"'
+        );
+        $this->assertTrue(
+            $auth->isAllowed('permission2'),
+            'Permission "permission2" must be granted to group "group"'
+        );
+        $this->assertTrue(
+            $auth->isAllowed('permission1'),
+            'Permission "permission1" must be granted to group "group"'
+        );
     }
 
     public function testNegativeOverrideAuthBasedOnEvent()
@@ -145,8 +165,17 @@ class AuthorizationServiceTest extends TestCase
         $auth->setToken(
             $this->getTokenMock()
         );
-        $this->assertFalse($auth->isAllowed('permission'), 'Permission "permission" must not be granted to group "group"');
-        $this->assertFalse($auth->isAllowed('permission2'), 'Permission "permission2" must not be granted to group "group"');
-        $this->assertFalse($auth->isAllowed('permission1'), 'Permission "permission1" must not be granted to group "group"');
+        $this->assertFalse(
+            $auth->isAllowed('permission'),
+            'Permission "permission" must not be granted to group "group"'
+        );
+        $this->assertFalse(
+            $auth->isAllowed('permission2'),
+            'Permission "permission2" must not be granted to group "group"'
+        );
+        $this->assertFalse(
+            $auth->isAllowed('permission1'),
+            'Permission "permission1" must not be granted to group "group"'
+        );
     }
 }

@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Tests\Unit\Service;
 
@@ -56,12 +58,12 @@ class KeyRegistryTest extends TestCase
     {
         $iterations = 5;
         $keys = [];
-        for ($i = 0; $i < $iterations; $i ++) {
+        for ($i = 0; $i < $iterations; $i++) {
             $key = self::$keyRegistry->generateSignatureKey();
             $this->assertGreaterThanOrEqual(
                 64,
                 strlen($key),
-                'Signature key needs to be at least 64 chars, '.strlen($key).' chars given'
+                'Signature key needs to be at least 64 chars, ' . strlen($key) . ' chars given'
             );
             $this->assertTrue(is_string($key), 'Signature key needs to be a string');
             $keys[] = $key;
@@ -84,7 +86,7 @@ class KeyRegistryTest extends TestCase
             ['', false],
             ['too short', false],
             [[], false],
-            ['a8sohflkashdflkjashdfkjashdfkljahsdlkfjhaskldjfhakjlsdfhlkjasdhflkajshdflkajsdhflkjashdflkjashdlfkjahsldkfjhalkjdsfasdf', true]
+            ['33189b36e3fe1198cb92f49c8b6701cfd92bc58876f33361fc97bb69614c9592', true]
         ];
     }
 
@@ -96,7 +98,7 @@ class KeyRegistryTest extends TestCase
         $oldConfig = Registry::getConfig();
         $config = $this->getMockBuilder(Config::class)->getMock();
         $config->method('getConfigParam')
-               ->with(KeyRegistry::signatureKeyName)
+               ->with(KeyRegistry::SIGNATUREKEYNAME)
                ->willReturn($signature);
         Registry::set(Config::class, $config);
         $e = null;

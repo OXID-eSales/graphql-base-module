@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Service;
 
@@ -22,7 +24,7 @@ class KeyRegistry implements KeyRegistryInterface
     /** @var LegacyServiceInterface */
     private $legacyService = null;
 
-    public const signatureKeyName = 'sJsonWebTokenSignature';
+    public const SIGNATUREKEYNAME = 'sJsonWebTokenSignature';
 
     public function __construct(
         LegacyServiceInterface $legacyService
@@ -41,7 +43,7 @@ class KeyRegistry implements KeyRegistryInterface
     public function getSignatureKey(): string
     {
         // TODO: legacy wrapper
-        $signature = $this->legacyService->getConfigParam(static::signatureKeyName);
+        $signature = $this->legacyService->getConfigParam(static::SIGNATUREKEYNAME);
         if (!is_string($signature) || strlen($signature) < 64) {
             throw new NoSignatureKeyException();
         }

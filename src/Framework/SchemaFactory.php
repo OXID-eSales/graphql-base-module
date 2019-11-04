@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Framework;
 
@@ -64,14 +66,14 @@ class SchemaFactory implements SchemaFactoryInterface
         $classNameMapper = new ClassNameMapper();
 
         foreach ($this->namespaceMappers as $namespaceMapper) {
-            foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace=>$path) {
+            foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace => $path) {
                 $classNameMapper->registerPsr4Namespace(
                     $namespace,
                     $path
                 );
                 $factory->addControllerNameSpace($namespace);
             }
-            foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace=>$path) {
+            foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace => $path) {
                 $classNameMapper->registerPsr4Namespace(
                     $namespace,
                     $path

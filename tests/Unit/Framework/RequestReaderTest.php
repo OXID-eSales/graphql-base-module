@@ -1,9 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
+
+declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Tests\Unit\Framework;
 
@@ -111,7 +113,7 @@ class RequestReaderTest extends TestCase
                 'variables' => null,
                 'operationName' => null
             ],
-            self::$requestReader->getGraphQLRequestData(__DIR__.'/fixtures/simpleRequest.json')
+            self::$requestReader->getGraphQLRequestData(__DIR__ . '/fixtures/simpleRequest.json')
         );
         unset($_SERVER['CONTENT_TYPE']);
     }
