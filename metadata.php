@@ -1,12 +1,12 @@
 <?php
+
 /**
  * Copyright © OXID eSales AG. All rights reserved.
  * See LICENSE file for license details.
  */
 
-use \OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration;
-use \OxidEsales\Eshop\Application\Controller\Admin\NavigationTree;
-
+use OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration;
+use OxidEsales\Eshop\Application\Controller\Admin\NavigationTree;
 
 /**
  * Metadata version
