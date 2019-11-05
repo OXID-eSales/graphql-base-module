@@ -89,4 +89,4 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 ## License
 
-MIT, see [LICENSE file](LICENSE).
+GPLv3, see [LICENSE file](LICENSE).
