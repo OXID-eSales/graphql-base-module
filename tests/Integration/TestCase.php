@@ -15,6 +15,7 @@ use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
+use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 #use PHPUnit\Framework\TestCase as PHPUnitTestCase;
@@ -26,7 +27,6 @@ abstract class TestCase extends PHPUnitTestCase
     protected static $queryResult = null;
     protected static $logResult = null;
     protected static $container = null;
-    protected static $token = null;
     protected static $query = null;
 
     public static function responseCallback($body, $status)
@@ -40,14 +40,6 @@ abstract class TestCase extends PHPUnitTestCase
     public static function loggerCallback(string $message)
     {
         static::$logResult .= $message;
-    }
-
-    public static function getAuthToken(): ?string
-    {
-        if (static::$token === null) {
-            return null;
-        }
-        return (string) static::$token;
     }
 
     public static function getGraphQLRequestData(): array
@@ -74,7 +66,7 @@ abstract class TestCase extends PHPUnitTestCase
         static::$queryResult = null;
         static::$logResult = null;
         static::$query = null;
-        static::$token = null;
+        unset($_SERVER['HTTP_AUTHORIZATION']);
     }
 
     protected function setUp(): void
@@ -85,7 +77,8 @@ abstract class TestCase extends PHPUnitTestCase
         $containerFactory = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)->getMock();
+        $responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)
+                               ->getMock();
         $responseWriter->method('renderJsonResponse')
                        ->willReturnCallback([
                            TestCase::class,
@@ -100,12 +93,9 @@ abstract class TestCase extends PHPUnitTestCase
             ResponseWriter::class
         );
 
-        $requestReader = $this->getMockBuilder(RequestReaderInterface::class)->getMock();
-        $requestReader->method('getAuthToken')
-                      ->willReturnCallback([
-                           TestCase::class,
-                          'getAuthToken'
-                      ]);
+        $requestReader = $this->getMockBuilder(RequestReader::class)
+                              ->setMethods(['getGraphQLRequestData'])
+                              ->getMock();
         $requestReader->method('getGraphQLRequestData')
                       ->willReturnCallback([
                            TestCase::class,
@@ -142,6 +132,15 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected static function beforeContainerCompile()
     {
+    }
+
+    protected function setAuthToken(string $token)
+    {
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
+        static::$container->get(AuthenticationServiceInterface::class)
+                          ->setToken(static::$container->get(RequestReaderInterface::class)
+                              ->getAuthToken()
+                          );
     }
 
     protected function execQuery(string $query, array $variables = null, string $operationName = null)

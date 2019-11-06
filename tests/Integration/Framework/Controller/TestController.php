@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Annotations\Logged;
 
 class TestController
 {
@@ -18,6 +19,15 @@ class TestController
      * @Query
      */
     public function testQuery(string $foo): string
+    {
+        return $foo;
+    }
+
+    /**
+     * @Query
+     * @Logged
+     */
+    public function testLoggedQuery(string $foo): string
     {
         return $foo;
     }
