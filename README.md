@@ -1,6 +1,6 @@
 # oxid-esales/graphql-base
 
-[![Build Status](https://img.shields.io/travis/com/OXID-eSales/graphql-base-module.svg?style=for-the-badge&logo=travis)](https://travis-ci.com/OXID-eSales/graphql-base-module) [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/graphql-base.svg?style=for-the-badge)](https://github.com/oxid-esales/graphql-base-module) [![Stable Version](https://img.shields.io/packagist/v/oxid-esales/graphql-base.svg?style=for-the-badge&label=latest)](https://packagist.org/packages/oxid-esales/graphql-base-module)
+[![Build Status](https://img.shields.io/travis/com/OXID-eSales/graphql-base-module.svg?style=for-the-badge&logo=travis)](https://travis-ci.com/OXID-eSales/graphql-base-module) [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/graphql-base.svg?style=for-the-badge)](https://github.com/oxid-esales/graphql-base-module) [![Stable Version](https://img.shields.io/packagist/v/oxid-esales/graphql-base.svg?style=for-the-badge&label=latest)](https://packagist.org/packages/oxid-esales/graphql-base)
 
 This module provides:
 - a basic [GraphQL](https://www.graphql.org) implementation for the [OXID eShop](https://www.oxid-esales.com/)
