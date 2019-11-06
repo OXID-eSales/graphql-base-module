@@ -129,4 +129,26 @@ class GraphQLQueryHandlerTest extends TestCase
         static::$container = null;
     }
 
+    public function testLoggedRightQuery()
+    {
+        $this->execQuery('query { token (username: "admin", password: "admin") }');
+        $this->setAuthToken(static::$queryResult['body']['data']['token']);
+
+        static::$container = null;
+        $this->setUp();
+
+        $this->execQuery('query { testLoggedRightQuery(foo: "bar") }');
+        $this->assertEquals(
+            [
+                'status' => 200,
+                'body'   => [
+                    'data' => [
+                        'testLoggedRightQuery' => 'bar'
+                    ]
+                ]
+            ],
+            static::$queryResult
+        );
+        static::$container = null;
+    }
 }

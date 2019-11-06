@@ -14,6 +14,9 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\Mod
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ModuleSetup
 {
     /** @var KeyRegistryInterface */

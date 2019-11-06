@@ -11,3 +11,7 @@ services:
   OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper:
     class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']
+
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider
+    tags: ['graphql_permission_provider']
