@@ -120,18 +120,6 @@ abstract class TestCase extends PHPUnitTestCase
             RequestReader::class
         );
 
-        $keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
-        $keyRegistry->method('getSignatureKey')
-                    ->willReturn(base64_encode(random_bytes(64)));
-        static::$container->set(
-            KeyRegistryInterface::class,
-            $keyRegistry
-        );
-        static::$container->autowire(
-            KeyRegistryInterface::class,
-            KeyRegistry::class
-        );
-
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $logger->method('error')
                ->willReturnCallback([
