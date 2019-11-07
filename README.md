@@ -14,7 +14,8 @@ This assumes you have the OXID eShop up and running.
 ### Install
 
 ```bash
-$ composer require oxid-esales/graphql-base
+$ composer require oxid-esales/graphql-base --no-update
+$ composer update
 ```
 
 After requiring the module, you need to head over to the OXID eShop admin and
@@ -82,6 +83,14 @@ For this workaround to work, add these lines to your .htaccess file:
 RewriteCond %{HTTP:Authorization} ^(.+)$
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 ```
+
+### Composer can not resolve requirements
+
+![Composer Problem](composer-problem.jpg)
+
+If you see something like this when trying to install the module, you tried to
+install with `composer require oxid-esales/graphql-base` which is not working
+correctly because `composer` will not do downgrades upon `composer require`.
 
 ## Build with
 
