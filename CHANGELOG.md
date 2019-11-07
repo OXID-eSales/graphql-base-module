@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - composer troubleshooting upon install
 - try to get `Authorization` header via `apache_request_headers()` also
+- comment to token query
 
 ### Changed
 - install with `require --no-update` and `composer update` afterwards

@@ -24,6 +24,8 @@ class Login
     }
 
     /**
+     * retrieve a JWT for authentication of further requests
+     *
      * @Query
      */
     public function token(string $username, string $password): string
