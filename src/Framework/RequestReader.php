@@ -55,6 +55,14 @@ class RequestReader implements RequestReaderInterface
             return trim($_SERVER["HTTP_AUTHORIZATION"]);
         } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             return trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+        } elseif (function_exists('apache_request_headers')) {
+            $headers = \apache_request_headers();
+            if (is_array($headers)) {
+                $headers = array_change_key_case($headers, CASE_LOWER);
+                if (isset($headers['authorization'])) {
+                    return trim($headers['authorization']);
+                }
+            }
         }
         return null;
     }
