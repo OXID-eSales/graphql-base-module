@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - install with `require --no-update` and `composer update` afterwards
+- version number in `metadata.php` was wrong
 
 ## [1.1.0] 2019-11-06
 
