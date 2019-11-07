@@ -9,7 +9,7 @@ This module provides:
 
 ## Usage
 
-This assumes you have the OXID eShop up and running.
+This assumes you have the OXID eShop (at least community 6.5) up and running.
 
 ### Install
 
