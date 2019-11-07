@@ -26,7 +26,7 @@
     "squizlabs/php_codesniffer": "^3",
     "jakub-onderka/php-parallel-lint": "^1",
     "phpstan/phpstan": "^0.11",
-    "oxid-esales/oxideshop-ce": "^6.4"
+    "oxid-esales/oxideshop-ce": "6.5"
   },
   "autoload": {
     "psr-4": {
