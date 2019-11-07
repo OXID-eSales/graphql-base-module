@@ -61,10 +61,8 @@ class AuthorizationService implements AuthorizationServiceInterface
         );
 
         $authByEvent = $event->getAuthorized();
-        if ($authByEvent === true) {
-            return true;
-        } elseif ($authByEvent === false) {
-            return false;
+        if (is_bool($authByEvent)) {
+            return $authByEvent;
         }
 
         $group = $this->token->getClaim(AuthenticationService::CLAIM_GROUP);
