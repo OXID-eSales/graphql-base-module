@@ -84,6 +84,20 @@ RewriteCond %{HTTP:Authorization} ^(.+)$
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 ```
 
+### Query String gets swallowed
+
+When you call the API endpoint with a query string, for example `/graphql/?lang=1` and that `lang` parameter gets swallowed by apache, it is due to the missing `QSA`-`RewriteRule`-Flag. Find the `RewriteRule` that looks like this:
+
+```apache
+RewriteRule ^(graphql/)    widget.php?cl=graphql   [NC,L]
+```
+
+and make it look like this:
+
+```apache
+RewriteRule ^(graphql/)    widget.php?cl=graphql   [QSA,NC,L]
+```
+
 ### Composer can not resolve requirements
 
 ![Composer Problem](composer-problem.jpg)
