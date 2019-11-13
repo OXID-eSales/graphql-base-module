@@ -48,7 +48,6 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * @uses RequestReaderInterface::getAuthToken
      * @throws InvalidTokenException
      */
     public function isLogged(): bool
