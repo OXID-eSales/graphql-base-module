@@ -74,6 +74,23 @@ class LegacyService implements LegacyServiceInterface
         return $this->context->getCurrentShopId();
     }
 
+    public function getLanguageId(): int
+    {
+        $requestParameter = $_GET['lang'];
+        if ($requestParameter === null) {
+            return (int) Registry::getLang()->getBaseLanguage();
+        }
+        return (int) $requestParameter;
+    }
+
+    public function generateUID(): string
+    {
+        /** @var \OxidEsales\EshopCommunity\Core\UtilsObject */
+        $utils = Registry::getUtilsObject();
+        return $utils->generateUID();
+
+    }
+
     /**
      * @throws InvalidLoginException
      */
