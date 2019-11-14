@@ -83,14 +83,6 @@ class LegacyService implements LegacyServiceInterface
         return (int) $requestParameter;
     }
 
-    public function generateUID(): string
-    {
-        /** @var \OxidEsales\EshopCommunity\Core\UtilsObject */
-        $utils = Registry::getUtilsObject();
-        return $utils->generateUID();
-
-    }
-
     /**
      * @throws InvalidLoginException
      */
