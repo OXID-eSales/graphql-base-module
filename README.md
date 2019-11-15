@@ -9,7 +9,7 @@ This module provides:
 
 ## Usage
 
-This assumes you have the OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0`, which is part of the `6.2.0` compilation) up and running.
+This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` component, which is part of the `6.2.0` compilation) up and running.
 
 ### Install
 
