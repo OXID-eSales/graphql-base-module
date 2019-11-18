@@ -26,4 +26,6 @@ interface LegacyServiceInterface
     public function getShopId(): int;
 
     public function getLanguageId(): int;
+
+    public function createUniqueIdentifier(): string;
 }

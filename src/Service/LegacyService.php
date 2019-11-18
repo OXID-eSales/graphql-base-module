@@ -99,4 +99,11 @@ class LegacyService implements LegacyServiceInterface
         }
         throw new InvalidLoginException('Invalid usergroup');
     }
+
+    public function createUniqueIdentifier(): string
+    {
+        /** @var \OxidEsales\EshopCommunity\Core\UtilsObject */
+        $utils = Registry::getUtilsObject();
+        return $utils->generateUId();
+    }
 }
