@@ -1,0 +1,26 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+on:
+  pull_request:
+
+name: CI
+
+jobs:
+  coding-guidelines:
+    name: Coding Guidelines
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Update dependencies with composer
+        run: php7.3 `which composer` update --no-interaction --no-ansi --no-progress --no-suggest
+
+      - name: Cache composer cache
+        run: ls -la $COMPOSER_HOME
+        run: ls -la $COMPOSER_HOME/cache
+
+      - name: Run PHP CodeSniffer
+        run: php7.3 `which composer` test lint
