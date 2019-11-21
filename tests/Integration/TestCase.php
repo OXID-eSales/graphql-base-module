@@ -61,16 +61,19 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected function setUp(): void
     {
+        if (static::$container !== null) {
+            return;
+        }
         $containerFactory = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)
-                               ->getMock();
-        $responseWriter->method('renderJsonResponse')
-                       ->willReturnCallback([
-                           TestCase::class,
-                           'responseCallback'
-                       ]);
+        $responseWriter = new class() implements ResponseWriterInterface {
+            public function renderJsonResponse(array $result, int $httpStatus): void
+            {
+                TestCase::responseCallback($result, $httpStatus);
+            }
+        };
+
         static::$container->set(
             ResponseWriterInterface::class,
             $responseWriter
@@ -80,14 +83,13 @@ abstract class TestCase extends PHPUnitTestCase
             ResponseWriter::class
         );
 
-        $requestReader = $this->getMockBuilder(RequestReader::class)
-                              ->setMethods(['getGraphQLRequestData'])
-                              ->getMock();
-        $requestReader->method('getGraphQLRequestData')
-                      ->willReturnCallback([
-                           TestCase::class,
-                          'getGraphQLRequestData'
-                      ]);
+        $requestReader = new class() extends RequestReader {
+            public function getGraphQLRequestData(string $inputFile = 'php://input'): array
+            {
+                return TestCase::getGraphQLRequestData();
+            }
+        };
+
         static::$container->set(
             RequestReaderInterface::class,
             $requestReader
@@ -97,12 +99,13 @@ abstract class TestCase extends PHPUnitTestCase
             RequestReader::class
         );
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-        $logger->method('error')
-               ->willReturnCallback([
-                   TestCase::class,
-                   'loggerCallback'
-               ]);
+        $logger = new class() extends \Psr\Log\AbstractLogger {
+            public function log ($level, $message, array $context = array())
+            {
+                TestCase::loggerCallback($message);
+            }
+        };
+
         static::$container->set(
             LoggerInterface::class,
             $logger
