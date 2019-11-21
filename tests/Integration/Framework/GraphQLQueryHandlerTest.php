@@ -20,6 +20,11 @@ class GraphQLQueryHandlerTest extends TestCase
         static::$container = null;
     }
 
+    public static function tearDownAfterClass(): void
+    {
+        static::$container = null;
+    }
+
     protected static function beforeContainerCompile()
     {
         $loader = new YamlFileLoader(static::$container, new FileLocator());
@@ -29,33 +34,33 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testClientAwareExceptionInRoute()
     {
-        $this->execQuery('query { clientAwareExceptionQuery(foo: "bar") }');
+        $result = $this->query('query { clientAwareExceptionQuery(foo: "bar") }');
         $this->assertEquals(
             403,
-            static::$queryResult['status']
+            $result['status']
         );
         $this->assertEquals(
             'invalid token message',
-            static::$queryResult['body']['errors'][0]['message']
+            $result['body']['errors'][0]['message']
         );
     }
 
     public function testExceptionInRoute()
     {
-        $this->execQuery('query { exceptionQuery(foo: "bar") }');
+        $result = $this->query('query { exceptionQuery(foo: "bar") }');
         $this->assertEquals(
             400,
-            static::$queryResult['status']
+            $result['status']
         );
         $this->assertEquals(
             'Internal server error',
-            static::$queryResult['body']['errors'][0]['message']
+            $result['body']['errors'][0]['message']
         );
     }
 
     public function testQueryWithOperationName()
     {
-        $this->execQuery(
+        $result = $this->query(
             'query fooBar { testQuery(foo: "bar") }',
             null,
             'fooBar'
@@ -70,13 +75,13 @@ class GraphQLQueryHandlerTest extends TestCase
                     ]
                 ]
             ],
-            static::$queryResult
+            $result
         );
     }
 
     public function testQueryWithWrongOperationName()
     {
-        $this->execQuery(
+        $result = $this->query(
             'query fooBar { testQuery(foo: "bar") }',
             null,
             'noOp'
@@ -84,37 +89,37 @@ class GraphQLQueryHandlerTest extends TestCase
 
         $this->assertEquals(
             400,
-            static::$queryResult['status']
+            $result['status']
         );
     }
 
     public function testNonExistantQuery()
     {
-        $this->execQuery('query { nonExistant }');
+        $result = $this->query('query { nonExistant }');
         $this->assertEquals(
             400,
-            static::$queryResult['status']
+            $result['status']
         );
     }
 
     public function testInvalidQuery()
     {
-        $this->execQuery('FOOBAR');
+        $result = $this->query('FOOBAR');
         $this->assertEquals(
             400,
-            static::$queryResult['status']
+            $result['status']
         );
     }
 
     public function testLoggedQuery()
     {
-        $this->execQuery('query { token (username: "admin", password: "admin") }');
-        $this->setAuthToken(static::$queryResult['body']['data']['token']);
+        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $this->setAuthToken($result['body']['data']['token']);
 
         static::$container = null;
         $this->setUp();
 
-        $this->execQuery('query { testLoggedQuery(foo: "bar") }');
+        $result = $this->query('query { testLoggedQuery(foo: "bar") }');
         $this->assertEquals(
             [
                 'status' => 200,
@@ -124,20 +129,20 @@ class GraphQLQueryHandlerTest extends TestCase
                     ]
                 ]
             ],
-            static::$queryResult
+            $result
         );
         static::$container = null;
     }
 
     public function testLoggedRightQuery()
     {
-        $this->execQuery('query { token (username: "admin", password: "admin") }');
-        $this->setAuthToken(static::$queryResult['body']['data']['token']);
+        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $this->setAuthToken($result['body']['data']['token']);
 
         static::$container = null;
         $this->setUp();
 
-        $this->execQuery('query { testLoggedRightQuery(foo: "bar") }');
+        $result = $this->query('query { testLoggedRightQuery(foo: "bar") }');
         $this->assertEquals(
             [
                 'status' => 200,
@@ -147,7 +152,7 @@ class GraphQLQueryHandlerTest extends TestCase
                     ]
                 ]
             ],
-            static::$queryResult
+            $result
         );
         static::$container = null;
     }
