@@ -51,17 +51,6 @@ abstract class TestCase extends PHPUnitTestCase
         return static::$query;
     }
 
-    /**
-     * this empty methods prevents phpunit from resetting
-     * invocation mocker and therefore we can use the same
-     * mocks for all tests and do not need to reinitialize
-     * the container for every test in this file which
-     * makes the whole thing pretty fast :-)
-     */
-    protected function verifyMockObjects()
-    {
-    }
-
     protected function tearDown(): void
     {
         static::$queryResult = null;
@@ -72,9 +61,6 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected function setUp(): void
     {
-        if (static::$container !== null) {
-            return;
-        }
         $containerFactory = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
