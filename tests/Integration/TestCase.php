@@ -67,7 +67,7 @@ abstract class TestCase extends PHPUnitTestCase
         $containerFactory = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = new class() implements ResponseWriterInterface {
+        $responseWriter = new class () implements ResponseWriterInterface {
             public function renderJsonResponse(array $result, int $httpStatus): void
             {
                 TestCase::responseCallback($result, $httpStatus);
@@ -83,7 +83,7 @@ abstract class TestCase extends PHPUnitTestCase
             ResponseWriter::class
         );
 
-        $requestReader = new class() extends RequestReader {
+        $requestReader = new class () extends RequestReader {
             public function getGraphQLRequestData(string $inputFile = 'php://input'): array
             {
                 return TestCase::getGraphQLRequestData();
@@ -99,8 +99,8 @@ abstract class TestCase extends PHPUnitTestCase
             RequestReader::class
         );
 
-        $logger = new class() extends \Psr\Log\AbstractLogger {
-            public function log ($level, $message, array $context = array())
+        $logger = new class () extends \Psr\Log\AbstractLogger {
+            public function log($level, $message, array $context = array())
             {
                 TestCase::loggerCallback($message);
             }
