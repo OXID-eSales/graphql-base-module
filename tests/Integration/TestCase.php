@@ -51,17 +51,6 @@ abstract class TestCase extends PHPUnitTestCase
         return static::$query;
     }
 
-    /**
-     * this empty methods prevents phpunit from resetting
-     * invocation mocker and therefore we can use the same
-     * mocks for all tests and do not need to reinitialize
-     * the container for every test in this file which
-     * makes the whole thing pretty fast :-)
-     */
-    protected function verifyMockObjects()
-    {
-    }
-
     protected function tearDown(): void
     {
         static::$queryResult = null;
@@ -78,13 +67,13 @@ abstract class TestCase extends PHPUnitTestCase
         $containerFactory = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = $this->getMockBuilder(ResponseWriterInterface::class)
-                               ->getMock();
-        $responseWriter->method('renderJsonResponse')
-                       ->willReturnCallback([
-                           TestCase::class,
-                           'responseCallback'
-                       ]);
+        $responseWriter = new class () implements ResponseWriterInterface {
+            public function renderJsonResponse(array $result, int $httpStatus): void
+            {
+                TestCase::responseCallback($result, $httpStatus);
+            }
+        };
+
         static::$container->set(
             ResponseWriterInterface::class,
             $responseWriter
@@ -94,14 +83,13 @@ abstract class TestCase extends PHPUnitTestCase
             ResponseWriter::class
         );
 
-        $requestReader = $this->getMockBuilder(RequestReader::class)
-                              ->setMethods(['getGraphQLRequestData'])
-                              ->getMock();
-        $requestReader->method('getGraphQLRequestData')
-                      ->willReturnCallback([
-                           TestCase::class,
-                          'getGraphQLRequestData'
-                      ]);
+        $requestReader = new class () extends RequestReader {
+            public function getGraphQLRequestData(string $inputFile = 'php://input'): array
+            {
+                return TestCase::getGraphQLRequestData();
+            }
+        };
+
         static::$container->set(
             RequestReaderInterface::class,
             $requestReader
@@ -111,12 +99,13 @@ abstract class TestCase extends PHPUnitTestCase
             RequestReader::class
         );
 
-        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
-        $logger->method('error')
-               ->willReturnCallback([
-                   TestCase::class,
-                   'loggerCallback'
-               ]);
+        $logger = new class () extends \Psr\Log\AbstractLogger {
+            public function log($level, $message, array $context = array())
+            {
+                TestCase::loggerCallback($message);
+            }
+        };
+
         static::$container->set(
             LoggerInterface::class,
             $logger
@@ -146,6 +135,9 @@ abstract class TestCase extends PHPUnitTestCase
                           ->setToken($token);
     }
 
+    /**
+     * @deprecated 1.2.0 use query() instead
+     */
     protected function execQuery(string $query, array $variables = null, string $operationName = null)
     {
         static::$query = [
@@ -155,5 +147,11 @@ abstract class TestCase extends PHPUnitTestCase
         ];
         static::$container->get(GraphQLQueryHandlerInterface::class)
                           ->executeGraphQLQuery();
+    }
+
+    protected function query(string $query, array $variables = null, string $operationName = null): array
+    {
+        $this->execQuery($query, $variables, $operationName);
+        return static::$queryResult;
     }
 }
