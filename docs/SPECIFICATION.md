@@ -11,8 +11,7 @@ This document adheres to [RFC2119](https://www.ietf.org/rfc/rfc2119.txt)
 ## Login/Auth
 
 - auth against the API must be done via a Bearer JWT in the Authorization HTTP Header
-- every request must have a token, because the token reflects the shop id and language id of the request and if authorized, it also reflects the user
-  - the token query may have a token
+- the token query may not have a token send with the HTTP request
 
 ## Naming
 
