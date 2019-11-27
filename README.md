@@ -9,7 +9,7 @@ This module provides:
 
 ## Specification of the API
 
-See [spec](SPECIFICATION.md) in this repository
+See [spec](docs/SPECIFICATION.md) in this repository
 
 ## Usage
 

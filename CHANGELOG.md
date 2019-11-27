@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `query()` method for easier integration tests
-- [spec for the API](SPECIFICATION.md)
+- [spec for the API](docs/SPECIFICATION.md)
 
 ### Deprecated
 - `execQuery()` method
