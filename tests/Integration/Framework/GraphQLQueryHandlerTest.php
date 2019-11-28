@@ -32,7 +32,7 @@ class GraphQLQueryHandlerTest extends TestCase
         $loader->load($serviceFile);
     }
 
-    public function testClientAwareExceptionInRoute()
+    public function testClientAwareException()
     {
         $result = $this->query('query { clientAwareExceptionQuery(foo: "bar") }');
         $this->assertEquals(
@@ -45,7 +45,20 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
-    public function testExceptionInRoute()
+    public function testNotFoundExceptionQuery()
+    {
+        $result = $this->query('query { notFoundExceptionQuery(foo: "bar") }');
+        $this->assertEquals(
+            404,
+            $result['status']
+        );
+        $this->assertEquals(
+            'Foo does not exist',
+            $result['body']['errors'][0]['message']
+        );
+    }
+
+    public function testExceptionInQuery()
     {
         $result = $this->query('query { exceptionQuery(foo: "bar") }');
         $this->assertEquals(

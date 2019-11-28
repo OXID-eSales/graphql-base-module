@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Exception\NotFoundException;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Right;
@@ -57,5 +58,13 @@ class TestController
     public function clientAwareExceptionQuery(string $foo): string
     {
         throw new InvalidTokenException('invalid token message');
+    }
+
+    /**
+     * @Query
+     */
+    public function notFoundExceptionQuery(string $foo): string
+    {
+        throw new NotFoundException('Foo does not exist');
     }
 }
