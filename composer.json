@@ -39,10 +39,12 @@
     "test:lint": "phpcs --standard=PSR12 --extensions=php -p src/ tests/ metadata.php",
     "test:syntax": "parallel-lint src/ tests/ metadata.php",
     "test:static": "phpstan analyse src/",
+    "test:unit": "phpunit -c tests/phpunit.xml tests/Unit/",
     "test": [
       "@test:syntax",
       "@test:lint",
-      "@test:static"
+      "@test:static",
+      "@test:unit"
     ]
   }
 }

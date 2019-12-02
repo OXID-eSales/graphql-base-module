@@ -27,3 +27,4 @@ script:
     - composer test:syntax
     - composer test:lint
     - composer test:static
+    - composer test:unit

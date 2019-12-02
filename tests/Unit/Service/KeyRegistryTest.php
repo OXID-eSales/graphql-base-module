@@ -9,57 +9,23 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use OxidEsales\Eshop\Core\Config;
-use OxidEsales\Eshop\Core\Registry;
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
-use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
-# use PHPUnit\Framework\TestCase;
-use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
+use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
+use OxidEsales\GraphQL\Base\Service\LegacyService;
+use PHPUnit\Framework\TestCase;
 
 class KeyRegistryTest extends TestCase
 {
-    protected static $container = null;
-
-    protected static $keyRegistry = null;
-
-    /**
-     * this empty methods prevents phpunit from resetting
-     * invocation mocker and therefore we can use the same
-     * mocks for all tests and do not need to reinitialize
-     * the container for every test in this file which
-     * makes the whole thing pretty fast :-)
-     */
-    protected function verifyMockObjects()
-    {
-    }
-
-    public function setUp(): void
-    {
-        if (self::$container !== null) {
-            return;
-        }
-
-        $containerFactory = new TestContainerFactory();
-        self::$container = $containerFactory->create();
-
-        self::$container->compile();
-
-        self::$keyRegistry = self::$container->get(KeyRegistryInterface::class);
-    }
-
-    public function tearDown(): void
-    {
-        Registry::set(Config::class, null);
-    }
 
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys()
     {
+        $legacyMock = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
+        $keyRegistry = new KeyRegistry($legacyMock);
         $iterations = 5;
         $keys = [];
         for ($i = 0; $i < $iterations; $i++) {
-            $key = self::$keyRegistry->generateSignatureKey();
+            $key = $keyRegistry->generateSignatureKey();
             $this->assertGreaterThanOrEqual(
                 64,
                 strlen($key),
@@ -95,16 +61,15 @@ class KeyRegistryTest extends TestCase
      */
     public function testGetSignatureKeyWithInvalidOrNoSignature($signature, bool $valid)
     {
-        $oldConfig = Registry::getConfig();
-        $config = $this->getMockBuilder(Config::class)->getMock();
-        $config->method('getConfigParam')
+        $legacyMock = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
+        $legacyMock->method('getConfigParam')
                ->with(KeyRegistry::SIGNATUREKEYNAME)
                ->willReturn($signature);
-        Registry::set(Config::class, $config);
+        $keyRegistry = new KeyRegistry($legacyMock);
         $e = null;
         $sig = null;
         try {
-            $sig = self::$keyRegistry->getSignatureKey();
+            $sig = $keyRegistry->getSignatureKey();
         } catch (NoSignatureKeyException $e) {
         }
         if ($valid) {
@@ -116,6 +81,5 @@ class KeyRegistryTest extends TestCase
                 $e
             );
         }
-        Registry::set(Config::class, $oldConfig);
     }
 }

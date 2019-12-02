@@ -14,11 +14,10 @@ use OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Service\AuthenticationService;
 use OxidEsales\GraphQL\Base\Service\AuthorizationService;
-use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
+# use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-
-# use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class AuthorizationServiceTest extends TestCase
 {
