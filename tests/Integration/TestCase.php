@@ -56,6 +56,7 @@ abstract class TestCase extends PHPUnitTestCase
         static::$queryResult = null;
         static::$logResult = null;
         static::$query = null;
+        static::$container = null;
         unset($_SERVER['HTTP_AUTHORIZATION']);
     }
 
