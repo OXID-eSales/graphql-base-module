@@ -59,13 +59,13 @@ See [oxid-esales/graphql-example](https://github.com/OXID-eSales/graphql-example
 
 ## Testing
 
-### Linting, Syntax and static analysis
+### Linting, syntax check, static analysis and unit tests
 
 ```bash
 $ composer test
 ```
 
-### Unit tests
+### Integration/Acceptance tests
 
 - install this module into a running OXID eShop
 - change the `test_config.yml`
