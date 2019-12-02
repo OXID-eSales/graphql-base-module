@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [spec for the API](docs/SPECIFICATION.md)
 - `createUniqueIdentifier` to `LegacyService`
 
+### Changed
+- Unit tests are real unit tests now and will be run in travis
+
 ### Deprecated
 - `execQuery()` method
 
