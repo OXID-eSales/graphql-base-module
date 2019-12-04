@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use Lcobucci\JWT\Token;
 use TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface as GraphQLiteAuthorizationServiceInterface;
 
 interface AuthorizationServiceInterface extends GraphQLiteAuthorizationServiceInterface
 {
+    public function setToken(?Token $token = null): void;
 }

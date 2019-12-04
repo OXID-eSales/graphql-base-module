@@ -13,6 +13,7 @@ use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent;
 use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 
 class AuthorizationService implements AuthorizationServiceInterface
 {
@@ -25,11 +26,13 @@ class AuthorizationService implements AuthorizationServiceInterface
     /** @var ?Token */
     private $token = null;
 
+    /**
+     * @param PermissionProviderInterface[] $permissionProviders
+     */
     public function __construct(
         iterable $permissionProviders,
         EventDispatcherInterface $eventDispatcher
     ) {
-        /** @var \OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface $permissionProvider */
         foreach ($permissionProviders as $permissionProvider) {
             $this->permissions = array_merge_recursive(
                 $this->permissions,
@@ -39,7 +42,7 @@ class AuthorizationService implements AuthorizationServiceInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function setToken(?Token $token = null)
+    public function setToken(?Token $token = null): void
     {
         $this->token = $token;
     }

@@ -13,17 +13,17 @@ use GraphQL\Error\ClientAware;
 
 class NotFoundException extends \Exception implements ClientAware, HttpErrorInterface
 {
-    public function getHttpStatus()
+    public function getHttpStatus(): int
     {
         return 404;
     }
 
-    public function isClientSafe()
+    public function isClientSafe(): bool
     {
         return true;
     }
 
-    public function getCategory()
+    public function getCategory(): string
     {
         return ErrorCategories::REQUESTERROR;
     }

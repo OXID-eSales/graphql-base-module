@@ -38,6 +38,9 @@ class SchemaFactory implements SchemaFactoryInterface
     /** @var ContainerInterface */
     private $container = null;
 
+    /**
+     * @param NamespaceMapperInterface[] $namespaceMappers
+     */
     public function __construct(
         iterable $namespaceMappers,
         AuthenticationServiceInterface $authenticationService,

@@ -32,7 +32,7 @@ class LegacyService implements LegacyServiceInterface
     /**
      * @throws InvalidLoginException
      */
-    public function checkCredentials(string $username, string $password)
+    public function checkCredentials(string $username, string $password): void
     {
         try {
             oxNew(User::class)->login($username, $password, false);
@@ -59,6 +59,9 @@ class LegacyService implements LegacyServiceInterface
         throw new InvalidLoginException('User does not exist.');
     }
 
+    /**
+     * @return mixed
+     */
     public function getConfigParam(string $param)
     {
         return Registry::getConfig()->getConfigParam($param);

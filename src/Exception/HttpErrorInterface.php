@@ -11,5 +11,5 @@ namespace OxidEsales\GraphQL\Base\Exception;
 
 interface HttpErrorInterface
 {
-    public function getHttpStatus();
+    public function getHttpStatus(): int;
 }

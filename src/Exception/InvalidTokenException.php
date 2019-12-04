@@ -13,17 +13,17 @@ use GraphQL\Error\ClientAware;
 
 class InvalidTokenException extends \Exception implements ClientAware, HttpErrorInterface
 {
-    public function getHttpStatus()
+    public function getHttpStatus(): int
     {
         return 403;
     }
 
-    public function isClientSafe()
+    public function isClientSafe(): bool
     {
         return true;
     }
 
-    public function getCategory()
+    public function getCategory(): string
     {
         return ErrorCategories::PERMISSIONERRORS;
     }

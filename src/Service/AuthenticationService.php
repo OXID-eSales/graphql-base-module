@@ -42,7 +42,7 @@ class AuthenticationService implements AuthenticationServiceInterface
         $this->legacyService = $legacyService;
     }
 
-    public function setToken(?Token $token = null)
+    public function setToken(?Token $token = null): void
     {
         $this->token = $token;
     }

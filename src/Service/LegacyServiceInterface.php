@@ -12,13 +12,16 @@ interface LegacyServiceInterface
     /**
      * @throws InvalidLoginException
      */
-    public function checkCredentials(string $username, string $password);
+    public function checkCredentials(string $username, string $password): void;
 
     /**
      * @throws InvalidLoginException
      */
     public function getUserGroup(string $username): string;
 
+    /**
+     * @return mixed
+     */
     public function getConfigParam(string $param);
 
     public function getShopUrl(): string;

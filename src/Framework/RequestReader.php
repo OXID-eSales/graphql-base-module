@@ -69,6 +69,8 @@ class RequestReader implements RequestReaderInterface
 
     /**
      * Get the Request data
+     *
+     * @return string[]
      */
     public function getGraphQLRequestData(string $inputFile = 'php://input'): array
     {

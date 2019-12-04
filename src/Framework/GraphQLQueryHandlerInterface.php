@@ -9,5 +9,5 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 interface GraphQLQueryHandlerInterface
 {
-    public function executeGraphQLQuery();
+    public function executeGraphQLQuery(): void;
 }

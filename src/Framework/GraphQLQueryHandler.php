@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
+use GraphQL\Executor\ExecutionResult;
 use Psr\Log\LoggerInterface;
 
 class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
@@ -52,7 +53,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
         };
     }
 
-    public function executeGraphQLQuery()
+    public function executeGraphQLQuery(): void
     {
         $result = $this->executeQuery(
             $this->requestReader->getGraphQLRequestData()
@@ -69,8 +70,9 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
      * Execute the GraphQL query
      *
      * @throws \Throwable
+     * @param mixed[] $queryData
      */
-    private function executeQuery($queryData)
+    private function executeQuery(array $queryData): ExecutionResult
     {
         $graphQL = new \GraphQL\GraphQL();
         $variables = null;
@@ -82,7 +84,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
             $operationName = $queryData['operationName'];
         }
 
-        $result = $graphQL->executeQuery(
+        return $graphQL->executeQuery(
             $this->schemaFactory->getSchema(),
             $queryData['query'],
             null,
@@ -90,6 +92,5 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
             $variables,
             $operationName
         );
-        return $result;
     }
 }

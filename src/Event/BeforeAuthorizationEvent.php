@@ -43,7 +43,7 @@ class BeforeAuthorizationEvent extends Event
         return $this->right;
     }
 
-    public function setAuthorized(bool $flag = null)
+    public function setAuthorized(bool $flag = null): void
     {
         $this->authorized = $flag;
     }
