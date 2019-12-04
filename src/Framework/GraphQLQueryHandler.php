@@ -70,7 +70,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
      * Execute the GraphQL query
      *
      * @throws \Throwable
-     * @param mixed[] $queryData
+     * @param array{query: string, variables: string[], operationName: string} $queryData
      */
     private function executeQuery(array $queryData): ExecutionResult
     {

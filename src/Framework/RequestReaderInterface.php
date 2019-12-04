@@ -19,7 +19,7 @@ interface RequestReaderInterface
     /**
      * Get the Request data
      *
-     * @return string[]
+     * @return array{query: string, variables: string[], operationName: string}
      */
     public function getGraphQLRequestData(): array;
 }

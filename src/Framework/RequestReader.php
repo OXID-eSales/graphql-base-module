@@ -70,7 +70,7 @@ class RequestReader implements RequestReaderInterface
     /**
      * Get the Request data
      *
-     * @return string[]
+     * @return array{query: string, variables: string[], operationName: string}
      */
     public function getGraphQLRequestData(string $inputFile = 'php://input'): array
     {
@@ -81,12 +81,10 @@ class RequestReader implements RequestReaderInterface
             $data = $_REQUEST;
         }
 
-        $data += [
-            'query'         => null,
-            'variables'     => null,
-            'operationName' => null
+        return [
+            'query' => $data['query'] ?? null,
+            'variables' => $data['variables'] ?? null,
+            'operationName' => $data['operationName'] ?? null
         ];
-
-        return $data;
     }
 }
