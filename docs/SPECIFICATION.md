@@ -6,7 +6,12 @@ This document adheres to [RFC2119](https://www.ietf.org/rfc/rfc2119.txt)
 
 - the API must be a GraphQL API as specified on graphql.org
 - Entrypoint must be: /graphql/
-- if possible and faster we should create our own DataObjects and DataAccessObjects
+- default HTTP status code must be `200`
+- if possible and faster create DataObjects and DataAccessObjects
+  - use the oxid core models only as fallback
+- when the object queried does not exist, the API must respond with a `404` HTTP status code
+- when the object exists, but is not accesable for the current user (`oxactive` set to 0, `oxhidden` set to 1 or other reasons), the API must respond with a `401` HTTP status code
+- when an inaccessible or non existing object is requested via a relation from another existing object it must be ignored
 
 ## Login/Auth
 
