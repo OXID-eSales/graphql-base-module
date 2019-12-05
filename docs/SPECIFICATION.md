@@ -4,14 +4,19 @@ This document adheres to [RFC2119](https://www.ietf.org/rfc/rfc2119.txt)
 
 ## General
 
-- the API must be a GraphQL API as specified on graphql.org
-- Entrypoint must be: /graphql/
-- if possible and faster we should create our own DataObjects and DataAccessObjects
+- the API must be a [GraphQL API as specified](https://www.graphql.org)
+- Entrypoint must be `/graphql/`
+- default HTTP status code must be `200`
+- if possible and faster create DataObjects and DataAccessObjects
+  - use the oxid core models only as fallback
+- when the object queried does not exist, the API must respond with a `404` HTTP status code
+- when the object exists, but is not accesable for the current user (`oxactive` set to 0, `oxhidden` set to 1 or other reasons), the API must respond with a `401` HTTP status code
+- when an inaccessible or non existing object is requested via a relation from another existing object it must be ignored
 
 ## Login/Auth
 
-- auth against the API must be done via a Bearer JWT in the Authorization HTTP Header
-- the token query may not have a token send with the HTTP request
+- auth against the API must be done via a Bearer JWT in the `Authorization` HTTP header
+- the token query must not have a token send with the HTTP request
 
 ## Naming
 
@@ -43,7 +48,7 @@ This document adheres to [RFC2119](https://www.ietf.org/rfc/rfc2119.txt)
 - must have proper input type definitions
 
 ### Fields
-- every field from every model should be available as a GraphQL Field and must have a correct type annotation (ID and not string for OXID fields)
+- every field from every model should be available as a GraphQL field and must have a correct type annotation (ID and not string for OXID fields)
 - multilang fields must not be exposed separately, but in context of the language of the token as a normal field (no getTitle\_1 or getTitle\_2 methods, only getTitle for the oxarticles.oxtitle\* database fields)
 - parent ids, object ids, foreign keys, etc. must be exposed via their correct type and not via an ID
   - example: an article has a oxvendorid and oxmanufacturerid, which must not be exposed as ID or string fields, but as a relation to that specific type
