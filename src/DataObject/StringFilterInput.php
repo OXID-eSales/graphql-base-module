@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataObject;
 
-class StringFilterInput
+use Doctrine\DBAL\Query\QueryBuilder;
+
+class StringFilterInput implements FilterInputInterface
 {
     /** @var ?string */
     private $equals;
@@ -43,5 +45,23 @@ class StringFilterInput
     public function beginsWith(): ?string
     {
         return $this->beginsWith;
+    }
+
+    public function addToQuery(QueryBuilder $builder, string $field): void
+    {
+        if ($this->equals) {
+            $builder->andWhere(strtoupper($field) . ' = :' . $field)
+                    ->setParameter(':' . $field, $this->equals);
+            // if equals is set, then no other conditions may apply
+            return;
+        }
+        if ($this->contains) {
+            $builder->andWhere(strtoupper($field) . ' LIKE :' . $field)
+                    ->setParameter(':' . $field, '%' . $this->equals . '%');
+        }
+        if ($this->beginsWith) {
+            $builder->andWhere(strtoupper($field) . ' LIKE :' . $field)
+                    ->setParameter(':' . $field, $this->equals . '%');
+        }
     }
 }

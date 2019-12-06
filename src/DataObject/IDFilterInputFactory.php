@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataObject;
 
 use TheCodingMachine\GraphQLite\Annotations\Factory;
+use TheCodingMachine\GraphQLite\Types\ID;
 
-class BoolFilterInputFactory
+class IDFilterInputFactory
 {
     /**
      * @Factory()
      */
-    public static function createBoolFilterInput(
-        bool $equals
-    ): BoolFilterInput {
-        return new BoolFilterInput(
+    public static function createIDFilterInput(
+        ID $equals
+    ): IDFilterInput {
+        return new IDFilterInput(
             $equals
         );
     }

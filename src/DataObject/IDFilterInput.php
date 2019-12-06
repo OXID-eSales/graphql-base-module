@@ -9,20 +9,21 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataObject;
 
+use TheCodingMachine\GraphQLite\Types\ID;
 use Doctrine\DBAL\Query\QueryBuilder;
 
-class BoolFilterInput implements FilterInputInterface
+class IDFilterInput implements FilterInputInterface
 {
-    /** @var bool */
+    /** @var ID */
     private $equals;
 
     public function __construct(
-        bool $equals
+        ID $equals
     ) {
         $this->equals = $equals;
     }
 
-    public function equals(): bool
+    public function equals(): ID
     {
         return $this->equals;
     }
@@ -30,8 +31,7 @@ class BoolFilterInput implements FilterInputInterface
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
         $builder->andWhere(strtoupper($field) . ' = :' . $field)
-                ->setParameter(':' . $field, $this->equals ? '1' : '0');
-        // if equals is set, then no other conditions may apply
+                ->setParameter(':' . $field, $this->equals);
         return;
     }
 }
