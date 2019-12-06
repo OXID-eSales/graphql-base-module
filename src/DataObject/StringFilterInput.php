@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataObject;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use GraphQL\Error\Error;
 
 class StringFilterInput implements FilterInputInterface
 {
@@ -27,6 +28,13 @@ class StringFilterInput implements FilterInputInterface
         ?string $contains = null,
         ?string $beginsWith = null
     ) {
+        if (
+            $equals === null &&
+            $contains === null &&
+            $beginsWith === null
+        ) {
+            throw new Error("At least one field for type StringFilterInput must be provided");
+        }
         $this->equals     = $equals;
         $this->contains   = $contains;
         $this->beginsWith = $beginsWith;

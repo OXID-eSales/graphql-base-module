@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataObject;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use GraphQL\Error\Error;
 
 class FloatFilterInput implements FilterInputInterface
 {
@@ -34,6 +35,14 @@ class FloatFilterInput implements FilterInputInterface
         ?float $greaterThen = null,
         ?array $between = null
     ) {
+        if (
+            $equals === null &&
+            $lowerThen === null &&
+            $greaterThen === null &&
+            $between === null
+        ) {
+            throw new Error("At least one field for type FloatFilterInput must be provided");
+        }
         $this->equals      = $equals;
         $this->lowerThen   = $lowerThen;
         $this->greaterThen = $greaterThen;
