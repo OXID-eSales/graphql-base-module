@@ -24,15 +24,15 @@ class IntegerFilterInputFactory
         ?array $between = null
     ): IntegerFilterInput {
         if (
-            is_array($between) && (
-            !isset($between[0]) ||
-            !isset($between[1]) ||
+            $between !== null && (
+            count($between) !== 2 ||
             !is_int($between[0]) ||
             !is_int($between[1])
             )
         ) {
             throw new \OutOfBoundsException();
         }
+        /** @var array{0: int, 1: int} $between */
         return new IntegerFilterInput(
             $equals,
             $lowerThen,
