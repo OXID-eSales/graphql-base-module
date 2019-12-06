@@ -18,6 +18,7 @@
                    processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../src</directory>
             <directory suffix=".php">Integration/Framework/Controller/</directory>
+            <directory suffix=".php">Integration/Framework/DataObject/</directory>
             <directory suffix=".php">Integration/Framework/Service/</directory>
         </whitelist>
     </filter>

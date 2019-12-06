@@ -15,7 +15,7 @@ class FloatFilterInputFactory
 {
     /**
      * @Factory()
-     * @param array{0: float, 1: float}|null $between
+     * @param float[]|null $between
      */
     public static function createFloatFilterInput(
         ?float $equals = null,
@@ -23,6 +23,16 @@ class FloatFilterInputFactory
         ?float $greaterThen = null,
         ?array $between = null
     ): FloatFilterInput {
+        if (
+            is_array($between) && (
+            !isset($between[0]) ||
+            !isset($between[1]) ||
+            !is_float($between[0]) ||
+            !is_float($between[1])
+            )
+        ) {
+            throw new \OutOfBoundsException();
+        }
         return new FloatFilterInput(
             $equals,
             $lowerThen,

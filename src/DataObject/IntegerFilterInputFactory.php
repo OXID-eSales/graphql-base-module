@@ -15,7 +15,7 @@ class IntegerFilterInputFactory
 {
     /**
      * @Factory()
-     * @param array{0: int, 1: int}|null $between
+     * @param int[]|null $between
      */
     public static function createIntegerFilterInput(
         ?int $equals = null,
@@ -23,6 +23,16 @@ class IntegerFilterInputFactory
         ?int $greaterThen = null,
         ?array $between = null
     ): IntegerFilterInput {
+        if (
+            is_array($between) && (
+            !isset($between[0]) ||
+            !isset($between[1]) ||
+            !is_int($between[0]) ||
+            !is_int($between[1])
+            )
+        ) {
+            throw new \OutOfBoundsException();
+        }
         return new IntegerFilterInput(
             $equals,
             $lowerThen,
