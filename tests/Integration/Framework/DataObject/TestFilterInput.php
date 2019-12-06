@@ -13,11 +13,7 @@ use OxidEsales\GraphQL\Base\DataObject\BoolFilterInput;
 use OxidEsales\GraphQL\Base\DataObject\FloatFilterInput;
 use OxidEsales\GraphQL\Base\DataObject\IntegerFilterInput;
 use OxidEsales\GraphQL\Base\DataObject\StringFilterInput;
-use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
 class TestFilterInput
 {
     private $active;

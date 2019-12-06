@@ -9,11 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataObject;
 
-use TheCodingMachine\GraphQLite\Annotations\Type;
-
-/**
- * @Type()
- */
 class FloatFilterInput
 {
     /** @var ?float */
