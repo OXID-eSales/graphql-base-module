@@ -57,11 +57,11 @@ class StringFilterInput implements FilterInputInterface
         }
         if ($this->contains) {
             $builder->andWhere(strtoupper($field) . ' LIKE :' . $field)
-                    ->setParameter(':' . $field, '%' . $this->equals . '%');
+                    ->setParameter(':' . $field, '%' . $this->contains . '%');
         }
         if ($this->beginsWith) {
             $builder->andWhere(strtoupper($field) . ' LIKE :' . $field)
-                    ->setParameter(':' . $field, $this->equals . '%');
+                    ->setParameter(':' . $field, $this->beginsWith . '%');
         }
     }
 }
