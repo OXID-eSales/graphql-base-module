@@ -11,6 +11,8 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
+use function count;
+
 class FloatFilterInputFactory
 {
     /**

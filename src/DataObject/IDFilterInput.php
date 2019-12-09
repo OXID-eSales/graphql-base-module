@@ -12,6 +12,8 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 use TheCodingMachine\GraphQLite\Types\ID;
 use Doctrine\DBAL\Query\QueryBuilder;
 
+use function strtoupper;
+
 class IDFilterInput implements FilterInputInterface
 {
     /** @var ID */

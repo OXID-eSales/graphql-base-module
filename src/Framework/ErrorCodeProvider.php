@@ -13,6 +13,9 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\ExecutionResult;
 use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 
+use function sizeof;
+use function get_class;
+
 /**
  * Class ErrorCodeProvider
  *

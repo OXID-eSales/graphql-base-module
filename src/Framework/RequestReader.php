@@ -13,6 +13,14 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
 
+use function apache_request_headers;
+use function array_change_key_case;
+use function file_get_contents;
+use function json_decode;
+use function sscanf;
+use function strpos;
+use function trim;
+
 class RequestReader implements RequestReaderInterface
 {
     /**
@@ -56,7 +64,7 @@ class RequestReader implements RequestReaderInterface
         } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             return trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
         } elseif (function_exists('apache_request_headers')) {
-            $headers = \apache_request_headers();
+            $headers = apache_request_headers();
             if (is_array($headers)) {
                 $headers = array_change_key_case($headers, CASE_LOWER);
                 if (isset($headers['authorization'])) {

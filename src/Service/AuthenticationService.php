@@ -19,6 +19,8 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
 use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 
+use function time;
+
 class AuthenticationService implements AuthenticationServiceInterface
 {
     public const CLAIM_SHOPID   = 'shopid';

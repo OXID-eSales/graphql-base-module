@@ -11,6 +11,8 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 
+use function strtoupper;
+
 class BoolFilterInput implements FilterInputInterface
 {
     /** @var bool */

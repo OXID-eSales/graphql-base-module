@@ -12,6 +12,8 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 
+use function strtoupper;
+
 class FloatFilterInput implements FilterInputInterface
 {
     /** @var ?float */
