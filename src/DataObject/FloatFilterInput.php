@@ -75,18 +75,18 @@ class FloatFilterInput implements FilterInputInterface
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
         if ($this->equals) {
-            $builder->andWhere(strtoupper($field) . ' = :' . $field)
-                    ->setParameter(':' . $field, $this->equals);
+            $builder->andWhere(strtoupper($field) . ' = :' . $field . '_eq')
+                    ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
         if ($this->lowerThen) {
-            $builder->andWhere(strtoupper($field) . ' < :' . $field)
-                    ->setParameter(':' . $field, $this->lowerThen);
+            $builder->andWhere(strtoupper($field) . ' < :' . $field . '_lt')
+                    ->setParameter(':' . $field . '_lt', $this->lowerThen);
         }
         if ($this->greaterThen) {
-            $builder->andWhere(strtoupper($field) . ' > :' . $field)
-                    ->setParameter(':' . $field, $this->greaterThen);
+            $builder->andWhere(strtoupper($field) . ' > :' . $field . '_gt')
+                    ->setParameter(':' . $field . '_gt', $this->greaterThen);
         }
         if ($this->between) {
             $builder->andWhere(strtoupper($field) . ' BETWEEN :' . $field . '_lower AND :' . $field . '_upper')

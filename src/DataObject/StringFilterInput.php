@@ -58,18 +58,18 @@ class StringFilterInput implements FilterInputInterface
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
         if ($this->equals) {
-            $builder->andWhere(strtoupper($field) . ' = :' . $field)
-                    ->setParameter(':' . $field, $this->equals);
+            $builder->andWhere(strtoupper($field) . ' = :' . $field . '_eq')
+                    ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
         if ($this->contains) {
-            $builder->andWhere(strtoupper($field) . ' LIKE :' . $field)
-                    ->setParameter(':' . $field, '%' . $this->contains . '%');
+            $builder->andWhere(strtoupper($field) . ' LIKE :' . $field . '_contain')
+                    ->setParameter(':' . $field . '_contain', '%' . $this->contains . '%');
         }
         if ($this->beginsWith) {
-            $builder->andWhere(strtoupper($field) . ' LIKE :' . $field)
-                    ->setParameter(':' . $field, $this->beginsWith . '%');
+            $builder->andWhere(strtoupper($field) . ' LIKE :' . $field . '_begins')
+                    ->setParameter(':' . $field . '_begins', $this->beginsWith . '%');
         }
     }
 }
