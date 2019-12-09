@@ -169,4 +169,30 @@ class GraphQLQueryHandlerTest extends TestCase
         );
         static::$container = null;
     }
+
+    public function testBasicInputFilterQuery()
+    {
+        $result = $this->query('
+            query {
+                basicInputFilterQuery(filter: {
+                    active: {
+                        equals: true
+                    }
+                    price: {
+                        lowerThen: 19.99
+                    }
+                    stock: {
+                        greaterThen: 10
+                    }
+                    title: {
+                        contains: "foo"
+                    }
+                })
+            }
+        ');
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+    }
 }

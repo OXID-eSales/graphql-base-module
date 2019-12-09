@@ -15,6 +15,9 @@ use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 
+use function array_search;
+use function is_bool;
+
 class AuthorizationService implements AuthorizationServiceInterface
 {
     /** @var array<string, array<string>> */

@@ -34,6 +34,16 @@ This document adheres to [RFC2119](https://www.ietf.org/rfc/rfc2119.txt)
   - fetchArticle
 - must have proper input type definitions
 
+### Queries for lists
+
+Additional to the rules applied for the queries, when querying for lists:
+
+- the query should have the following input parameter (all optional)
+  - `filter` which should be of type `ObjectFilterInput` (which you have to create and name according)
+    - the fields of this `FilterInput` type should be of one of the provided filter input types
+  - `limit` which must be of type `Int` (if ommited must behave as no limit)
+  - `start` which must be of type `Int` (if ommited must behave as 0)
+
 ### Mutations
 
 - must start with the object name, then the action verb (camelCase)

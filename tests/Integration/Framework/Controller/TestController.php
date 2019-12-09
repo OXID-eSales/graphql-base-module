@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
 use OxidEsales\GraphQL\Base\Exception\NotFoundException;
+use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataObject\TestFilterInput;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Right;
@@ -66,5 +67,13 @@ class TestController
     public function notFoundExceptionQuery(string $foo): string
     {
         throw new NotFoundException('Foo does not exist');
+    }
+
+    /**
+     * @Query
+     */
+    public function basicInputFilterQuery(TestFilterInput $filter): string
+    {
+        return (string) $filter;
     }
 }

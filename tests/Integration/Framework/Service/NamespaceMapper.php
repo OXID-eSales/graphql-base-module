@@ -22,6 +22,8 @@ class NamespaceMapper implements NamespaceMapperInterface
 
     public function getTypeNamespaceMapping(): array
     {
-        return [];
+        return [
+            '\\OxidEsales\\GraphQL\\Base\\Tests\\Integration\\Framework\\DataObject' => __DIR__ . '/../DataObject/'
+        ];
     }
 }

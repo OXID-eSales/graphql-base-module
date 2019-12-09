@@ -11,6 +11,11 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException;
 
+use function bin2hex;
+use function is_string;
+use function random_bytes;
+use function strlen;
+
 /**
  * Class KeyRegistry
  *
@@ -34,7 +39,7 @@ class KeyRegistry implements KeyRegistryInterface
 
     public function generateSignatureKey(): string
     {
-        return \bin2hex(\random_bytes(64));
+        return bin2hex(random_bytes(64));
     }
 
     /**

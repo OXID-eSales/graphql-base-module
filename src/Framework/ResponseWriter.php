@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+use function header;
+use function json_encode;
+
 class ResponseWriter implements ResponseWriterInterface
 {
     /**
@@ -20,7 +23,7 @@ class ResponseWriter implements ResponseWriterInterface
      */
     public function renderJsonResponse(array $result, int $httpStatus): void
     {
-        \header('Content-Type: application/json', true, $httpStatus);
-        exit(\json_encode($result));
+        header('Content-Type: application/json', true, $httpStatus);
+        exit(json_encode($result));
     }
 }
