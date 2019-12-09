@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `filters` to spec
 - basic input filter types for `string`, `float`, `integer`, `boolean` and `ID`
 - `use function` for all PHP functions used
+- HTTP status codes to spec
+
+### Changed
+- updated PHPStan vom `0.11` to `0.12`
 
 ## [1.2.0] 2019-12-02
 
