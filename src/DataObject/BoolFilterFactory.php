@@ -11,15 +11,15 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
-class BoolFilterInputFactory
+class BoolFilterFactory
 {
     /**
      * @Factory()
      */
-    public static function createBoolFilterInput(
+    public static function createBoolFilter(
         bool $equals
-    ): BoolFilterInput {
-        return new BoolFilterInput(
+    ): BoolFilter {
+        return new BoolFilter(
             $equals
         );
     }

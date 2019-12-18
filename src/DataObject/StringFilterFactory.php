@@ -11,17 +11,17 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
-class StringFilterInputFactory
+class StringFilterFactory
 {
     /**
      * @Factory()
      */
-    public static function createStringFilterInput(
+    public static function createStringFilter(
         ?string $equals = null,
         ?string $contains = null,
         ?string $beginsWith = null
-    ): StringFilterInput {
-        return new StringFilterInput(
+    ): StringFilter {
+        return new StringFilter(
             $equals,
             $contains,
             $beginsWith

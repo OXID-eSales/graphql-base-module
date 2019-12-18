@@ -13,18 +13,18 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function count;
 
-class IntegerFilterInputFactory
+class IntegerFilterFactory
 {
     /**
      * @Factory()
      * @param int[]|null $between
      */
-    public static function createIntegerFilterInput(
+    public static function createIntegerFilter(
         ?int $equals = null,
         ?int $lowerThen = null,
         ?int $greaterThen = null,
         ?array $between = null
-    ): IntegerFilterInput {
+    ): IntegerFilter {
         if (
             $between !== null && (
             count($between) !== 2 ||
@@ -35,7 +35,7 @@ class IntegerFilterInputFactory
             throw new \OutOfBoundsException();
         }
         /** @var array{0: int, 1: int} $between */
-        return new IntegerFilterInput(
+        return new IntegerFilter(
             $equals,
             $lowerThen,
             $greaterThen,

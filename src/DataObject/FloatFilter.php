@@ -14,7 +14,7 @@ use GraphQL\Error\Error;
 
 use function strtoupper;
 
-class FloatFilterInput implements FilterInputInterface
+class FloatFilter implements FilterInterface
 {
     /** @var ?float */
     private $equals;
@@ -43,7 +43,7 @@ class FloatFilterInput implements FilterInputInterface
             $greaterThen === null &&
             $between === null
         ) {
-            throw new Error("At least one field for type FloatFilterInput must be provided");
+            throw new Error("At least one field for type FloatFilter must be provided");
         }
         $this->equals      = $equals;
         $this->lowerThen   = $lowerThen;

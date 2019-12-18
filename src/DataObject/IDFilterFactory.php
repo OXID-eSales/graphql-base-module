@@ -12,15 +12,15 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-class IDFilterInputFactory
+class IDFilterFactory
 {
     /**
      * @Factory()
      */
-    public static function createIDFilterInput(
+    public static function createIDFilter(
         ID $equals
-    ): IDFilterInput {
-        return new IDFilterInput(
+    ): IDFilter {
+        return new IDFilter(
             $equals
         );
     }

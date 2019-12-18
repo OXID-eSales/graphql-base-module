@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 
-class IntegerFilterInput implements FilterInputInterface
+class IntegerFilter implements FilterInterface
 {
     /** @var ?int */
     private $equals;
@@ -41,7 +41,7 @@ class IntegerFilterInput implements FilterInputInterface
             $greaterThen === null &&
             $between === null
         ) {
-            throw new Error("At least one field for type IntegerFilterInput must be provided");
+            throw new Error("At least one field for type IntegerFilter must be provided");
         }
         $this->equals      = $equals;
         $this->lowerThen   = $lowerThen;

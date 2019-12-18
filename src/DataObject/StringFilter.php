@@ -14,7 +14,7 @@ use GraphQL\Error\Error;
 
 use function strtoupper;
 
-class StringFilterInput implements FilterInputInterface
+class StringFilter implements FilterInterface
 {
     /** @var ?string */
     private $equals;
@@ -35,7 +35,7 @@ class StringFilterInput implements FilterInputInterface
             $contains === null &&
             $beginsWith === null
         ) {
-            throw new Error("At least one field for type StringFilterInput must be provided");
+            throw new Error("At least one field for type StringFilter must be provided");
         }
         $this->equals     = $equals;
         $this->contains   = $contains;

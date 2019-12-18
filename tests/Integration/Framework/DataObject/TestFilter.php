@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataObject;
 
-use OxidEsales\GraphQL\Base\DataObject\BoolFilterInput;
-use OxidEsales\GraphQL\Base\DataObject\FloatFilterInput;
-use OxidEsales\GraphQL\Base\DataObject\IntegerFilterInput;
-use OxidEsales\GraphQL\Base\DataObject\StringFilterInput;
+use OxidEsales\GraphQL\Base\DataObject\BoolFilter;
+use OxidEsales\GraphQL\Base\DataObject\FloatFilter;
+use OxidEsales\GraphQL\Base\DataObject\IntegerFilter;
+use OxidEsales\GraphQL\Base\DataObject\StringFilter;
 
-class TestFilterInput
+class TestFilter
 {
     private $active;
     private $price;
@@ -22,10 +22,10 @@ class TestFilterInput
     private $title;
 
     public function __construct(
-        ?BoolFilterInput $active = null,
-        ?FloatFilterInput $price = null,
-        ?IntegerFilterInput $stock = null,
-        ?StringFilterInput $title = null
+        ?BoolFilter $active = null,
+        ?FloatFilter $price = null,
+        ?IntegerFilter $stock = null,
+        ?StringFilter $title = null
     ) {
         $this->active = $active;
         $this->price = $price;

@@ -9,7 +9,7 @@ namespace OxidEsales\GraphQL\Base\DataObject;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 
-interface FilterInputInterface
+interface FilterInterface
 {
     public function addToQuery(QueryBuilder $builder, string $field): void;
 }
