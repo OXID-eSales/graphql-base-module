@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+- basic input filter for type `DateTime`
+
 ### Changed
 - removed `Input` suffix from filter types
 
