@@ -28,8 +28,20 @@ activate the GraphQL Base module.
 ### How to use
 
 You can use your favourite GraphQL client to explore the API, if you do not
-already have one installed, you may use [Altair GraphQL Client](https://altair.sirmuel.design/) or
-you could simply just fire up your terminal and use `curl` to do a basic check
+already have one installed, you may use [Altair GraphQL Client](https://altair.sirmuel.design/).
+
+To login and retrieve a token send the following GraphQL query to the server
+
+```graphql
+query {
+    token (
+        username: "admin",
+        password: "admin"
+    )
+}
+```
+
+You could simply just fire up your terminal and use `curl` to do a basic check
 if the GraphQL base module is up and running as epxected. To retrieve a valid
 token you need to replace the username and password below with valid login
 credentials.
@@ -43,7 +55,11 @@ $ curl http://oxideshop.local/widget.php?cl=graphql \
 You should see a response similar to this:
 
 ```json
-{"data":{"token":"a-very-long-jwt"}}
+{
+    "data": {
+        "token": "a-very-long-jwt"
+    }
+}
 ```
 
 This `token` is then to be send as your authorization with every request in the
