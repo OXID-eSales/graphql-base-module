@@ -99,7 +99,7 @@ $ ./vendor/bin/runtests
 php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default.
 For this workaround to work, add these lines to your .htaccess file:
 
-```
+```apache
 RewriteCond %{HTTP:Authorization} ^(.+)$
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 ```
