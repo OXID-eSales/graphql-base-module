@@ -87,6 +87,9 @@ class RequestReader implements RequestReaderInterface
             $data = json_decode($raw, true) ? : [];
         } else {
             $data = $_REQUEST;
+            if (isset($data['variables'])) {
+                $data['variables'] = json_decode($data['variables'], true);
+            }
         }
 
         return [
