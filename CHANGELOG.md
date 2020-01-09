@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - handling of preflight CORS requests
+- handling of HTTP GET requests
 
 ## [1.3.1 2019-12-18]
 
