@@ -62,6 +62,8 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected function setUp(): void
     {
+        \OxidEsales\Eshop\Core\Registry::getLang()->resetBaseLanguage();
+
         if (static::$container !== null) {
             return;
         }
