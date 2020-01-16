@@ -155,4 +155,20 @@ abstract class TestCase extends PHPUnitTestCase
         $this->execQuery($query, $variables, $operationName);
         return static::$queryResult;
     }
+
+    /**
+     * @param array{status: int} $result
+     */
+    protected function assertResponseStatus(int $expectedStatus, array $result): void
+    {
+        $this->assertEquals(
+            $expectedStatus,
+            $result['status']
+        );
+    }
+
+    protected function setGETRequestParameter(string $name, string $value): void
+    {
+        $_GET[$name] = $value;
+    }
 }
