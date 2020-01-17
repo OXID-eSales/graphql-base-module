@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use Lcobucci\JWT\Token;
-use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use PHPUnit\Framework\TestCase;
 
@@ -61,7 +61,7 @@ class RequestReaderTest extends TestCase
             } catch (\Exception $e) {
             }
             $this->assertInstanceOf(
-                InvalidTokenException::class,
+                InvalidToken::class,
                 $e
             );
             unset($_SERVER[$header]);

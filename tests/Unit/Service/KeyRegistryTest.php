@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException;
+use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
 use OxidEsales\GraphQL\Base\Service\LegacyService;
@@ -70,14 +70,14 @@ class KeyRegistryTest extends TestCase
         $sig = null;
         try {
             $sig = $keyRegistry->getSignatureKey();
-        } catch (NoSignatureKeyException $e) {
+        } catch (MissingSignatureKey $e) {
         }
         if ($valid) {
             $this->assertEquals(null, $e);
             $this->assertTrue(is_string($sig), 'Signature key needs to be a string');
         } else {
             $this->assertInstanceOf(
-                NoSignatureKeyException::class,
+                MissingSignatureKey::class,
                 $e
             );
         }

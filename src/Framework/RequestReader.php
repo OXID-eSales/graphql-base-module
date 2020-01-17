@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
-use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 
 use function apache_request_headers;
 use function array_change_key_case;
@@ -26,7 +26,7 @@ class RequestReader implements RequestReaderInterface
     /**
      * Returns the encoded token from the authorization header
      *
-     * @throws InvalidTokenException
+     * @throws InvalidToken
      */
     public function getAuthToken(): ?Token
     {
@@ -42,7 +42,7 @@ class RequestReader implements RequestReaderInterface
         try {
             $token = (new Parser())->parse($jwt);
         } catch (\Exception $e) {
-            throw new InvalidTokenException('The token is invalid');
+            throw new InvalidToken('The token is invalid');
         }
         return $token;
     }

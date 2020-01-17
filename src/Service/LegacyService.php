@@ -13,7 +13,7 @@ use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 
 class LegacyService implements LegacyServiceInterface
 {
@@ -30,19 +30,19 @@ class LegacyService implements LegacyServiceInterface
     }
 
     /**
-     * @throws InvalidLoginException
+     * @throws InvalidLogin
      */
     public function checkCredentials(string $username, string $password): void
     {
         try {
             oxNew(User::class)->login($username, $password, false);
         } catch (\Exception $e) {
-            throw new InvalidLoginException('Username/password combination is invalid');
+            throw new InvalidLogin('Username/password combination is invalid');
         }
     }
 
     /**
-     * @throws InvalidLoginException
+     * @throws InvalidLogin
      */
     public function getUserGroup(string $username): string
     {
@@ -56,7 +56,7 @@ class LegacyService implements LegacyServiceInterface
             return $this->mapUserGroup($row['OXRIGHTS']);
         }
         # In fact this should not happen because the credentials should already have been checked
-        throw new InvalidLoginException('User does not exist.');
+        throw new InvalidLogin('User does not exist.');
     }
 
     /**
@@ -87,7 +87,7 @@ class LegacyService implements LegacyServiceInterface
     }
 
     /**
-     * @throws InvalidLoginException
+     * @throws InvalidLogin
      */
     private function mapUserGroup(?string $dbGroup): string
     {
@@ -100,7 +100,7 @@ class LegacyService implements LegacyServiceInterface
         if (intval($dbGroup) == $this->context->getCurrentShopId()) {
             return LegacyServiceInterface::GROUP_ADMIN;
         }
-        throw new InvalidLoginException('Invalid usergroup');
+        throw new InvalidLogin('Invalid usergroup');
     }
 
     public function createUniqueIdentifier(): string

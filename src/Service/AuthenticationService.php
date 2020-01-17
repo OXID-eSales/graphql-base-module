@@ -15,8 +15,8 @@ use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
-use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
-use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 
 use function time;
@@ -50,7 +50,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     }
 
     /**
-     * @throws InvalidTokenException
+     * @throws InvalidToken
      */
     public function isLogged(): bool
     {
@@ -60,11 +60,11 @@ class AuthenticationService implements AuthenticationServiceInterface
         if ($this->isValidToken($this->token)) {
             return true;
         }
-        throw new InvalidTokenException('The token is invalid');
+        throw new InvalidToken('The token is invalid');
     }
 
     /**
-     * @throws InvalidLoginException
+     * @throws InvalidLogin
      */
     public function createToken(string $username, string $password): Token
     {

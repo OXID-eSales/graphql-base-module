@@ -2,7 +2,7 @@
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 
 interface LegacyServiceInterface
 {
@@ -10,12 +10,12 @@ interface LegacyServiceInterface
     public const GROUP_CUSTOMERS = 'customer';
 
     /**
-     * @throws InvalidLoginException
+     * @throws InvalidLogin
      */
     public function checkCredentials(string $username, string $password): void;
 
     /**
-     * @throws InvalidLoginException
+     * @throws InvalidLogin
      */
     public function getUserGroup(string $username): string;
 

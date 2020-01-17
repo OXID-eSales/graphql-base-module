@@ -11,8 +11,8 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
-use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
-use OxidEsales\GraphQL\Base\Exception\InvalidTokenException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Base\Service\AuthenticationService;
 use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
@@ -48,8 +48,8 @@ class AuthenticationServiceTest extends TestCase
 
     public function testCreateTokenWithInvalidCredentials()
     {
-        $this->expectException(InvalidLoginException::class);
-        $this->legacyService->method('checkCredentials')->willThrowException(new InvalidLoginException());
+        $this->expectException(InvalidLogin::class);
+        $this->legacyService->method('checkCredentials')->willThrowException(new InvalidLogin());
         $this->authenticationService->createToken('foo', 'bar');
     }
 
@@ -61,7 +61,7 @@ class AuthenticationServiceTest extends TestCase
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken()
     {
-        $this->expectException(InvalidTokenException::class);
+        $this->expectException(InvalidToken::class);
         $this->authenticationService->setToken(
             (new Parser())->parse(self::$invalidToken)
         );
@@ -100,7 +100,7 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsLoggedWithValidForAnotherShopIdToken()
     {
-        $this->expectException(InvalidTokenException::class);
+        $this->expectException(InvalidToken::class);
         $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
         $this->legacyService->method('getShopId')->willReturn(-1);
         $this->authenticationService->setToken(
@@ -116,7 +116,7 @@ class AuthenticationServiceTest extends TestCase
      */
     public function testIsLoggedWithValidForAnotherShopUrlToken()
     {
-        $this->expectException(InvalidTokenException::class);
+        $this->expectException(InvalidToken::class);
 
         $this->legacyService->method('getShopUrl')->willReturn('https:/other.com');
         $this->legacyService->method('getShopId')->willReturn(1);

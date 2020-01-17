@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Service;
 use oxfield;
 use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Base\Exception\InvalidLoginException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Service\LegacyService;
 use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
 use OxidEsales\TestingLibrary\UnitTestCase;
@@ -47,7 +47,7 @@ class LegacyServiceTest extends UnitTestCase
 
     public function testInvalidLogin()
     {
-        $this->expectException(InvalidLoginException::class);
+        $this->expectException(InvalidLogin::class);
         $this->legacyService->checkCredentials('admin', 'wrongpassword');
     }
 
@@ -64,14 +64,14 @@ class LegacyServiceTest extends UnitTestCase
 
     public function testGetUserGroupShopadminWrongShop()
     {
-        $this->expectException(InvalidLoginException::class);
+        $this->expectException(InvalidLogin::class);
         $this->createUser('3');
         $this->legacyService->getUserGroup('testuser');
     }
 
     public function testGetUserGroupIllegalGroup()
     {
-        $this->expectException(InvalidLoginException::class);
+        $this->expectException(InvalidLogin::class);
         $this->createUser('bla');
         $this->legacyService->getUserGroup('testuser');
     }
@@ -84,7 +84,7 @@ class LegacyServiceTest extends UnitTestCase
 
     public function testGetUserGroupNotExistingUser()
     {
-        $this->expectException(InvalidLoginException::class);
+        $this->expectException(InvalidLogin::class);
         $this->assertEquals(LegacyServiceInterface::GROUP_CUSTOMERS, $this->legacyService->getUserGroup('testuser'));
     }
 

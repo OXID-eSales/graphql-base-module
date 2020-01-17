@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException;
+use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 
 use function bin2hex;
 use function is_string;
@@ -43,14 +43,14 @@ class KeyRegistry implements KeyRegistryInterface
     }
 
     /**
-     * @throws NoSignatureKeyException
+     * @throws MissingSignatureKey
      */
     public function getSignatureKey(): string
     {
         // TODO: legacy wrapper
         $signature = $this->legacyService->getConfigParam(static::SIGNATUREKEYNAME);
         if (!is_string($signature) || strlen($signature) < 64) {
-            throw new NoSignatureKeyException();
+            throw new MissingSignatureKey();
         }
         return $signature;
     }
