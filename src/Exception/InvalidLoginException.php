@@ -9,22 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-use GraphQL\Error\ClientAware;
-
-class InvalidLoginException extends \Exception implements ClientAware, HttpErrorInterface
+/**
+ * @deprecated use InvalidLogin instead
+ */
+class InvalidLoginException extends InvalidLogin
 {
-    public function getHttpStatus(): int
-    {
-        return 401;
-    }
-
-    public function isClientSafe(): bool
-    {
-        return true;
-    }
-
-    public function getCategory(): string
-    {
-        return ErrorCategories::PERMISSIONERRORS;
-    }
 }

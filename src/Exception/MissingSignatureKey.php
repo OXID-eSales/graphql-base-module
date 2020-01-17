@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-/**
- * @deprecated use InvalidToken
- */
-class InvalidTokenException extends InvalidToken
+class MissingSignatureKey extends \Exception
 {
 }

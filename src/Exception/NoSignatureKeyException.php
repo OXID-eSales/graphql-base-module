@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
+/**
+ * @deprecated use MissingSignatureKey
+ */
 class NoSignatureKeyException extends \Exception
 {
 }
