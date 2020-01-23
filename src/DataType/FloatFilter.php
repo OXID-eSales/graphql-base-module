@@ -7,32 +7,34 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataObject;
+namespace OxidEsales\GraphQL\Base\DataType;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 
-class IntegerFilter implements FilterInterface
+use function strtoupper;
+
+class FloatFilter implements FilterInterface
 {
-    /** @var ?int */
+    /** @var ?float */
     private $equals;
 
-    /** @var ?int */
+    /** @var ?float */
     private $lowerThen;
 
-    /** @var ?int */
+    /** @var ?float */
     private $greaterThen;
 
-    /** @var array{0: int, 1: int}|null */
+    /** @var array{0: float, 1: float}|null */
     private $between;
 
     /**
-     * @param array{0: int, 1: int}|null $between
+     * @param array{0: float, 1: float}|null $between
      */
     public function __construct(
-        ?int $equals = null,
-        ?int $lowerThen = null,
-        ?int $greaterThen = null,
+        ?float $equals = null,
+        ?float $lowerThen = null,
+        ?float $greaterThen = null,
         ?array $between = null
     ) {
         if (
@@ -41,7 +43,7 @@ class IntegerFilter implements FilterInterface
             $greaterThen === null &&
             $between === null
         ) {
-            throw new Error("At least one field for type IntegerFilter must be provided");
+            throw new Error("At least one field for type FloatFilter must be provided");
         }
         $this->equals      = $equals;
         $this->lowerThen   = $lowerThen;
@@ -49,23 +51,23 @@ class IntegerFilter implements FilterInterface
         $this->between     = $between;
     }
 
-    public function equals(): ?int
+    public function equals(): ?float
     {
         return $this->equals;
     }
 
-    public function lowerThen(): ?int
+    public function lowerThen(): ?float
     {
         return $this->lowerThen;
     }
 
-    public function greaterThen(): ?int
+    public function greaterThen(): ?float
     {
         return $this->greaterThen;
     }
 
     /**
-     * @return array{0: int, 1: int}|null
+     * @return array{0: float, 1: float}|null
      */
     public function between(): ?array
     {

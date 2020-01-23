@@ -7,12 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataObject;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType;
 
-use OxidEsales\GraphQL\Base\DataObject\BoolFilter;
-use OxidEsales\GraphQL\Base\DataObject\FloatFilter;
-use OxidEsales\GraphQL\Base\DataObject\IntegerFilter;
-use OxidEsales\GraphQL\Base\DataObject\StringFilter;
+use OxidEsales\GraphQL\Base\DataType\BoolFilter;
+use OxidEsales\GraphQL\Base\DataType\FloatFilter;
+use OxidEsales\GraphQL\Base\DataType\IntegerFilter;
+use OxidEsales\GraphQL\Base\DataType\StringFilter;
 
 class TestFilter
 {

@@ -7,20 +7,19 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataObject;
+namespace OxidEsales\GraphQL\Base\DataType;
 
 use TheCodingMachine\GraphQLite\Annotations\Factory;
-use TheCodingMachine\GraphQLite\Types\ID;
 
-class IDFilterFactory
+class BoolFilterFactory
 {
     /**
      * @Factory()
      */
-    public static function createIDFilter(
-        ID $equals
-    ): IDFilter {
-        return new IDFilter(
+    public static function createBoolFilter(
+        bool $equals
+    ): BoolFilter {
+        return new BoolFilter(
             $equals
         );
     }

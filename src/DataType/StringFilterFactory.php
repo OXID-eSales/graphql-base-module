@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataObject;
+namespace OxidEsales\GraphQL\Base\DataType;
 
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 

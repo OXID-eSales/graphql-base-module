@@ -23,7 +23,7 @@ class NamespaceMapper implements NamespaceMapperInterface
     public function getTypeNamespaceMapping(): array
     {
         return [
-            '\\OxidEsales\\GraphQL\\Base\\Tests\\Integration\\Framework\\DataObject' => __DIR__ . '/../DataObject/'
+            '\\OxidEsales\\GraphQL\\Base\\Tests\\Integration\\Framework\\DataType' => __DIR__ . '/../DataType/'
         ];
     }
 }

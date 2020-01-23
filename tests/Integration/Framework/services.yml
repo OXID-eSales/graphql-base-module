@@ -8,8 +8,8 @@ services:
     class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController
     public: true
 
-  OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataObject\TestFilterFactory:
-    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataObject\TestFilterFactory
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilterFactory:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilterFactory
     public: true
 
   OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper:
