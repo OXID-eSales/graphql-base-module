@@ -138,10 +138,7 @@ abstract class TestCase extends PHPUnitTestCase
                           ->setToken($token);
     }
 
-    /**
-     * @deprecated 1.2.0 use query() instead
-     */
-    protected function execQuery(string $query, array $variables = null, string $operationName = null)
+    protected function query(string $query, array $variables = null, string $operationName = null): array
     {
         static::$query = [
             'query' => $query,
@@ -150,11 +147,6 @@ abstract class TestCase extends PHPUnitTestCase
         ];
         static::$container->get(GraphQLQueryHandlerInterface::class)
                           ->executeGraphQLQuery();
-    }
-
-    protected function query(string $query, array $variables = null, string $operationName = null): array
-    {
-        $this->execQuery($query, $variables, $operationName);
         return static::$queryResult;
     }
 
