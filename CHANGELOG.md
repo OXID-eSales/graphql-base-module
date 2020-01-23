@@ -11,21 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Classes
-    - OxidEsales\GraphQL\Base\Exception\InvalidLoginException
-    - OxidEsales\GraphQL\Base\Exception\InvalidTokenException
-    - OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException
-    - OxidEsales\GraphQL\Base\Exception\NotFoundException
+    - `OxidEsales\GraphQL\Base\Exception\InvalidLoginException`
+    - `OxidEsales\GraphQL\Base\Exception\InvalidTokenException`
+    - `OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException`
+    - `OxidEsales\GraphQL\Base\Exception\NotFoundException`
 - Methods
-    - OxidEsales\GraphQL\Base\Tests\Integration::execQuery
+    - `OxidEsales\GraphQL\Base\Tests\Integration::execQuery`
 
 ## [1.3.3 2020-01-20]
 
 ### Deprecated
 - Smurf-Naming-Convention for Exceptions (the old ones are still there and will be removed in the next major)
-    - InvalidLoginException -> InvalidLogin
-    - InvalidTokenException -> InvalidToken
-    - NoSignatureKeyException -> MissingSignatureKey
-    - NotFoundException -> NotFound
+    - `InvalidLoginException` -> `InvalidLogin`
+    - `InvalidTokenException` -> `InvalidToken`
+    - `NoSignatureKeyException` -> `MissingSignatureKey`
+    - `NotFoundException` -> `NotFound`
 
 ## [1.3.2 2020-01-16]
 
