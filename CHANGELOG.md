@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - `DataObject` -> `DataType`. We do not use the term `DataObject` anymore, because from GraphQL as the point of view these are types
 
+### Removed
+- Classes
+    - OxidEsales\GraphQL\Base\Exception\InvalidLoginException
+    - OxidEsales\GraphQL\Base\Exception\InvalidTokenException
+    - OxidEsales\GraphQL\Base\Exception\NoSignatureKeyException
+    - OxidEsales\GraphQL\Base\Exception\NotFoundException
+- Methods
+    - OxidEsales\GraphQL\Base\Tests\Integration::execQuery
+
 ## [1.3.3 2020-01-20]
 
 ### Deprecated
