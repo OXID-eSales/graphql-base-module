@@ -54,14 +54,17 @@ abstract class MultishopTestCase extends TestCase
         ]);
         $shop->save();
 
-        $copyVars = array(
+        $copyVars = [
             "aLanguages"
-        );
+        ];
 
-        $select = "insert into oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
-            select MD5(RAND()), {$shopId} as oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule from oxconfig
-                where oxshopid = '1' and oxvarname in ( '" . join("', '", $copyVars) . "') ";
-        $database->execute($select);
+        // copy language settings from shop 1
+        $database->execute("
+            INSERT INTO oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
+            SELECT MD5(RAND()), {$shopId} AS oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule FROM oxconfig
+            WHERE oxshopid = '1'
+              AND oxvarname IN ( '" . join("', '", $copyVars) . "')
+        ");
 
         $container = ContainerFactory::getInstance()->getContainer();
         $shopConfiguration = $container->get(ShopConfigurationDaoInterface::class)->get(1);
@@ -85,7 +88,9 @@ abstract class MultishopTestCase extends TestCase
 
     protected function cleanupCachedRegistry()
     {
-        $keepThese = [\OxidEsales\Eshop\Core\ConfigFile::class];
+        $keepThese = [
+            \OxidEsales\Eshop\Core\ConfigFile::class
+        ];
         $registryKeys = Registry::getKeys();
         foreach ($registryKeys as $key) {
             if (in_array($key, $keepThese)) {
