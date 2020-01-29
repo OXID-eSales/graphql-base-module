@@ -20,11 +20,12 @@ abstract class MultishopTestCase extends TestCase
 {
     protected function setUp(): void
     {
-        parent::setUp();
-
         if ($this->getConfig()->getEdition() !== 'EE') {
             $this->markTestSkipped("Skip EE related tests for CE/PE edition");
+            return;
         }
+
+        parent::setUp();
 
         $this->ensureShop(2);
         $this->cleanupCachedRegistry();
