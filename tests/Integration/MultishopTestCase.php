@@ -88,6 +88,10 @@ abstract class MultishopTestCase extends TestCase
 
     protected function cleanupCachedRegistry()
     {
+        Registry::getConfig()->setConfig(null);
+        $utilsObject = new \OxidEsales\Eshop\Core\UtilsObject();
+        $utilsObject->resetInstanceCache();
+
         $keepThese = [
             \OxidEsales\Eshop\Core\ConfigFile::class
         ];
@@ -98,11 +102,5 @@ abstract class MultishopTestCase extends TestCase
             }
             Registry::set($key, null);
         }
-        $utilsObject = new \OxidEsales\Eshop\Core\UtilsObject();
-        $utilsObject->resetInstanceCache();
-        Registry::set(\OxidEsales\Eshop\Core\UtilsObject::class, $utilsObject);
-
-        Registry::getConfig()->setConfig(null);
-        Registry::set(\OxidEsales\Eshop\Core\Config::class, null);
     }
 }
