@@ -96,5 +96,8 @@ abstract class MultishopTestCase extends TestCase
         $utilsObject = new \OxidEsales\Eshop\Core\UtilsObject();
         $utilsObject->resetInstanceCache();
         Registry::set(\OxidEsales\Eshop\Core\UtilsObject::class, $utilsObject);
+
+        Registry::getConfig()->setConfig(null);
+        Registry::set(\OxidEsales\Eshop\Core\Config::class, null);
     }
 }
