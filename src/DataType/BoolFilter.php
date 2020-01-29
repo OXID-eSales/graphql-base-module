@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataType;
 
 use Doctrine\DBAL\Query\QueryBuilder;
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function strtoupper;
 
@@ -19,9 +20,20 @@ class BoolFilter implements FilterInterface
     private $equals;
 
     public function __construct(
-        bool $equals
+        bool $equals = true
     ) {
         $this->equals = $equals;
+    }
+
+    /**
+     * @Factory()
+     */
+    public static function createBoolFilter(
+        bool $equals
+    ): self {
+        return new self(
+            $equals
+        );
     }
 
     public function equals(): bool

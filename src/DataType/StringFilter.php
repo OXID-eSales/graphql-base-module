@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function strtoupper;
 
@@ -40,6 +41,21 @@ class StringFilter implements FilterInterface
         $this->equals     = $equals;
         $this->contains   = $contains;
         $this->beginsWith = $beginsWith;
+    }
+
+    /**
+     * @Factory()
+     */
+    public static function createStringFilter(
+        ?string $equals = null,
+        ?string $contains = null,
+        ?string $beginsWith = null
+    ): self {
+        return new self(
+            $equals,
+            $contains,
+            $beginsWith
+        );
     }
 
     public function equals(): ?string

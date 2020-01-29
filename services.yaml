@@ -47,10 +47,6 @@ services:
     resource: 'src/Controller/*'
     public: true
 
-  OxidEsales\GraphQL\Base\DataType\:
-    resource: 'src/DataType/*Factory.php'
-    public: true
-
   OxidEsales\GraphQL\Base\Service\NamespaceMapper:
     class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']

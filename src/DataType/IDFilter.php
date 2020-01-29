@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataType;
 
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 use TheCodingMachine\GraphQLite\Types\ID;
 use Doctrine\DBAL\Query\QueryBuilder;
 
@@ -23,6 +24,17 @@ class IDFilter implements FilterInterface
         ID $equals
     ) {
         $this->equals = $equals;
+    }
+
+    /**
+     * @Factory()
+     */
+    public static function createIDFilter(
+        ID $equals
+    ): self {
+        return new self(
+            $equals
+        );
     }
 
     public function equals(): ID

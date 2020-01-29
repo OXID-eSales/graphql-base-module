@@ -11,7 +11,9 @@ namespace OxidEsales\GraphQL\Base\DataType;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
+use TheCodingMachine\GraphQLite\Annotations\Factory;
 
+use function count;
 use function strtoupper;
 
 class FloatFilter implements FilterInterface
@@ -49,6 +51,34 @@ class FloatFilter implements FilterInterface
         $this->lowerThen   = $lowerThen;
         $this->greaterThen = $greaterThen;
         $this->between     = $between;
+    }
+
+    /**
+     * @Factory()
+     * @param float[]|null $between
+     */
+    public static function createFloatFilter(
+        ?float $equals = null,
+        ?float $lowerThen = null,
+        ?float $greaterThen = null,
+        ?array $between = null
+    ): self {
+        if (
+            $between !== null && (
+            count($between) !== 2 ||
+            !is_float($between[0]) ||
+            !is_float($between[1])
+            )
+        ) {
+            throw new \OutOfBoundsException();
+        }
+        /** @var array{0: float, 1: float} $between */
+        return new self(
+            $equals,
+            $lowerThen,
+            $greaterThen,
+            $between
+        );
     }
 
     public function equals(): ?float
