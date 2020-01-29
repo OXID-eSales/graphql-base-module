@@ -21,7 +21,7 @@ This document adheres to [RFC2119](https://www.ietf.org/rfc/rfc2119.txt)
 
 ### Queries
 
-- must not have get or has or similar in its name
+- must not have `get` or `has` or similar in its name
 - query name must be singular or plural object name
 - valid examples:
   - user
