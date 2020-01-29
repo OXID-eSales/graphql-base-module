@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - point out that we are using `lcobucci/jwt` in `README.md`
 - `OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase` for EE integration tests
+- `.gitattributes` to keep tests and developement stuff out of other peoples production
 
 ### Changed
 - moved input type factory method from `OxidEsales\GraphQL\Base\DataType\*FilterFactory` to existing `OxidEsales\GraphQL\Base\DataType\*Filter`
