@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `OxidEsales\GraphQL\Base\DataType\IntegerFilterFactory`
     - `OxidEsales\GraphQL\Base\DataType\StringFilterFactory`
 
-## [2.0.0 2020-01-23]
+## [2.0.0] 2020-01-23
 
 ### Changed
 - `DataObject` -> `DataType`. We do not use the term `DataObject` anymore, because from GraphQL as the point of view these are types
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Methods
     - `OxidEsales\GraphQL\Base\Tests\Integration::execQuery`
 
-## [1.3.3 2020-01-20]
+## [1.3.3] 2020-01-20
 
 ### Deprecated
 - Smurf-Naming-Convention for Exceptions (the old ones are still there and will be removed in the next major)
@@ -46,13 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `NoSignatureKeyException` -> `MissingSignatureKey`
     - `NotFoundException` -> `NotFound`
 
-## [1.3.2 2020-01-16]
+## [1.3.2] 2020-01-16
 
 ### Added
 - handling of preflight CORS requests
 - handling of HTTP GET requests
 
-## [1.3.1 2019-12-18]
+## [1.3.1] 2019-12-18
 
 ### Added
 - basic input filter for type `DateTime`
