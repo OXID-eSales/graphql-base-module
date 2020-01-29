@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - point out that we are using `lcobucci/jwt` in `README.md`
+- `OxidEsales\GraphQL\Base\Tests\Integration\MultishopTestCase` for EE integration tests
+
+### Changed
+- moved input type factory method from `OxidEsales\GraphQL\Base\DataType\*FilterFactory` to existing `OxidEsales\GraphQL\Base\DataType\*Filter`
+- wording in `docs/SPECIFICATION.md` from `DataObject` to `DataType`
+
+### Removed
+- Classes
+    - `OxidEsales\GraphQL\Base\DataType\BoolFilterFactory`
+    - `OxidEsales\GraphQL\Base\DataType\DateFilterFactory`
+    - `OxidEsales\GraphQL\Base\DataType\FloatFilterFactory`
+    - `OxidEsales\GraphQL\Base\DataType\IDFilterFactory`
+    - `OxidEsales\GraphQL\Base\DataType\IntegerFilterFactory`
+    - `OxidEsales\GraphQL\Base\DataType\StringFilterFactory`
 
 ## [2.0.0 2020-01-23]
 
