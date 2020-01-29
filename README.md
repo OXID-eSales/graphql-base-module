@@ -129,6 +129,7 @@ correctly because `composer` will not do downgrades upon `composer require`.
 ## Build with
 
 - [GraphQLite](https://graphqlite.thecodingmachine.io/)
+- [lcobucci/jwt](https://github.com/lcobucci/jwt)
 
 ## License
 
