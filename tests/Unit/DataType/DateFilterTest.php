@@ -63,16 +63,16 @@ class DateFilterTest extends TestCase
             '2020-01-30 12:37:21'
         );
         $this->assertSame(
-            '2020-01-30T12:37:21+0000',
-            $filter->equals()->format(\DateTimeInterface::ISO8601)
+            '2020-01-30T12:37:21+00:00',
+            $filter->equals()->format(\DateTime::ATOM)
         );
 
         $filter = DateFilter::fromUserInput(
             '2020-01-30 12:37:21 CET'
         );
         $this->assertSame(
-            '2020-01-30T12:37:21+0100',
-            $filter->equals()->format(\DateTimeInterface::ISO8601)
+            '2020-01-30T12:37:21+01:00',
+            $filter->equals()->format(\DateTime::ATOM)
         );
 
         $filter = DateFilter::fromUserInput(
@@ -84,12 +84,12 @@ class DateFilterTest extends TestCase
         );
         $this->assertSame(
             [
-                '2020-01-30T12:37:21+0000',
-                '2020-01-30T12:37:22+0000'
+                '2020-01-30T12:37:21+00:00',
+                '2020-01-30T12:37:22+00:00'
             ],
             [
-                $filter->between()[0]->format(\DateTimeInterface::ISO8601),
-                $filter->between()[1]->format(\DateTimeInterface::ISO8601)
+                $filter->between()[0]->format(\DateTime::ATOM),
+                $filter->between()[1]->format(\DateTime::ATOM)
             ]
         );
     }
