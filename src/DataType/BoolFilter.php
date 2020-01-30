@@ -26,9 +26,9 @@ class BoolFilter implements FilterInterface
     }
 
     /**
-     * @Factory()
+     * @Factory(name="BoolFilterInput")
      */
-    public static function createBoolFilter(
+    public static function fromUserInput(
         bool $equals
     ): self {
         return new self(

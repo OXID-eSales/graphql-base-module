@@ -52,7 +52,7 @@ class DateFilter implements FilterInterface
      * @Factory(name="DateFilterInput")
      * @param string[]|null $between
      */
-    public static function createDateFilterInput(
+    public static function fromUserInput(
         ?string $equals = null,
         ?array $between = null
     ): self {

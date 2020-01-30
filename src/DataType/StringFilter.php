@@ -44,9 +44,9 @@ class StringFilter implements FilterInterface
     }
 
     /**
-     * @Factory()
+     * @Factory(name="StringFilterInput")
      */
-    public static function createStringFilter(
+    public static function fromUserInput(
         ?string $equals = null,
         ?string $contains = null,
         ?string $beginsWith = null

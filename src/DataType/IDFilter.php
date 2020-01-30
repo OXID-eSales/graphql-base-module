@@ -27,9 +27,9 @@ class IDFilter implements FilterInterface
     }
 
     /**
-     * @Factory()
+     * @Factory(name="IDFilterInput")
      */
-    public static function createIDFilter(
+    public static function fromUserInput(
         ID $equals
     ): self {
         return new self(

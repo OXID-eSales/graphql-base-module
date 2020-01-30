@@ -54,10 +54,10 @@ class FloatFilter implements FilterInterface
     }
 
     /**
-     * @Factory()
+     * @Factory(name="FloatFilterInput")
      * @param float[]|null $between
      */
-    public static function createFloatFilter(
+    public static function fromUserInput(
         ?float $equals = null,
         ?float $lowerThen = null,
         ?float $greaterThen = null,

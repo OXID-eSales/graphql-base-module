@@ -53,10 +53,10 @@ class IntegerFilter implements FilterInterface
     }
 
     /**
-     * @Factory()
+     * @Factory(name="IntegerFilterInput")
      * @param int[]|null $between
      */
-    public static function createIntegerFilter(
+    public static function fromUserInput(
         ?int $equals = null,
         ?int $lowerThen = null,
         ?int $greaterThen = null,
