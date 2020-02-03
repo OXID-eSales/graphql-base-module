@@ -22,7 +22,7 @@ before_script:
     - phpenv config-rm xdebug.ini
 
 install:
-    - composer install --prefer-dist
+    - composer install --prefer-dist --no-interaction
 
 script:
     - composer test:syntax
