@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - unit tests for filter input data types
+- PHPCompatibility to CodeSniffer
 
 ### Changed
 - factory method for filter inupt data types from `createWhatEverType` to `fromUserInput`
