@@ -19,6 +19,9 @@ matrix:
     fast_finish: true
 
 before_script:
+    - phpenv config-rm xdebug.ini
+
+install:
     - composer install --prefer-dist
 
 script:
