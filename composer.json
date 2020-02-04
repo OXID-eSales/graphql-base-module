@@ -31,16 +31,12 @@
   },
   "autoload": {
     "psr-4": {
-      "OxidEsales\\GraphQL\\Base\\": "src"
+      "OxidEsales\\GraphQL\\Base\\": "src",
+      "OxidEsales\\GraphQL\\Base\\Tests\\": "tests"
     }
   },
   "prefer-stable": true,
   "prefer-dist": true,
-  "autoload-dev": {
-    "psr-4": {
-      "OxidEsales\\GraphQL\\Base\\Tests\\": "tests"
-    }
-  },
   "scripts": {
     "fix": "phpcbf",
     "test:lint": "phpcs",
