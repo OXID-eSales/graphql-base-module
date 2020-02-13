@@ -13,18 +13,12 @@ use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ShopConfigurationDaoInterface;
-use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 use OxidEsales\TestingLibrary\Services\ModuleInstaller\ModuleInstaller;
 
-abstract class MultishopTestCase extends TestCase
+abstract class MultishopTestCase extends EnterpriseTestCase
 {
     protected function setUp(): void
     {
-        if ($this->getConfig()->getEdition() !== 'EE') {
-            $this->markTestSkipped("Skip EE related tests for CE/PE edition");
-            return;
-        }
-
         parent::setUp();
 
         $this->ensureShop(2);
