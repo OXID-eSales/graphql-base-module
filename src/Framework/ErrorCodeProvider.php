@@ -13,7 +13,6 @@ use GraphQL\Error\InvariantViolation;
 use GraphQL\Executor\ExecutionResult;
 use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 
-use function sizeof;
 use function get_class;
 
 /**
@@ -23,8 +22,6 @@ use function get_class;
  * execution result to a http status code.
  *
  * TODO: Think of something more sophisticated
- *
- * @package OxidEsales\GraphQL\Base\Framework
  */
 class ErrorCodeProvider implements ErrorCodeProviderInterface
 {
@@ -35,18 +32,20 @@ class ErrorCodeProvider implements ErrorCodeProviderInterface
         // result. So we would need take the message to determine
         // which is the correct http status.
 
-        if (sizeof($result->errors) == 0) {
+        if (count($result->errors) == 0) {
             return 200; // OK
         }
 
         $error = $result->errors[0];
 
         $previous = $error->getPrevious();
+
         if ($previous instanceof HttpErrorInterface) {
             return $previous->getHttpStatus();
         }
 
         $errorClass = get_class($error);
+
         switch ($errorClass) {
             case InvariantViolation::class:
                 return 500; // Internal server error

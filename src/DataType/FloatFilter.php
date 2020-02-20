@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
+use OutOfBoundsException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function count;
@@ -45,40 +46,12 @@ class FloatFilter implements FilterInterface
             $greaterThen === null &&
             $between === null
         ) {
-            throw new Error("At least one field for type FloatFilter must be provided");
+            throw new Error('At least one field for type FloatFilter must be provided');
         }
         $this->equals      = $equals;
         $this->lowerThen   = $lowerThen;
         $this->greaterThen = $greaterThen;
         $this->between     = $between;
-    }
-
-    /**
-     * @Factory(name="FloatFilterInput")
-     * @param float[]|null $between
-     */
-    public static function fromUserInput(
-        ?float $equals = null,
-        ?float $lowerThen = null,
-        ?float $greaterThen = null,
-        ?array $between = null
-    ): self {
-        if (
-            $between !== null && (
-            count($between) !== 2 ||
-            !is_float($between[0]) ||
-            !is_float($between[1])
-            )
-        ) {
-            throw new \OutOfBoundsException();
-        }
-        /** @var array{0: float, 1: float} $between */
-        return new self(
-            $equals,
-            $lowerThen,
-            $greaterThen,
-            $between
-        );
     }
 
     public function equals(): ?float
@@ -112,18 +85,50 @@ class FloatFilter implements FilterInterface
             // if equals is set, then no other conditions may apply
             return;
         }
+
         if ($this->lowerThen) {
             $builder->andWhere(strtoupper($field) . ' < :' . $field . '_lt')
                     ->setParameter(':' . $field . '_lt', $this->lowerThen);
         }
+
         if ($this->greaterThen) {
             $builder->andWhere(strtoupper($field) . ' > :' . $field . '_gt')
                     ->setParameter(':' . $field . '_gt', $this->greaterThen);
         }
+
         if ($this->between) {
             $builder->andWhere(strtoupper($field) . ' BETWEEN :' . $field . '_lower AND :' . $field . '_upper')
                     ->setParameter(':' . $field . '_lower', $this->between[0])
                     ->setParameter(':' . $field . '_upper', $this->between[1]);
         }
+    }
+
+    /**
+     * @Factory(name="FloatFilterInput")
+     *
+     * @param null|float[] $between
+     */
+    public static function fromUserInput(
+        ?float $equals = null,
+        ?float $lowerThen = null,
+        ?float $greaterThen = null,
+        ?array $between = null
+    ): self {
+        if (
+            $between !== null && (
+                count($between) !== 2 ||
+            !is_float($between[0]) ||
+            !is_float($between[1])
+            )
+        ) {
+            throw new OutOfBoundsException();
+        }
+        /** @var array{0: float, 1: float} $between */
+        return new self(
+            $equals,
+            $lowerThen,
+            $greaterThen,
+            $between
+        );
     }
 }

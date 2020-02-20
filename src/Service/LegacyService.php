@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use Exception;
 use OxidEsales\EshopCommunity\Application\Model\User;
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
@@ -26,7 +27,7 @@ class LegacyService implements LegacyServiceInterface
     public function __construct(QueryBuilderFactoryInterface $queryBuilderFactory, ContextInterface $context)
     {
         $this->queryBuilderFactory = $queryBuilderFactory;
-        $this->context = $context;
+        $this->context             = $context;
     }
 
     /**
@@ -36,7 +37,7 @@ class LegacyService implements LegacyServiceInterface
     {
         try {
             oxNew(User::class)->login($username, $password, false);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new InvalidLogin('Username/password combination is invalid');
         }
     }
@@ -47,11 +48,12 @@ class LegacyService implements LegacyServiceInterface
     public function getUserGroup(string $username): string
     {
         $queryBuilder = $this->queryBuilderFactory->create();
-        $result = $queryBuilder->select('OXRIGHTS')
+        $result       = $queryBuilder->select('OXRIGHTS')
             ->from('oxuser')
             ->where($queryBuilder->expr()->eq('OXUSERNAME', ':username'))
             ->setParameter('username', $username)
             ->execute();
+
         foreach ($result->fetchAll() as $row) {
             return $this->mapUserGroup($row['OXRIGHTS']);
         }
@@ -59,9 +61,6 @@ class LegacyService implements LegacyServiceInterface
         throw new InvalidLogin('User does not exist.');
     }
 
-    /**
-     * @return mixed
-     */
     public function getConfigParam(string $param)
     {
         return Registry::getConfig()->getConfigParam($param);
@@ -80,10 +79,20 @@ class LegacyService implements LegacyServiceInterface
     public function getLanguageId(): int
     {
         $requestParameter = $_GET['lang'];
+
         if ($requestParameter === null) {
             return (int) Registry::getLang()->getBaseLanguage();
         }
+
         return (int) $requestParameter;
+    }
+
+    public function createUniqueIdentifier(): string
+    {
+        /** @var \OxidEsales\EshopCommunity\Core\UtilsObject */
+        $utils = Registry::getUtilsObject();
+
+        return $utils->generateUId();
     }
 
     /**
@@ -94,19 +103,15 @@ class LegacyService implements LegacyServiceInterface
         if ($dbGroup === 'user') {
             return LegacyServiceInterface::GROUP_CUSTOMERS;
         }
+
         if ($dbGroup == 'malladmin') {
             return LegacyServiceInterface::GROUP_ADMIN;
         }
-        if (intval($dbGroup) == $this->context->getCurrentShopId()) {
+
+        if ((int) $dbGroup == $this->context->getCurrentShopId()) {
             return LegacyServiceInterface::GROUP_ADMIN;
         }
-        throw new InvalidLogin('Invalid usergroup');
-    }
 
-    public function createUniqueIdentifier(): string
-    {
-        /** @var \OxidEsales\EshopCommunity\Core\UtilsObject */
-        $utils = Registry::getUtilsObject();
-        return $utils->generateUId();
+        throw new InvalidLogin('Invalid usergroup');
     }
 }

@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataType;
 
+use Doctrine\DBAL\Query\QueryBuilder;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 use TheCodingMachine\GraphQLite\Types\ID;
-use Doctrine\DBAL\Query\QueryBuilder;
 
 use function strtoupper;
 
@@ -26,17 +26,6 @@ class IDFilter implements FilterInterface
         $this->equals = $equals;
     }
 
-    /**
-     * @Factory(name="IDFilterInput")
-     */
-    public static function fromUserInput(
-        ID $equals
-    ): self {
-        return new self(
-            $equals
-        );
-    }
-
     public function equals(): ID
     {
         return $this->equals;
@@ -46,6 +35,16 @@ class IDFilter implements FilterInterface
     {
         $builder->andWhere(strtoupper($field) . ' = :' . $field)
                 ->setParameter(':' . $field, $this->equals);
-        return;
+    }
+
+    /**
+     * @Factory(name="IDFilterInput")
+     */
+    public static function fromUserInput(
+        ID $equals
+    ): self {
+        return new self(
+            $equals
+        );
     }
 }

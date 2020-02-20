@@ -16,14 +16,14 @@ class NamespaceMapper implements NamespaceMapperInterface
     public function getControllerNamespaceMapping(): array
     {
         return [
-            '\\OxidEsales\\GraphQL\\Base\\Controller' => __DIR__ . '/../Controller/'
+            '\\OxidEsales\\GraphQL\\Base\\Controller' => __DIR__ . '/../Controller/',
         ];
     }
 
     public function getTypeNamespaceMapping(): array
     {
         return [
-            '\\OxidEsales\\GraphQL\\Base\\DataType' => __DIR__ . '/../DataType/'
+            '\\OxidEsales\\GraphQL\\Base\\DataType' => __DIR__ . '/../DataType/',
         ];
     }
 }

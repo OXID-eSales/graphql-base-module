@@ -17,24 +17,25 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 
 use function time;
 
 class AuthenticationService implements AuthenticationServiceInterface
 {
     public const CLAIM_SHOPID   = 'shopid';
+
     public const CLAIM_USERNAME = 'username';
+
     public const CLAIM_GROUP    = 'group';
 
     /** @var KeyRegistryInterface */
-    private $keyRegistry = null;
+    private $keyRegistry;
 
     /** @var LegacyServiceInterface */
-    private $legacyService = null;
+    private $legacyService;
 
     /** @var ?Token */
-    private $token = null;
+    private $token;
 
     public function __construct(
         KeyRegistryInterface $keyRegistry,
@@ -57,9 +58,11 @@ class AuthenticationService implements AuthenticationServiceInterface
         if ($this->token === null) {
             return false;
         }
+
         if ($this->isValidToken($this->token)) {
             return true;
         }
+
         throw new InvalidToken('The token is invalid');
     }
 
@@ -70,7 +73,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     {
         $this->legacyService->checkCredentials($username, $password);
         $usergroup = $this->legacyService->getUserGroup($username);
-        $builder = $this->getTokenBuilder()->withClaim(self::CLAIM_USERNAME, $username)
+        $builder   = $this->getTokenBuilder()->withClaim(self::CLAIM_USERNAME, $username)
             ->withClaim(self::CLAIM_GROUP, $usergroup);
 
         return $builder->getToken(
@@ -85,14 +88,14 @@ class AuthenticationService implements AuthenticationServiceInterface
     protected function getTokenBuilder(): Builder
     {
         $time = time();
-        $token = (new Builder())
+
+        return (new Builder())
             ->issuedBy($this->legacyService->getShopUrl())
             ->permittedFor($this->legacyService->getShopUrl())
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($time + 3600 * 8)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId());
-        return $token;
     }
 
     /**
@@ -111,12 +114,15 @@ class AuthenticationService implements AuthenticationServiceInterface
         $validation = new ValidationData();
         $validation->setIssuer($this->legacyService->getShopUrl());
         $validation->setAudience($this->legacyService->getShopUrl());
+
         if (!$token->validate($validation)) {
             return false;
         }
+
         if ($token->getClaim(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
             return false;
         }
+
         return true;
     }
 

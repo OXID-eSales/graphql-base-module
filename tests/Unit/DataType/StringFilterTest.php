@@ -9,19 +9,19 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use Exception;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
 use PHPUnit\Framework\TestCase;
 
 class StringFilterTest extends TestCase
 {
-    public function testThrowsExceptionOnNoInput()
+    public function testThrowsExceptionOnNoInput(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         StringFilter::fromUserInput();
     }
 
-    public function testBasicStringFilter()
+    public function testBasicStringFilter(): void
     {
         $filter = StringFilter::fromUserInput(
             'equals',

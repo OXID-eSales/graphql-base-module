@@ -18,25 +18,23 @@ use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
 /**
  * Class SchemaFactory
- *
- * @package OxidProfessionalServices\GraphQL\Core\Schema
  */
 class SchemaFactory implements SchemaFactoryInterface
 {
     /** @var Schema */
-    private $schema = null;
+    private $schema;
 
     /** @var AuthenticationServiceInterface */
-    private $authenticationService = null;
+    private $authenticationService;
 
     /** @var AuthorizationServiceInterface */
-    private $authorizationService = null;
+    private $authorizationService;
 
     /** @var NamespaceMapperInterface[] */
-    private $namespaceMappers = null;
+    private $namespaceMappers;
 
     /** @var ContainerInterface */
-    private $container = null;
+    private $container;
 
     /**
      * @param NamespaceMapperInterface[] $namespaceMappers
@@ -51,8 +49,8 @@ class SchemaFactory implements SchemaFactoryInterface
             $this->namespaceMappers[] = $namespaceMapper;
         }
         $this->authenticationService = $authenticationService;
-        $this->authorizationService = $authorizationService;
-        $this->container = $container;
+        $this->authorizationService  = $authorizationService;
+        $this->container             = $container;
     }
 
     public function getSchema(): Schema
@@ -76,6 +74,7 @@ class SchemaFactory implements SchemaFactoryInterface
                 );
                 $factory->addControllerNameSpace($namespace);
             }
+
             foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace => $path) {
                 $classNameMapper->registerPsr4Namespace(
                     $namespace,

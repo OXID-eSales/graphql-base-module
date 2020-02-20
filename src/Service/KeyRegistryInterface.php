@@ -5,11 +5,15 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Base\Service;
+declare(strict_types=1);
 
 /**
- * @package OxidEsales\GraphQL\Base\Service
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
  */
+
+namespace OxidEsales\GraphQL\Base\Service;
+
 interface KeyRegistryInterface
 {
     public function generateSignatureKey(): string;

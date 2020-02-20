@@ -9,15 +9,16 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use DateTime;
+use Exception;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
 use PHPUnit\Framework\TestCase;
 
 class DateFilterTest extends TestCase
 {
-    public function testThrowsExceptionOnNoInput()
+    public function testThrowsExceptionOnNoInput(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         DateFilter::fromUserInput();
     }
 
@@ -25,14 +26,14 @@ class DateFilterTest extends TestCase
     {
         return [
             [
-                []
+                [],
             ], [
-                [null, null, null]
+                [null, null, null],
             ], [
-                ['foobar', null]
+                ['foobar', null],
             ], [
-                ['foobar', 'baz']
-            ]
+                ['foobar', 'baz'],
+            ],
         ];
     }
 
@@ -41,30 +42,30 @@ class DateFilterTest extends TestCase
      */
     public function testThrowsExceptionOnInvalidBetween(
         array $between
-    ) {
-        $this->expectException(\Exception::class);
+    ): void {
+        $this->expectException(Exception::class);
         DateFilter::fromUserInput(
             null,
             $between
         );
     }
 
-    public function testThrowsExceptionOnInvalidEquals()
+    public function testThrowsExceptionOnInvalidEquals(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         DateFilter::fromUserInput(
             'foobar'
         );
     }
 
-    public function testBasicDateFilter()
+    public function testBasicDateFilter(): void
     {
         $filter = DateFilter::fromUserInput(
             '2020-01-30 12:37:21'
         );
         $this->assertSame(
             '2020-01-30T12:37:21+00:00',
-            $filter->equals()->format(\DateTime::ATOM)
+            $filter->equals()->format(DateTime::ATOM)
         );
 
         $filter = DateFilter::fromUserInput(
@@ -72,24 +73,24 @@ class DateFilterTest extends TestCase
         );
         $this->assertSame(
             '2020-01-30T12:37:21+01:00',
-            $filter->equals()->format(\DateTime::ATOM)
+            $filter->equals()->format(DateTime::ATOM)
         );
 
         $filter = DateFilter::fromUserInput(
             null,
             [
                 '2020-01-30 12:37:21',
-                '2020-01-30 12:37:22'
+                '2020-01-30 12:37:22',
             ]
         );
         $this->assertSame(
             [
                 '2020-01-30T12:37:21+00:00',
-                '2020-01-30T12:37:22+00:00'
+                '2020-01-30T12:37:22+00:00',
             ],
             [
-                $filter->between()[0]->format(\DateTime::ATOM),
-                $filter->between()[1]->format(\DateTime::ATOM)
+                $filter->between()[0]->format(DateTime::ATOM),
+                $filter->between()[1]->format(DateTime::ATOM),
             ]
         );
     }

@@ -20,19 +20,17 @@ use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 class ModuleSetup
 {
     /** @var KeyRegistryInterface */
-    private $keyRegistry = null;
+    private $keyRegistry;
 
     /** @var ModuleSettingBridgeInterface */
-    private $moduleSettings = null;
+    private $moduleSettings;
 
     /**
      * ModuleSetup constructor.
-     *
-     * @param KeyRegistryInterface $keyRegistry
      */
     public function __construct(KeyRegistryInterface $keyRegistry, ModuleSettingBridgeInterface $moduleSettings)
     {
-        $this->keyRegistry = $keyRegistry;
+        $this->keyRegistry    = $keyRegistry;
         $this->moduleSettings = $moduleSettings;
     }
 
@@ -51,7 +49,7 @@ class ModuleSetup
     public static function onActivate(): void
     {
         /** @var ModuleSetup $moduleSetup */
-        $moduleSetup = ContainerFactory::getInstance()->getContainer()->get(ModuleSetup::class);
+        $moduleSetup = ContainerFactory::getInstance()->getContainer()->get(self::class);
         $moduleSetup->runSetup();
     }
 

@@ -9,9 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
+use Exception;
 use GraphQL\Error\ClientAware;
 
-class NotFound extends \Exception implements ClientAware, HttpErrorInterface
+class NotFound extends Exception implements ClientAware, HttpErrorInterface
 {
     public function getHttpStatus(): int
     {

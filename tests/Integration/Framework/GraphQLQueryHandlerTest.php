@@ -25,14 +25,7 @@ class GraphQLQueryHandlerTest extends TestCase
         static::$container = null;
     }
 
-    protected static function beforeContainerCompile()
-    {
-        $loader = new YamlFileLoader(static::$container, new FileLocator());
-        $serviceFile = __DIR__ . DIRECTORY_SEPARATOR . 'services.yml';
-        $loader->load($serviceFile);
-    }
-
-    public function testClientAwareException()
+    public function testClientAwareException(): void
     {
         $result = $this->query('query { clientAwareExceptionQuery(foo: "bar") }');
         $this->assertEquals(
@@ -45,7 +38,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
-    public function testNotFoundExceptionQuery()
+    public function testNotFoundExceptionQuery(): void
     {
         $result = $this->query('query { notFoundExceptionQuery(foo: "bar") }');
         $this->assertEquals(
@@ -58,7 +51,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
-    public function testExceptionInQuery()
+    public function testExceptionInQuery(): void
     {
         $result = $this->query('query { exceptionQuery(foo: "bar") }');
         $this->assertEquals(
@@ -71,7 +64,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
-    public function testQueryWithOperationName()
+    public function testQueryWithOperationName(): void
     {
         $result = $this->query(
             'query fooBar { testQuery(foo: "bar") }',
@@ -84,15 +77,15 @@ class GraphQLQueryHandlerTest extends TestCase
                 'status' => 200,
                 'body'   => [
                     'data' => [
-                        'testQuery' => 'bar'
-                    ]
-                ]
+                        'testQuery' => 'bar',
+                    ],
+                ],
             ],
             $result
         );
     }
 
-    public function testQueryWithWrongOperationName()
+    public function testQueryWithWrongOperationName(): void
     {
         $result = $this->query(
             'query fooBar { testQuery(foo: "bar") }',
@@ -106,7 +99,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
-    public function testNonExistantQuery()
+    public function testNonExistantQuery(): void
     {
         $result = $this->query('query { nonExistant }');
         $this->assertEquals(
@@ -115,7 +108,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
-    public function testInvalidQuery()
+    public function testInvalidQuery(): void
     {
         $result = $this->query('FOOBAR');
         $this->assertEquals(
@@ -124,7 +117,7 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
-    public function testLoggedQuery()
+    public function testLoggedQuery(): void
     {
         $result = $this->query('query { token (username: "admin", password: "admin") }');
         $this->setAuthToken($result['body']['data']['token']);
@@ -138,16 +131,16 @@ class GraphQLQueryHandlerTest extends TestCase
                 'status' => 200,
                 'body'   => [
                     'data' => [
-                        'testLoggedQuery' => 'bar'
-                    ]
-                ]
+                        'testLoggedQuery' => 'bar',
+                    ],
+                ],
             ],
             $result
         );
         static::$container = null;
     }
 
-    public function testLoggedRightQuery()
+    public function testLoggedRightQuery(): void
     {
         $result = $this->query('query { token (username: "admin", password: "admin") }');
         $this->setAuthToken($result['body']['data']['token']);
@@ -161,16 +154,16 @@ class GraphQLQueryHandlerTest extends TestCase
                 'status' => 200,
                 'body'   => [
                     'data' => [
-                        'testLoggedRightQuery' => 'bar'
-                    ]
-                ]
+                        'testLoggedRightQuery' => 'bar',
+                    ],
+                ],
             ],
             $result
         );
         static::$container = null;
     }
 
-    public function testBasicInputFilterQuery()
+    public function testBasicInputFilterQuery(): void
     {
         $result = $this->query('
             query {
@@ -194,5 +187,12 @@ class GraphQLQueryHandlerTest extends TestCase
             200,
             $result['status']
         );
+    }
+
+    protected static function beforeContainerCompile(): void
+    {
+        $loader      = new YamlFileLoader(static::$container, new FileLocator());
+        $serviceFile = __DIR__ . DIRECTORY_SEPARATOR . 'services.yml';
+        $loader->load($serviceFile);
     }
 }

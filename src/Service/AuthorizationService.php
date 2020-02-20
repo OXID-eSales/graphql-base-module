@@ -11,9 +11,8 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent;
-use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 use function array_search;
 use function is_bool;
@@ -24,10 +23,10 @@ class AuthorizationService implements AuthorizationServiceInterface
     private $permissions = [];
 
     /** @var EventDispatcherInterface */
-    private $eventDispatcher = null;
+    private $eventDispatcher;
 
     /** @var ?Token */
-    private $token = null;
+    private $token;
 
     /**
      * @param PermissionProviderInterface[] $permissionProviders
@@ -67,17 +66,21 @@ class AuthorizationService implements AuthorizationServiceInterface
         );
 
         $authByEvent = $event->getAuthorized();
+
         if (is_bool($authByEvent)) {
             return $authByEvent;
         }
 
         $group = $this->token->getClaim(AuthenticationService::CLAIM_GROUP);
+
         if (!isset($this->permissions[$group])) {
             return false;
         }
+
         if (array_search($right, $this->permissions[$group], true) === false) {
             return false;
         }
+
         return true;
     }
 }

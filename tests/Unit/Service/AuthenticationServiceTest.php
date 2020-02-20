@@ -10,15 +10,13 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Base\Service\AuthenticationService;
 use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
-use PHPUnit\Framework\TestCase;
 use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 class AuthenticationServiceTest extends TestCase
 {
@@ -26,6 +24,7 @@ class AuthenticationServiceTest extends TestCase
 
     // phpcs:disable
     protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+
     // phpcs:enable
 
     /** @var KeyRegistryInterface|MockObject */
@@ -37,29 +36,29 @@ class AuthenticationServiceTest extends TestCase
     /** @var AuthenticationService */
     private $authenticationService;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $this->keyRegistry->method('getSignatureKey')
             ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
-        $this->legacyService = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
+        $this->legacyService         = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
         $this->authenticationService = new AuthenticationService($this->keyRegistry, $this->legacyService);
     }
 
-    public function testCreateTokenWithInvalidCredentials()
+    public function testCreateTokenWithInvalidCredentials(): void
     {
         $this->expectException(InvalidLogin::class);
         $this->legacyService->method('checkCredentials')->willThrowException(new InvalidLogin());
         $this->authenticationService->createToken('foo', 'bar');
     }
 
-    public function testIsLoggedWithoutToken()
+    public function testIsLoggedWithoutToken(): void
     {
         $this->authenticationService->setToken(null);
         $this->assertFalse($this->authenticationService->isLogged());
     }
 
-    public function testIsLoggedWithFormallyCorrectButInvalidToken()
+    public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
     {
         $this->expectException(InvalidToken::class);
         $this->authenticationService->setToken(
@@ -68,7 +67,7 @@ class AuthenticationServiceTest extends TestCase
         $this->authenticationService->isLogged();
     }
 
-    public function testCreateTokenWithValidCredentials()
+    public function testCreateTokenWithValidCredentials(): void
     {
         $this->legacyService->method('checkCredentials');
         $this->legacyService->method('getUserGroup')->willReturn(LegacyServiceInterface::GROUP_ADMIN);
@@ -85,7 +84,7 @@ class AuthenticationServiceTest extends TestCase
     /**
      * @depends testCreateTokenWithValidCredentials
      */
-    public function testIsLoggedWithValidToken()
+    public function testIsLoggedWithValidToken(): void
     {
         $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
         $this->legacyService->method('getShopId')->willReturn(1);
@@ -98,7 +97,7 @@ class AuthenticationServiceTest extends TestCase
     /**
      * @depends testCreateTokenWithValidCredentials
      */
-    public function testIsLoggedWithValidForAnotherShopIdToken()
+    public function testIsLoggedWithValidForAnotherShopIdToken(): void
     {
         $this->expectException(InvalidToken::class);
         $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
@@ -114,7 +113,7 @@ class AuthenticationServiceTest extends TestCase
      *
      * can not use expectException due to needed cleanup in registry config
      */
-    public function testIsLoggedWithValidForAnotherShopUrlToken()
+    public function testIsLoggedWithValidForAnotherShopUrlToken(): void
     {
         $this->expectException(InvalidToken::class);
 

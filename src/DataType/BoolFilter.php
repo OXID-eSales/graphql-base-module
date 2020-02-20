@@ -25,17 +25,6 @@ class BoolFilter implements FilterInterface
         $this->equals = $equals;
     }
 
-    /**
-     * @Factory(name="BoolFilterInput")
-     */
-    public static function fromUserInput(
-        bool $equals
-    ): self {
-        return new self(
-            $equals
-        );
-    }
-
     public function equals(): bool
     {
         return $this->equals;
@@ -46,6 +35,16 @@ class BoolFilter implements FilterInterface
         $builder->andWhere(strtoupper($field) . ' = :' . $field)
                 ->setParameter(':' . $field, $this->equals ? '1' : '0');
         // if equals is set, then no other conditions may apply
-        return;
+    }
+
+    /**
+     * @Factory(name="BoolFilterInput")
+     */
+    public static function fromUserInput(
+        bool $equals
+    ): self {
+        return new self(
+            $equals
+        );
     }
 }

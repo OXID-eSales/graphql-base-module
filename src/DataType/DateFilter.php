@@ -14,6 +14,7 @@ use DateTimeInterface;
 use DateTimeZone;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
+use OutOfBoundsException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function strtoupper;
@@ -42,46 +43,10 @@ class DateFilter implements FilterInterface
             $equals === null &&
             $between === null
         ) {
-            throw new Error("At least one field for type DateFilterInput must be provided");
+            throw new Error('At least one field for type DateFilterInput must be provided');
         }
         $this->equals      = $equals;
         $this->between     = $between;
-    }
-
-    /**
-     * @Factory(name="DateFilterInput")
-     * @param string[]|null $between
-     */
-    public static function fromUserInput(
-        ?string $equals = null,
-        ?array $between = null
-    ): self {
-        if (
-            $between !== null && (
-                count($between) !== 2 ||
-                !is_string($between[0]) ||
-                !is_string($between[1])
-            )
-        ) {
-            throw new \OutOfBoundsException();
-        }
-        $zone = new DateTimeZone('UTC');
-        if ($equals !== null) {
-            $equals = new DateTimeImmutable($equals, $zone);
-        }
-        if ($between) {
-            $between = array_map(
-                function ($date) use ($zone) {
-                    return new DateTimeImmutable($date, $zone);
-                },
-                $between
-            );
-        }
-        /** @var array{0: DateTimeInterface, 1: DateTimeInterface} $between */
-        return new self(
-            $equals,
-            $between
-        );
     }
 
     public function equals(): ?DateTimeInterface
@@ -105,10 +70,50 @@ class DateFilter implements FilterInterface
             // if equals is set, then no other conditions may apply
             return;
         }
+
         if ($this->between) {
             $builder->andWhere(strtoupper($field) . ' BETWEEN :' . $field . '_lower AND :' . $field . '_upper')
                     ->setParameter(':' . $field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
                     ->setParameter(':' . $field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));
         }
+    }
+
+    /**
+     * @Factory(name="DateFilterInput")
+     *
+     * @param null|string[] $between
+     */
+    public static function fromUserInput(
+        ?string $equals = null,
+        ?array $between = null
+    ): self {
+        if (
+            $between !== null && (
+                count($between) !== 2 ||
+                !is_string($between[0]) ||
+                !is_string($between[1])
+            )
+        ) {
+            throw new OutOfBoundsException();
+        }
+        $zone = new DateTimeZone('UTC');
+
+        if ($equals !== null) {
+            $equals = new DateTimeImmutable($equals, $zone);
+        }
+
+        if ($between) {
+            $between = array_map(
+                function ($date) use ($zone) {
+                    return new DateTimeImmutable($date, $zone);
+                },
+                $between
+            );
+        }
+        /** @var array{0: DateTimeInterface, 1: DateTimeInterface} $between */
+        return new self(
+            $equals,
+            $between
+        );
     }
 }

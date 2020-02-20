@@ -9,15 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use Exception;
 use OxidEsales\GraphQL\Base\DataType\FloatFilter;
 use PHPUnit\Framework\TestCase;
 
 class FloatFilterTest extends TestCase
 {
-    public function testThrowsExceptionOnNoInput()
+    public function testThrowsExceptionOnNoInput(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         FloatFilter::fromUserInput();
     }
 
@@ -25,15 +25,15 @@ class FloatFilterTest extends TestCase
     {
         return [
             [
-                []
+                [],
             ], [
-                [1.0 ]
+                [1.0],
             ], [
-                [null, 1.0]
+                [null, 1.0],
             ], [
-                [1.0, null]
+                [1.0, null],
             ], [
-                [1.0, 2.0, 3.0]
+                [1.0, 2.0, 3.0],
             ],
         ];
     }
@@ -43,8 +43,8 @@ class FloatFilterTest extends TestCase
      */
     public function testThrowsExceptionOnInvalidBetween(
         array $between
-    ) {
-        $this->expectException(\Exception::class);
+    ): void {
+        $this->expectException(Exception::class);
         FloatFilter::fromUserInput(
             null,
             null,

@@ -17,8 +17,8 @@ class PermissionProvider implements PermissionProviderInterface
     {
         return [
             'admin' => [
-                'FOOBAR'
-            ]
+                'FOOBAR',
+            ],
         ];
     }
 }

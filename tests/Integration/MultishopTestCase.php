@@ -32,24 +32,25 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         parent::tearDown();
     }
 
-    protected function ensureShop(int $shopId = 2)
+    protected function ensureShop(int $shopId = 2): void
     {
         $database = DatabaseProvider::getDb();
 
         $shop = oxNew(\OxidEsales\Eshop\Application\Model\Shop::class);
+
         if ($shop->load($shopId)) {
             return;
         }
 
         $shop->assign([
-            'OXID' => $shopId,
+            'OXID'     => $shopId,
             'OXACTIVE' => 1,
-            'OXNAME' => 'Second shop'
+            'OXNAME'   => 'Second shop',
         ]);
         $shop->save();
 
         $copyVars = [
-            "aLanguages"
+            'aLanguages',
         ];
 
         // copy language settings from shop 1
@@ -57,10 +58,10 @@ abstract class MultishopTestCase extends EnterpriseTestCase
             INSERT INTO oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
             SELECT MD5(RAND()), {$shopId} AS oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule FROM oxconfig
             WHERE oxshopid = '1'
-              AND oxvarname IN ( '" . join("', '", $copyVars) . "')
+              AND oxvarname IN ( '" . implode("', '", $copyVars) . "')
         ");
 
-        $container = ContainerFactory::getInstance()->getContainer();
+        $container         = ContainerFactory::getInstance()->getContainer();
         $shopConfiguration = $container->get(ShopConfigurationDaoInterface::class)->get(1);
         $container->get(ShopConfigurationDaoInterface::class)->save(
             $shopConfiguration,
@@ -73,23 +74,25 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         $moduleInstaller = new ModuleInstaller(Registry::getConfig());
         $moduleInstaller->switchToShop($shopId);
 
-        $testConfig = $this->getTestConfig();
+        $testConfig      = $this->getTestConfig();
         $aInstallModules = $testConfig->getModulesToActivate();
+
         foreach ($aInstallModules as $modulePath) {
             $moduleInstaller->installModule($modulePath);
         }
     }
 
-    protected function cleanupCachedRegistry()
+    protected function cleanupCachedRegistry(): void
     {
         Registry::getConfig()->setConfig(null);
         $utilsObject = new \OxidEsales\Eshop\Core\UtilsObject();
         $utilsObject->resetInstanceCache();
 
         $keepThese = [
-            \OxidEsales\Eshop\Core\ConfigFile::class
+            \OxidEsales\Eshop\Core\ConfigFile::class,
         ];
         $registryKeys = Registry::getKeys();
+
         foreach ($registryKeys as $key) {
             if (in_array($key, $keepThese)) {
                 continue;

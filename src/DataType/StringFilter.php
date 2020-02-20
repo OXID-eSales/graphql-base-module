@@ -36,26 +36,11 @@ class StringFilter implements FilterInterface
             $contains === null &&
             $beginsWith === null
         ) {
-            throw new Error("At least one field for type StringFilter must be provided");
+            throw new Error('At least one field for type StringFilter must be provided');
         }
         $this->equals     = $equals;
         $this->contains   = $contains;
         $this->beginsWith = $beginsWith;
-    }
-
-    /**
-     * @Factory(name="StringFilterInput")
-     */
-    public static function fromUserInput(
-        ?string $equals = null,
-        ?string $contains = null,
-        ?string $beginsWith = null
-    ): self {
-        return new self(
-            $equals,
-            $contains,
-            $beginsWith
-        );
     }
 
     public function equals(): ?string
@@ -81,13 +66,30 @@ class StringFilter implements FilterInterface
             // if equals is set, then no other conditions may apply
             return;
         }
+
         if ($this->contains) {
             $builder->andWhere(strtoupper($field) . ' LIKE :' . $field . '_contain')
                     ->setParameter(':' . $field . '_contain', '%' . $this->contains . '%');
         }
+
         if ($this->beginsWith) {
             $builder->andWhere(strtoupper($field) . ' LIKE :' . $field . '_begins')
                     ->setParameter(':' . $field . '_begins', $this->beginsWith . '%');
         }
+    }
+
+    /**
+     * @Factory(name="StringFilterInput")
+     */
+    public static function fromUserInput(
+        ?string $equals = null,
+        ?string $contains = null,
+        ?string $beginsWith = null
+    ): self {
+        return new self(
+            $equals,
+            $contains,
+            $beginsWith
+        );
     }
 }

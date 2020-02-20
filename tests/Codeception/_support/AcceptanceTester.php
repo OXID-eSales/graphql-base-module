@@ -5,10 +5,18 @@
  * See LICENSE file for license details.
  */
 
+declare(strict_types=1);
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
 namespace OxidEsales\GraphQL\Base\Tests\Codeception;
 
 /**
  * Inherited Methods
+ *
  * @method void wantToTest($text)
  * @method void wantTo($text)
  * @method void execute($callable)
@@ -21,12 +29,12 @@ namespace OxidEsales\GraphQL\Base\Tests\Codeception;
  * @method \Codeception\Lib\Friend haveFriend($name, $actorClass = NULL)
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
 
-    /**
+    /*
      * Define custom actions here
      */
 }

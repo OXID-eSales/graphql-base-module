@@ -9,11 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller;
 
+use Exception;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilter;
-use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
+use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Right;
 
 class TestController
@@ -50,7 +51,7 @@ class TestController
      */
     public function exceptionQuery(string $foo): string
     {
-        throw new \Exception();
+        throw new Exception();
     }
 
     /**

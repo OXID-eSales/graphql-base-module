@@ -17,13 +17,13 @@ class BeforeAuthorizationEvent extends Event
     public const NAME = self::class;
 
     /** @var Token */
-    private $token = null;
+    private $token;
 
     /** @var string */
-    private $right = null;
+    private $right;
 
     /** @var ?bool */
-    private $authorized = null;
+    private $authorized;
 
     public function __construct(
         Token $token,
@@ -43,7 +43,7 @@ class BeforeAuthorizationEvent extends Event
         return $this->right;
     }
 
-    public function setAuthorized(bool $flag = null): void
+    public function setAuthorized(?bool $flag = null): void
     {
         $this->authorized = $flag;
     }

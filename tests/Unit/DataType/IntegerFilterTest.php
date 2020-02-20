@@ -9,15 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use Exception;
 use OxidEsales\GraphQL\Base\DataType\IntegerFilter;
 use PHPUnit\Framework\TestCase;
 
 class IntegerFilterTest extends TestCase
 {
-    public function testThrowsExceptionOnNoInput()
+    public function testThrowsExceptionOnNoInput(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         IntegerFilter::fromUserInput();
     }
 
@@ -25,15 +25,15 @@ class IntegerFilterTest extends TestCase
     {
         return [
             [
-                []
+                [],
             ], [
-                [1]
+                [1],
             ], [
-                [null, 1]
+                [null, 1],
             ], [
-                [1, null]
+                [1, null],
             ], [
-                [1, 2, 3]
+                [1, 2, 3],
             ],
         ];
     }
@@ -43,8 +43,8 @@ class IntegerFilterTest extends TestCase
      */
     public function testThrowsExceptionOnInvalidBetween(
         array $between
-    ) {
-        $this->expectException(\Exception::class);
+    ): void {
+        $this->expectException(Exception::class);
         IntegerFilter::fromUserInput(
             null,
             null,

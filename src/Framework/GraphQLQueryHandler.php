@@ -13,23 +13,23 @@ use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Executor\ExecutionResult;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
 {
-
-    /** @var LoggerInterface  */
+    /** @var LoggerInterface */
     private $logger;
 
-    /** @var SchemaFactoryInterface  */
+    /** @var SchemaFactoryInterface */
     private $schemaFactory;
 
-    /** @var ErrorCodeProviderInterface  */
+    /** @var ErrorCodeProviderInterface */
     private $errorCodeProvider;
 
-    /** @var  RequestReaderInterface */
+    /** @var RequestReaderInterface */
     private $requestReader;
 
-    /** @var  ResponseWriterInterface */
+    /** @var ResponseWriterInterface */
     private $responseWriter;
 
     private $loggingErrorFormatter;
@@ -41,14 +41,15 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
         RequestReaderInterface $requestReader,
         ResponseWriterInterface $responseWriter
     ) {
-        $this->logger = $logger;
-        $this->schemaFactory = $schemaFactory;
+        $this->logger            = $logger;
+        $this->schemaFactory     = $schemaFactory;
         $this->errorCodeProvider = $errorCodeProvider;
-        $this->requestReader = $requestReader;
-        $this->responseWriter = $responseWriter;
+        $this->requestReader     = $requestReader;
+        $this->responseWriter    = $responseWriter;
 
         $this->loggingErrorFormatter = function (Error $error) {
-            $this->logger->error((string)$error);
+            $this->logger->error((string) $error);
+
             return FormattedError::createFromException($error);
         };
     }
@@ -69,17 +70,20 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
     /**
      * Execute the GraphQL query
      *
-     * @throws \Throwable
      * @param array{query: string, variables: string[], operationName: string} $queryData
+     *
+     * @throws Throwable
      */
     private function executeQuery(array $queryData): ExecutionResult
     {
-        $graphQL = new \GraphQL\GraphQL();
+        $graphQL   = new \GraphQL\GraphQL();
         $variables = null;
+
         if (isset($queryData['variables'])) {
             $variables = $queryData['variables'];
         }
         $operationName = null;
+
         if (isset($queryData['operationName'])) {
             $operationName = $queryData['operationName'];
         }

@@ -18,8 +18,6 @@ use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
  *
  * Implements the GraphQL widget for the OXID eShop to make all
  * of this callable via a SEO Url or via widget.php?cl=graphql
- *
- * @package OxidEsales\GraphQL\Base\Component\Widget
  */
 class GraphQL extends WidgetController
 {
@@ -32,9 +30,11 @@ class GraphQL extends WidgetController
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#Preflighted_requests
         if (
             strtoupper($_SERVER['REQUEST_METHOD']) === 'OPTIONS' &&
-            isset($_SERVER['HTTP_ORIGIN']) &&
-            isset($_SERVER['HTTP_ACCESS-CONTROL-REQUEST-METHOD']) &&
-            isset($_SERVER['HTTP_ACCESS-CONTROL-REQUEST-HEADERS'])
+            isset(
+                $_SERVER['HTTP_ORIGIN'],
+                $_SERVER['HTTP_ACCESS-CONTROL-REQUEST-METHOD'],
+                $_SERVER['HTTP_ACCESS-CONTROL-REQUEST-HEADERS']
+            )
         ) {
             $header = oxNew(\OxidEsales\Eshop\Core\Header::class);
             $header->setHeader('HTTP/1.1 204 No Content');
@@ -42,6 +42,7 @@ class GraphQL extends WidgetController
             $header->setHeader('Access-Control-Allow-Headers: Content-Type, Authorization');
             $header->setHeader('Access-Control-Allow-Origin: *');
             $header->sendHeader();
+
             exit;
         }
         ContainerFactory::getInstance()

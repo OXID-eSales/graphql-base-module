@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 class LoginTest extends TestCase
 {
-    public function testLoginWithMissingCredentials()
+    public function testLoginWithMissingCredentials(): void
     {
         $result = $this->query('query { token }');
 
@@ -23,7 +23,7 @@ class LoginTest extends TestCase
         );
     }
 
-    public function testLoginWithWrongCredentials()
+    public function testLoginWithWrongCredentials(): void
     {
         $result = $this->query('query { token (username: "foo", password: "bar") }');
 
@@ -33,7 +33,7 @@ class LoginTest extends TestCase
         );
     }
 
-    public function testLoginWithValidCredentials()
+    public function testLoginWithValidCredentials(): void
     {
         $result = $this->query('query { token (username: "admin", password: "admin") }');
 
@@ -43,13 +43,13 @@ class LoginTest extends TestCase
         );
     }
 
-    public function testLoginWithValidCredentialsInVariables()
+    public function testLoginWithValidCredentialsInVariables(): void
     {
         $result = $this->query(
             'query ($username: String!, $password: String!) { token (username: $username, password: $password) }',
             [
                 'username' => 'admin',
-                'password' => 'admin'
+                'password' => 'admin',
             ]
         );
 

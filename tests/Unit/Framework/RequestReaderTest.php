@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
+use Exception;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
@@ -18,9 +19,10 @@ class RequestReaderTest extends TestCase
 {
     // phpcs:disable
     protected static $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+
     // phpcs:enable
 
-    public function testGetAuthTokenWithoutToken()
+    public function testGetAuthTokenWithoutToken(): void
     {
         $requestReader = new RequestReader();
         $this->assertEquals(
@@ -29,13 +31,14 @@ class RequestReaderTest extends TestCase
         );
     }
 
-    public function testGetAuthTokenWithWrongFormattedHeader()
+    public function testGetAuthTokenWithWrongFormattedHeader(): void
     {
         $requestReader = new RequestReader();
-        $headers = [
+        $headers       = [
             'HTTP_AUTHORIZATION',
-            'REDIRECT_HTTP_AUTHORIZATION'
+            'REDIRECT_HTTP_AUTHORIZATION',
         ];
+
         foreach ($headers as $header) {
             $_SERVER[$header] = 'authtoken';
             $this->assertEquals(
@@ -46,19 +49,21 @@ class RequestReaderTest extends TestCase
         }
     }
 
-    public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT()
+    public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT(): void
     {
         $requestReader = new RequestReader();
-        $headers = [
+        $headers       = [
             'HTTP_AUTHORIZATION',
-            'REDIRECT_HTTP_AUTHORIZATION'
+            'REDIRECT_HTTP_AUTHORIZATION',
         ];
+
         foreach ($headers as $header) {
-            $e = null;
+            $e                = null;
             $_SERVER[$header] = 'Bearer invalidjwt';
+
             try {
                 $requestReader->getAuthToken();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
             }
             $this->assertInstanceOf(
                 InvalidToken::class,
@@ -68,13 +73,14 @@ class RequestReaderTest extends TestCase
         }
     }
 
-    public function testGetAuthTokenWithCorrectFormat()
+    public function testGetAuthTokenWithCorrectFormat(): void
     {
         $requestReader = new RequestReader();
-        $headers = [
+        $headers       = [
             'HTTP_AUTHORIZATION',
-            'REDIRECT_HTTP_AUTHORIZATION'
+            'REDIRECT_HTTP_AUTHORIZATION',
         ];
+
         foreach ($headers as $header) {
             $_SERVER[$header] = 'Bearer ' . self::$token;
             $this->assertInstanceOf(
@@ -85,28 +91,28 @@ class RequestReaderTest extends TestCase
         }
     }
 
-    public function testGetGraphQLRequestDataWithEmptyRequest()
+    public function testGetGraphQLRequestDataWithEmptyRequest(): void
     {
         $requestReader = new RequestReader();
         $this->assertEquals(
             [
-                'query' => null,
-                'variables' => null,
-                'operationName' => null
+                'query'         => null,
+                'variables'     => null,
+                'operationName' => null,
             ],
             $requestReader->getGraphQLRequestData()
         );
     }
 
-    public function testGetGraphQLRequestDataWithInputRequest()
+    public function testGetGraphQLRequestDataWithInputRequest(): void
     {
-        $requestReader = new RequestReader();
+        $requestReader           = new RequestReader();
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
             [
-                'query' => 'query {token}',
-                'variables' => null,
-                'operationName' => null
+                'query'         => 'query {token}',
+                'variables'     => null,
+                'operationName' => null,
             ],
             $requestReader->getGraphQLRequestData(__DIR__ . '/fixtures/simpleRequest.json')
         );

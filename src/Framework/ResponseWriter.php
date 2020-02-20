@@ -24,6 +24,7 @@ class ResponseWriter implements ResponseWriterInterface
     public function renderJsonResponse(array $result, int $httpStatus): void
     {
         header('Content-Type: application/json', true, $httpStatus);
+
         exit(json_encode($result));
     }
 }

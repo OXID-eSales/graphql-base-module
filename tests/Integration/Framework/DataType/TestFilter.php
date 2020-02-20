@@ -17,8 +17,11 @@ use OxidEsales\GraphQL\Base\DataType\StringFilter;
 class TestFilter
 {
     private $active;
+
     private $price;
+
     private $stock;
+
     private $title;
 
     public function __construct(
@@ -28,9 +31,9 @@ class TestFilter
         ?StringFilter $title = null
     ) {
         $this->active = $active;
-        $this->price = $price;
-        $this->stock = $stock;
-        $this->title = $title;
+        $this->price  = $price;
+        $this->stock  = $stock;
+        $this->title  = $title;
     }
 
     public function __toString(): string
@@ -47,6 +50,7 @@ class TestFilter
         $s .= 'title-eq: ' . $this->title->equals() . PHP_EOL;
         $s .= 'title-contains: ' . $this->title->contains() . PHP_EOL;
         $s .= 'title-beginsWith: ' . $this->title->beginsWith() . PHP_EOL;
+
         return $s;
     }
 }

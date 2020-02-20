@@ -17,48 +17,18 @@ use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
-use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
-#use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 
 abstract class TestCase extends PHPUnitTestCase
 {
     protected static $queryResult = null;
+
     protected static $logResult = null;
+
     protected static $container = null;
+
     protected static $query = null;
-
-    public static function responseCallback($body, $status)
-    {
-        static::$queryResult = [
-            'status' => $status,
-            'body' => $body
-        ];
-    }
-
-    public static function loggerCallback(string $message)
-    {
-        static::$logResult .= $message;
-    }
-
-    public static function getGraphQLRequestData(): array
-    {
-        if (static::$query === null) {
-            return [];
-        }
-        return static::$query;
-    }
-
-    protected function tearDown(): void
-    {
-        static::$queryResult = null;
-        static::$logResult = null;
-        static::$query = null;
-        static::$container = null;
-        unset($_SERVER['HTTP_AUTHORIZATION']);
-    }
 
     protected function setUp(): void
     {
@@ -67,15 +37,10 @@ abstract class TestCase extends PHPUnitTestCase
         if (static::$container !== null) {
             return;
         }
-        $containerFactory = new TestContainerFactory();
+        $containerFactory  = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = new class () implements ResponseWriterInterface {
-            public function renderJsonResponse(array $result, int $httpStatus): void
-            {
-                TestCase::responseCallback($result, $httpStatus);
-            }
-        };
+        $responseWriter = new ResponseWriterStub();
 
         static::$container->set(
             ResponseWriterInterface::class,
@@ -86,12 +51,7 @@ abstract class TestCase extends PHPUnitTestCase
             ResponseWriter::class
         );
 
-        $requestReader = new class () extends RequestReader {
-            public function getGraphQLRequestData(string $inputFile = 'php://input'): array
-            {
-                return TestCase::getGraphQLRequestData();
-            }
-        };
+        $requestReader = new RequestReaderStub();
 
         static::$container->set(
             RequestReaderInterface::class,
@@ -102,12 +62,7 @@ abstract class TestCase extends PHPUnitTestCase
             RequestReader::class
         );
 
-        $logger = new class () extends \Psr\Log\AbstractLogger {
-            public function log($level, $message, array $context = array())
-            {
-                TestCase::loggerCallback($message);
-            }
-        };
+        $logger = new LoggerStub();
 
         static::$container->set(
             LoggerInterface::class,
@@ -123,14 +78,19 @@ abstract class TestCase extends PHPUnitTestCase
         static::$container->compile();
     }
 
-    protected static function beforeContainerCompile()
+    protected function tearDown(): void
     {
+        static::$queryResult = null;
+        static::$logResult   = null;
+        static::$query       = null;
+        static::$container   = null;
+        unset($_SERVER['HTTP_AUTHORIZATION']);
     }
 
-    protected function setAuthToken(string $token)
+    protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $token = static::$container->get(RequestReaderInterface::class)
+        $token                         = static::$container->get(RequestReaderInterface::class)
                                    ->getAuthToken();
         static::$container->get(AuthenticationServiceInterface::class)
                           ->setToken($token);
@@ -138,15 +98,16 @@ abstract class TestCase extends PHPUnitTestCase
                           ->setToken($token);
     }
 
-    protected function query(string $query, array $variables = null, string $operationName = null): array
+    protected function query(string $query, ?array $variables = null, ?string $operationName = null): array
     {
         static::$query = [
-            'query' => $query,
-            'variables' => $variables,
-            'operationName' => $operationName
+            'query'         => $query,
+            'variables'     => $variables,
+            'operationName' => $operationName,
         ];
         static::$container->get(GraphQLQueryHandlerInterface::class)
                           ->executeGraphQLQuery();
+
         return static::$queryResult;
     }
 
@@ -164,5 +125,57 @@ abstract class TestCase extends PHPUnitTestCase
     protected function setGETRequestParameter(string $name, string $value): void
     {
         $_GET[$name] = $value;
+    }
+
+    public static function responseCallback($body, $status): void
+    {
+        static::$queryResult = [
+            'status' => $status,
+            'body'   => $body,
+        ];
+    }
+
+    public static function loggerCallback(string $message): void
+    {
+        static::$logResult .= $message;
+    }
+
+    public static function getGraphQLRequestData(): array
+    {
+        if (static::$query === null) {
+            return [];
+        }
+
+        return static::$query;
+    }
+
+    protected static function beforeContainerCompile(): void
+    {
+    }
+}
+
+// phpcs:disable
+
+class ResponseWriterStub implements ResponseWriterInterface
+{
+    public function renderJsonResponse(array $result, int $httpStatus): void
+    {
+        TestCase::responseCallback($result, $httpStatus);
+    }
+}
+
+class RequestReaderStub extends RequestReader
+{
+    public function getGraphQLRequestData(string $inputFile = 'php://input'): array
+    {
+        return TestCase::getGraphQLRequestData();
+    }
+}
+
+class LoggerStub extends \Psr\Log\AbstractLogger
+{
+    public function log($level, $message, array $context = []): void
+    {
+        TestCase::loggerCallback($message);
     }
 }

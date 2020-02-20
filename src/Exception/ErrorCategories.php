@@ -12,7 +12,10 @@ namespace OxidEsales\GraphQL\Base\Exception;
 class ErrorCategories
 {
     public const PERMISSIONERRORS   = 'permissionerror';
+
     public const TOKENERRORS        = 'tokenerror';
+
     public const CONFIGURATIONERROR = 'configurationerror';
+
     public const REQUESTERROR       = 'requesterror';
 }
