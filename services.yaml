@@ -33,6 +33,9 @@ services:
     calls:
       - [setToken, ['@?Lcobucci\JWT\Token']]
 
+  OxidEsales\GraphQL\Base\Service\Legacy:
+    class: OxidEsales\GraphQL\Base\Service\Legacy
+
   OxidEsales\GraphQL\Base\Service\LegacyServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\LegacyService
 

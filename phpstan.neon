@@ -1,6 +1,8 @@
 parameters:
     level: max
     inferPrivatePropertyTypeFromConstructor: true
+    autoload_files:
+        - vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php
+        - vendor/oxid-esales/oxideshop-ce/source/overridablefunctions.php
     excludes_analyse:
-        - *Service/LegacyService.php
         - *Component/Widget/GraphQL.php

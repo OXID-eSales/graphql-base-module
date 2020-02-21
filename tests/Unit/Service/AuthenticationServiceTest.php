@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Service\AuthenticationService;
 use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
-use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -30,7 +30,7 @@ class AuthenticationServiceTest extends TestCase
     /** @var KeyRegistryInterface|MockObject */
     private $keyRegistry;
 
-    /** @var LegacyServiceInterface|MockObject */
+    /** @var LegacyService|MockObject */
     private $legacyService;
 
     /** @var AuthenticationService */
@@ -40,8 +40,10 @@ class AuthenticationServiceTest extends TestCase
     {
         $this->keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
         $this->keyRegistry->method('getSignatureKey')
-            ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
-        $this->legacyService         = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
+             ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
+        $this->legacyService         = $this->getMockBuilder(LegacyService::class)
+                                            ->disableOriginalConstructor()
+                                            ->getMock();
         $this->authenticationService = new AuthenticationService($this->keyRegistry, $this->legacyService);
     }
 
@@ -70,7 +72,7 @@ class AuthenticationServiceTest extends TestCase
     public function testCreateTokenWithValidCredentials(): void
     {
         $this->legacyService->method('checkCredentials');
-        $this->legacyService->method('getUserGroup')->willReturn(LegacyServiceInterface::GROUP_ADMIN);
+        $this->legacyService->method('getUserGroup')->willReturn(LegacyService::GROUP_ADMIN);
         $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
         $this->legacyService->method('getShopId')->willReturn(1);
 

@@ -17,6 +17,7 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 
 use function time;
 
@@ -31,7 +32,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /** @var KeyRegistryInterface */
     private $keyRegistry;
 
-    /** @var LegacyServiceInterface */
+    /** @var LegacyService */
     private $legacyService;
 
     /** @var ?Token */
@@ -39,7 +40,7 @@ class AuthenticationService implements AuthenticationServiceInterface
 
     public function __construct(
         KeyRegistryInterface $keyRegistry,
-        LegacyServiceInterface $legacyService
+        LegacyService $legacyService
     ) {
         $this->keyRegistry   = $keyRegistry;
         $this->legacyService = $legacyService;

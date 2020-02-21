@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
-use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -19,7 +19,9 @@ class KeyRegistryTest extends TestCase
 {
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
     {
-        $legacyMock  = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
+        $legacyMock  = $this->getMockBuilder(LegacyService::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
         $keyRegistry = new KeyRegistry($legacyMock);
         $iterations  = 5;
         $keys        = [];
@@ -63,7 +65,9 @@ class KeyRegistryTest extends TestCase
      */
     public function testGetSignatureKeyWithInvalidOrNoSignature($signature, bool $valid): void
     {
-        $legacyMock = $this->getMockBuilder(LegacyServiceInterface::class)->getMock();
+        $legacyMock = $this->getMockBuilder(LegacyService::class)
+                           ->disableOriginalConstructor()
+                           ->getMock();
         $legacyMock->method('getConfigParam')
                ->with(KeyRegistry::SIGNATUREKEYNAME)
                ->willReturn($signature);

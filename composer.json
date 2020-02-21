@@ -44,8 +44,8 @@
     "fix:cbf": "phpcbf",
     "fix:fixer": "php-cs-fixer fix",
     "fix": [
-        "@fix:cbf",
-        "@fix:fixer"
+      "@fix:cbf",
+      "@fix:fixer"
     ],
     "test:lint": "phpcs",
     "test:lint-fixer": "php-cs-fixer fix --dry-run",

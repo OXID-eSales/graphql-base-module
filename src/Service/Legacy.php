@@ -16,11 +16,12 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 
-/**
- * @deprecated use OxidEsales\GraphQL\Base\Service\Legacy
- */
-class LegacyService implements LegacyServiceInterface
+class Legacy
 {
+    public const GROUP_ADMIN = 'admin';
+
+    public const GROUP_CUSTOMERS = 'customer';
+
     /** @var QueryBuilderFactoryInterface */
     private $queryBuilderFactory;
 
@@ -67,6 +68,9 @@ class LegacyService implements LegacyServiceInterface
         throw new InvalidLogin('User does not exist.');
     }
 
+    /**
+     * @return mixed
+     */
     public function getConfigParam(string $param)
     {
         return Registry::getConfig()->getConfigParam($param);
@@ -107,15 +111,15 @@ class LegacyService implements LegacyServiceInterface
     private function mapUserGroup(?string $dbGroup): string
     {
         if ($dbGroup === 'user') {
-            return LegacyServiceInterface::GROUP_CUSTOMERS;
+            return self::GROUP_CUSTOMERS;
         }
 
         if ($dbGroup == 'malladmin') {
-            return LegacyServiceInterface::GROUP_ADMIN;
+            return self::GROUP_ADMIN;
         }
 
         if ((int) $dbGroup == $this->context->getCurrentShopId()) {
-            return LegacyServiceInterface::GROUP_ADMIN;
+            return self::GROUP_ADMIN;
         }
 
         throw new InvalidLogin('Invalid usergroup');

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
+use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 
 use function bin2hex;
 use function is_string;
@@ -26,11 +27,11 @@ class KeyRegistry implements KeyRegistryInterface
 {
     public const SIGNATUREKEYNAME = 'sJsonWebTokenSignature';
 
-    /** @var LegacyServiceInterface */
+    /** @var LegacyService */
     private $legacyService;
 
     public function __construct(
-        LegacyServiceInterface $legacyService
+        LegacyService $legacyService
     ) {
         $this->legacyService = $legacyService;
     }
