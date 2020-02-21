@@ -16,6 +16,9 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 use GraphQL\Executor\ExecutionResult;
 
+/**
+ * @deprecated use ErrorCodeProvider
+ */
 interface ErrorCodeProviderInterface
 {
     public function getHttpReturnCode(ExecutionResult $result): int;

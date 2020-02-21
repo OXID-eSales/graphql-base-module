@@ -12,7 +12,7 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
     public: true
 
-  OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface:
+  OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider:
     class: OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider
 
   OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
@@ -65,3 +65,6 @@ services:
   OxidEsales\GraphQL\Base\Service\KeyRegistryInterface:
     class: OxidEsales\GraphQL\Base\Service\KeyRegistry
     public: true
+
+  OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface:
+    class: OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider
