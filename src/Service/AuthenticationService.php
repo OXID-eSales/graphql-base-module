@@ -29,7 +29,7 @@ class AuthenticationService implements AuthenticationServiceInterface
 
     public const CLAIM_GROUP    = 'group';
 
-    /** @var KeyRegistryInterface */
+    /** @var KeyRegistry */
     private $keyRegistry;
 
     /** @var LegacyService */
@@ -39,7 +39,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     private $token;
 
     public function __construct(
-        KeyRegistryInterface $keyRegistry,
+        KeyRegistry $keyRegistry,
         LegacyService $legacyService
     ) {
         $this->keyRegistry   = $keyRegistry;

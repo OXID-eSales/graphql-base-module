@@ -21,7 +21,7 @@ services:
   OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
-  OxidEsales\GraphQL\Base\Service\KeyRegistryInterface:
+  OxidEsales\GraphQL\Base\Service\KeyRegistry:
     class: OxidEsales\GraphQL\Base\Service\KeyRegistry
     public: true
 
@@ -35,9 +35,6 @@ services:
 
   OxidEsales\GraphQL\Base\Service\Legacy:
     class: OxidEsales\GraphQL\Base\Service\Legacy
-
-  OxidEsales\GraphQL\Base\Service\LegacyServiceInterface:
-    class: OxidEsales\GraphQL\Base\Service\LegacyService
 
   OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\AuthorizationService
@@ -58,3 +55,13 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper
+
+
+
+
+  OxidEsales\GraphQL\Base\Service\LegacyServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\LegacyService
+
+  OxidEsales\GraphQL\Base\Service\KeyRegistryInterface:
+    class: OxidEsales\GraphQL\Base\Service\KeyRegistry
+    public: true

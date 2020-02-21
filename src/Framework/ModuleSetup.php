@@ -12,14 +12,13 @@ namespace OxidEsales\GraphQL\Base\Framework;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
-use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 
 /**
  * @codeCoverageIgnore
  */
 class ModuleSetup
 {
-    /** @var KeyRegistryInterface */
+    /** @var KeyRegistry */
     private $keyRegistry;
 
     /** @var ModuleSettingBridgeInterface */
@@ -28,8 +27,10 @@ class ModuleSetup
     /**
      * ModuleSetup constructor.
      */
-    public function __construct(KeyRegistryInterface $keyRegistry, ModuleSettingBridgeInterface $moduleSettings)
-    {
+    public function __construct(
+        KeyRegistry $keyRegistry,
+        ModuleSettingBridgeInterface $moduleSettings
+    ) {
         $this->keyRegistry    = $keyRegistry;
         $this->moduleSettings = $moduleSettings;
     }

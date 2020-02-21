@@ -13,7 +13,7 @@ use Lcobucci\JWT\Parser;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Service\AuthenticationService;
-use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
+use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +27,7 @@ class AuthenticationServiceTest extends TestCase
 
     // phpcs:enable
 
-    /** @var KeyRegistryInterface|MockObject */
+    /** @var KeyRegistry|MockObject */
     private $keyRegistry;
 
     /** @var LegacyService|MockObject */
@@ -38,7 +38,9 @@ class AuthenticationServiceTest extends TestCase
 
     public function setUp(): void
     {
-        $this->keyRegistry = $this->getMockBuilder(KeyRegistryInterface::class)->getMock();
+        $this->keyRegistry = $this->getMockBuilder(KeyRegistry::class)
+                                  ->disableOriginalConstructor()
+                                  ->getMock();
         $this->keyRegistry->method('getSignatureKey')
              ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
         $this->legacyService         = $this->getMockBuilder(LegacyService::class)

@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 
 ### Changed
-- deprecated `OxidEsales\GraphQL\Base\Service\LegacyService` and `OxidEsales\GraphQL\Base\Service\LegacyServiceInterface`
+- deprecated `OxidEsales\GraphQL\Base\Service\LegacyService` and `OxidEsales\GraphQL\Base\Service\LegacyServiceInterface` use `OxidEsales\GraphQL\Base\Service\Legacy`
+- deprecated `OxidEsales\GraphQL\Base\Service\KeyRegistryInterface` use OxidEsales\GraphQL\Base\Service\KeyRegistry`
 
 ## [2.3.0] 2020-02-18
 
