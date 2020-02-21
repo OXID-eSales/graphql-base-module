@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use Lcobucci\JWT\Token;
-use OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent;
+use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -55,13 +55,13 @@ class AuthorizationService implements AuthorizationServiceInterface
             return false;
         }
 
-        $event = new BeforeAuthorizationEvent(
+        $event = new BeforeAuthorization(
             $this->token,
             $right
         );
 
         $this->eventDispatcher->dispatch(
-            BeforeAuthorizationEvent::NAME,
+            BeforeAuthorization::NAME,
             $event
         );
 

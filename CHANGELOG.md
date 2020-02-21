@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - deprecated `OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface` use `OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider`
 - deprecated `OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface` use `OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler`
 - deprecated `OxidEsales\GraphQL\Base\Framework\RequestReaderInterface` use `OxidEsales\GraphQL\Base\Framework\RequestReader`
+- deprecated `OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent` use `OxidEsales\GraphQL\Base\Event\BeforeAuthorization`
 
 ## [2.3.0] 2020-02-18
 

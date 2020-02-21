@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
-use OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent;
+use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Service\AuthenticationService;
 use OxidEsales\GraphQL\Base\Service\AuthorizationService;
@@ -78,8 +78,8 @@ class AuthorizationServiceTest extends TestCase
     {
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addListener(
-            BeforeAuthorizationEvent::NAME,
-            function (BeforeAuthorizationEvent $event): void {
+            BeforeAuthorization::NAME,
+            function (BeforeAuthorization $event): void {
                 $event->setAuthorized(true);
             }
         );
@@ -108,8 +108,8 @@ class AuthorizationServiceTest extends TestCase
     {
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addListener(
-            BeforeAuthorizationEvent::NAME,
-            function (BeforeAuthorizationEvent $event): void {
+            BeforeAuthorization::NAME,
+            function (BeforeAuthorization $event): void {
                 $event->setAuthorized(false);
             }
         );
