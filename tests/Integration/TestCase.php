@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
-use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
@@ -54,11 +53,11 @@ abstract class TestCase extends PHPUnitTestCase
         $requestReader = new RequestReaderStub();
 
         static::$container->set(
-            RequestReaderInterface::class,
+            RequestReader::class,
             $requestReader
         );
         static::$container->autowire(
-            RequestReaderInterface::class,
+            RequestReader::class,
             RequestReader::class
         );
 
@@ -90,7 +89,7 @@ abstract class TestCase extends PHPUnitTestCase
     protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $token                         = static::$container->get(RequestReaderInterface::class)
+        $token                         = static::$container->get(RequestReader::class)
                                    ->getAuthToken();
         static::$container->get(AuthenticationServiceInterface::class)
                           ->setToken($token);

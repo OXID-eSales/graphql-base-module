@@ -26,7 +26,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
     /** @var ErrorCodeProvider */
     private $errorCodeProvider;
 
-    /** @var RequestReaderInterface */
+    /** @var RequestReader */
     private $requestReader;
 
     /** @var ResponseWriterInterface */
@@ -38,7 +38,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
         LoggerInterface $logger,
         SchemaFactoryInterface $schemaFactory,
         ErrorCodeProvider $errorCodeProvider,
-        RequestReaderInterface $requestReader,
+        RequestReader $requestReader,
         ResponseWriterInterface $responseWriter
     ) {
         $this->logger            = $logger;

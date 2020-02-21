@@ -15,7 +15,7 @@ services:
   OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider:
     class: OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider
 
-  OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
+  OxidEsales\GraphQL\Base\Framework\RequestReader:
     class: OxidEsales\GraphQL\Base\Framework\RequestReader
 
   OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
@@ -26,7 +26,7 @@ services:
     public: true
 
   Lcobucci\JWT\Token:
-    factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReaderInterface', 'getAuthToken']
+    factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReader', 'getAuthToken']
 
   OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\AuthenticationService
@@ -72,3 +72,7 @@ services:
   OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface:
     class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
     public: true
+
+  OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
+    class: OxidEsales\GraphQL\Base\Framework\RequestReader
+
