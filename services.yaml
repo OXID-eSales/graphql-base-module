@@ -8,7 +8,7 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\ModuleSetup
     public: true
 
-  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface:
+  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler:
     class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
     public: true
 
@@ -68,3 +68,7 @@ services:
 
   OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface:
     class: OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider
+
+  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface:
+    class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
+    public: true

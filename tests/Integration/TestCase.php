@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
@@ -105,7 +105,7 @@ abstract class TestCase extends PHPUnitTestCase
             'variables'     => $variables,
             'operationName' => $operationName,
         ];
-        static::$container->get(GraphQLQueryHandlerInterface::class)
+        static::$container->get(GraphQLQueryHandler::class)
                           ->executeGraphQLQuery();
 
         return static::$queryResult;

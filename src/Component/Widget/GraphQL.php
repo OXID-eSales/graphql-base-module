@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Component\Widget;
 
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 
 /**
  * Class GraphQL
@@ -47,7 +47,7 @@ class GraphQL extends WidgetController
         }
         ContainerFactory::getInstance()
             ->getContainer()
-            ->get(GraphQLQueryHandlerInterface::class)
+            ->get(GraphQLQueryHandler::class)
             ->executeGraphQLQuery();
     }
 }
