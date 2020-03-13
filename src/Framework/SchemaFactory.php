@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use Mouf\Composer\ClassNameMapper;
-use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\AuthenticationService;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TheCodingMachine\GraphQLite\Schema;
@@ -24,7 +24,7 @@ class SchemaFactory implements SchemaFactoryInterface
     /** @var Schema */
     private $schema;
 
-    /** @var AuthenticationServiceInterface */
+    /** @var AuthenticationService */
     private $authenticationService;
 
     /** @var AuthorizationServiceInterface */
@@ -41,7 +41,7 @@ class SchemaFactory implements SchemaFactoryInterface
      */
     public function __construct(
         iterable $namespaceMappers,
-        AuthenticationServiceInterface $authenticationService,
+        AuthenticationService $authenticationService,
         AuthorizationServiceInterface $authorizationService,
         ContainerInterface $container
     ) {

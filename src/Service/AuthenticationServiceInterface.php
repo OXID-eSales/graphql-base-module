@@ -12,6 +12,9 @@ namespace OxidEsales\GraphQL\Base\Service;
 use Lcobucci\JWT\Token;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface as GraphQLiteAuthenticationServiceInterface;
 
+/**
+ * @deprecated no need for a special interface
+ */
 interface AuthenticationServiceInterface extends GraphQLiteAuthenticationServiceInterface
 {
     public function setToken(?Token $token = null): void;

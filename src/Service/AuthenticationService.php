@@ -18,6 +18,7 @@ use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
+use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
 use function time;
 
