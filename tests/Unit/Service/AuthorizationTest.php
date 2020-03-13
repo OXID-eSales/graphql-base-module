@@ -12,18 +12,17 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
-use OxidEsales\GraphQL\Base\Service\AuthenticationService;
-use OxidEsales\GraphQL\Base\Service\AuthorizationService;
-# use OxidEsales\TestingLibrary\UnitTestCase as TestCase;
+use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class AuthorizationServiceTest extends TestCase
+class AuthorizationTest extends TestCase
 {
     public function testIsNotAllowedWithoutPermissionsAndWithoutToken(): void
     {
-        $auth = new AuthorizationService(
+        $auth = new Authorization(
             [],
             $this->getEventDispatcherMock()
         );
@@ -32,7 +31,7 @@ class AuthorizationServiceTest extends TestCase
 
     public function testIsNotAllowedWithoutPermissionsButWithToken(): void
     {
-        $auth = new AuthorizationService(
+        $auth = new Authorization(
             [],
             $this->getEventDispatcherMock()
         );
@@ -44,7 +43,7 @@ class AuthorizationServiceTest extends TestCase
 
     public function testIsNotAllowedWithPermissionsButWithoutToken(): void
     {
-        $auth = new AuthorizationService(
+        $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock()
         );
@@ -53,7 +52,7 @@ class AuthorizationServiceTest extends TestCase
 
     public function testIsAllowedWithPermissionsAndWithToken(): void
     {
-        $auth = new AuthorizationService(
+        $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock()
         );
@@ -83,7 +82,7 @@ class AuthorizationServiceTest extends TestCase
                 $event->setAuthorized(true);
             }
         );
-        $auth = new AuthorizationService(
+        $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher
         );
@@ -113,7 +112,7 @@ class AuthorizationServiceTest extends TestCase
                 $event->setAuthorized(false);
             }
         );
-        $auth = new AuthorizationService(
+        $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher
         );
@@ -140,11 +139,11 @@ class AuthorizationServiceTest extends TestCase
         $token->method('getClaim')
             ->will($this->returnCallback(
                 function ($claim) {
-                    if ($claim == AuthenticationService::CLAIM_GROUP) {
+                    if ($claim == Authentication::CLAIM_GROUP) {
                         return 'group';
                     }
 
-                    if ($claim == AuthenticationService::CLAIM_USERNAME) {
+                    if ($claim == Authentication::CLAIM_USERNAME) {
                         return 'testuser';
                     }
                 }

@@ -15,7 +15,7 @@ use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
-use OxidEsales\GraphQL\Base\Service\AuthorizationService;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 
@@ -93,7 +93,7 @@ abstract class TestCase extends PHPUnitTestCase
                                    ->getAuthToken();
         static::$container->get(Authentication::class)
                           ->setToken($token);
-        static::$container->get(AuthorizationService::class)
+        static::$container->get(Authorization::class)
                           ->setToken($token);
     }
 

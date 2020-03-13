@@ -36,8 +36,8 @@ services:
   OxidEsales\GraphQL\Base\Service\Legacy:
     class: OxidEsales\GraphQL\Base\Service\Legacy
 
-  OxidEsales\GraphQL\Base\Service\AuthorizationService:
-    class: OxidEsales\GraphQL\Base\Service\AuthorizationService
+  OxidEsales\GraphQL\Base\Service\Authorization:
+    class: OxidEsales\GraphQL\Base\Service\Authorization
     arguments:
         $permissionProviders: !tagged graphql_permission_provider
     calls:
@@ -80,3 +80,12 @@ services:
     class: OxidEsales\GraphQL\Base\Service\AuthenticationService
     calls:
       - [setToken, ['@?Lcobucci\JWT\Token']]
+
+  OxidEsales\GraphQL\Base\Service\AuthorizationService:
+    class: OxidEsales\GraphQL\Base\Service\AuthorizationService
+    arguments:
+        $permissionProviders: !tagged graphql_permission_provider
+    calls:
+      - [setToken, ['@?Lcobucci\JWT\Token']]
+
+
