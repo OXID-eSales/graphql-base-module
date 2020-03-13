@@ -12,13 +12,13 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use Lcobucci\JWT\Parser;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Service\AuthenticationService;
+use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class AuthenticationServiceTest extends TestCase
+class AuthenticationTest extends TestCase
 {
     protected static $token = null;
 
@@ -33,7 +33,7 @@ class AuthenticationServiceTest extends TestCase
     /** @var LegacyService|MockObject */
     private $legacyService;
 
-    /** @var AuthenticationService */
+    /** @var Authentication */
     private $authenticationService;
 
     public function setUp(): void
@@ -46,7 +46,7 @@ class AuthenticationServiceTest extends TestCase
         $this->legacyService         = $this->getMockBuilder(LegacyService::class)
                                             ->disableOriginalConstructor()
                                             ->getMock();
-        $this->authenticationService = new AuthenticationService($this->keyRegistry, $this->legacyService);
+        $this->authenticationService = new Authentication($this->keyRegistry, $this->legacyService);
     }
 
     public function testCreateTokenWithInvalidCredentials(): void

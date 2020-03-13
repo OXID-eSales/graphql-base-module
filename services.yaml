@@ -28,8 +28,8 @@ services:
   Lcobucci\JWT\Token:
     factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReader', 'getAuthToken']
 
-  OxidEsales\GraphQL\Base\Service\AuthenticationService:
-    class: OxidEsales\GraphQL\Base\Service\AuthenticationService
+  OxidEsales\GraphQL\Base\Service\Authentication:
+    class: OxidEsales\GraphQL\Base\Service\Authentication
     calls:
       - [setToken, ['@?Lcobucci\JWT\Token']]
 
@@ -76,3 +76,7 @@ services:
   OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
     class: OxidEsales\GraphQL\Base\Framework\RequestReader
 
+  OxidEsales\GraphQL\Base\Service\AuthenticationService:
+    class: OxidEsales\GraphQL\Base\Service\AuthenticationService
+    calls:
+      - [setToken, ['@?Lcobucci\JWT\Token']]

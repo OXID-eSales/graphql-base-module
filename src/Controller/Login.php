@@ -9,16 +9,16 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\Service\AuthenticationService;
+use OxidEsales\GraphQL\Base\Service\Authentication;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
 {
-    /** @var AuthenticationService */
+    /** @var Authentication */
     protected $authentication;
 
     public function __construct(
-        AuthenticationService $authentication
+        Authentication $authentication
     ) {
         $this->authentication = $authentication;
     }
