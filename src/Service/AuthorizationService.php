@@ -13,6 +13,7 @@ use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface;
 
 use function array_search;
 use function is_bool;

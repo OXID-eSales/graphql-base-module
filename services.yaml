@@ -36,7 +36,7 @@ services:
   OxidEsales\GraphQL\Base\Service\Legacy:
     class: OxidEsales\GraphQL\Base\Service\Legacy
 
-  OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface:
+  OxidEsales\GraphQL\Base\Service\AuthorizationService:
     class: OxidEsales\GraphQL\Base\Service\AuthorizationService
     arguments:
         $permissionProviders: !tagged graphql_permission_provider
