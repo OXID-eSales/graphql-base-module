@@ -29,7 +29,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
     /** @var RequestReader */
     private $requestReader;
 
-    /** @var ResponseWriterInterface */
+    /** @var ResponseWriter */
     private $responseWriter;
 
     private $loggingErrorFormatter;
@@ -39,7 +39,7 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
         SchemaFactory $schemaFactory,
         ErrorCodeProvider $errorCodeProvider,
         RequestReader $requestReader,
-        ResponseWriterInterface $responseWriter
+        ResponseWriter $responseWriter
     ) {
         $this->logger            = $logger;
         $this->schemaFactory     = $schemaFactory;

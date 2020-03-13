@@ -13,7 +13,6 @@ use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
-use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
@@ -42,11 +41,11 @@ abstract class TestCase extends PHPUnitTestCase
         $responseWriter = new ResponseWriterStub();
 
         static::$container->set(
-            ResponseWriterInterface::class,
+            ResponseWriter::class,
             $responseWriter
         );
         static::$container->autowire(
-            ResponseWriterInterface::class,
+            ResponseWriter::class,
             ResponseWriter::class
         );
 
@@ -155,7 +154,7 @@ abstract class TestCase extends PHPUnitTestCase
 
 // phpcs:disable
 
-class ResponseWriterStub implements ResponseWriterInterface
+class ResponseWriterStub extends ResponseWriter
 {
     public function renderJsonResponse(array $result, int $httpStatus): void
     {

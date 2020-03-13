@@ -18,7 +18,7 @@ services:
   OxidEsales\GraphQL\Base\Framework\RequestReader:
     class: OxidEsales\GraphQL\Base\Framework\RequestReader
 
-  OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
+  OxidEsales\GraphQL\Base\Framework\ResponseWriter:
     class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
   OxidEsales\GraphQL\Base\Service\KeyRegistry:
@@ -79,6 +79,9 @@ services:
 
   OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
     class: OxidEsales\GraphQL\Base\Framework\RequestReader
+
+  OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
+    class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
   OxidEsales\GraphQL\Base\Service\AuthenticationService:
     class: OxidEsales\GraphQL\Base\Service\AuthenticationService
