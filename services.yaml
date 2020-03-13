@@ -83,12 +83,12 @@ services:
   OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
-  OxidEsales\GraphQL\Base\Service\AuthenticationService:
+  OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\AuthenticationService
     calls:
       - [setToken, ['@?Lcobucci\JWT\Token']]
 
-  OxidEsales\GraphQL\Base\Service\AuthorizationService:
+  OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\AuthorizationService
     arguments:
         $permissionProviders: !tagged graphql_permission_provider

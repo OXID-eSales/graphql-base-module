@@ -12,6 +12,6 @@ namespace OxidEsales\GraphQL\Base\Service;
 /**
  * @deprecated use Authentication::class instead
  */
-class AuthenticationService extends Authentication
+class AuthenticationService extends Authentication implements AuthenticationServiceInterface
 {
 }
