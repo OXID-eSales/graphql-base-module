@@ -51,13 +51,17 @@ services:
     class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']
 
-  OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface:
+  OxidEsales\GraphQL\Base\Framework\SchemaFactory:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper
 
 
 
+  OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
+    arguments:
+      $namespaceMappers: !tagged graphql_namespace_mapper
 
   OxidEsales\GraphQL\Base\Service\LegacyServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\LegacyService
