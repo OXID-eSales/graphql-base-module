@@ -18,9 +18,6 @@ cache:
 matrix:
     fast_finish: true
 
-before_install:
-    - phpenv config-rm xdebug.ini
-
 install:
     - travis_retry composer install --prefer-dist --no-interaction
 
@@ -30,3 +27,4 @@ script:
     - composer test:lint-fixer
     - composer test:static
     - composer test:unit
+    - composer test:infection

@@ -52,12 +52,14 @@
     "test:syntax": "parallel-lint src/ tests/ metadata.php",
     "test:static": "phpstan analyse src/",
     "test:unit": "phpunit -c tests/phpunit.xml tests/Unit/",
+    "test:infection": "infection --min-msi=58 --min-covered-msi=97",
     "test": [
       "@test:syntax",
       "@test:lint",
       "@test:lint-fixer",
       "@test:static",
-      "@test:unit"
+      "@test:unit",
+      "@test:infection"
     ],
     "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
     "post-update-cmd" : "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
