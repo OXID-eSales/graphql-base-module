@@ -85,7 +85,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @internal
      */
-    protected function getTokenBuilder(): Builder
+    private function getTokenBuilder(): Builder
     {
         $time = time();
 
@@ -106,7 +106,7 @@ class AuthenticationService implements AuthenticationServiceInterface
      *
      * @internal
      */
-    protected function isValidToken(Token $token): bool
+    private function isValidToken(Token $token): bool
     {
         if (!$token->verify($this->getSigner(), $this->getSignatureKey()->getContent())) {
             return false;
@@ -129,7 +129,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @internal
      */
-    protected function getSignatureKey(): Key
+    private function getSignatureKey(): Key
     {
         return new Key($this->keyRegistry->getSignatureKey());
     }
@@ -137,7 +137,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @internal
      */
-    protected function getSigner(): Signer
+    private function getSigner(): Signer
     {
         return new Sha512();
     }
