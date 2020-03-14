@@ -82,7 +82,9 @@ class RequestReaderTest extends TestCase
         ];
 
         foreach ($headers as $header) {
-            $_SERVER[$header] = 'Bearer ' . self::$token;
+            // add also a whitespace to the beginning if the header
+            // to test the trim() call
+            $_SERVER[$header] = ' Bearer ' . self::$token;
             $this->assertInstanceOf(
                 Token::class,
                 $requestReader->getAuthToken()
@@ -117,5 +119,23 @@ class RequestReaderTest extends TestCase
             $requestReader->getGraphQLRequestData(__DIR__ . '/fixtures/simpleRequest.json')
         );
         unset($_SERVER['CONTENT_TYPE']);
+    }
+
+    public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
+    {
+        $requestReader             = new RequestReader();
+        $_SERVER['CONTENT_TYPE']   = 'text/plain';
+        $_REQUEST['query']         = 'query {token_}';
+        $_REQUEST['variables']     = '{"foo":"bar"}';
+        $_REQUEST['operationName'] = 'operation_name';
+        $this->assertSame(
+            [
+                'query'         => 'query {token_}',
+                'variables'     => ['foo' => 'bar'],
+                'operationName' => 'operation_name',
+            ],
+            $requestReader->getGraphQLRequestData()
+        );
+        unset($_SERVER['CONTENT_TYPE'], $_REQUEST['query'], $_REQUEST['variables'], $_REQUEST['operationName']);
     }
 }
