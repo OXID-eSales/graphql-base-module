@@ -61,6 +61,7 @@ class LoginTest extends TestCase
         $this->legacy->method('getUserGroup')->willReturn($user['group']);
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
+
         $loginController = new Login($this->authentication);
 
         $token = (new Parser())->parse($loginController->token($user['username'], $user['password']));
