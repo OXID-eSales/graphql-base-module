@@ -21,10 +21,70 @@ class FloatFilterTest extends TestCase
         FloatFilter::fromUserInput();
     }
 
-    public function testGivesEqualParameterIfSet(): void
+    public function testGivesEquals(): void
     {
-        $filter = new FloatFilter(1.0);
-        $this->assertSame(1.0, $filter->equals());
+        $this->assertSame(
+            2.0,
+            (FloatFilter::fromUserInput(
+                2.0
+            ))->equals()
+        );
+    }
+
+    public function testGivesLowerThen(): void
+    {
+        $this->assertSame(
+            2.0,
+            (FloatFilter::fromUserInput(
+                null,
+                2.0
+            ))->lowerThen()
+        );
+    }
+
+    public function testGivesGreaterThen(): void
+    {
+        $this->assertSame(
+            2.0,
+            (FloatFilter::fromUserInput(
+                null,
+                null,
+                2.0
+            ))->greaterThen()
+        );
+    }
+
+    public function testGivesParametersIfSet(): void
+    {
+        $filter = FloatFilter::fromUserInput(
+            5.0,
+            10.0,
+            1.0,
+            [
+                1.0,
+                10.0,
+            ]
+        );
+
+        $this->assertSame(
+            5.0,
+            $filter->equals()
+        );
+        $this->assertSame(
+            10.0,
+            $filter->lowerThen()
+        );
+        $this->assertSame(
+            1.0,
+            $filter->greaterThen()
+        );
+        $this->assertSame(
+            [
+                1.0,
+                10.0,
+            ],
+            $filter->between()
+        );
     }
 
     public function invalidBetweens(): array
