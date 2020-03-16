@@ -21,6 +21,24 @@ class StringFilterTest extends TestCase
         StringFilter::fromUserInput();
     }
 
+    public function testNeedsAtLeastOneParameter(): void
+    {
+        $this->assertSame(
+            'equals',
+            (StringFilter::fromUserInput('equals'))->equals()
+        );
+
+        $this->assertSame(
+            'contains',
+            (StringFilter::fromUserInput(null, 'contains'))->contains()
+        );
+
+        $this->assertSame(
+            'beginsWith',
+            (StringFilter::fromUserInput(null, null, 'beginsWith'))->beginsWith()
+        );
+    }
+
     public function testBasicStringFilter(): void
     {
         $filter = StringFilter::fromUserInput(

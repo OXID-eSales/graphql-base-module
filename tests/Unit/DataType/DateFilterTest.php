@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
 use DateTime;
 use Exception;
+use OutOfBoundsException;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
 use PHPUnit\Framework\TestCase;
 
@@ -32,7 +33,9 @@ class DateFilterTest extends TestCase
             ], [
                 ['foobar', null],
             ], [
-                ['foobar', 'baz'],
+                [null, 'foobar'],
+            ], [
+                [null, null],
             ],
         ];
     }
@@ -43,10 +46,19 @@ class DateFilterTest extends TestCase
     public function testThrowsExceptionOnInvalidBetween(
         array $between
     ): void {
-        $this->expectException(Exception::class);
+        $this->expectException(OutOfBoundsException::class);
         DateFilter::fromUserInput(
             null,
             $between
+        );
+    }
+
+    public function testThrowExceptionOnInvalidDateTimeBetween(): void
+    {
+        $this->expectException(Exception::class);
+        DateFilter::fromUserInput(
+            null,
+            ['foo', 'bar']
         );
     }
 

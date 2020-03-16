@@ -21,6 +21,12 @@ class FloatFilterTest extends TestCase
         FloatFilter::fromUserInput();
     }
 
+    public function testGivesEqualParameterIfSet(): void
+    {
+        $filter = new FloatFilter(1.0);
+        $this->assertSame(1.0, $filter->equals());
+    }
+
     public function invalidBetweens(): array
     {
         return [

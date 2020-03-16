@@ -1,0 +1,49 @@
+{
+    "timeout": 10,
+    "source": {
+        "directories": [
+            "src"
+        ],
+        "excludes": [
+            "Component",
+            "Service/NamespaceMapper.php",
+            "Service/LegacyService.php"
+        ]
+    },
+    "phpUnit": {
+        "configDir": "tests"
+    },
+    "logs": {
+        "text": "infection.log"
+    },
+    "mutators": {
+        "@default": true,
+        "@arithmetic": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Service\\AuthenticationService::getTokenBuilder",
+                "OxidEsales\\GraphQL\\Base\\Exception\\*"
+            ]
+        },
+        "@number": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Service\\AuthenticationService::getTokenBuilder",
+                "OxidEsales\\GraphQL\\Base\\Service\\KeyRegistry::generateSignatureKey"
+            ]
+        },
+        "IntegerNegation": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Exception\\*"
+            ]
+        },
+        "DecrementInteger": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Exception\\*"
+            ]
+        },
+        "IncrementInteger": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Exception\\*"
+            ]
+        }
+    }
+}

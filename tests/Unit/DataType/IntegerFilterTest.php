@@ -15,6 +15,14 @@ use PHPUnit\Framework\TestCase;
 
 class IntegerFilterTest extends TestCase
 {
+    public function testReturnsEqualsIfEqualIsGiven(): void
+    {
+        $this->assertSame(
+            (IntegerFilter::fromUserInput(1))->equals(),
+            1
+        );
+    }
+
     public function testThrowsExceptionOnNoInput(): void
     {
         $this->expectException(Exception::class);
