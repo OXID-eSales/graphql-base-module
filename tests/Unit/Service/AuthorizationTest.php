@@ -26,7 +26,10 @@ class AuthorizationTest extends TestCase
             [],
             $this->getEventDispatcherMock()
         );
-        $this->assertFalse($auth->isAllowed(''));
+
+        $this->assertFalse(
+            $auth->isAllowed('')
+        );
     }
 
     public function testIsNotAllowedWithoutPermissionsButWithToken(): void
@@ -38,7 +41,10 @@ class AuthorizationTest extends TestCase
         $auth->setToken(
             $this->getTokenMock()
         );
-        $this->assertFalse($auth->isAllowed('foo'));
+
+        $this->assertFalse(
+            $auth->isAllowed('foo')
+        );
     }
 
     public function testIsNotAllowedWithPermissionsButWithoutToken(): void
@@ -47,7 +53,10 @@ class AuthorizationTest extends TestCase
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock()
         );
-        $this->assertFalse($auth->isAllowed('permission'));
+
+        $this->assertFalse(
+            $auth->isAllowed('permission')
+        );
     }
 
     public function testIsAllowedWithPermissionsAndWithToken(): void
@@ -56,9 +65,11 @@ class AuthorizationTest extends TestCase
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock()
         );
+
         $auth->setToken(
             $this->getTokenMock()
         );
+
         $this->assertTrue(
             $auth->isAllowed('permission'),
             'Permission "permission" must be granted to group "group"'
@@ -86,9 +97,11 @@ class AuthorizationTest extends TestCase
             $this->getPermissionMocks(),
             $eventDispatcher
         );
+
         $auth->setToken(
             $this->getTokenMock()
         );
+
         $this->assertTrue(
             $auth->isAllowed('permission'),
             'Permission "permission" must be granted to group "group"'
@@ -116,9 +129,11 @@ class AuthorizationTest extends TestCase
             $this->getPermissionMocks(),
             $eventDispatcher
         );
+
         $auth->setToken(
             $this->getTokenMock()
         );
+
         $this->assertFalse(
             $auth->isAllowed('permission'),
             'Permission "permission" must not be granted to group "group"'
@@ -154,13 +169,15 @@ class AuthorizationTest extends TestCase
 
     private function getPermissionMocks(): iterable
     {
-        $a = $this->getMockBuilder(PermissionProviderInterface::class)->getMock();
+        $a = $this->getMockBuilder(PermissionProviderInterface::class)
+                  ->getMock();
         $a->method('getPermissions')
           ->willReturn([
               'group'  => ['permission'],
               'group1' => ['permission1'],
           ]);
-        $b = $this->getMockBuilder(PermissionProviderInterface::class)->getMock();
+        $b = $this->getMockBuilder(PermissionProviderInterface::class)
+                  ->getMock();
         $b->method('getPermissions')
           ->willReturn([
               'group'     => ['permission2'],
@@ -176,6 +193,7 @@ class AuthorizationTest extends TestCase
 
     private function getEventDispatcherMock(): EventDispatcherInterface
     {
-        return $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+        return $this->getMockBuilder(EventDispatcherInterface::class)
+                    ->getMock();
     }
 }

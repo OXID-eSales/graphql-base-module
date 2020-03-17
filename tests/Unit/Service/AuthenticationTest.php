@@ -52,33 +52,51 @@ class AuthenticationTest extends TestCase
     public function testCreateTokenWithInvalidCredentials(): void
     {
         $this->expectException(InvalidLogin::class);
-        $this->legacyService->method('checkCredentials')->willThrowException(new InvalidLogin());
-        $this->authenticationService->createToken('foo', 'bar');
+        $this->legacyService
+             ->method('checkCredentials')
+             ->willThrowException(new InvalidLogin());
+
+        $this->authenticationService
+             ->createToken('foo', 'bar');
     }
 
     public function testIsLoggedWithoutToken(): void
     {
-        $this->authenticationService->setToken(null);
-        $this->assertFalse($this->authenticationService->isLogged());
+        $this->authenticationService
+             ->setToken(null);
+
+        $this->assertFalse(
+            $this->authenticationService->isLogged()
+        );
     }
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
     {
         $this->expectException(InvalidToken::class);
+
         $this->authenticationService->setToken(
             (new Parser())->parse(self::$invalidToken)
         );
+
         $this->authenticationService->isLogged();
     }
 
     public function testCreateTokenWithValidCredentials(): void
     {
-        $this->legacyService->method('checkCredentials');
-        $this->legacyService->method('getUserGroup')->willReturn(LegacyService::GROUP_ADMIN);
-        $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
-        $this->legacyService->method('getShopId')->willReturn(1);
+        $this->legacyService
+             ->method('checkCredentials');
+        $this->legacyService
+             ->method('getUserGroup')
+             ->willReturn(LegacyService::GROUP_ADMIN);
+        $this->legacyService
+             ->method('getShopUrl')
+             ->willReturn('https://whatever.com');
+        $this->legacyService
+             ->method('getShopId')
+             ->willReturn(1);
 
         self::$token = $this->authenticationService->createToken('admin', 'admin');
+
         $this->assertInstanceOf(
             \Lcobucci\JWT\Token::class,
             self::$token
@@ -90,11 +108,17 @@ class AuthenticationTest extends TestCase
      */
     public function testIsLoggedWithValidToken(): void
     {
-        $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
-        $this->legacyService->method('getShopId')->willReturn(1);
+        $this->legacyService
+             ->method('getShopUrl')
+             ->willReturn('https://whatever.com');
+        $this->legacyService
+             ->method('getShopId')
+             ->willReturn(1);
+
         $this->authenticationService->setToken(
             self::$token
         );
+
         $this->assertTrue($this->authenticationService->isLogged());
     }
 
@@ -104,11 +128,18 @@ class AuthenticationTest extends TestCase
     public function testIsLoggedWithValidForAnotherShopIdToken(): void
     {
         $this->expectException(InvalidToken::class);
-        $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
-        $this->legacyService->method('getShopId')->willReturn(-1);
-        $this->authenticationService->setToken(
-            self::$token
-        );
+        $this->legacyService
+             ->method('getShopUrl')
+             ->willReturn('https://whatever.com');
+        $this->legacyService
+             ->method('getShopId')
+             ->willReturn(-1);
+
+        $this->authenticationService
+             ->setToken(
+                self::$token
+            );
+
         $this->authenticationService->isLogged();
     }
 
@@ -121,12 +152,17 @@ class AuthenticationTest extends TestCase
     {
         $this->expectException(InvalidToken::class);
 
-        $this->legacyService->method('getShopUrl')->willReturn('https:/other.com');
-        $this->legacyService->method('getShopId')->willReturn(1);
+        $this->legacyService
+             ->method('getShopUrl')
+             ->willReturn('https:/other.com');
+        $this->legacyService
+             ->method('getShopId')
+             ->willReturn(1);
 
-        $this->authenticationService->setToken(
-            self::$token
-        );
+        $this->authenticationService
+             ->setToken(
+                self::$token
+             );
         $this->authenticationService->isLogged();
     }
 }

@@ -81,8 +81,14 @@ class KeyRegistryTest extends TestCase
         }
 
         if ($valid) {
-            $this->assertEquals(null, $e);
-            $this->assertTrue(is_string($sig), 'Signature key needs to be a string');
+            $this->assertEquals(
+                null,
+                $e
+            );
+            $this->assertTrue(
+                is_string($sig),
+                'Signature key needs to be a string'
+            );
         } else {
             $this->assertInstanceOf(
                 MissingSignatureKey::class,
