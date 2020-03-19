@@ -9,16 +9,25 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
+use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\Service\AuthenticationService;
 use OxidEsales\GraphQL\Base\Service\KeyRegistryInterface;
 use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class LoginTest extends TestCase
 {
     /** @var AuthenticationService */
     private $authenticationService;
+
+    /** @var KeyRegistryInterface|MockObject */
+    private $keyRegistry;
+
+    /** @var LegacyServiceInterface|MockObject */
+    private $legacyService;
 
     public function setUp(): void
     {
@@ -31,14 +40,31 @@ class LoginTest extends TestCase
 
     public function testCreateTokenWithValidCredentials(): void
     {
+        $shop = [
+            'url' => 'https://whatever.com',
+            'id'  => 1,
+        ];
+        $user = [
+            'username' => 'admin',
+            'password' => 'admin',
+            'group'    => LegacyServiceInterface::GROUP_ADMIN,
+        ];
+
         $this->legacyService->method('checkCredentials');
-        $this->legacyService->method('getUserGroup')->willReturn(LegacyServiceInterface::GROUP_ADMIN);
-        $this->legacyService->method('getShopUrl')->willReturn('https:/whatever.com');
-        $this->legacyService->method('getShopId')->willReturn(1);
+        $this->legacyService->method('getUserGroup')->willReturn($user['group']);
+        $this->legacyService->method('getShopUrl')->willReturn($shop['url']);
+        $this->legacyService->method('getShopId')->willReturn($shop['id']);
         $loginController = new Login($this->authenticationService);
 
-        $token = $loginController->token('admin', 'admin');
+        $token = (new Parser())->parse($loginController->token($user['username'], $user['password']));
 
-        $this->assertIsString($token);
+        $data = new ValidationData();
+        $data->setIssuer($shop['url']);
+        $data->setAudience($shop['url']);
+
+        $this->assertTrue($token->validate($data));
+        $this->assertEquals($user['username'], $token->getClaim('username'));
+        $this->assertEquals($shop['id'], $token->getClaim('shopid'));
+        $this->assertEquals($user['group'], $token->getClaim('group'));
     }
 }
