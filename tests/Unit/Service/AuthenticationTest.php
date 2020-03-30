@@ -137,8 +137,8 @@ class AuthenticationTest extends TestCase
 
         $this->authenticationService
              ->setToken(
-                self::$token
-            );
+                 self::$token
+             );
 
         $this->authenticationService->isLogged();
     }
@@ -161,7 +161,7 @@ class AuthenticationTest extends TestCase
 
         $this->authenticationService
              ->setToken(
-                self::$token
+                 self::$token
              );
         $this->authenticationService->isLogged();
     }

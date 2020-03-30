@@ -25,8 +25,8 @@ class BoolFilterTest extends TestCase
     public function testReturnsGivenEqualValue(bool $userInput, bool $returnValue): void
     {
         $this->assertSame(
-            $returnValue
-            (BoolFilter::fromUserInput($userInput))->equals(),
+            $returnValue,
+            BoolFilter::fromUserInput($userInput)->equals()
         );
     }
 
