@@ -27,7 +27,7 @@ $aModule = [
         'en'      => '<span>OXID GraphQL API Framework</span>',
     ],
     'thumbnail'   => 'out/pictures/logo.png',
-    'version'     => '2.3.0',
+    'version'     => '2.4.0',
     'author'      => 'OXID eSales',
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
@@ -35,7 +35,7 @@ $aModule = [
     ],
     'controllers' => [
         // Widget Controller
-        'graphql'       => OxidEsales\GraphQL\Base\Component\Widget\GraphQL::class,
+        'graphql' => OxidEsales\GraphQL\Base\Component\Widget\GraphQL::class,
     ],
     'templates'   => [
     ],

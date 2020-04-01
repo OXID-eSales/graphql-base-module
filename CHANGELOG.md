@@ -4,15 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [2.4.0] 2020-04-01
 
 ### Changed
-- deprecated `OxidEsales\GraphQL\Base\Service\LegacyService` and `OxidEsales\GraphQL\Base\Service\LegacyServiceInterface` use `OxidEsales\GraphQL\Base\Service\Legacy`
-- deprecated `OxidEsales\GraphQL\Base\Service\KeyRegistryInterface` use OxidEsales\GraphQL\Base\Service\KeyRegistry`
-- deprecated `OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface` use `OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider`
-- deprecated `OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface` use `OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler`
-- deprecated `OxidEsales\GraphQL\Base\Framework\RequestReaderInterface` use `OxidEsales\GraphQL\Base\Framework\RequestReader`
-- deprecated `OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent` use `OxidEsales\GraphQL\Base\Event\BeforeAuthorization`
+- [#9] deprecate smurf namiing and superflus interfaces
+- [OXDEV-3282] Rewrite test to not use assertIsString
+
+### Added
+- [#10] added infection mutation testing framework and improved tests
+- PHP-CS-Fixer
+- [OXDEV-3287] allow for PHPUnit ^7.5|^8.5|^9
 
 ## [2.3.0] 2020-02-18
 
