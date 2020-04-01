@@ -20,26 +20,26 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var SchemaFactoryInterface */
+    /** @var SchemaFactory */
     private $schemaFactory;
 
-    /** @var ErrorCodeProviderInterface */
+    /** @var ErrorCodeProvider */
     private $errorCodeProvider;
 
-    /** @var RequestReaderInterface */
+    /** @var RequestReader */
     private $requestReader;
 
-    /** @var ResponseWriterInterface */
+    /** @var ResponseWriter */
     private $responseWriter;
 
     private $loggingErrorFormatter;
 
     public function __construct(
         LoggerInterface $logger,
-        SchemaFactoryInterface $schemaFactory,
-        ErrorCodeProviderInterface $errorCodeProvider,
-        RequestReaderInterface $requestReader,
-        ResponseWriterInterface $responseWriter
+        SchemaFactory $schemaFactory,
+        ErrorCodeProvider $errorCodeProvider,
+        RequestReader $requestReader,
+        ResponseWriter $responseWriter
     ) {
         $this->logger            = $logger;
         $this->schemaFactory     = $schemaFactory;

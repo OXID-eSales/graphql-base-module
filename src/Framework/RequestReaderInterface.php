@@ -16,6 +16,9 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 use Lcobucci\JWT\Token;
 
+/**
+ * @deprecated use RequestReader
+ */
 interface RequestReaderInterface
 {
     /**

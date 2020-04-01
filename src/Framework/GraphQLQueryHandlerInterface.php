@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+/**
+ * @deprecated use GraphQLQueryHandler
+ */
 interface GraphQLQueryHandlerInterface
 {
     public function executeGraphQLQuery(): void;

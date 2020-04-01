@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+/**
+ * @deprecated
+ */
 interface ResponseWriterInterface
 {
     /**

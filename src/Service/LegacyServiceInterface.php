@@ -11,10 +11,19 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 
+/**
+ * @deprecated No need for a special Interface
+ */
 interface LegacyServiceInterface
 {
+    /**
+     * @deprecated use OxidEsales\GraphQL\Base\Service\Legacy::GROUP_ADMIN
+     */
     public const GROUP_ADMIN = 'admin';
 
+    /**
+     * @deprecated use OxidEsales\GraphQL\Base\Service\Legacy::GROUP_CUSTOMERS
+     */
     public const GROUP_CUSTOMERS = 'customer';
 
     /**

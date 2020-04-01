@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
-use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
-use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
-use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
+use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
@@ -43,22 +43,22 @@ abstract class TestCase extends PHPUnitTestCase
         $responseWriter = new ResponseWriterStub();
 
         static::$container->set(
-            ResponseWriterInterface::class,
+            ResponseWriter::class,
             $responseWriter
         );
         static::$container->autowire(
-            ResponseWriterInterface::class,
+            ResponseWriter::class,
             ResponseWriter::class
         );
 
         $requestReader = new RequestReaderStub();
 
         static::$container->set(
-            RequestReaderInterface::class,
+            RequestReader::class,
             $requestReader
         );
         static::$container->autowire(
-            RequestReaderInterface::class,
+            RequestReader::class,
             RequestReader::class
         );
 
@@ -90,8 +90,12 @@ abstract class TestCase extends PHPUnitTestCase
     protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $token                         = static::$container->get(RequestReaderInterface::class)
+        $token                         = static::$container->get(RequestReader::class)
                                    ->getAuthToken();
+        static::$container->get(Authentication::class)
+                          ->setToken($token);
+        static::$container->get(Authorization::class)
+                          ->setToken($token);
         static::$container->get(AuthenticationServiceInterface::class)
                           ->setToken($token);
         static::$container->get(AuthorizationServiceInterface::class)
@@ -105,7 +109,7 @@ abstract class TestCase extends PHPUnitTestCase
             'variables'     => $variables,
             'operationName' => $operationName,
         ];
-        static::$container->get(GraphQLQueryHandlerInterface::class)
+        static::$container->get(GraphQLQueryHandler::class)
                           ->executeGraphQLQuery();
 
         return static::$queryResult;
@@ -156,7 +160,7 @@ abstract class TestCase extends PHPUnitTestCase
 
 // phpcs:disable
 
-class ResponseWriterStub implements ResponseWriterInterface
+class ResponseWriterStub extends ResponseWriter
 {
     public function renderJsonResponse(array $result, int $httpStatus): void
     {

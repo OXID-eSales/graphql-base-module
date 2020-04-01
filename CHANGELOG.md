@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unreleased]
+
+### Changed
+- deprecated `OxidEsales\GraphQL\Base\Service\LegacyService` and `OxidEsales\GraphQL\Base\Service\LegacyServiceInterface` use `OxidEsales\GraphQL\Base\Service\Legacy`
+- deprecated `OxidEsales\GraphQL\Base\Service\KeyRegistryInterface` use OxidEsales\GraphQL\Base\Service\KeyRegistry`
+- deprecated `OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface` use `OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider`
+- deprecated `OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface` use `OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler`
+- deprecated `OxidEsales\GraphQL\Base\Framework\RequestReaderInterface` use `OxidEsales\GraphQL\Base\Framework\RequestReader`
+- deprecated `OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent` use `OxidEsales\GraphQL\Base\Event\BeforeAuthorization`
+
 ## [2.3.0] 2020-02-18
 
 ### Added

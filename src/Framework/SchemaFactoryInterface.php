@@ -18,6 +18,8 @@ use TheCodingMachine\GraphQLite\Schema;
 
 /**
  * Class SchemaFactory
+ *
+ * @deprecated
  */
 interface SchemaFactoryInterface
 {

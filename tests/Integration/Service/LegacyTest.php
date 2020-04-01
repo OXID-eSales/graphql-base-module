@@ -9,15 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Service;
 
-use oxfield;
-use OxidEsales\EshopCommunity\Application\Model\User;
+use oxField;
+use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Service\LegacyService;
-use OxidEsales\GraphQL\Base\Service\LegacyServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
-class LegacyServiceTest extends UnitTestCase
+class LegacyTest extends UnitTestCase
 {
     /** @var LegacyService */
     private $legacyService;
@@ -28,7 +27,7 @@ class LegacyServiceTest extends UnitTestCase
         $containerFactory = new TestContainerFactory();
         $container        = $containerFactory->create();
         $container->compile();
-        $this->legacyService = $container->get(LegacyServiceInterface::class);
+        $this->legacyService = $container->get(LegacyService::class);
     }
 
     public function tearDown(): void
@@ -48,18 +47,27 @@ class LegacyServiceTest extends UnitTestCase
     public function testInvalidLogin(): void
     {
         $this->expectException(InvalidLogin::class);
-        $this->legacyService->checkCredentials('admin', 'wrongpassword');
+        $this->legacyService->checkCredentials(
+            'admin',
+            'wrongpassword'
+        );
     }
 
     public function testGetUsergroupAdmin(): void
     {
-        $this->assertEquals(LegacyServiceInterface::GROUP_ADMIN, $this->legacyService->getUserGroup('admin'));
+        $this->assertEquals(
+            LegacyService::GROUP_ADMIN,
+            $this->legacyService->getUserGroup('admin')
+        );
     }
 
     public function testGetUserGroupShopadmin(): void
     {
         $this->createUser('1');
-        $this->assertEquals(LegacyServiceInterface::GROUP_ADMIN, $this->legacyService->getUserGroup('testuser'));
+        $this->assertEquals(
+            LegacyService::GROUP_ADMIN,
+            $this->legacyService->getUserGroup('testuser')
+        );
     }
 
     public function testGetUserGroupShopadminWrongShop(): void
@@ -79,13 +87,19 @@ class LegacyServiceTest extends UnitTestCase
     public function testGetUserGroupCustomer(): void
     {
         $this->createUser('user');
-        $this->assertEquals(LegacyServiceInterface::GROUP_CUSTOMERS, $this->legacyService->getUserGroup('testuser'));
+        $this->assertEquals(
+            LegacyService::GROUP_CUSTOMERS,
+            $this->legacyService->getUserGroup('testuser')
+        );
     }
 
     public function testGetUserGroupNotExistingUser(): void
     {
         $this->expectException(InvalidLogin::class);
-        $this->assertEquals(LegacyServiceInterface::GROUP_CUSTOMERS, $this->legacyService->getUserGroup('testuser'));
+        $this->assertEquals(
+            LegacyService::GROUP_CUSTOMERS,
+            $this->legacyService->getUserGroup('testuser')
+        );
     }
 
     private function createUser($dbusergroup): void

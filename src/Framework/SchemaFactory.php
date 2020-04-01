@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use Mouf\Composer\ClassNameMapper;
-use OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface;
-use OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
@@ -24,11 +24,11 @@ class SchemaFactory implements SchemaFactoryInterface
     /** @var Schema */
     private $schema;
 
-    /** @var AuthenticationServiceInterface */
-    private $authenticationService;
+    /** @var Authentication */
+    private $authentication;
 
-    /** @var AuthorizationServiceInterface */
-    private $authorizationService;
+    /** @var Authorization */
+    private $authorization;
 
     /** @var NamespaceMapperInterface[] */
     private $namespaceMappers;
@@ -41,16 +41,16 @@ class SchemaFactory implements SchemaFactoryInterface
      */
     public function __construct(
         iterable $namespaceMappers,
-        AuthenticationServiceInterface $authenticationService,
-        AuthorizationServiceInterface $authorizationService,
+        Authentication $authentication,
+        Authorization $authorization,
         ContainerInterface $container
     ) {
         foreach ($namespaceMappers as $namespaceMapper) {
             $this->namespaceMappers[] = $namespaceMapper;
         }
-        $this->authenticationService = $authenticationService;
-        $this->authorizationService  = $authorizationService;
-        $this->container             = $container;
+        $this->authentication = $authentication;
+        $this->authorization  = $authorization;
+        $this->container      = $container;
     }
 
     public function getSchema(): Schema
@@ -86,8 +86,8 @@ class SchemaFactory implements SchemaFactoryInterface
 
         $factory->setClassNameMapper($classNameMapper);
 
-        $factory->setAuthenticationService($this->authenticationService)
-                ->setAuthorizationService($this->authorizationService);
+        $factory->setAuthenticationService($this->authentication)
+                ->setAuthorizationService($this->authorization);
 
         return $this->schema = $factory->createSchema();
     }

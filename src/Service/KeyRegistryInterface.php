@@ -14,6 +14,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+/**
+ * @deprecated no need for an interface, use KeyRegistry
+ */
 interface KeyRegistryInterface
 {
     public function generateSignatureKey(): string;
