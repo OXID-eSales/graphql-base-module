@@ -16,6 +16,7 @@ So, you stumbled upon a 🐛, those are tracked as [GitHub Issues](https://githu
 - **Describe the exact steps which reproduce the problem** in as many details as possible
 - **Describe the behavior you observed**
 - **Explain which behavior you expected to see instead and why**
+- **State the shop and module version** you used while having the problem
 
 ### Suggesting Enhancements
 
