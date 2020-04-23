@@ -33,7 +33,7 @@ class IDFilter implements FilterInterface
 
     public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
     {
-        $builder->andWhere(sprintf("%s.%s = :%s", $fromAlias, strtoupper($field), $field))
+        $builder->andWhere(sprintf('%s.%s = :%s', $fromAlias, strtoupper($field), $field))
                 ->setParameter(':' . $field, $this->equals);
     }
 

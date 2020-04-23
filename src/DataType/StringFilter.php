@@ -61,19 +61,19 @@ class StringFilter implements FilterInterface
     public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
     {
         if ($this->equals) {
-            $builder->andWhere(sprintf("%s.%s = :%s_eq", $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s = :%s_eq', $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->contains) {
-            $builder->andWhere(sprintf("%s.%s LIKE :%s_contain", $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s LIKE :%s_contain', $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_contain', '%' . $this->contains . '%');
         }
 
         if ($this->beginsWith) {
-            $builder->andWhere(sprintf("%s.%s LIKE :%s_begins", $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s LIKE :%s_begins', $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_begins', $this->beginsWith . '%');
         }
     }

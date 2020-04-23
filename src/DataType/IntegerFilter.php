@@ -79,24 +79,25 @@ class IntegerFilter implements FilterInterface
     public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
     {
         if ($this->equals) {
-            $builder->andWhere(sprintf("%s.%s = :%s_eq", $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s = :%s_eq', $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->lowerThen) {
-            $builder->andWhere(sprintf("%s.%s < :%s_lt", $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s < :%s_lt', $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_lt', $this->lowerThen);
         }
 
         if ($this->greaterThen) {
-            $builder->andWhere(sprintf("%s.%s > :%s_gt", $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s > :%s_gt', $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_gt', $this->greaterThen);
         }
 
         if ($this->between) {
-            $builder->andWhere(sprintf("%s.%s BETWEEN :%s_lower AND :%s_upper", $fromAlias, strtoupper($field), $field, $field))
+            $where = sprintf('%s.%s BETWEEN :%s_lower AND :%s_upper', $fromAlias, strtoupper($field), $field, $field);
+            $builder->andWhere($where)
                     ->setParameter(':' . $field . '_lower', $this->between[0])
                     ->setParameter(':' . $field . '_upper', $this->between[1]);
         }

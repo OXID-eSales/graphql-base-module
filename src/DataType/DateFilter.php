@@ -72,7 +72,8 @@ class DateFilter implements FilterInterface
         }
 
         if ($this->between) {
-            $builder->andWhere(sprintf("%s.%s BETWEEN :%s_lower AND :%s_upper", $fromAlias, strtoupper($field), $field, $field))
+            $where = sprintf('%s.%s BETWEEN :%s_lower AND :%s_upper', $fromAlias, strtoupper($field), $field, $field);
+            $builder->andWhere($where)
                     ->setParameter(':' . $field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
                     ->setParameter(':' . $field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));
         }
