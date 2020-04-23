@@ -62,17 +62,17 @@ class DateFilter implements FilterInterface
         return $this->between;
     }
 
-    public function addToQuery(QueryBuilder $builder, string $field): void
+    public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
     {
         if ($this->equals) {
-            $builder->andWhere(strtoupper($field) . ' = :' . $field . '_eq')
+            $builder->andWhere($fromAlias . '.' . strtoupper($field) . ' = :' . $field . '_eq')
                     ->setParameter(':' . $field . '_eq', $this->equals->format(self::SQL_DATETIME_FORMAT));
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->between) {
-            $builder->andWhere(strtoupper($field) . ' BETWEEN :' . $field . '_lower AND :' . $field . '_upper')
+            $builder->andWhere(sprintf("%s.%s BETWEEN :%s_lower AND :%s_upper", $fromAlias, strtoupper($field), $field, $field))
                     ->setParameter(':' . $field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
                     ->setParameter(':' . $field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));
         }

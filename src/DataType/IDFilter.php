@@ -31,9 +31,9 @@ class IDFilter implements FilterInterface
         return $this->equals;
     }
 
-    public function addToQuery(QueryBuilder $builder, string $field): void
+    public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
     {
-        $builder->andWhere(strtoupper($field) . ' = :' . $field)
+        $builder->andWhere(sprintf("%s.%s = :%s", $fromAlias, strtoupper($field), $field))
                 ->setParameter(':' . $field, $this->equals);
     }
 

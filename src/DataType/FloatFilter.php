@@ -77,27 +77,27 @@ class FloatFilter implements FilterInterface
         return $this->between;
     }
 
-    public function addToQuery(QueryBuilder $builder, string $field): void
+    public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
     {
         if ($this->equals) {
-            $builder->andWhere(strtoupper($field) . ' = :' . $field . '_eq')
+            $builder->andWhere(sprintf("%s.%s = :%s_eq", $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->lowerThen) {
-            $builder->andWhere(strtoupper($field) . ' < :' . $field . '_lt')
+            $builder->andWhere(sprintf("%s.%s < :%s_lt", $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_lt', $this->lowerThen);
         }
 
         if ($this->greaterThen) {
-            $builder->andWhere(strtoupper($field) . ' > :' . $field . '_gt')
+            $builder->andWhere(sprintf("%s.%s > :%s_gt", $fromAlias, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_gt', $this->greaterThen);
         }
 
         if ($this->between) {
-            $builder->andWhere(strtoupper($field) . ' BETWEEN :' . $field . '_lower AND :' . $field . '_upper')
+            $builder->andWhere(sprintf("%s.%s BETWEEN :%s_lower AND :%s_upper", $fromAlias, strtoupper($field), $field, $field))
                     ->setParameter(':' . $field . '_lower', $this->between[0])
                     ->setParameter(':' . $field . '_upper', $this->between[1]);
         }
