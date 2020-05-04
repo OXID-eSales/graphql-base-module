@@ -14,6 +14,7 @@ use DateTimeInterface;
 use DateTimeZone;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
+use InvalidArgumentException;
 use OutOfBoundsException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
@@ -62,17 +63,24 @@ class DateFilter implements FilterInterface
         return $this->between;
     }
 
-    public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
+    public function addToQuery(QueryBuilder $builder, string $field): void
     {
+        $from = $builder->getQueryPart('from');
+
+        if ($from === []) {
+            throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
+        }
+        $table = $from[0]['alias'] ?? $from[0]['table'];
+
         if ($this->equals) {
-            $builder->andWhere($fromAlias . '.' . strtoupper($field) . ' = :' . $field . '_eq')
+            $builder->andWhere($table . '.' . strtoupper($field) . ' = :' . $field . '_eq')
                     ->setParameter(':' . $field . '_eq', $this->equals->format(self::SQL_DATETIME_FORMAT));
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->between) {
-            $where = sprintf('%s.%s BETWEEN :%s_lower AND :%s_upper', $fromAlias, strtoupper($field), $field, $field);
+            $where = sprintf('%s.%s BETWEEN :%s_lower AND :%s_upper', $table, strtoupper($field), $field, $field);
             $builder->andWhere($where)
                     ->setParameter(':' . $field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
                     ->setParameter(':' . $field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));

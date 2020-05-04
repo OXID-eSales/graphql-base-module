@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
+use InvalidArgumentException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function strtoupper;
@@ -58,22 +59,29 @@ class StringFilter implements FilterInterface
         return $this->beginsWith;
     }
 
-    public function addToQuery(QueryBuilder $builder, string $field, string $fromAlias): void
+    public function addToQuery(QueryBuilder $builder, string $field): void
     {
+        $from = $builder->getQueryPart('from');
+
+        if ($from === []) {
+            throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
+        }
+        $table = $from[0]['alias'] ?? $from[0]['table'];
+
         if ($this->equals) {
-            $builder->andWhere(sprintf('%s.%s = :%s_eq', $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s = :%s_eq', $table, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->contains) {
-            $builder->andWhere(sprintf('%s.%s LIKE :%s_contain', $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s LIKE :%s_contain', $table, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_contain', '%' . $this->contains . '%');
         }
 
         if ($this->beginsWith) {
-            $builder->andWhere(sprintf('%s.%s LIKE :%s_begins', $fromAlias, strtoupper($field), $field))
+            $builder->andWhere(sprintf('%s.%s LIKE :%s_begins', $table, strtoupper($field), $field))
                     ->setParameter(':' . $field . '_begins', $this->beginsWith . '%');
         }
     }
