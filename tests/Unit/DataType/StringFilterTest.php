@@ -9,11 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
+use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
+use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\StringFilter;
-use PHPUnit\Framework\TestCase;
 
-class StringFilterTest extends TestCase
+class StringFilterTest extends DataTypeTestCase
 {
     public function testThrowsExceptionOnNoInput(): void
     {
@@ -58,5 +59,88 @@ class StringFilterTest extends TestCase
             'beginsWith',
             $filter->beginsWith()
         );
+    }
+
+    public function testAddQueryPartWithNoFrom(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+        $filter       = StringFilter::fromUserInput('no_from');
+
+        $this->expectException(InvalidArgumentException::class);
+        $filter->addToQuery($queryBuilder, 'db_field');
+    }
+
+    public function testAddQueryPartEquals(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+
+        $string = 'equals';
+        $filter = StringFilter::fromUserInput($string);
+
+        $queryBuilder->select()->from('db_table');
+        $filter->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression $where */
+        $where = $queryBuilder->getQueryPart('where');
+
+        $this->assertEquals($where::TYPE_AND, $where->getType());
+        $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string) $where);
+        $this->assertEquals($string, $queryBuilder->getParameter(':db_field_eq'));
+    }
+
+    public function testAddQueryPartContains(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+
+        $string = 'contains';
+        $filter = StringFilter::fromUserInput(null, $string);
+
+        $queryBuilder->select()->from('db_table');
+        $filter->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression $where */
+        $where = $queryBuilder->getQueryPart('where');
+
+        $this->assertEquals($where::TYPE_AND, $where->getType());
+        $this->assertEquals(
+            'db_table.DB_FIELD LIKE :db_field_contain',
+            (string) $where
+        );
+        $this->assertEquals('%' . $string . '%', $queryBuilder->getParameter(':db_field_contain'));
+    }
+
+    public function testAddQueryPartBegins(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+
+        $string = 'begins';
+        $filter = StringFilter::fromUserInput(null, null, $string);
+
+        $queryBuilder->select()->from('db_table');
+        $filter->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression $where */
+        $where = $queryBuilder->getQueryPart('where');
+
+        $this->assertEquals($where::TYPE_AND, $where->getType());
+        $this->assertEquals(
+            'db_table.DB_FIELD LIKE :db_field_begins',
+            (string) $where
+        );
+        $this->assertEquals($string . '%', $queryBuilder->getParameter(':db_field_begins'));
+    }
+
+    public function testAddQueryPartWithAlias(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+        $filter       = StringFilter::fromUserInput('with_alias');
+
+        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $filter->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression $where */
+        $where = $queryBuilder->getQueryPart('where');
+
+        $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string) $where);
     }
 }

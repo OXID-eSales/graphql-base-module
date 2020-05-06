@@ -10,9 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
 use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
-use PHPUnit\Framework\TestCase;
 
-class PaginationFilterTest extends TestCase
+class PaginationFilterTest extends DataTypeTestCase
 {
     public function testReturnOnEmptyInitialization(): void
     {
@@ -64,6 +63,27 @@ class PaginationFilterTest extends TestCase
             [0, -1],
             [-1, 1],
             [-1, null],
+        ];
+    }
+
+    /**
+     * @dataProvider addPaginationToQueryProvider
+     */
+    public function testAddPaginationToQuery(int $offset, ?int $limit): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+        $filter       = PaginationFilter::fromUserInput($offset, $limit);
+
+        $filter->addPaginationToQuery($queryBuilder);
+
+        $this->assertEquals($offset, $queryBuilder->getFirstResult());
+        $this->assertEquals($limit, $queryBuilder->getMaxResults());
+    }
+
+    public function addPaginationToQueryProvider(): array
+    {
+        return [
+            [0, null], [0, 100], [5, null], [100, 10],
         ];
     }
 }

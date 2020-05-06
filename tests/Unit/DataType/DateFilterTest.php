@@ -10,12 +10,13 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
 use DateTime;
+use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
+use InvalidArgumentException;
 use OutOfBoundsException;
 use OxidEsales\GraphQL\Base\DataType\DateFilter;
-use PHPUnit\Framework\TestCase;
 
-class DateFilterTest extends TestCase
+class DateFilterTest extends DataTypeTestCase
 {
     public function testThrowsExceptionOnNoInput(): void
     {
@@ -105,5 +106,70 @@ class DateFilterTest extends TestCase
                 $filter->between()[1]->format(DateTime::ATOM),
             ]
         );
+    }
+
+    public function testAddQueryPartWithNoFrom(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+        $filter       = DateFilter::fromUserInput('2020-01-30 12:37:21');
+
+        $this->expectException(InvalidArgumentException::class);
+        $filter->addToQuery($queryBuilder, 'db_field');
+    }
+
+    public function testAddQueryPartEquals(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+        $date         = '2020-01-30 12:37:21';
+        $filter       = DateFilter::fromUserInput($date);
+
+        $queryBuilder->select()->from('db_table');
+        $filter->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression $where */
+        $where = $queryBuilder->getQueryPart('where');
+
+        $this->assertEquals($where::TYPE_AND, $where->getType());
+        $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string) $where);
+        $this->assertEquals($date, $queryBuilder->getParameter(':db_field_eq'));
+    }
+
+    public function testAddQueryPartBetween(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+
+        $dates = [
+            '2020-01-30 12:37:21',
+            '2020-01-30 12:37:22',
+        ];
+        $filter = DateFilter::fromUserInput(null, $dates);
+
+        $queryBuilder->select()->from('db_table');
+        $filter->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression $where */
+        $where = $queryBuilder->getQueryPart('where');
+
+        $this->assertEquals($where::TYPE_AND, $where->getType());
+        $this->assertEquals(
+            'db_table.DB_FIELD BETWEEN :db_field_lower AND :db_field_upper',
+            (string) $where
+        );
+        $this->assertEquals($dates[0], $queryBuilder->getParameter(':db_field_lower'));
+        $this->assertEquals($dates[1], $queryBuilder->getParameter(':db_field_upper'));
+    }
+
+    public function testAddQueryPartWithAlias(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+        $filter       = DateFilter::fromUserInput('2020-01-30 12:37:21');
+
+        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $filter->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression $where */
+        $where = $queryBuilder->getQueryPart('where');
+
+        $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string) $where);
     }
 }
