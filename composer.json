@@ -52,7 +52,7 @@
         "test:syntax": "parallel-lint src/ tests/ metadata.php",
         "test:static": "phpstan analyse src/",
         "test:unit": "phpunit -c tests/phpunit.xml tests/Unit/",
-        "test:infection": "infection --min-msi=58 --min-covered-msi=97",
+        "test:infection": "infection --min-msi=78 --min-covered-msi=97",
         "test": [
             "@test:syntax",
             "@test:lint",
