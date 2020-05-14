@@ -17,6 +17,7 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
@@ -41,12 +42,17 @@ class Authentication implements AuthenticationServiceInterface
 
     public function __construct(
         KeyRegistry $keyRegistry,
-        LegacyService $legacyService
+        LegacyService $legacyService,
+        Token $token
     ) {
         $this->keyRegistry   = $keyRegistry;
         $this->legacyService = $legacyService;
+        $this->token         = $token;
     }
 
+    /**
+     * @deprecated moved to constructor
+     */
     public function setToken(?Token $token = null): void
     {
         $this->token = $token;
@@ -58,6 +64,10 @@ class Authentication implements AuthenticationServiceInterface
     public function isLogged(): bool
     {
         if ($this->token === null) {
+            return false;
+        }
+
+        if ($this->token instanceof NullToken) {
             return false;
         }
 
@@ -118,6 +128,10 @@ class Authentication implements AuthenticationServiceInterface
         $validation->setAudience($this->legacyService->getShopUrl());
 
         if (!$token->validate($validation)) {
+            return false;
+        }
+
+        if (!$token->hasClaim(self::CLAIM_SHOPID)) {
             return false;
         }
 

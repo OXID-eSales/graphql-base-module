@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Controller\Login;
+use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Legacy;
@@ -41,7 +42,8 @@ class LoginTest extends TestCase
                                      ->getMock();
         $this->authentication = new Authentication(
             $this->keyRegistry,
-            $this->legacy
+            $this->legacy,
+            new NullToken()
         );
     }
 

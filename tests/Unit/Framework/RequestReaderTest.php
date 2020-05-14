@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 use Exception;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use PHPUnit\Framework\TestCase;
 
@@ -25,8 +26,8 @@ class RequestReaderTest extends TestCase
     public function testGetAuthTokenWithoutToken(): void
     {
         $requestReader = new RequestReader();
-        $this->assertEquals(
-            null,
+        $this->assertInstanceOf(
+            NullToken::class,
             $requestReader->getAuthToken()
         );
     }
@@ -41,8 +42,8 @@ class RequestReaderTest extends TestCase
 
         foreach ($headers as $header) {
             $_SERVER[$header] = 'authtoken';
-            $this->assertEquals(
-                null,
+            $this->assertInstanceOf(
+                NullToken::class,
                 $requestReader->getAuthToken()
             );
             unset($_SERVER[$header]);
