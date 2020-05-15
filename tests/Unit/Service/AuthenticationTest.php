@@ -77,13 +77,24 @@ class AuthenticationTest extends TestCase
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
     {
-        $this->expectException(InvalidToken::class);
-
         $this->authenticationService->setToken(
             (new Parser())->parse(self::$invalidToken)
         );
 
-        $this->authenticationService->isLogged();
+        $e = null;
+
+        try {
+            $this->authenticationService->isLogged();
+        } catch (InvalidToken $e) {
+        }
+        $this->assertInstanceOf(
+            InvalidToken::class,
+            $e
+        );
+        $this->assertSame(
+            403,
+            $e->getHttpStatus()
+        );
     }
 
     public function testIsLoggedWithNullToken(): void
