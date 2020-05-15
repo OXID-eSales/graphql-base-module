@@ -41,6 +41,19 @@ class PaginationFilterTest extends DataTypeTestCase
         );
     }
 
+    public function testDefaultNamedConstructor(): void
+    {
+        $paging = PaginationFilter::fromUserInput();
+
+        $this->assertSame(
+            0,
+            $paging->offset()
+        );
+        $this->assertNull(
+            $paging->limit()
+        );
+    }
+
     /**
      * @dataProvider paginationDataProvider
      *
