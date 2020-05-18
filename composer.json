@@ -9,9 +9,9 @@
         "oxideshop": {
             "target-directory": "oe/graphql-base",
             "blacklist-filter": [
-                "docs",
-                "src/",
-                "tests/"
+                "docs/*",
+                "src/*",
+                "tests/*"
             ]
         }
     },
