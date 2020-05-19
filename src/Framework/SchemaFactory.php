@@ -19,7 +19,7 @@ use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 /**
  * Class SchemaFactory
  */
-class SchemaFactory implements SchemaFactoryInterface
+class SchemaFactory
 {
     /** @var Schema */
     private $schema;

@@ -22,7 +22,7 @@ use function sscanf;
 use function strpos;
 use function trim;
 
-class RequestReader implements RequestReaderInterface
+class RequestReader
 {
     /**
      * Returns the encoded token from the authorization header
