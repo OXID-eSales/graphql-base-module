@@ -23,7 +23,7 @@ use function strlen;
  * The current implementation stores the signature key in
  * the config table. This should be changed eventually.
  */
-class KeyRegistry implements KeyRegistryInterface
+class KeyRegistry
 {
     public const SIGNATUREKEYNAME = 'sJsonWebTokenSignature';
 

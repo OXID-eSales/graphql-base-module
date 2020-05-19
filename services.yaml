@@ -51,38 +51,3 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper
-
-
-
-  OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface:
-    class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
-    arguments:
-      $namespaceMappers: !tagged graphql_namespace_mapper
-
-  OxidEsales\GraphQL\Base\Service\LegacyServiceInterface:
-    class: OxidEsales\GraphQL\Base\Service\LegacyService
-
-  OxidEsales\GraphQL\Base\Service\KeyRegistryInterface:
-    class: OxidEsales\GraphQL\Base\Service\KeyRegistry
-    public: true
-
-  OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface:
-    class: OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider
-
-  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface:
-    class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
-    public: true
-
-  OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
-    class: OxidEsales\GraphQL\Base\Framework\RequestReader
-
-  OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
-    class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
-
-  OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface:
-    class: OxidEsales\GraphQL\Base\Service\AuthenticationService
-
-  OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface:
-    class: OxidEsales\GraphQL\Base\Service\AuthorizationService
-    arguments:
-        $permissionProviders: !tagged graphql_permission_provider

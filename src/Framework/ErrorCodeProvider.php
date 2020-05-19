@@ -23,7 +23,7 @@ use function get_class;
  *
  * TODO: Think of something more sophisticated
  */
-class ErrorCodeProvider implements ErrorCodeProviderInterface
+class ErrorCodeProvider
 {
     public function getHttpReturnCode(ExecutionResult $result): int
     {

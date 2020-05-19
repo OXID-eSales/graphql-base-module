@@ -77,11 +77,11 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        if (!$this->token->hasClaim(AuthenticationService::CLAIM_GROUP)) {
+        if (!$this->token->hasClaim(Authentication::CLAIM_GROUP)) {
             return false;
         }
 
-        $group = $this->token->getClaim(AuthenticationService::CLAIM_GROUP);
+        $group = $this->token->getClaim(Authentication::CLAIM_GROUP);
 
         if (!isset($this->permissions[$group])) {
             return false;

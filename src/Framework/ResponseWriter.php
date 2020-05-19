@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\Framework;
 use function header;
 use function json_encode;
 
-class ResponseWriter implements ResponseWriterInterface
+class ResponseWriter
 {
     /**
      * Return a JSON Object with the graphql results

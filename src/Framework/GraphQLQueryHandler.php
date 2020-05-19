@@ -15,7 +15,7 @@ use GraphQL\Executor\ExecutionResult;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
-class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
+class GraphQLQueryHandler
 {
     /** @var LoggerInterface */
     private $logger;
