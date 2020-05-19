@@ -47,14 +47,6 @@ class Authorization implements AuthorizationServiceInterface
         $this->token           = $token;
     }
 
-    /**
-     * @deprecated moved to constructor
-     */
-    public function setToken(?Token $token = null): void
-    {
-        $this->token = $token;
-    }
-
     public function isAllowed(string $right): bool
     {
         if ($this->token === null) {

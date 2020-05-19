@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 abstract class TestCase extends PHPUnitTestCase
 {
@@ -89,11 +90,19 @@ abstract class TestCase extends PHPUnitTestCase
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
         $token                         = static::$container->get(RequestReader::class)
-                                   ->getAuthToken();
-        static::$container->get(Authentication::class)
-                          ->setToken($token);
-        static::$container->get(Authorization::class)
-                          ->setToken($token);
+                                                           ->getAuthToken();
+
+        $authentication = static::$container->get(Authentication::class);
+        $refClass       = new ReflectionClass(Authentication::class);
+        $prop           = $refClass->getProperty('token');
+        $prop->setAccessible(true);
+        $prop->setValue($authentication, $token);
+
+        $authorization = static::$container->get(Authorization::class);
+        $refClass      = new ReflectionClass(Authorization::class);
+        $prop          = $refClass->getProperty('token');
+        $prop->setAccessible(true);
+        $prop->setValue($authorization, $token);
     }
 
     protected function query(string $query, ?array $variables = null, ?string $operationName = null): array

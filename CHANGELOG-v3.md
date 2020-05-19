@@ -31,5 +31,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `OxidEsales\GraphQL\Base\Service\AuthenticationService`
     - `OxidEsales\GraphQL\Base\Service\LegacyService`
     - `OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent`
+- Methods
+    - `OxidEsales\GraphQL\Base\Service\Authorization::setToken`
+    - `OxidEsales\GraphQL\Base\Service\Authentication::setToken`
 
 [3.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.5.0...v3.0.0

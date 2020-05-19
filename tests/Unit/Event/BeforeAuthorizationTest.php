@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use PHPUnit\Framework\TestCase;
 
-class BeforeAuthorizationEvent extends TestCase
+class BeforeAuthorizationTest extends TestCase
 {
     public function testBasicGetters(): void
     {

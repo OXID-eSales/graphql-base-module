@@ -34,9 +34,6 @@ class AuthenticationTest extends TestCase
     /** @var LegacyService|MockObject */
     private $legacyService;
 
-    /** @var Authentication */
-    private $authenticationService;
-
     public function setUp(): void
     {
         $this->keyRegistry = $this->getMockBuilder(KeyRegistry::class)
@@ -47,11 +44,6 @@ class AuthenticationTest extends TestCase
         $this->legacyService         = $this->getMockBuilder(LegacyService::class)
                                             ->disableOriginalConstructor()
                                             ->getMock();
-        $this->authenticationService = new Authentication(
-            $this->keyRegistry,
-            $this->legacyService,
-            new NullToken()
-        );
     }
 
     public function testCreateTokenWithInvalidCredentials(): void
@@ -61,30 +53,41 @@ class AuthenticationTest extends TestCase
              ->method('checkCredentials')
              ->willThrowException(new InvalidLogin());
 
-        $this->authenticationService
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            new NullToken()
+        );
+
+        $authenticationService
              ->createToken('foo', 'bar');
     }
 
     public function testIsLoggedWithoutToken(): void
     {
-        $this->authenticationService
-             ->setToken(null);
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            new NullToken()
+        );
 
         $this->assertFalse(
-            $this->authenticationService->isLogged()
+            $authenticationService->isLogged()
         );
     }
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
     {
-        $this->authenticationService->setToken(
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
             (new Parser())->parse(self::$invalidToken)
         );
 
         $e = null;
 
         try {
-            $this->authenticationService->isLogged();
+            $authenticationService->isLogged();
         } catch (InvalidToken $e) {
         }
         $this->assertInstanceOf(
@@ -99,12 +102,14 @@ class AuthenticationTest extends TestCase
 
     public function testIsLoggedWithNullToken(): void
     {
-        $this->authenticationService->setToken(
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
             new NullToken()
         );
 
         $this->assertFalse(
-            $this->authenticationService->isLogged()
+            $authenticationService->isLogged()
         );
     }
 
@@ -122,7 +127,13 @@ class AuthenticationTest extends TestCase
              ->method('getShopId')
              ->willReturn(1);
 
-        self::$token = $this->authenticationService->createToken('admin', 'admin');
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            new NullToken()
+        );
+
+        self::$token = $authenticationService->createToken('admin', 'admin');
 
         $this->assertInstanceOf(
             \Lcobucci\JWT\Token::class,
@@ -142,11 +153,13 @@ class AuthenticationTest extends TestCase
              ->method('getShopId')
              ->willReturn(1);
 
-        $this->authenticationService->setToken(
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
             self::$token
         );
 
-        $this->assertTrue($this->authenticationService->isLogged());
+        $this->assertTrue($authenticationService->isLogged());
     }
 
     /**
@@ -162,12 +175,13 @@ class AuthenticationTest extends TestCase
              ->method('getShopId')
              ->willReturn(-1);
 
-        $this->authenticationService
-             ->setToken(
-                 self::$token
-             );
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$token
+        );
 
-        $this->authenticationService->isLogged();
+        $authenticationService->isLogged();
     }
 
     /**
@@ -186,10 +200,12 @@ class AuthenticationTest extends TestCase
              ->method('getShopId')
              ->willReturn(1);
 
-        $this->authenticationService
-             ->setToken(
-                 self::$token
-             );
-        $this->authenticationService->isLogged();
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$token
+        );
+
+        $authenticationService->isLogged();
     }
 }

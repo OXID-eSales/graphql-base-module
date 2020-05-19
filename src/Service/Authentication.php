@@ -51,14 +51,6 @@ class Authentication implements AuthenticationServiceInterface
     }
 
     /**
-     * @deprecated moved to constructor
-     */
-    public function setToken(?Token $token = null): void
-    {
-        $this->token = $token;
-    }
-
-    /**
      * @throws InvalidToken
      */
     public function isLogged(): bool
