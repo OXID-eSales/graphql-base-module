@@ -4,10 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [2.5.0] 2020-05-19
 
 ### Added
-- [OXDEV-3407] Pagination input type
+- Pagination input type
 
 ## [2.4.1] 2020-04-15
 
@@ -20,13 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.4.0] 2020-04-01
 
 ### Changed
-- [#9] deprecate smurf naming and superflus interfaces
-- [OXDEV-3282] Rewrite test to not use assertIsString
+- [#9](https://github.com/OXID-eSales/graphql-base-module/pull/9) deprecate smurf naming and superflus interfaces
+- Rewrite test to not use assertIsString
 
 ### Added
-- [#10] added infection mutation testing framework and improved tests
+- [#10](https://github.com/OXID-eSales/graphql-base-module/pull/10) added infection mutation testing framework and improved tests
 - PHP-CS-Fixer
-- [OXDEV-3287] allow for PHPUnit ^7.5|^8.5|^9
+- allow for PHPUnit ^7.5|^8.5|^9
 
 ## [2.3.0] 2020-02-18
 
@@ -160,3 +160,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Namespace from \OxidEsales\GraphQL to \OxidEsales\GraphQL\Base
 - PSR2 -> PSR12
+
+[2.5.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.4.1...v2.5.0
+[2.4.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.4.0...v2.4.1
+[2.4.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.3.0...v2.4.0
+[2.3.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.2.0...v2.3.0
+[2.2.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.1.0...v2.2.0
+[2.1.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.0.0...v2.1.0
+[2.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.3.3...v2.0.0
+[1.3.3]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.3.2...v1.3.3
+[1.3.2]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.3.1...v1.3.2
+[1.3.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.3.0...v1.3.1
+[1.3.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.1.2...v1.2.0
+[1.1.2]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.1.1...v1.1.2
+[1.1.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v0.1.0...v1.0.0
+[0.1.0]: https://github.com/OXID-eSales/graphql-base-module/releases/tag/v0.1.0
