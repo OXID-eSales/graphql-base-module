@@ -1,0 +1,35 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [unreleased]
+
+### Added
+
+- `OxidEsales\GraphQL\Base\Framework\NullToken`
+
+### Changed
+
+- `OxidEsales\GraphQL\Base\Framework\RequestReader::getAuthToken` now always returns with a Token object
+
+### Removed
+
+- Interfaces
+    - `OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface`
+    - `OxidEsales\GraphQL\Base\Service\LegacyServiceInterface`
+    - `OxidEsales\GraphQL\Base\Service\KeyRegistryInterface`
+    - `OxidEsales\GraphQL\Base\Framework\ErrorCodeProviderInterface`
+    - `OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface`
+    - `OxidEsales\GraphQL\Base\Framework\RequestReaderInterface`
+    - `OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface`
+    - `OxidEsales\GraphQL\Base\Service\AuthenticationServiceInterface`
+    - `OxidEsales\GraphQL\Base\Service\AuthorizationServiceInterface`
+- Classes
+    - `OxidEsales\GraphQL\Base\Service\AuthorizationService`
+    - `OxidEsales\GraphQL\Base\Service\AuthenticationService`
+    - `OxidEsales\GraphQL\Base\Service\LegacyService`
+    - `OxidEsales\GraphQL\Base\Event\BeforeAuthorizationEvent`
+
+[3.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v2.5.0...v3.0.0
