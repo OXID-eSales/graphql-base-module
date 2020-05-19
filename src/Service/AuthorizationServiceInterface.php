@@ -17,5 +17,8 @@ use TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface as GraphQ
  */
 interface AuthorizationServiceInterface extends GraphQLiteAuthorizationServiceInterface
 {
+    /**
+     * @deprecated moved to constructor
+     */
     public function setToken(?Token $token = null): void;
 }

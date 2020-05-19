@@ -34,7 +34,8 @@ class Authorization implements AuthorizationServiceInterface
      */
     public function __construct(
         iterable $permissionProviders,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        Token $token
     ) {
         foreach ($permissionProviders as $permissionProvider) {
             $this->permissions = array_merge_recursive(
@@ -43,8 +44,12 @@ class Authorization implements AuthorizationServiceInterface
             );
         }
         $this->eventDispatcher = $eventDispatcher;
+        $this->token           = $token;
     }
 
+    /**
+     * @deprecated moved to constructor
+     */
     public function setToken(?Token $token = null): void
     {
         $this->token = $token;
@@ -70,6 +75,10 @@ class Authorization implements AuthorizationServiceInterface
 
         if (is_bool($authByEvent)) {
             return $authByEvent;
+        }
+
+        if (!$this->token->hasClaim(AuthenticationService::CLAIM_GROUP)) {
+            return false;
         }
 
         $group = $this->token->getClaim(AuthenticationService::CLAIM_GROUP);

@@ -31,16 +31,16 @@ class RequestReader implements RequestReaderInterface
      */
     public function getAuthToken(): ?Token
     {
-        $token      = null;
+        $token      = new NullToken();
         $authHeader = $this->getAuthorizationHeader();
 
         if ($authHeader === null) {
-            return null;
+            return $token;
         }
         [$jwt] = sscanf($authHeader, 'Bearer %s');
 
         if (!$jwt) {
-            return null;
+            return $token;
         }
 
         try {

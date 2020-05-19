@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
+use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
@@ -24,7 +25,8 @@ class AuthorizationTest extends TestCase
     {
         $auth = new Authorization(
             [],
-            $this->getEventDispatcherMock()
+            $this->getEventDispatcherMock(),
+            new NullToken()
         );
 
         $this->assertFalse(
@@ -36,9 +38,7 @@ class AuthorizationTest extends TestCase
     {
         $auth = new Authorization(
             [],
-            $this->getEventDispatcherMock()
-        );
-        $auth->setToken(
+            $this->getEventDispatcherMock(),
             $this->getTokenMock()
         );
 
@@ -51,7 +51,8 @@ class AuthorizationTest extends TestCase
     {
         $auth = new Authorization(
             $this->getPermissionMocks(),
-            $this->getEventDispatcherMock()
+            $this->getEventDispatcherMock(),
+            new NullToken()
         );
 
         $this->assertFalse(
@@ -63,10 +64,7 @@ class AuthorizationTest extends TestCase
     {
         $auth = new Authorization(
             $this->getPermissionMocks(),
-            $this->getEventDispatcherMock()
-        );
-
-        $auth->setToken(
+            $this->getEventDispatcherMock(),
             $this->getTokenMock()
         );
 
@@ -95,10 +93,7 @@ class AuthorizationTest extends TestCase
         );
         $auth = new Authorization(
             $this->getPermissionMocks(),
-            $eventDispatcher
-        );
-
-        $auth->setToken(
+            $eventDispatcher,
             $this->getTokenMock()
         );
 
@@ -127,10 +122,7 @@ class AuthorizationTest extends TestCase
         );
         $auth = new Authorization(
             $this->getPermissionMocks(),
-            $eventDispatcher
-        );
-
-        $auth->setToken(
+            $eventDispatcher,
             $this->getTokenMock()
         );
 
@@ -151,6 +143,18 @@ class AuthorizationTest extends TestCase
     private function getTokenMock(): Token
     {
         $token = $this->getMockBuilder(Token::class)->getMock();
+        $token->method('hasClaim')
+            ->will($this->returnCallback(
+                function ($claim) {
+                    if ($claim == Authentication::CLAIM_GROUP) {
+                        return true;
+                    }
+
+                    if ($claim == Authentication::CLAIM_USERNAME) {
+                        return true;
+                    }
+                }
+            ));
         $token->method('getClaim')
             ->will($this->returnCallback(
                 function ($claim) {

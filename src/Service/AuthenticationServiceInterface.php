@@ -17,6 +17,9 @@ use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface as Graph
  */
 interface AuthenticationServiceInterface extends GraphQLiteAuthenticationServiceInterface
 {
+    /**
+     * @deprecated moved to constructor
+     */
     public function setToken(?Token $token = null): void;
 
     public function createToken(string $username, string $password): Token;

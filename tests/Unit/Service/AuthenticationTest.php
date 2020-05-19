@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use Lcobucci\JWT\Parser;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
@@ -46,7 +47,11 @@ class AuthenticationTest extends TestCase
         $this->legacyService         = $this->getMockBuilder(LegacyService::class)
                                             ->disableOriginalConstructor()
                                             ->getMock();
-        $this->authenticationService = new Authentication($this->keyRegistry, $this->legacyService);
+        $this->authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            new NullToken()
+        );
     }
 
     public function testCreateTokenWithInvalidCredentials(): void
@@ -72,13 +77,35 @@ class AuthenticationTest extends TestCase
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
     {
-        $this->expectException(InvalidToken::class);
-
         $this->authenticationService->setToken(
             (new Parser())->parse(self::$invalidToken)
         );
 
-        $this->authenticationService->isLogged();
+        $e = null;
+
+        try {
+            $this->authenticationService->isLogged();
+        } catch (InvalidToken $e) {
+        }
+        $this->assertInstanceOf(
+            InvalidToken::class,
+            $e
+        );
+        $this->assertSame(
+            403,
+            $e->getHttpStatus()
+        );
+    }
+
+    public function testIsLoggedWithNullToken(): void
+    {
+        $this->authenticationService->setToken(
+            new NullToken()
+        );
+
+        $this->assertFalse(
+            $this->authenticationService->isLogged()
+        );
     }
 
     public function testCreateTokenWithValidCredentials(): void
