@@ -1,6 +1,8 @@
 README.md            export-ignore
 composer-problem.jpg export-ignore
-CHANGELOG.md         export-ignore
+CHANGELOG-v1.md      export-ignore
+CHANGELOG-v2.md      export-ignore
+CHANGELOG-v3.md      export-ignore
 /docs                export-ignore
 /tests               export-ignore
 .editorconfig        export-ignore
