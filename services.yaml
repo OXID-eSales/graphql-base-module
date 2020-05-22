@@ -40,7 +40,7 @@ services:
         $permissionProviders: !tagged graphql_permission_provider
 
   OxidEsales\GraphQL\Base\Controller\:
-    resource: 'src/Controller/*'
+    resource: 'src/Controller/'
     public: true
 
   OxidEsales\GraphQL\Base\Service\NamespaceMapper:
