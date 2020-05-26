@@ -86,6 +86,17 @@ class Authentication implements AuthenticationServiceInterface
         );
     }
 
+    /*
+     * @throws OutOfBoundsException
+     */
+    public function whoIsLogged(): string
+    {
+        if (!$this->token) {
+            return '';
+        }
+        return (string) $this->token->getClaim(Authentication::CLAIM_USERNAME);
+    }
+
     /**
      * @internal
      */

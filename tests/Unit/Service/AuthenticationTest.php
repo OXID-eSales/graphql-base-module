@@ -208,4 +208,64 @@ class AuthenticationTest extends TestCase
 
         $authenticationService->isLogged();
     }
+
+    public function providerWhoIsLogged()
+    {
+        return [
+            'admin' => [
+                'username' => 'admin',
+                'password' => 'admin'],
+            'user'  => [
+                'username' => 'user@oxid-esales.com',
+                'password' => 'useruser'
+            ],
+            'not_existing'  => [
+                'username' => 'notauser@oxid-esales.com',
+                'password' => 'notauseruser'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider providerWhoIsLogged
+     */
+    public function testWhoIsLogged($username, $password)
+    {
+        $authenticationService = $this->getAuthenticatonService();
+        self::$token = $authenticationService->createToken($username, $password);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$token
+        );
+
+        $this->assertSame($username, $authenticationService->whoIsLogged());
+    }
+
+    public function testWhoIsLoggedForNullToken()
+    {
+        $authenticationService = $this->getAuthenticatonService();
+
+        $this->expectException(\OutOfBoundsException::class);
+        $authenticationService->whoIsLogged();
+    }
+
+    private function getAuthenticatonService(): Authentication
+    {
+        $this->legacyService
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacyService
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            new NullToken()
+        );
+
+        return $authenticationService;
+    }
 }
