@@ -51,3 +51,12 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper
+      $cache: '@oxidesales.graphqlbase.cache'
+
+  oxidesales.graphqlbase.cacheadapter:
+    class: Symfony\Component\Cache\Adapter\NullAdapter
+
+  oxidesales.graphqlbase.cache:
+    class: Symfony\Component\Cache\Psr16Cache
+    arguments:
+      $pool: '@oxidesales.graphqlbase.cacheadapter'

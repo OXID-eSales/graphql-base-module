@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Framework;
 use Mouf\Composer\ClassNameMapper;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
@@ -37,13 +38,19 @@ class SchemaFactory
     private $container;
 
     /**
+     * @var CacheInterface
+     */
+    private $cache;
+
+    /**
      * @param NamespaceMapperInterface[] $namespaceMappers
      */
     public function __construct(
         iterable $namespaceMappers,
         Authentication $authentication,
         Authorization $authorization,
-        ContainerInterface $container
+        ContainerInterface $container,
+        CacheInterface $cache
     ) {
         foreach ($namespaceMappers as $namespaceMapper) {
             $this->namespaceMappers[] = $namespaceMapper;
@@ -51,6 +58,7 @@ class SchemaFactory
         $this->authentication = $authentication;
         $this->authorization  = $authorization;
         $this->container      = $container;
+        $this->cache          = $cache;
     }
 
     public function getSchema(): Schema
@@ -60,7 +68,7 @@ class SchemaFactory
         }
 
         $factory = new GraphQLiteSchemaFactory(
-            new \Symfony\Component\Cache\Simple\NullCache(),
+            $this->cache,
             $this->container
         );
 
