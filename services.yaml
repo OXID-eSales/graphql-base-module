@@ -53,6 +53,14 @@ services:
       $namespaceMappers: !tagged graphql_namespace_mapper
       $cache: '@oxidesales.graphqlbase.cache'
 
+  OxidEsales\GraphQL\Base\Event\Subscriber\ModuleChangeSubscriber:
+    class: OxidEsales\GraphQL\Base\Event\Subscriber\ModuleChangeSubscriber
+    public: true
+    arguments:
+      $cache: '@oxidesales.graphqlbase.cache'
+    tags:
+      - {name: kernel.event_subscriber}
+
   oxidesales.graphqlbase.cacheadapter:
     class: Symfony\Component\Cache\Adapter\NullAdapter
 
