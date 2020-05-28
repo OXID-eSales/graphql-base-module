@@ -6,10 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- `OxidEsales\GraphQL\Base\Framework\SchemaFactory` gets `Psr\SimpleCache\CacheInterface $cache` injected in constructor.
-   Cache gets flushed on module events.
+### Added
 
+- `$cache` parameter to `OxidEsales\GraphQL\Base\Framework\SchemaFactory::__construct`
+- Cache flush on module events
 
 ## [3.0.0] 2020-05-19
 

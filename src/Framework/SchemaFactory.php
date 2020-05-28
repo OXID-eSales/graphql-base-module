@@ -13,6 +13,8 @@ use Mouf\Composer\ClassNameMapper;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Cache\Adapter\NullAdapter;
+use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
@@ -50,7 +52,7 @@ class SchemaFactory
         Authentication $authentication,
         Authorization $authorization,
         ContainerInterface $container,
-        CacheInterface $cache
+        ?CacheInterface $cache = null
     ) {
         foreach ($namespaceMappers as $namespaceMapper) {
             $this->namespaceMappers[] = $namespaceMapper;
@@ -58,7 +60,9 @@ class SchemaFactory
         $this->authentication = $authentication;
         $this->authorization  = $authorization;
         $this->container      = $container;
-        $this->cache          = $cache;
+        $this->cache          = $cache ?? new Psr16Cache(
+            new NullAdapter()
+        );
     }
 
     public function getSchema(): Schema
