@@ -94,7 +94,8 @@ class Authentication implements AuthenticationServiceInterface
         if (!$this->token) {
             return '';
         }
-        return (string) $this->token->getClaim(Authentication::CLAIM_USERNAME);
+
+        return (string) $this->token->getClaim(self::CLAIM_USERNAME);
     }
 
     /**

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Parser;
+use OutOfBoundsException;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
@@ -214,25 +215,28 @@ class AuthenticationTest extends TestCase
         return [
             'admin' => [
                 'username' => 'admin',
-                'password' => 'admin'],
+                'password' => 'admin', ],
             'user'  => [
                 'username' => 'user@oxid-esales.com',
-                'password' => 'useruser'
+                'password' => 'useruser',
             ],
             'not_existing'  => [
                 'username' => 'notauser@oxid-esales.com',
-                'password' => 'notauseruser'
-            ]
+                'password' => 'notauseruser',
+            ],
         ];
     }
 
     /**
      * @dataProvider providerWhoIsLogged
+     *
+     * @param mixed $username
+     * @param mixed $password
      */
-    public function testWhoIsLogged($username, $password)
+    public function testWhoIsLogged($username, $password): void
     {
         $authenticationService = $this->getAuthenticatonService();
-        self::$token = $authenticationService->createToken($username, $password);
+        self::$token           = $authenticationService->createToken($username, $password);
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
@@ -243,11 +247,11 @@ class AuthenticationTest extends TestCase
         $this->assertSame($username, $authenticationService->whoIsLogged());
     }
 
-    public function testWhoIsLoggedForNullToken()
+    public function testWhoIsLoggedForNullToken(): void
     {
         $authenticationService = $this->getAuthenticatonService();
 
-        $this->expectException(\OutOfBoundsException::class);
+        $this->expectException(OutOfBoundsException::class);
         $authenticationService->whoIsLogged();
     }
 
@@ -260,12 +264,10 @@ class AuthenticationTest extends TestCase
             ->method('getShopId')
             ->willReturn(1);
 
-        $authenticationService = new Authentication(
+        return new Authentication(
             $this->keyRegistry,
             $this->legacyService,
             new NullToken()
         );
-
-        return $authenticationService;
     }
 }

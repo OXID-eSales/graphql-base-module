@@ -5,8 +5,7 @@
  * See LICENSE file for license details.
  */
 
-use OxidEsales\Eshop\Application\Controller\Admin\ModuleConfiguration;
-use OxidEsales\Eshop\Application\Controller\Admin\NavigationTree;
+declare(strict_types=1);
 
 /**
  * Metadata version
@@ -31,7 +30,7 @@ $aModule = [
     'author'      => 'OXID eSales',
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
-    'extend' => [
+    'extend'      => [
     ],
     'controllers' => [
         // Widget Controller
@@ -46,11 +45,11 @@ $aModule = [
             'group' => 'graphql_base',
             'name'  => 'sJsonWebTokenSignature',
             'type'  => 'str',
-            'value' => 'CHANGE ME'
-        ]
+            'value' => 'CHANGE ME',
+        ],
     ],
     'events'      => [
         'onActivate'   => 'OxidEsales\\GraphQL\\Base\\Framework\\ModuleSetup::onActivate',
-        'onDeactivate' => 'OxidEsales\\GraphQL\\Base\\Framework\\ModuleSetup::onDeactivate'
-    ]
+        'onDeactivate' => 'OxidEsales\\GraphQL\\Base\\Framework\\ModuleSetup::onDeactivate',
+    ],
 ];
