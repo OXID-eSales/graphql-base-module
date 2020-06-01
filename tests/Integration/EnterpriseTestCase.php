@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
-abstract class EnterpriseTestCase extends TestCase
+use OxidEsales\GraphQL\Catalogue\Tests\Integration\TokenTestCase;
+
+abstract class EnterpriseTestCase extends TokenTestCase
 {
     protected function setUp(): void
     {
