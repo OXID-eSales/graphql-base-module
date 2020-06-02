@@ -87,12 +87,12 @@ class Authentication implements AuthenticationServiceInterface
     }
 
     /*
-     * @throws OutOfBoundsException
+     * @throws InvalidToken
      */
-    public function whoIsLogged(): string
+    public function getUserName(): string
     {
-        if (!$this->token) {
-            return '';
+        if (!$this->isLogged() || !$this->token) {
+            throw new InvalidToken('The token is invalid');
         }
 
         return (string) $this->token->getClaim(self::CLAIM_USERNAME);

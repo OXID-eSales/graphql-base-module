@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `$cache` parameter to `OxidEsales\GraphQL\Base\Framework\SchemaFactory::__construct`
 - Cache flush on module events
-- `OxidEsales\GraphQL\Base\Service\Authentication::whoIsLogged()`
+- `OxidEsales\GraphQL\Base\Service\Authentication::getUserName()`
 
 ## [3.0.0] 2020-05-19
 

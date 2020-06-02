@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Parser;
-use OutOfBoundsException;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
@@ -190,7 +189,7 @@ class AuthenticationTest extends TestCase
      *
      * can not use expectException due to needed cleanup in registry config
      */
-    public function testIsLoggedWithValidForAnotherShopUrlToken(): void
+    public function testGetUserNameWithValidForAnotherShopUrlToken(): void
     {
         $this->expectException(InvalidToken::class);
 
@@ -210,7 +209,7 @@ class AuthenticationTest extends TestCase
         $authenticationService->isLogged();
     }
 
-    public function providerWhoIsLogged()
+    public function providerGetUserName()
     {
         return [
             'admin' => [
@@ -228,14 +227,14 @@ class AuthenticationTest extends TestCase
     }
 
     /**
-     * @dataProvider providerWhoIsLogged
+     * @dataProvider providerGetUserName
      *
      * @param mixed $username
      * @param mixed $password
      */
-    public function testWhoIsLogged($username, $password): void
+    public function testGetUserName($username, $password): void
     {
-        $authenticationService = $this->getAuthenticatonService();
+        $authenticationService = $this->getAuthenticationService();
         self::$token           = $authenticationService->createToken($username, $password);
 
         $authenticationService = new Authentication(
@@ -244,18 +243,18 @@ class AuthenticationTest extends TestCase
             self::$token
         );
 
-        $this->assertSame($username, $authenticationService->whoIsLogged());
+        $this->assertSame($username, $authenticationService->getUserName());
     }
 
-    public function testWhoIsLoggedForNullToken(): void
+    public function testGetUserNameForNullToken(): void
     {
-        $authenticationService = $this->getAuthenticatonService();
+        $authenticationService = $this->getAuthenticationService();
 
-        $this->expectException(OutOfBoundsException::class);
-        $authenticationService->whoIsLogged();
+        $this->expectException(InvalidToken::class);
+        $authenticationService->getUserName();
     }
 
-    private function getAuthenticatonService(): Authentication
+    private function getAuthenticationService(): Authentication
     {
         $this->legacyService
             ->method('getShopUrl')
