@@ -29,6 +29,8 @@ class Authentication implements AuthenticationServiceInterface
 
     public const CLAIM_USERNAME = 'username';
 
+    public const CLAIM_USERID = 'userid';
+
     public const CLAIM_GROUP    = 'group';
 
     /** @var KeyRegistry */
@@ -77,7 +79,10 @@ class Authentication implements AuthenticationServiceInterface
     {
         $this->legacyService->checkCredentials($username, $password);
         $usergroup = $this->legacyService->getUserGroup($username);
-        $builder   = $this->getTokenBuilder()->withClaim(self::CLAIM_USERNAME, $username)
+        $userid = $this->legacyService->getUserId($username);
+        $builder   = $this->getTokenBuilder()
+            ->withClaim(self::CLAIM_USERNAME, $username)
+            ->withClaim(self::CLAIM_USERID, $userid)
             ->withClaim(self::CLAIM_GROUP, $usergroup);
 
         return $builder->getToken(
@@ -86,7 +91,7 @@ class Authentication implements AuthenticationServiceInterface
         );
     }
 
-    /*
+    /**
      * @throws InvalidToken
      */
     public function getUserName(): string
@@ -96,6 +101,18 @@ class Authentication implements AuthenticationServiceInterface
         }
 
         return (string) $this->token->getClaim(self::CLAIM_USERNAME);
+    }
+
+    /**
+     * @throws InvalidToken
+     */
+    public function getUserId(): string
+    {
+        if (!$this->isLogged() || !$this->token) {
+            throw new InvalidToken('The token is invalid');
+        }
+
+        return (string) $this->token->getClaim(self::CLAIM_USERID);
     }
 
     /**

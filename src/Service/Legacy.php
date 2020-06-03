@@ -69,6 +69,26 @@ class Legacy
     }
 
     /**
+     * @throws InvalidLogin
+     */
+    public function getUserId(string $username): string
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+        /** @var \Doctrine\DBAL\Driver\Statement<array> */
+        $result       = $queryBuilder->select('OXID')
+            ->from('oxuser')
+            ->where($queryBuilder->expr()->eq('OXUSERNAME', ':username'))
+            ->setParameter('username', $username)
+            ->execute();
+
+        if ($oxid = $result->fetchColumn()) {
+            return $oxid;
+        }
+
+        throw new InvalidLogin('User does not exist.');
+    }
+
+    /**
      * @return mixed
      */
     public function getConfigParam(string $param)
