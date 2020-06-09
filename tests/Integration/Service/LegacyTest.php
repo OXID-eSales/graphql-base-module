@@ -102,6 +102,22 @@ class LegacyTest extends UnitTestCase
         );
     }
 
+    public function testGetUserIdAdmin(): void
+    {
+        $this->assertNotEmpty(
+            $this->legacyService->getUserId('admin')
+        );
+    }
+
+    public function testGetNonExistingUserId(): void
+    {
+        $this->expectException(InvalidLogin::class);
+
+        $this->assertNotEmpty(
+            $this->legacyService->getUserId('non-existing-username')
+        );
+    }
+
     private function createUser($dbusergroup): void
     {
         // Needed to get the permissions for setting the user group

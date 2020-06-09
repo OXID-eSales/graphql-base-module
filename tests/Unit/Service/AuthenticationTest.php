@@ -214,7 +214,8 @@ class AuthenticationTest extends TestCase
         return [
             'admin' => [
                 'username' => 'admin',
-                'password' => 'admin', ],
+                'password' => 'admin',
+            ],
             'user'  => [
                 'username' => 'user@oxid-esales.com',
                 'password' => 'useruser',
@@ -252,6 +253,32 @@ class AuthenticationTest extends TestCase
 
         $this->expectException(InvalidToken::class);
         $authenticationService->getUserName();
+    }
+
+    public function testGetUserId(): void
+    {
+        $this->legacyService
+            ->method('getUserId')
+            ->willReturn('some-valid-id');
+
+        $authenticationService = $this->getAuthenticationService();
+        self::$token = $authenticationService->createToken('admin', 'admin');
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$token
+        );
+
+        $this->assertNotEmpty($authenticationService->getUserId());
+    }
+
+    public function testGetUserIdForNullToken(): void
+    {
+        $authenticationService = $this->getAuthenticationService();
+
+        $this->expectException(InvalidToken::class);
+        $authenticationService->getUserId();
     }
 
     private function getAuthenticationService(): Authentication
