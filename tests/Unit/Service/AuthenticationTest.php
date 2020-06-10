@@ -262,7 +262,7 @@ class AuthenticationTest extends TestCase
             ->willReturn('some-valid-id');
 
         $authenticationService = $this->getAuthenticationService();
-        self::$token = $authenticationService->createToken('admin', 'admin');
+        self::$token           = $authenticationService->createToken('admin', 'admin');
 
         $authenticationService = new Authentication(
             $this->keyRegistry,

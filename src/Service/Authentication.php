@@ -79,7 +79,7 @@ class Authentication implements AuthenticationServiceInterface
     {
         $this->legacyService->checkCredentials($username, $password);
         $usergroup = $this->legacyService->getUserGroup($username);
-        $userid = $this->legacyService->getUserId($username);
+        $userid    = $this->legacyService->getUserId($username);
         $builder   = $this->getTokenBuilder()
             ->withClaim(self::CLAIM_USERNAME, $username)
             ->withClaim(self::CLAIM_USERID, $userid)
