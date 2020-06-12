@@ -19,6 +19,9 @@ class PermissionProvider implements PermissionProviderInterface
             'admin' => [
                 'FOOBAR',
             ],
+            'malladmin' => [
+                'FOOBAR',
+            ],
         ];
     }
 }

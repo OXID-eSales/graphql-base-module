@@ -13,6 +13,7 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
+use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Legacy;
@@ -57,10 +58,11 @@ class LoginTest extends TestCase
             'username' => 'admin',
             'password' => 'admin',
             'group'    => Legacy::GROUP_ADMIN,
+            'id'       => 'some_nice_user_id',
         ];
 
-        $this->legacy->method('checkCredentials');
-        $this->legacy->method('getUserGroup')->willReturn($user['group']);
+        $userData = new UserData($user['id'], $user['group']);
+        $this->legacy->method('login')->willReturn($userData);
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
 
@@ -76,5 +78,6 @@ class LoginTest extends TestCase
         $this->assertEquals($user['username'], $token->getClaim('username'));
         $this->assertEquals($shop['id'], $token->getClaim('shopid'));
         $this->assertEquals($user['group'], $token->getClaim('group'));
+        $this->assertEquals($user['id'], $token->getClaim('userid'));
     }
 }

@@ -12,7 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cache flush on module events
 - `OxidEsales\GraphQL\Base\Service\Authentication::getUserName()`
 - `OxidEsales\GraphQL\Base\Service\Authentication::getUserId()`
-- `OxidEsales\GraphQL\Base\Service\Legacy::getUserId()`
+- `OxidEsales\GraphQL\Base\Service\Legacy::login()`
+- `OxidEsales\GraphQL\Base\Framework\UserData`
+
+### Deprecated
+
+- `OxidEsales\GraphQL\Base\Service\Legacy::checkCredentials()`
+- `OxidEsales\GraphQL\Base\Service\Legacy::getUserGroup()`
 
 ## [3.0.0] 2020-05-19
 

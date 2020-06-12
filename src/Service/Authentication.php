@@ -18,6 +18,7 @@ use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
+use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
@@ -77,13 +78,12 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function createToken(string $username, string $password): Token
     {
-        $this->legacyService->checkCredentials($username, $password);
-        $usergroup = $this->legacyService->getUserGroup($username);
-        $userid    = $this->legacyService->getUserId($username);
+        /** @var UserData $userData */
+        $userData  = $this->legacyService->login($username, $password);
         $builder   = $this->getTokenBuilder()
             ->withClaim(self::CLAIM_USERNAME, $username)
-            ->withClaim(self::CLAIM_USERID, $userid)
-            ->withClaim(self::CLAIM_GROUP, $usergroup);
+            ->withClaim(self::CLAIM_USERID, $userData->getUserId())
+            ->withClaim(self::CLAIM_GROUP, $userData->getUserGroup());
 
         return $builder->getToken(
             $this->getSigner(),
