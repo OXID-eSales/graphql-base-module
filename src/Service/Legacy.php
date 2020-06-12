@@ -64,11 +64,14 @@ class Legacy
             throw new InvalidLogin('Username/password combination is invalid');
         }
 
-        return new UserData($user->getId(), $user->getFieldData('oxrights'));
+        return new UserData(
+            $user->getId(),
+            $user->getFieldData('oxrights')
+        );
     }
 
     /**
-     * @deprecated since v3.0.0 (2020-06-12); Please use UserData::getUserGroup();
+     * @deprecated since v3.0.0 (2020-06-12)
      *
      * @throws InvalidLogin
      */
