@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Framework\UserData;
 
 class Legacy
 {
@@ -35,6 +36,8 @@ class Legacy
     }
 
     /**
+     * @deprecated since v3.0.0 (2020-06-12); Please use Legacy::login().
+     *
      * @throws InvalidLogin
      */
     public function checkCredentials(string $username, string $password): void
@@ -51,6 +54,27 @@ class Legacy
     /**
      * @throws InvalidLogin
      */
+    public function login(string $username, string $password): UserData
+    {
+        try {
+            /** @var User */
+            $user = oxNew(User::class);
+            $user->login($username, $password, false);
+        } catch (Exception $e) {
+            throw new InvalidLogin('Username/password combination is invalid');
+        }
+
+        return new UserData(
+            $user->getId(),
+            $user->getFieldData('oxrights')
+        );
+    }
+
+    /**
+     * @deprecated since v3.0.0 (2020-06-12)
+     *
+     * @throws InvalidLogin
+     */
     public function getUserGroup(string $username): string
     {
         $queryBuilder = $this->queryBuilderFactory->create();
@@ -65,26 +89,6 @@ class Legacy
             return $this->mapUserGroup($row['OXRIGHTS']);
         }
         # In fact this should not happen because the credentials should already have been checked
-        throw new InvalidLogin('User does not exist.');
-    }
-
-    /**
-     * @throws InvalidLogin
-     */
-    public function getUserId(string $username): string
-    {
-        $queryBuilder = $this->queryBuilderFactory->create();
-        /** @var \Doctrine\DBAL\Driver\Statement<array> */
-        $result       = $queryBuilder->select('OXID')
-            ->from('oxuser')
-            ->where($queryBuilder->expr()->eq('OXUSERNAME', ':username'))
-            ->setParameter('username', $username)
-            ->execute();
-
-        if ($oxid = $result->fetchColumn()) {
-            return $oxid;
-        }
-
         throw new InvalidLogin('User does not exist.');
     }
 

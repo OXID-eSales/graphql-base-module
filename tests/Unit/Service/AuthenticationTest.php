@@ -13,6 +13,7 @@ use Lcobucci\JWT\Parser;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
+use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
@@ -50,7 +51,7 @@ class AuthenticationTest extends TestCase
     {
         $this->expectException(InvalidLogin::class);
         $this->legacyService
-             ->method('checkCredentials')
+             ->method('login')
              ->willThrowException(new InvalidLogin());
 
         $authenticationService = new Authentication(
@@ -116,7 +117,7 @@ class AuthenticationTest extends TestCase
     public function testCreateTokenWithValidCredentials(): void
     {
         $this->legacyService
-             ->method('checkCredentials');
+             ->method('login');
         $this->legacyService
              ->method('getUserGroup')
              ->willReturn(LegacyService::GROUP_ADMIN);
@@ -257,9 +258,8 @@ class AuthenticationTest extends TestCase
 
     public function testGetUserId(): void
     {
-        $this->legacyService
-            ->method('getUserId')
-            ->willReturn('some-valid-id');
+        $this->legacyService->method('login')
+            ->willReturn(new UserData('the_admin_oxid', 'admin'));
 
         $authenticationService = $this->getAuthenticationService();
         self::$token           = $authenticationService->createToken('admin', 'admin');
@@ -270,7 +270,7 @@ class AuthenticationTest extends TestCase
             self::$token
         );
 
-        $this->assertNotEmpty($authenticationService->getUserId());
+        $this->assertSame('the_admin_oxid', $authenticationService->getUserId());
     }
 
     public function testGetUserIdForNullToken(): void
