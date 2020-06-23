@@ -18,8 +18,15 @@ cache:
 matrix:
     fast_finish: true
 
+env:
+  matrix:
+    - DEPENDENCIES=""
+    - DEPENDENCIES=" --prefer-lowest"
+  global:
+    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest --prefer-dist"
+
 install:
-    - travis_retry composer install --prefer-dist --no-interaction
+    - travis_retry composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
 
 script:
     - composer test:syntax
