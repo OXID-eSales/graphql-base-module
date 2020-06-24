@@ -30,10 +30,6 @@ After requiring the module, you need to activate it, either via OXID eShop admin
 $ ./bin/oe-console oe:module:activate oe/graphql-base
 ```
 
-
-After requiring the module, you need to head over to the OXID eShop admin and
-activate the GraphQL Base module.
-
 ### How to use
 
 You can use your favourite GraphQL client to explore the API, if you do not
