@@ -24,6 +24,13 @@ $ composer require oxid-esales/graphql-base --no-update
 $ composer update
 ```
 
+After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
+
+```bash
+$ ./bin/oe-console oe:module:activate oe/graphql-base
+```
+
+
 After requiring the module, you need to head over to the OXID eShop admin and
 activate the GraphQL Base module.
 
