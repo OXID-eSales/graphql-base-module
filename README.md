@@ -168,6 +168,12 @@ RewriteCond %{HTTP:Authorization} ^(.+)$
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 ```
 
+or
+
+```apache
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+```
+
 ### Query String gets swallowed
 
 When you call the API endpoint with a query string, for example `/graphql/?lang=1` and that `lang` parameter gets swallowed by apache, it is due to the missing `QSA`-`RewriteRule`-Flag. Find the `RewriteRule` that looks like this:
