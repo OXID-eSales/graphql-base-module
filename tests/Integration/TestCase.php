@@ -13,6 +13,7 @@ use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
+use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
@@ -72,6 +73,12 @@ abstract class TestCase extends PHPUnitTestCase
             get_class($logger)
         );
 
+        $cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
+        static::$container->set(
+            'oxidesales.graphqlbase.cacheadapter',
+            $cache
+        );
+
         static::beforeContainerCompile();
 
         static::$container->compile();
@@ -82,8 +89,13 @@ abstract class TestCase extends PHPUnitTestCase
         static::$queryResult = null;
         static::$logResult   = null;
         static::$query       = null;
-        static::$container   = null;
-        unset($_SERVER['HTTP_AUTHORIZATION']);
+
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            if (static::$container) {
+                $this->setAuthToken('');
+            }
+            unset($_SERVER['HTTP_AUTHORIZATION']);
+        }
     }
 
     protected function setAuthToken(string $token): void
@@ -103,6 +115,12 @@ abstract class TestCase extends PHPUnitTestCase
         $prop          = $refClass->getProperty('token');
         $prop->setAccessible(true);
         $prop->setValue($authorization, $token);
+
+        $schema        = static::$container->get(SchemaFactory::class);
+        $refClass      = new ReflectionClass(SchemaFactory::class);
+        $prop          = $refClass->getProperty('schema');
+        $prop->setAccessible(true);
+        $prop->setValue($schema, null);
     }
 
     protected function query(string $query, ?array $variables = null, ?string $operationName = null): array
