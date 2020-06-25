@@ -13,9 +13,9 @@ use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
+use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -89,6 +89,7 @@ abstract class TestCase extends PHPUnitTestCase
         static::$queryResult = null;
         static::$logResult   = null;
         static::$query       = null;
+
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             if (static::$container) {
                 $this->setAuthToken('');
