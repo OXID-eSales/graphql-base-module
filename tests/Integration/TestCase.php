@@ -73,6 +73,12 @@ abstract class TestCase extends PHPUnitTestCase
             get_class($logger)
         );
 
+        $cache = new \Symfony\Component\Cache\Adapter\ArrayAdapter();
+        static::$container->set(
+            'oxidesales.graphqlbase.cacheadapter',
+            $cache
+        );
+
         static::beforeContainerCompile();
 
         static::$container->compile();
