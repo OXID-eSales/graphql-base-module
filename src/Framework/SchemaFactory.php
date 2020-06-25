@@ -39,9 +39,7 @@ class SchemaFactory
     /** @var ContainerInterface */
     private $container;
 
-    /**
-     * @var CacheInterface
-     */
+    /** @var CacheInterface */
     private $cache;
 
     /**
