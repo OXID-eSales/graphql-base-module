@@ -24,7 +24,7 @@ abstract class TokenTestCase extends TestCase
     {
         $username = $username ?: self::ADMIN_USER;
         $password = $password ?: self::ADMIN_PASS;
-        $key      = $username . $password;
+        $key      = $username . $password . $_GET['shp'];
 
         if (!isset(self::$token[$key])) {
             self::$token[$key] = $this->query('query {
