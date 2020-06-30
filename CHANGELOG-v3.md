@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `\OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase`
-- cache token in `TokenTestCase` between tests (speed up catalogue test from 37 seconds to 29 seconds)
 
 ## [3.1.3] 2020-06-26
 
