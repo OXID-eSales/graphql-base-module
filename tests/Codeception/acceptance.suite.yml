@@ -3,8 +3,7 @@ actor: AcceptanceTester
 path: Acceptance
 modules:
   enabled:
-    - Asserts
-    - \OxidEsales\Codeception\Module\OxideshopModules
+    - \OxidEsales\GraphQL\Base\Tests\Codeception\Helper\Acceptance
     - REST:
         url: '%SHOP_URL%'
         depends: PhpBrowser
