@@ -8,7 +8,7 @@ See LICENSE file for license details.
 EOF;
 
 $finder = PhpCsFixer\Finder::create()
-    ->files()
+    ->exclude('Codeception/_support/_generated/')
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests/');
 
