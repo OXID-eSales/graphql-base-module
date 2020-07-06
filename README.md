@@ -76,7 +76,8 @@ Authorization: Bearer a-very-long-jwt
 
 ### How to extend
 
-See [oxid-esales/graphql-example](https://github.com/OXID-eSales/graphql-example-module) for an exemplary implementation.
+See [oxid-esales/graphql-catalogue](https://github.com/OXID-eSales/graphql-catalogue-module) for example of module
+extending GraphQl Base Module.
 
 ### Caching
 
