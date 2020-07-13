@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use Exception;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
@@ -127,6 +128,14 @@ class Legacy
         $utils = Registry::getUtilsObject();
 
         return $utils->generateUId();
+    }
+
+    public function isValidEmail(string $email): bool
+    {
+        /** @var EhopMailValidator */
+        $validator = oxNew(EhopMailValidator::class);
+
+        return $validator->isValidEmail($email);
     }
 
     /**
