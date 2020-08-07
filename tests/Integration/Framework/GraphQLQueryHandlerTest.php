@@ -189,6 +189,22 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
+    public function testBasicSortingQuery(): void
+    {
+        $result = $this->query('
+            query {
+                basicSortingQuery (sort: {
+                    title: "ASC"
+                    price: "ASC"
+                })
+            }
+        ');
+        $this->assertEquals(
+            200,
+            $result['status']
+        );
+    }
+
     protected static function beforeContainerCompile(): void
     {
         $loader      = new YamlFileLoader(static::$container, new FileLocator());

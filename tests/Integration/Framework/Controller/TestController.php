@@ -13,6 +13,7 @@ use Exception;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilter;
+use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestSorting;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Right;
@@ -76,5 +77,13 @@ class TestController
     public function basicInputFilterQuery(TestFilter $filter): string
     {
         return (string) $filter;
+    }
+
+    /**
+     * @Query
+     */
+    public function basicSortingQuery(?TestSorting $sort = null): bool
+    {
+        return true;
     }
 }
