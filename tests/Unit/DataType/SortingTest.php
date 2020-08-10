@@ -57,4 +57,30 @@ class SortingTest extends DataTypeTestCase
             $orderBy[0]
         );
     }
+
+    public function testAddQueryWithMultipleSearchFields(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+        $sort         = new class(['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
+        };
+
+        $queryBuilder->select()->from('db_table');
+        $sort->addToQuery($queryBuilder, 'db_field');
+
+        /** @var CompositeExpression */
+        $orderBy = $queryBuilder->getQueryPart('orderBy');
+
+        $this->assertCount(
+            2,
+            $orderBy
+        );
+        $this->assertSame(
+            'db_table.foo ASC',
+            $orderBy[0]
+        );
+        $this->assertSame(
+            'db_table.bar DESC',
+            $orderBy[1]
+        );
+    }
 }

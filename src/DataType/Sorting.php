@@ -27,6 +27,8 @@ abstract class Sorting
     public function __construct(
         array $sorting
     ) {
+        $sorting = array_filter($sorting);
+
         foreach ($sorting as $field => $val) {
             if (
                 $val !== self::SORTING_DESC &&
@@ -48,7 +50,7 @@ abstract class Sorting
         $table = $from[0]['alias'] ?? $from[0]['table'];
 
         foreach ($this->sorting as $field => $dir) {
-            $builder->orderBy($table . '.' . $field, $dir);
+            $builder->addOrderBy($table . '.' . $field, $dir);
         }
     }
 }
