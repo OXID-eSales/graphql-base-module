@@ -1,0 +1,50 @@
+/* OXID Style */
+/* CSS Reference & Properties https://www.w3schools.com/cssref/default.asp */
+
+.rst-content .guilabel, .menuselection {
+    font-weight: bold;
+    border: 0px;
+    font-size: 100%;
+    background: none;
+    padding: 0px;
+    margin: 0;
+}
+
+.rst-content .file {
+    border: 0px;
+    background: none;
+    color: black;
+    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 100%;
+    padding: 0;
+}
+
+.rst-content .docutils{
+    padding: 0;
+}
+
+.file .pre{
+    border: 0px;
+    background: none;
+    color: black;
+    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.pre{
+    color: #00008B;
+    background-color: #F8F8FF;
+}
+
+code, .rst-content code{
+    background: none;
+    border: 0px;
+    font-size: 90%;
+}
+
+.strike {
+    text-decoration: line-through;
+}
