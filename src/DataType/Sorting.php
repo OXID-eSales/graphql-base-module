@@ -18,11 +18,11 @@ abstract class Sorting
 
     public const SORTING_ASC  = 'ASC';
 
-    /** @var array<string,string> */
+    /** @var array<string, null|string> */
     private $sorting;
 
     /**
-     * @param array<string, string> $sorting
+     * @param array<string, null|string> $sorting
      */
     public function __construct(
         array $sorting
