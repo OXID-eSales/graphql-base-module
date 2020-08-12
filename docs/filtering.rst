@@ -55,8 +55,6 @@ And several more specific ones:
 * ID filter
     - Florian will write something about this :D lol.
 
-* :doc:`Sorting <./sorting>`
-
 Main idea
 ---------
 
