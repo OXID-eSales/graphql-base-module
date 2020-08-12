@@ -18,5 +18,6 @@ OXID implements GraphQL modules to provide an alternative to REST and SOAP web A
         :glob:
 
         install
+        requests
         filtering
         sorting
