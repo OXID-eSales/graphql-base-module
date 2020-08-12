@@ -33,8 +33,7 @@ needs_sphinx = '1.8'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',
-    'sphinx_graphiql',
+    'sphinx_rtd_theme'
 ]
 
 # The suffix(es) of source filenames.
@@ -72,7 +71,7 @@ language = 'en'
 exclude_patterns = ['SPECIFICATION.md']
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'monokai'
+pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
