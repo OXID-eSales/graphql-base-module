@@ -64,17 +64,8 @@ Authentication
 The authentication service is responsible for creating and validating the JSON
 Web Token, as well as resolving the ``@Logged`` annoation.
 
-.. code:: php
-
-    class controller
-    {
-        /**
-         * @Query()
-         * @Logged()
-         */
-        public function basket() : Basket {
-        }
-    }
+.. literalinclude:: examples/ControllerWithLogged.php
+   :language: php
 
 Using the ``@Logged()`` annotations prevents consumers from seeing and using
 your resolver without a valid JWT.
@@ -83,28 +74,23 @@ Authorization
 ^^^^^^^^^^^^^
 
 For finer grained access controll you may use the ``@Right()`` annotation to ask
-if the token in used allows for a specific right. These rights are coupled to the
+if the token in use allows for a specific right. These rights are coupled to the
 user group which will be stored in the token itself.
 
-.. code:: php
-
-    class controller
-    {
-        /**
-         * @Query()
-         * @Logged()
-         * @Right('SEE_BASKET')
-         */
-        public function basket() : Basket {
-        }
-    }
+.. literalinclude:: examples/ControllerWithRights.php
+   :language: php
 
 In case you need to have more controll on how the authorization service decides,
 you may register a handler for the ``OxidEsales\GraphQL\Base\Event\BeforeAuthorization``
 event and oversteer the result in your event subscriber, see :ref:`events-BeforeAuthorization`.
 
-Register your rights
+Map rights to groups
 ^^^^^^^^^^^^^^^^^^^^
 
-In order to use the `SEE_BASKET` right as per the last example, we need to map
-this right to a group. For this to work you need to create a ``PermissionProvider``
+In order to use the ``SEE_BASKET`` right as we have seen in the last example, we
+need to map this right to a group. For this to work we need to create a
+``PermissionProvider`` in our module and register it with the ``graphql_permission_provider``
+tag in our ``services.yaml`` file.
+
+.. literalinclude:: examples/PermissionProvider.php
+   :language: php
