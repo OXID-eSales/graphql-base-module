@@ -1,50 +1,57 @@
 /* OXID Style */
-/* CSS Reference & Properties https://www.w3schools.com/cssref/default.asp */
 
-.rst-content .guilabel, .menuselection {
-    font-weight: bold;
-    border: 0px;
-    font-size: 100%;
-    background: none;
-    padding: 0px;
-    margin: 0;
+h1, h2, h3, h4, h5 {
+  background: #2C2C2C;
+  display: table;
+  color: #fff;
+  padding: 5px 8px 0 5px;
+  letter-spacing: 1px;
+  font-family: "DIN Next", Arial, sans-serif;
+  text-transform: uppercase;
 }
 
-.rst-content .file {
-    border: 0px;
-    background: none;
-    color: black;
-    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
-    font-style: italic;
-    font-weight: bold;
-    font-size: 100%;
-    padding: 0;
+.headerlink {
+    display: none !important;
 }
 
-.rst-content .docutils{
-    padding: 0;
+*:hover > .headerlink {
+    display: inline-block !important;
 }
 
-.file .pre{
-    border: 0px;
-    background: none;
-    color: black;
-    font-family: "Lato","proxima-nova","Helvetica Neue",Arial,sans-serif;
-    font-style: italic;
-    font-weight: bold;
+.wy-side-nav-search {
+    background: #fff;
+    color: #000;
 }
 
-.pre{
-    color: #00008B;
-    background-color: #F8F8FF;
-}
-
-code, .rst-content code{
-    background: none;
-    border: 0px;
-    font-size: 90%;
+.wy-side-nav-search > div.version {
+    color: #000;
 }
 
 .strike {
     text-decoration: line-through;
+}
+
+a, a:visited, a:hover {
+    color: #C02124;
+}
+
+.wy-menu-vertical a {
+    color: #b3b3b3;
+}
+.wy-menu-vertical a:active {
+    background-color: inherit;
+}
+
+@font-face {
+    font-family: "DIN Next";
+    font-style: normal;
+    font-weight: 400;
+    src: local("DIN Next Regular"), local("DINNext-Regular"), url(fonts/DINNextLTPro-Regular.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "DIN Next";
+    font-style: normal;
+    font-weight: 700;
+    src: local("DIN Next Bold"), local("DINNExt-Bold"), url(fonts/DINNextLTPro-Bold.otf) format("opentype");
 }
