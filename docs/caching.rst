@@ -4,9 +4,9 @@ Caching
 .. important::
     As of this writing resolvers are not cached!
 
-As stated in other occourences already, we are heavily relying on GraphQLite for our modules. GraphQLite creates the GraphQL schema by using PHP's reflection to scan and find controllers and data types. The result of this step can be `cached by GraphQLite itself <https://graphqlite.thecodingmachine.io/docs/3.0/other-frameworks#requirements>`_.
+As stated in other occurrences already, we are heavily relying on GraphQLite for our modules. GraphQLite creates the GraphQL schema by using PHP's reflection to scan and find controllers and data types. The result of this step can be `cached by GraphQLite itself <https://graphqlite.thecodingmachine.io/docs/3.0/other-frameworks#requirements>`_.
 
-The ``TheCodingMachine\GraphQLite\SchemaFactory`` needs the DI container and a PSR-16 cache. Default we pass it a null cache.
+The ``TheCodingMachine\GraphQLite\SchemaFactory`` needs the DI container and a PSR-16 cache. By default we pass it a null cache.
 
 .. code:: yaml
 
@@ -21,7 +21,7 @@ The ``TheCodingMachine\GraphQLite\SchemaFactory`` needs the DI container and a P
 Change the cache
 ----------------
 
-There are two ways for you to change the caching backend, first is to provide another cache adapter, second to provide another PSR-16 cache implementation.
+There are two ways for you to change the caching backend, first is to provide another cache adapter, the second is to provide another PSR-16 cache implementation.
 
 In both cases you need to override the corresponding key in the DI container through the ``var/configuration/configurable_services.yaml`` file.
 
