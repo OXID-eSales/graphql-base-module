@@ -2,7 +2,7 @@ Filtering data
 ==============
 
 One of the most important actions in development is getting the right
-set of data by given criteria. The "base module" gives some most common
+set of data by given criteria. The `graphql-base` module gives some most common
 filters you might need to use, out of the box:
 
 * Bool filter
@@ -53,14 +53,16 @@ And several more specific ones:
         example: ``{offset: 0, limit: 100}``
 
 * ID filter
-    - Florian will write something about this :D lol.
+    - equals
+        get rows where field is equal to the string representation of the ID given;
+        example: ``{equals: 'some text'}``
 
 Main idea
 ---------
 
 Via the graphql query we provide arguments for filter constructor and later
 on we apply created preconfigured filter on the current query builder object
-instance by passing it to addToQuery method of the filter and modifying the
+instance by passing it to ``addToQuery`` method of the filter and modifying the
 builder by this selected specific filter configuration.
 
 Simple direct filter usage example
@@ -69,7 +71,7 @@ Simple direct filter usage example
 In this example, we create a country query with possibility to filter
 countries by title and we will use our String filter for this:
 
-::
+.. code:: php
 
     /**
      * @Query()
@@ -78,16 +80,12 @@ countries by title and we will use our String filter for this:
      */
     public function exampleCountryQuery(?StringFilter $titleFilter = null): array
     {
-        // Get the query builder and write main query.
-        // This is usually done in service, not directly in the controller.
         $queryBuilder = $this->queryBuilderFactory->create();
-        $queryBuilder->select('OXID,OXTITLE,OXISOALPHA2')->from('oxcountry');
+        $queryBuilder->select('OXID,OXTITLE,OXISOALPHA2')
+                     ->from('oxcountry');
 
-        // Apply our filter on the query builder.
         $titleFilter->addToQuery($queryBuilder, 'oxtitle');
 
-        // Execute a query and give results.
-        // This part is usually more complex as well - We want some DataType as result, not just array of strings.
         $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);
         return $queryBuilder->execute()->fetchAll();
     }
@@ -96,7 +94,7 @@ Later on, we can apply the "title" filter on the query via the GraphQL interface
 As there are several variants possible for String filter (equals, contains, beginsWith),
 we could use any combination of those, but as example, simple "equals" usage is shown:
 
-::
+.. code:: graphql
 
     query{
       exampleCountryQuery(titleFilter: {equals: "Deutschland"})
@@ -104,7 +102,7 @@ we could use any combination of those, but as example, simple "equals" usage is 
 
 Result of this query will be one country data with specific name:
 
-::
+.. code:: json
 
     {
       "data": {
@@ -128,7 +126,7 @@ Filtering by multiple fields
 Often we need more then one field with more then one filter at the time. For
 this reason, we could wrap several filters in some filter list DataType:
 
-::
+.. code:: php
 
     final class CountryFilterList
     {
@@ -178,9 +176,9 @@ While having this filter list, we will require this DataType in place of our sin
 in controller query from simple filter example, and just apply multiple filters to our
 query builder instead of previously used one:
 
-::
+.. code:: php
 
-    public function exampleCountryQuery(?CountryFilterList $filterList = null): array
+    public function exampleCountryQuery(?CountryFilterList $filter = null): array
     {
         ...
 
@@ -196,10 +194,10 @@ query builder instead of previously used one:
 
 Now our filter list can be used in a query:
 
-::
+.. code:: php
 
     query{
-      exampleCountryQuery(filterList:{
+      exampleCountryQuery(filter:{
         title: {beginsWith: "D"}
         iso: {beginsWith: "DM"}
       })
@@ -207,7 +205,7 @@ Now our filter list can be used in a query:
 
 Gives us a country that was filtered by our conditions:
 
-::
+.. code:: php
 
     {
       "data": {
