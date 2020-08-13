@@ -23,6 +23,10 @@
 import datetime
 import sphinx_rtd_theme
 
+# adding PhpLexer
+from sphinx.highlighting import lexers
+from pygments.lexers.web import PhpLexer
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -132,6 +136,9 @@ html_css_files = [
     'oxid.css'
 ]
 
+lexers['php'] = PhpLexer(startinline=True)
+lexers['php-annotations'] = PhpLexer(startinline=True)
+
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
 #
@@ -200,3 +207,6 @@ texinfo_documents = [
      author, 'OXIDe-SalesGraphQLDocumentation', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+# Use PHP syntax highlighting in code examples by default
+highlight_language='php'
