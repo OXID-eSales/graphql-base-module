@@ -8,11 +8,10 @@ We provide basic abstract sorting DataType implementation that should be extende
 can be configured with specific protected fields you would like to use for sorting
 your data:
 
-::
+.. code:: php
 
-    ...
     use OxidEsales\GraphQL\Base\DataType\Sorting as BaseSorting;
-    ...
+
     final class CountrySorting extends BaseSorting
     {
         /**
@@ -32,7 +31,7 @@ your data:
 Now in our controller we would like to ask for sorting parameter, as we did with
 filters earlier:
 
-::
+.. code:: php
 
     public function exampleCountryQuery(
         ?CountryFilterList $filterList = null
@@ -47,7 +46,7 @@ filters earlier:
 
 Simple as that! Now we can add filter to our query:
 
-::
+.. code:: graphql
 
     query{
       exampleCountryQuery(filterList:{
@@ -59,7 +58,7 @@ Simple as that! Now we can add filter to our query:
 
 And the result will be sorted by iso descending:
 
-::
+.. code:: json
 
     {
       "data": {
