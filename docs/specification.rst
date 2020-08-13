@@ -1,12 +1,12 @@
 Specification
 =============
 
-This document adheres to [RFC2119](https://www.ietf.org/rfc/rfc2119.txt)
+This document adheres to `RFC2119 <https://tools.ietf.org/html/rfc2119>`_
 
 General
 -------
 
-- the API must be a [GraphQL API as specified](https://www.graphql.org)
+- the API must be a `GraphQL API as specified <https://www.graphql.org>`_
 - entrypoint must be ``/graphql/``
 - default HTTP status code must be ``200``
 - use OXID models and create DataTypes as facades for GraphQLite
