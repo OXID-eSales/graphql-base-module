@@ -16,6 +16,10 @@ AuthorizationEventSubscriber
 .. literalinclude:: BeforeAuthorization.php
    :language: php
 
+.. important::
+     The code above is only an example. In case you need to handle the ``BeforeAuthorization`` event,
+     please adapt to your needs.
+
 services.yaml
 ^^^^^^^^^^^^^
 
