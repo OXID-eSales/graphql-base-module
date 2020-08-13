@@ -50,7 +50,7 @@ Headers
         -X POST \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer <your jwt token>" \
-        --data '{"query": "<your query>"} \
+        --data '{"query": "<your query>"}' \
         https://<your host address>/graphql/
 
 .. note::
