@@ -25,3 +25,4 @@ OXID implements GraphQL modules to provide an alternative to REST and SOAP web A
         sorting
         exceptions
         specification
+        architecture
