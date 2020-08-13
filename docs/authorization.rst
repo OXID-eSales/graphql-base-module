@@ -3,7 +3,7 @@ Authorization
 
 Authorization and Authentication in the GraphQL API is handled via JSON Web
 Tokens. Please keep in mind that not all queries need authorization. The
-token is mandatory for all mutations though and some fields are only accesable
+token is mandatory for all mutations though and some fields are only accessible
 with a valid token.
 
 .. important::
@@ -73,14 +73,14 @@ your resolver without a valid JWT.
 Authorization
 ^^^^^^^^^^^^^
 
-For finer grained access controll you may use the ``@Right()`` annotation to ask
+For finer grained access control you may use the ``@Right()`` annotation to ask
 if the token in use allows for a specific right. These rights are coupled to the
 user group which will be stored in the token itself.
 
 .. literalinclude:: examples/ControllerWithRights.php
    :language: php
 
-In case you need to have more controll on how the authorization service decides,
+In case you need to have more control on how the authorization service decides,
 you may register a handler for the ``OxidEsales\GraphQL\Base\Event\BeforeAuthorization``
 event and oversteer the result in your event subscriber, see :ref:`events-BeforeAuthorization`.
 

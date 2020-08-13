@@ -22,6 +22,6 @@ services.yaml
 .. code:: yaml
 
     services:
-        Full\Quallified\Namespace\\DeveloperAuthorizationEventSubscriber:
-            class: Full\Quallified\Namespace\\DeveloperAuthorizationEventSubscriber
+        Full\Qualified\Namespace\\DeveloperAuthorizationEventSubscriber:
+            class: Full\Qualified\Namespace\\DeveloperAuthorizationEventSubscriber
             tags: ['kernel.event_subscriber']
