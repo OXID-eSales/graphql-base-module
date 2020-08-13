@@ -79,65 +79,6 @@ Authorization: Bearer a-very-long-jwt
 See [oxid-esales/graphql-catalogue](https://github.com/OXID-eSales/graphql-catalogue-module) for example of module
 extending GraphQl Base Module.
 
-### Caching
-
-`TheCodingMachine\GraphQLite\SchemaFactory` is able to cache schema and docs.
-Have a look at the GraphQL Base module's services.yaml file. By default we have a null cache (no caching) injected
-but any cache implementing the `Psr\SimpleCache\CacheInterface` can be used.
-For this you need to add/extend the shop's `var/configuration/configurable_services.yaml` file.
-Either only the `oxidesales.graphqlbase.cacheadapter` is replaced by any of the Symfony cache adapters
-or you can inject your own cache implementation via `oxidesales.graphqlbase.cache`.
-
-* Example for `configurable_services.yaml` when using the Symfony Filesystem cache adapter
-
-    ``` yaml
-    services:
-
-      _defaults:
-        public: false
-        autowire: true
-
-      oxidesales.graphqlbase.cacheadapter:
-        class: Symfony\Component\Cache\Adapter\FilesystemAdapter
-        arguments:
-          $namespace: 'graphql'
-          $defaultLifetime: 1200
-          $directory: '/var/www/oxideshop/source/cache'
-    ```
-
-* Example for `configurable_services.yaml` when using the Symfony APC cache adapter
-
-  ``` yaml
-  services:
-
-    _defaults:
-      public: false
-      autowire: true
-
-      oxidesales.graphqlbase.cacheadapter:
-        class: Symfony\Component\Cache\Adapter\ApcuAdapter
-        arguments:
-            $namespace: 'graphql'
-            $defaultLifetime: 1200
-  ```
-
-* Example for `configurable_services.yaml` when injecting the cache
-
-    ``` yaml
-    services:
-
-    _defaults:
-      public: false
-      autowire: true
-
-    oxidesales.graphqlbase.cache:
-      class: Symfony\Component\Cache\Simple\FilesystemCache
-      arguments:
-        $namespace: 'graphql_simple'
-        $defaultLifetime: 1200
-        $directory: '/var/www/oxideshop/source/cache'
-    ```
-
 ## Testing
 
 ### Linting, syntax check, static analysis and unit tests
