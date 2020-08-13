@@ -1,13 +1,16 @@
 /* OXID Style */
 
 h1, h2, h3, h4, h5 {
-  background: #2C2C2C;
   display: table;
-  color: #fff;
   padding: 5px 8px 0 5px;
   letter-spacing: 1px;
   font-family: "DIN Next", Arial, sans-serif;
   text-transform: uppercase;
+}
+
+h1 {
+  background: #2C2C2C;
+  color: #fff;
 }
 
 .headerlink {
