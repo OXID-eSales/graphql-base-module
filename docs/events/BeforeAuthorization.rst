@@ -13,7 +13,7 @@ This event will be fired when authorization is done. You may call the
 AuthorizationEventSubscriber
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. literalinclude:: BeforeAuthorization.php
+.. literalinclude:: ../examples/events/BeforeAuthorization.php
    :language: php
 
 .. important::
@@ -23,9 +23,5 @@ AuthorizationEventSubscriber
 services.yaml
 ^^^^^^^^^^^^^
 
-.. code:: yaml
-
-    services:
-        Full\Qualified\Namespace\\DeveloperAuthorizationEventSubscriber:
-            class: Full\Qualified\Namespace\\DeveloperAuthorizationEventSubscriber
-            tags: ['kernel.event_subscriber']
+.. literalinclude:: ../examples/events/services.yaml
+   :language: yaml

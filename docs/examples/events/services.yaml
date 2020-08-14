@@ -1,0 +1,4 @@
+services:
+    Full\Qualified\Namespace\DeveloperAuthorizationEventSubscriber:
+        class: Full\Qualified\Namespace\DeveloperAuthorizationEventSubscriber
+        tags: ['kernel.event_subscriber']
