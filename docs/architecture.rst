@@ -62,6 +62,8 @@ A sample service might look like this
 .. literalinclude:: examples/architecture/Service.php
    :language: php
 
+Additionally to this, we put the relation services for the data types into the ``Service`` directory. Those are using the ``@ExtendType`` annotation an need to exist in the DI container under their fully qualified class name. Those relation services do not call OXID models directly, but only through the infrastructure layer.
+
 Infrastructure
 --------------
 

@@ -26,6 +26,7 @@ import sphinx_rtd_theme
 # adding PhpLexer
 from sphinx.highlighting import lexers
 from pygments.lexers.web import PhpLexer
+from pygments_graphql import GraphqlLexer
 
 # -- General configuration ------------------------------------------------
 
@@ -138,6 +139,7 @@ html_css_files = [
 
 lexers['php'] = PhpLexer(startinline=True)
 lexers['php-annotations'] = PhpLexer(startinline=True)
+lexers['graphql'] = GraphqlLexer(startinline=True)
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
