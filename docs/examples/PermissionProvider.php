@@ -1,3 +1,9 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Full\Qualified\Namespace\Shared\Service;
+
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 
 final class PermissionProvider implements PermissionProviderInterface

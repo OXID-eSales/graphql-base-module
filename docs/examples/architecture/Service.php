@@ -1,19 +1,14 @@
 <?php
 
-/**
- * Copyright © OXID eSales AG. All rights reserved.
- * See LICENSE file for license details.
- */
-
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\Category\Service;
+namespace Full\Qualified\Namespace\Context\DataType;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Catalogue\Category\DataType\Category as CategoryDataType;
-use OxidEsales\GraphQL\Catalogue\Category\Exception\CategoryNotFound;
+use Full\Qualified\Namespace\Context\DataType\Category as CategoryDataType;
+use Full\Qualified\Namespace\Context\Exception\CategoryNotFound;
 use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
 
 final class Category

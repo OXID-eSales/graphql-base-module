@@ -1,3 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Full\Qualified\Namespace\Context\Controller;
+
+use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Annotations\Logged;
+
 final class controller
 {
     /**
@@ -5,5 +14,6 @@ final class controller
      * @Logged()
      */
     public function basket(): Basket {
+        // ...
     }
 }

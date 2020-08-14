@@ -1,16 +1,11 @@
 <?php
 
-/**
- * Copyright © OXID eSales AG. All rights reserved.
- * See LICENSE file for license details.
- */
-
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Catalogue\Category\Controller;
+namespace Full\Qualified\Namespace\Context\Controller;
 
-use OxidEsales\GraphQL\Catalogue\Category\DataType\Category as CategoryDataType;
-use OxidEsales\GraphQL\Catalogue\Category\Service\Category as CategoryService;
+use Full\Qualified\Namespace\Context\DataType\Category as CategoryDataType;
+use Full\Qualified\Namespace\Context\Service\Category as CategoryService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 final class Category
