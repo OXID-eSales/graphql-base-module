@@ -73,12 +73,12 @@ Reasons
 -------
 
 for Hexagonal approach
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
 Whenever something in the OXID eShop changes we only need to adapt it in the infrastructure layer (and in this case the data types). But there is no need to search through a lot of files, we know pretty fast where things are going wrong and need to be changed.
 
 for wrapping OXID eShop models
-------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We wanted to have the GraphQL API behave consistent to the (well known) existing system. The OXID eShop models are the central point which standard system and the GraphQL modules can share.
 
