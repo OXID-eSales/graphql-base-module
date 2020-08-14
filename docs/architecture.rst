@@ -84,4 +84,11 @@ We wanted to have the GraphQL API behave consistent to the (well known) existing
 
 One of the main advantages to use OXID eShop models through the ``oxNew()`` call is that the GraphQL API then also reflects the changes your modules introduce. This is also the reason, why we use the specific getters and only fall back to using ``getFieldData()`` if no specific getter is available.
 
+.. _final-classes:
 
+for making classes final
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+You might have noticed, that all classes in the GraphQL modules are ``final``. Therefore they can not be extended through OXID's module chain. It is technically not possible to extend data types by extending the class in the usuall PHP way anyway and we favour `composition over inheritance <https://en.wikipedia.org/wiki/Composition_over_inheritance>`_.
+
+The ``final`` class declaration makes this concept explicit!
