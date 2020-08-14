@@ -67,31 +67,18 @@ Mutations
 Fields
 ^^^^^^
 
-- every field from every model should be available as a GraphQL field and must have a correct type annotation (ID for OXID fields, not string)
-- multilanguage fields must not be exposed separately, but in context of the language of the token as a normal field (no ``getTitle_1`` or ``getTitle_2`` methods, only ``getTitle`` for the ``oxarticles.oxtitle\*`` database fields)
-- parent ids, object ids, foreign keys, etc. must be exposed via their correct type and not via an ID
+- every field from every model should be available as a GraphQL field and must have a correct type annotation (``ID`` for ``oxid`` database field, not ``String``)
+- multilanguage fields must not be exposed separately, but in context of the language of the token as a normal field (no ``title_1`` or ``title_2`` fields, only ``title`` for the ``oxarticles.oxtitle\*`` database fields)
+- parent ids, object ids, foreign keys (relations), etc. must be exposed via their correct type
 
-    - example: a product has an ``oxvendorid`` and an ``oxmanufacturerid``, which must not be exposed as ID or string fields, but as a relation to that specific type
-        **Request:**
+    - example: a product has an ``oxvendorid``, which should not be exposed as ``ID`` or ``String`` field, but as a relation to that specific type
+    - you may additionally add the field with the ``ID`` type when necessary
 
-        .. code:: graphql
+.. code:: graphql
 
-            query {
-                product (
-                    id: "058e613db53d782adfc9f2ccb43c45fe"
-                ){
-                    id
-                    title
-                    vendor {
-                        id
-                        title
-                        active
-                    }
-                    manufacturer {
-                        id
-                        title
-                        active
-                    }
-                }
-            }
-
+    type Product {
+        # do
+        category: Category!
+        # don't
+        categoryId: ID!
+    }
