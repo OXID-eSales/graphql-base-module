@@ -1,11 +1,11 @@
 Architecture
 ============
 
-For the GraphQL modules we build we choose to use a hexagonal architecture, also known as ports and adapters. It might not be the perfect implementation, so when you see something, feel free to ping us or make a pull request.
+For the GraphQL modules we built we choose a hexagonal architecture, also known as ports and adapters. In case you see some way to improve this implementation, feel free to ping us or make a pull request any time.
 
-If you are interessted in understading the overall picture, Zvonimir Spajic created a `blog post demystifing hexagonal architecture <https://madewithlove.com/hexagonal-architecture-demystified/>`_.
+If you are interested in understanding the overall picture, Zvonimir Spajic created a `blog post demystifing hexagonal architecture <https://madewithlove.com/hexagonal-architecture-demystified/>`_.
 
-The filesystem hirachy in the ``src`` directory looks something like this
+The filesystem hierarchy in the ``src`` directory looks similar to this
 
 .. code:: shell
 
@@ -25,12 +25,12 @@ The filesystem hirachy in the ``src`` directory looks something like this
             ├── Category.php
             └── RelationService.php
 
-The folders in the ``src`` direcotory are the contexts in which we are working. All models currently have a `Shared` context and then a context for every entity we need to expose via the GraphQL API.
+The folders in the ``src`` directory are the contexts in which we are working. All models currently have a `Shared` context and then a context for every entity we need to expose via the GraphQL API.
 
 Controller
 ----------
 
-The sole purpose of the controller is to be a slim layer to translate from the incomming HTTP request to our business logic. As we are using `GraphQLite <https://graphqlite.thecodingmachine.io/docs/3.0/features.html>`_ and `graphql-php <https://webonyx.github.io/graphql-php/>`_ our controller don't need any kind of validation, as all this is done in those libraries. This on the other hand is based on the controller methods using the correct type hints.
+The sole purpose of the controller is to be a slim layer which translates from the incomming HTTP request to our business logic. As we are using `GraphQLite <https://graphqlite.thecodingmachine.io/docs/3.0/features.html>`_ and `graphql-php <https://webonyx.github.io/graphql-php/>`_ our controllers don't need any kind of validation, as all this is done in those libraries. This on the other hand is relying on the controller methods to use the correct type hints.
 
 So most controllers look like this example
 
@@ -40,12 +40,12 @@ So most controllers look like this example
 Business
 --------
 
-The data types in `DataType` directory and services in `Service` directory belong to the business layer. This is where the business rules are implemented, business rules as in "is the current authenticated user allowed to see this entity" for example.
+The data types in `DataType` directory and services in `Service` directory belong to the business layer. This is where the business rules are implemented, business rules as for example in "is the currently authenticated user allowed to see this entity".
 
 Data types
 ^^^^^^^^^^
 
-Classes in `DataType` are a facade to the OXID eShop models in our case and wrap them, also they define the fields of our data types in the GraphQL API. They are allowed to call methods on OXID eShop models directly, althought not part of the infrastructure layer. We are aware, that this violates the hexagonal approach, but yet struggle to come up with a good way to deal with this.
+Classes in `DataType` are a facade to the OXID eShop models in our case and wrap them, also they define the fields of our data types in the GraphQL API. They are allowed to call methods on OXID eShop models directly, although not part of the infrastructure layer. We are aware, that this violates the hexagonal approach, but yet struggle to come up with a good way to deal with this.
 
 A sample data type might look like this
 
@@ -75,13 +75,13 @@ Reasons
 for Hexagonal approach
 ----------------------
 
-When ever something in the OXID eShop changes we only need to adapt in the infrastructure layer (and in this case the data types). But there is no need to search through a lot of files, we know pretty fast where things are going wrong and need to be changed.
+Whenever something in the OXID eShop changes we only need to adapt it in the infrastructure layer (and in this case the data types). But there is no need to search through a lot of files, we know pretty fast where things are going wrong and need to be changed.
 
 for wrapping OXID eShop models
 ------------------------------
 
-We did not want to reinvent the wheel and re-implement everything that is already there in the core. Also it would lead a lot of confusion if the GraphQL API would behave different from the rest of the systems.
+We wanted to have the GraphQL API behave consistent to the (well known) existing system. The OXID eShop models are the central point which standard system and the GraphQL modules can share.
 
-One of the main reasons to use OXID eShop models through the ``oxNew()`` call is that the GraphQL API then also reflects the changes your modules introduce. This is also the reason, why we use the specific getters and only fall back to using ``getFieldData()`` if none is available.
+One of the main advantages to use OXID eShop models through the ``oxNew()`` call is that the GraphQL API then also reflects the changes your modules introduce. This is also the reason, why we use the specific getters and only fall back to using ``getFieldData()`` if no specific getter is available.
 
 
