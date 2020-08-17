@@ -1,0 +1,9 @@
+services:
+
+    Full\Quallified\Namespace\Service\ProductExtendType:
+        class: Full\Quallified\Namespace\Service\ProductExtendType
+
+    Full\Quallified\Namespace\Shared\Service\NamespaceMapper:
+        class: Full\Quallified\Namespace\Shared\Service\NamespaceMapper
+        tags: ['graphql_namespace_mapper']
+

@@ -1,0 +1,7 @@
+type Product {
+    id: ID!
+    # all other fields from data type
+    # ...
+    # plus now your field:
+    subtitle: String!
+}
