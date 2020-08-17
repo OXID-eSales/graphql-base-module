@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\GraphQL\MyGraph\Product\DataType;
 
-use OxidEsales\Eshop\Application\Model\Manufacturer as ManufacturerEshopModel;
+use OxidEsales\Eshop\Application\Model\Manufacturer as EshopManufacturerModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -14,11 +14,11 @@ use TheCodingMachine\GraphQLite\Types\ID;
  */
 final class Manufacturer
 {
-    /** @var ManufacturerEshopModel */
+    /** @var EshopManufacturerModel */
     private $manufacturer;
 
     public function __construct(
-        ManufacturerEshopModel $manufacturer
+        EshopManufacturerModel $manufacturer
     ) {
         $this->manufacturer = $manufacturer;
     }

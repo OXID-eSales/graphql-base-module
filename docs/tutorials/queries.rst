@@ -1,62 +1,5 @@
-Examples for Queries and Mutations
-==================================
-
-In the following section we'll show step by step how to implement queries and mutations
-for the OXID eShop GraphQL API from scratch.
-
-All we definitely need up and running is the OXID eShop and the GraphQL base module.
-
-Preparations
-------------
-
-We don't want to duplicate work like say setting up a brand new graphql module from scratch.
-So we already prepared a little something: `Skeleton GraphQL OXID module <https://github.com/OXID-eSales/graphql-module-skeleton>`_
-
-Let's try this out:
-
-    .. code:: shell
-
-        composer create-project oxid-esales/graphql-module-skeleton
-
-We get prompted for vendor and package name and end up with a ready to use module. Give it a repo, install
-into OXID eShop via composer, activate.
-The module skeleton comes with a Category controller as example, so at this point you can use a GraphQL
-client like Altair to verify you see the category query in the schema.
-
-The Namespace mapper
---------------------
-
-Let's assume we want to fetch information for one specific item (let's take a product)
-via the OXID eShop GraphQL API which means we need to implement a new Controller and DataType.
-
-So in our module's ``src`` directory, let's add the ``Product`` directory structure:
-
-.. code:: shell
-
-    ├── ..
-    └── Product
-        ├── Controller
-        ├── DataType
-        ├── Exception
-        ├── Infrastructure
-        └── Service
-
-Have a look at the ``Shared/Service/NamespaceMapper.php``, this is the place to register
-controller and type namespaces.
-
-.. code:: shell
-
-    ├── ..
-        ├── Shared
-        │   └── Service
-        │       └── NamespaceMapper.php
-        ..
-
-
-.. literalinclude:: examples/tutorials/mygraph/src/Shared/Service/NamespaceMapper.php
-   :language: php
-
-Without the namespace mapper, we'd have to update the module's services.yaml every time we add something new.
+Queries
+=======
 
 
 Very simple query
@@ -87,28 +30,28 @@ Please also have a look at the documentation section about the `Architecture <ar
 
 First thing we need is the data type:
 
-.. literalinclude:: examples/tutorials/mygraph/src/Product/DataType/Product.php
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/DataType/Product.php
    :language: php
 
 In the product repositry is the place where we connect to the OXID eShop Core. This is the only place where
 for example the eShop models are accessed:
 
-.. literalinclude:: examples/tutorials/mygraph/src/Product/Infrastructure/ProductRepository.php
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/Infrastructure/ProductRepository.php
    :language: php
 
 The service layer the holds the GraphQL module's business logic:
 
-.. literalinclude:: examples/tutorials/mygraph/src/Product/Service/Product.php
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/Service/Product.php
    :language: php
 
 Exception in case the requested product cannot be found in the database, we'll answer with a 404 in this case:
 
-.. literalinclude:: examples/tutorials/mygraph/src/Product/Exception/ProductNotFound.php
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/Exception/ProductNotFound.php
    :language: php
 
 The Controller takes the request and relays it to the business logic located in the service:
 
-.. literalinclude:: examples/tutorials/mygraph/src/Product/Controller/Product.php
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/Controller/Product.php
    :language: php
 
 So now we are ready to send a request (you might find more details in `Requests <requests.html>`_) against the API
@@ -123,7 +66,7 @@ So now we are ready to send a request (you might find more details in `Requests 
 
             query {
                 product (
-                    id: "058e613db53d782adfc9f2ccb43c45fe"
+                    id: "dc5ffdf380e15674b56dd562a7cb6aec"
                 ){
                     title
                 }
@@ -136,7 +79,7 @@ So now we are ready to send a request (you might find more details in `Requests 
             {
                 "data": {
                     "product": {
-                        "title": "Bindung O&#039;BRIEN DECADE CT 2010",
+                        "title": "Kuyichi Ledergürtel JEVER",
                     }
                 }
             }
@@ -151,24 +94,58 @@ Let's try to extend the query a little and also fetch information about the prod
 We might be tempted to simply extend the product DataType to have a field for the manufacturer id, but
 please check the hints given in `Specification <specification.html>`_ section. The manufacturer should get
 its own datatype and then get a relation to the product.
-So let's add this:
+So let's add the data type:
+
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/DataType/Manufacturer.php
+   :language: php
+
+Also we need the connection to OXID eShop's ``OxidEsales\Eshop\Application\Model\Article::getManufacturer()`` which
+belongs in the infrastructure layer:
+
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/Infrastructure/Product.php
+   :language: php
+
+And then we relate it to the product by using the ``@ExtendType()`` notation.
+
+.. literalinclude:: ../examples/tutorials/mygraph/src/Product/Service/RelationService.php
+   :language: php
+
+.. important:: In this case, the relation service needs to be registered in ``NamsepaceMapper::getTypeNamespaceMapping()``.
+
+So now we are ready for the next query:
+
+**Request:**
+
+        .. code:: graphql
+
+            query {
+                product (
+                    id: "dc5ffdf380e15674b56dd562a7cb6aec"
+                ){
+                    title
+                    manufacturer {
+                        id
+                        title
+                    }
+                }
+            }
+
+**Response:**
+
+        .. code:: graphql
+
+            {
+                "data": {
+                    "product": {
+                        "title": "Kuyichi Ledergürtel JEVER",
+                        "manufacturer": {
+                            "id": "9434afb379a46d6c141de9c9e5b94fcf",
+                            "title": "Kuyichi"
+                        }
+                    }
+                }
+            }
 
 
-
-
-
-
-
-
-Mutation
---------
-
-TODO
-
-
-Beware the OXID eShop Enterprise Edition
-----------------------------------------
-
-TODO
-
+.. important:: As stated in the `Specification <specification.html>`_ section, if no manufacturer can be found for the product, we get a null.
 

@@ -21,6 +21,7 @@ final class NamespaceMapper implements NamespaceMapperInterface
         return [
             '\\MyVendor\\GraphQL\\MyGraph\\Category\\DataType' => __DIR__ . '/../../Category/DataType/',
             '\\MyVendor\\GraphQL\\MyGraph\\Product\\DataType' => __DIR__ . '/../../Product/DataType/',
+            '\\MyVendor\\GraphQL\\MyGraph\\Product\\Service'   => __DIR__ . '/../../Product/Service/',
         ];
     }
 }

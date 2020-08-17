@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace MyVendor\GraphQL\MyGraph\Product\DataType;
 
-use OxidEsales\Eshop\Application\Model\Article as ProductEshopModel;
+use OxidEsales\Eshop\Application\Model\Article as EshopProductModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -14,13 +14,18 @@ use TheCodingMachine\GraphQLite\Types\ID;
  */
 final class Product
 {
-    /** @var ProductEshopModel */
+    /** @var EshopProductModel */
     private $product;
 
     public function __construct(
-        ProductEshopModel $product
+        EshopProductModel $product
     ) {
         $this->product = $product;
+    }
+
+    public function getEshopModel(): EshopProductModel
+    {
+        return $this->product;
     }
 
     /**
