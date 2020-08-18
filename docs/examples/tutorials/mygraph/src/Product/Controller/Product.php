@@ -14,15 +14,15 @@ final class Product
     private $productService;
 
     public function __construct(
-        ProductService $ProductService
+        ProductService $productService
     ) {
-        $this->productService = $ProductService;
+        $this->productService = $productService;
     }
 
     /**
      * @Query()
      */
-    public function Product(string $id): ProductDataType
+    public function product(string $id): ProductDataType
     {
         return $this->productService->product($id);
     }

@@ -6,7 +6,6 @@ namespace MyVendor\GraphQL\MyGraph\Product\Service;
 
 use MyVendor\GraphQL\MyGraph\Product\DataType\Product as ProductDataType;
 use MyVendor\GraphQL\MyGraph\Product\Infrastructure\ProductMutationRepository;
-use OxidEsales\GraphQL\Base\Exception\NotFound;
 
 final class ProductMutation
 {

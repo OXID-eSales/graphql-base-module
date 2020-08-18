@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace MyVendor\GraphQL\MyGraph\Product\Service;
 
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use MyVendor\GraphQL\MyGraph\Product\DataType\Manufacturer;
 use MyVendor\GraphQL\MyGraph\Product\DataType\Product;
 use MyVendor\GraphQL\MyGraph\Product\Infrastructure\Product as ProductInfrastructure;
