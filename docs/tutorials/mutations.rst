@@ -9,7 +9,7 @@ only a logged in user is able to update a product's title.
 
 We start with the controller this time and (this is entirely done because of step by step tutorial reasons)
 add a ``ProductMutation`` controller. There's no need for any changes in the ``Shared\Service\NamespaceMapper``
-(see `Queries <tutorials/queries.html>`_), as the Controller directory is already registered in there.
+(see `Queries <tutorials/queries.html>`_), as the Controller directory should be already registered in there.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Controller/ProductMutation.php
    :language: php
@@ -44,48 +44,48 @@ To get a clearer view on what we need for the mutation, here's the relevant file
 
     ├── ..
     └── Product
-        ├── Controller
-        │   └── ProductMutation.php
-        ├── DataType
-        │   └── Product.php
-        ├── Exception
-        │   └── ProductNotFound.php
+        ├── Controller
+        │   └── ProductMutation.php
+        ├── DataType
+        │   └── Product.php
+        ├── Exception
+        │   └── ProductNotFound.php
         ├── Infrastructure
         │   ├── ProductMutation.php
-        │   └── ProductMutationRepository.php
-        └── Service
+        │   └── ProductMutationRepository.php
+        └── Service
             ├── ProductTitleInput.php
-            └── ProductMutation.php
+            └── ProductMutation.php
 
 .. important:: As stated in section `Authorization <authorization.html>`_, when using the ``@Logged`` annotation as done here, we need to send the `token` in the HTTP `Authorization` header in order to see the mutation in the schema.
 
 
 **Request:**
 
-        .. code:: graphql
+.. code:: graphql
 
-            mutation {
-                productTitleUpdate(
-                    product: {
-                        id: "dc5ffdf380e15674b56dd562a7cb6aec"
-                        title: "my new product title"
-                    }
-                ){
-                    id
-                    title
-                }
+    mutation {
+        productTitleUpdate(
+            product: {
+                productId: "dc5ffdf380e15674b56dd562a7cb6aec"
+                title: "my new product title"
             }
+        ){
+            id
+            title
+        }
+    }
 
 
 **Response:**
 
-        .. code:: graphql
+.. code:: graphql
 
-            {
-                "data": {
-                    "productTitleUpdate": {
-                        "id": "dc5ffdf380e15674b56dd562a7cb6aec",
-                        "title": "my new product title"
-                    }
-                }
+    {
+        "data": {
+            "productTitleUpdate": {
+                "id": "dc5ffdf380e15674b56dd562a7cb6aec",
+                "title": "my new product title"
             }
+        }
+    }

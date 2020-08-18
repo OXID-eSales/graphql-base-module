@@ -1,10 +1,10 @@
 Introduction
 ============
 
-In the following sections we'll show step by step how to implement queries and mutations
-for the OXID eShop GraphQL API from scratch.
+In the following sections we'll show how to implement queries and mutations
+for the OXID eShop GraphQL API from scratch, step by step.
 
-All we definitely need up and running is the OXID eShop and the GraphQL base module.
+To start with your own module, we will definitely need up and running OXID eShop and GraphQL base module installed.
 
 Preparations
 ------------
@@ -27,7 +27,7 @@ The Namespace mapper
 --------------------
 
 Let's assume we want to fetch information for one specific item (let's take a product)
-via the OXID eShop GraphQL API which means we need to implement a new Controller and DataType.
+via the OXID eShop GraphQL API, which means we need to implement a new Controller and DataType.
 
 So in our module's ``src`` directory, let's add the ``Product`` directory structure:
 
@@ -35,11 +35,11 @@ So in our module's ``src`` directory, let's add the ``Product`` directory struct
 
     ├── ..
     └── Product
-        ├── Controller
-        ├── DataType
-        ├── Exception
-        ├── Infrastructure
-        └── Service
+        ├── Controller
+        ├── DataType
+        ├── Exception
+        ├── Infrastructure
+        └── Service
 
 Have a look at the ``Shared/Service/NamespaceMapper.php``, this is the place to register
 controller and type namespaces.
