@@ -29,7 +29,7 @@ class GraphQLQueryHandlerTest extends TestCase
     {
         $result = $this->query('query { clientAwareExceptionQuery(foo: "bar") }');
         $this->assertEquals(
-            403,
+            401,
             $result['status']
         );
         $this->assertEquals(

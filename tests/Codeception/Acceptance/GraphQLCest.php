@@ -35,4 +35,16 @@ class GraphQLCest
         $I->seeResponseContains('data');
         $I->seeResponseContains('token');
     }
+
+    public function testQueryWithInvalidToken(AcceptanceTester $I): void
+    {
+        $I->haveHTTPHeader('Content-Type', 'application/json');
+        $I->amBearerAuthenticated('invalid_token');
+        $I->sendPOST('/widget.php?cl=graphql', [
+            'query' => 'query {token(username:"admin", password:"admin")}',
+        ]);
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::UNAUTHORIZED);
+        $I->seeResponseIsJson();
+        $I->seeResponseContains('errors');
+    }
 }

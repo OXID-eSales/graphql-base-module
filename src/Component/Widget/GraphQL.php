@@ -9,9 +9,13 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Component\Widget;
 
+use GraphQL\Error\FormattedError;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
+use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
+use Throwable;
 
 /**
  * Class GraphQL
@@ -45,9 +49,31 @@ class GraphQL extends WidgetController
 
             exit;
         }
-        ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(GraphQLQueryHandler::class)
-            ->executeGraphQLQuery();
+
+        try {
+            ContainerFactory::getInstance()
+                ->getContainer()
+                ->get(GraphQLQueryHandler::class)
+                ->executeGraphQLQuery();
+        } catch (HttpErrorInterface $e) {
+            self::sendErrorResponse(FormattedError::createFromException($e), $e->getHttpStatus());
+        } catch (Throwable $e) {
+            EshopRegistry::getLogger()->error($e->getMessage(), [$e]);
+            self::sendErrorResponse(FormattedError::createFromException($e), 500);
+        }
+    }
+
+    public static function sendErrorResponse(array $message, int $status): void
+    {
+        $body = [
+            'errors' => [
+                $message,
+            ],
+        ];
+
+        header('Content-Type: application/json', true, $status);
+        print json_encode($body);
+
+        exit;
     }
 }

@@ -16,7 +16,7 @@ class InvalidToken extends Exception implements ClientAware, HttpErrorInterface
 {
     public function getHttpStatus(): int
     {
-        return 403;
+        return 401;
     }
 
     public function isClientSafe(): bool

@@ -96,7 +96,7 @@ class AuthenticationTest extends TestCase
             $e
         );
         $this->assertSame(
-            403,
+            401,
             $e->getHttpStatus()
         );
     }
