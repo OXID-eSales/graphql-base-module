@@ -4,7 +4,7 @@ Introduction
 In the following sections we'll show how to implement queries and mutations
 for the OXID eShop GraphQL API from scratch, step by step.
 
-To start with your own module, we will definitely need up and running OXID eShop and GraphQL base module installed.
+To start with your own module, you will definitely need an up and running OXID eShop with the GraphQL base module installed.
 
 Preparations
 ------------

@@ -1,5 +1,5 @@
-Mutations
-=========
+Howto: implement a mutation
+===========================
 
 Let's consider the case that we'd like to change data through the GraphQL API, say the title of a product.
 Having every anonymous user be able to change data is probably not a good idea. In fact we should make sure
@@ -9,7 +9,7 @@ only a logged in user is able to update a product's title.
 
 We start with the controller this time and (this is entirely done because of step by step tutorial reasons)
 add a ``ProductMutation`` controller. There's no need for any changes in the ``Shared\Service\NamespaceMapper``
-(see `Queries <tutorials/queries.html>`_), as the Controller directory should be already registered in there.
+(see `Queries <tutorials/queries.html>`_), as the Controller directory should already be registered in there.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Controller/ProductMutation.php
    :language: php

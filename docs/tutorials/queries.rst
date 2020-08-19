@@ -1,11 +1,11 @@
-Implementing the Query
-======================
+Howto: implement a query
+========================
 
 Simple Query
 ------------
 
-Example of a simple query would be - asking for some product general information. In this
-section we will implement the query for getting product title:
+An example of a simple query would be asking for some product general information. In this
+section we will implement the query for getting the product title:
 
 **Request:**
 
@@ -41,7 +41,7 @@ section we will implement the query for getting product title:
 File structure
 ^^^^^^^^^^^^^^
 
-As stated in the Introduction: we need Controller, DataType, Service, Infrastructure and maybe some Exception.
+As stated in the `Introduction <tutorials/introduction.html>`_, we need Controller, DataType, Service, Infrastructure and maybe some Exception.
 Please also have a look at the documentation section about the `Architecture <architecture.html>`_ of our modules.
 
 .. code:: shell
@@ -63,20 +63,20 @@ Please also have a look at the documentation section about the `Architecture <ar
 Data type
 ^^^^^^^^^
 
-In data type we should describe all the fields of product object available for the retrieval.
+In the data type we describe all the fields of the product object available for retrieval.
 In our case we are interested in product id and title:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/DataType/Product.php
    :language: php
 
 .. note::
-    ``getEshopModel`` method will be used later in examples of data type relations. Feel free
+    The ``getEshopModel`` method will be used later in examples of data type relations. Feel free
     to ignore that one for now.
 
 Repository
 ^^^^^^^^^^
 
-The Repositry class contains relations to the OXID eShop Core. Ideally this layer should be
+The Repository class contains relations to the OXID eShop Core. Ideally this layer should be
 the only one you need to change if something changes in the shop.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Infrastructure/ProductRepository.php
@@ -92,7 +92,7 @@ cases handling:
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Service/Product.php
    :language: php
 
-We'll throw the ProductNotFound Exception (with a 404 error code) in case the requested
+We'll throw the ``ProductNotFound`` Exception (with a 404 error code) in case the requested
 product cannot be found in the shop. Example of Exception class:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Exception/ProductNotFound.php
@@ -174,11 +174,11 @@ belongs in the infrastructure layer:
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Infrastructure/Product.php
    :language: php
 
-And then we relate it to the product by creating RelationService and using the ``@ExtendType()`` notation.
+And then we relate it to the product by implementing a RelationService and using the ``@ExtendType()`` notation.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Service/RelationService.php
    :language: php
 
 .. important:: In this case, the relation service needs to be registered in ``NamsepaceMapper::getTypeNamespaceMapping()``.
 
-At this point, running our extended query should be possible.
+At this point, running our extended query will be possible.
