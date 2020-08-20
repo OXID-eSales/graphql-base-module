@@ -34,6 +34,7 @@ final class RelationService
      */
     public function manufacturer(Product $product): ?Manufacturer
     {
-        return $this->productInfrastructure->manufacturer($product);
+        return $this->productInfrastructure
+                    ->manufacturerByProduct($product);
     }
 }

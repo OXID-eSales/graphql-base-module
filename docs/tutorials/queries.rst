@@ -2,7 +2,7 @@ Howto: implement a query
 ========================
 
 Product Query
-------------
+-------------
 
 An example of a simple query would be asking for some product general information. In this
 section we will implement the query for getting the product title like so.
@@ -70,6 +70,7 @@ In the data type we describe all the fields of the product object available for 
 In our case we are interested in product id and title:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/DataType/Product.php
+   :caption: src/Product/DataType/Product.php
    :language: php
 
 Repository
@@ -79,6 +80,7 @@ The Repository class contains relations to the OXID eShop Core. Ideally this lay
 the only one you need to change if something changes in the shop.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Infrastructure/ProductRepository.php
+   :caption: src/Product/Infrastructure/ProductRepository.php
    :language: php
 
 Service
@@ -88,12 +90,14 @@ The service layer contains the GraphQL module's business logic. In our case its 
 cases handling:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Service/Product.php
+   :caption: src/Product/Service/Product.php
    :language: php
 
 We'll throw the ``ProductNotFound`` Exception (with a 404 error code) in case the requested
 product cannot be found in the shop. Example of Exception class:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Exception/ProductNotFound.php
+   :caption: src/Product/Exception/ProductNotFound.php
    :language: php
 
 
@@ -103,6 +107,7 @@ Controller
 The Controller takes the request parameters and links it to the business logic located in the service:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Controller/Product.php
+   :caption: src/Product/Controller/Product.php
    :language: php
 
 Now we are ready to send a request (you might find more details in `Requests <requests.html>`_) against the API.
@@ -155,21 +160,24 @@ We might be tempted to simply extend the product DataType to have a field for th
 please check the hints given in `Specification <specification.html>`_ section. The manufacturer should get
 its own datatype and then get a relation to the product. So let's add the Manufacturer Data Type:
 
-.. literalinclude:: ../examples/tutorials/mygraph/src/Product/DataType/Manufacturer.php
+.. literalinclude:: ../examples/tutorials/mygraph/src/Manufacturer/DataType/Manufacturer.php
+   :caption: src/Manufacturer/DataType/Manufacturer.php
    :language: php
 
 Also we need the connection to OXID eShop's ``OxidEsales\Eshop\Application\Model\Article::getManufacturer()`` which
 belongs in the infrastructure layer:
 
-.. literalinclude:: ../examples/tutorials/mygraph/src/Product/Infrastructure/Product.php
+.. literalinclude:: ../examples/tutorials/mygraph/src/Manufacturer/Infrastructure/Manufacturer.php
+   :caption: src/Manufacturer/Infrastructure/Manufacturer.php
    :language: php
 
 And then we relate it to the product by implementing a RelationService and using the ``@ExtendType()`` notation.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Service/RelationService.php
+   :caption: src/Product/Service/RelationService.php
    :language: php
 
-We already did, but please remember as this is a type for GraphQL, it needs to be
-registered in the ``NamsepaceMapper::getTypeNamespaceMapping()`` method.
+Please remember as this is a new type for GraphQL, it needs to be
+registered in the ``NamsepaceMapper::getTypeNamespaceMapping()`` method!
 
 At this point, running our extended query will be possible.

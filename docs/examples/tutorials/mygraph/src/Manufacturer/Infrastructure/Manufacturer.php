@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\GraphQL\MyGraph\Product\Infrastructure;
+namespace MyVendor\GraphQL\MyGraph\Manufacturer\Infrastructure;
 
 use OxidEsales\Eshop\Application\Model\Manufacturer as EshopManufacturerModel;
 use MyVendor\GraphQL\MyGraph\Product\DataType\Manufacturer as ManufacturerDataType;
@@ -10,7 +10,7 @@ use MyVendor\GraphQL\MyGraph\Product\DataType\Product as ProductDataType;
 
 final class Product
 {
-    public function manufacturer(ProductDataType $product): ?ManufacturerDataType
+    public function manufacturerByProduct(ProductDataType $product): ?ManufacturerDataType
     {
         /** @var null|EshopManufacturerModel $manufacturer */
         $manufacturer = $product->getEshopModel()->getManufacturer();

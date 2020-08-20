@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MyVendor\GraphQL\MyGraph\Product\DataType;
+namespace MyVendor\GraphQL\MyGraph\Manufacturer\DataType;
 
 use OxidEsales\Eshop\Application\Model\Manufacturer as EshopManufacturerModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;

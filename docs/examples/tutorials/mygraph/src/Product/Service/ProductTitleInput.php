@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace MyVendor\GraphQL\MyGraph\Product\Service;
 
 use MyVendor\GraphQL\MyGraph\Product\DataType\Product as ProductDataType;
-use MyVendor\GraphQL\MyGraph\Product\Infrastructure\ProductMutationRepository as ProductRepository;
-use MyVendor\GraphQL\MyGraph\Product\Infrastructure\ProductMutation as ProductMutationInfrastructure;
+use MyVendor\GraphQL\MyGraph\Product\Infrastructure\ProductRepository as ProductRepository;
+use MyVendor\GraphQL\MyGraph\Product\Infrastructure\ProductMutation as ProductMutationService;
 use MyVendor\GraphQL\MyGraph\Product\Exception\ProductNotFound;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
@@ -16,19 +16,19 @@ final class ProductTitleInput
     /** @var ProductRepository */
     private $productRepository;
 
-    /** @var ProductMutationInfrastructure */
-    private $productMutationInfrastructure;
+    /** @var ProductMutationService */
+    private $productMutationService;
 
     public function __construct(
         ProductRepository $productRepository,
-        ProductMutationInfrastructure $productMutationInfrastructure
+        ProductMutationService $productMutationService
     ) {
         $this->productRepository = $productRepository;
-        $this->productMutationInfrastructure = $productMutationInfrastructure;
+        $this->productMutationService = $productMutationService;
     }
 
     /**
-     * @Factory(name="ProductTitleInput")
+     * @Factory(name="ProductInput")
      */
     public function fromUserInput(string $productId, string $title): ProductDataType
     {
@@ -38,6 +38,6 @@ final class ProductTitleInput
             throw ProductNotFound::byId($productId);
         }
 
-        return $this->productMutationInfrastructure->assignTitle($product, $title);
+        return $this->productMutationService->assignTitle($product, $title);
     }
 }
