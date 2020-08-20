@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `\OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase`
 - Abstract sorting support through `\OxidEsales\GraphQL\Base\DataType\Sorting` OXDEV-3794
 
+### Changed
+
+- Improve exception handling to get a GraphQL error message instead of shop's maintenance page.
+- `\OxidEsales\GraphQL\Base\Exception\InvalidToken` now returns 401 status code instead of 403.
+
 ## [3.1.3] 2020-06-26
 
 ### Changed
