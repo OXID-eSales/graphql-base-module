@@ -8,4 +8,5 @@ Tutorials
 
         introduction
         queries
+        extending
         mutations

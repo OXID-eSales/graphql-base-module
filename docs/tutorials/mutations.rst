@@ -1,4 +1,4 @@
-Howto: implement a mutation
+Implement a mutation
 ===========================
 
 Having the query for the products it is time to create a mutation to change
