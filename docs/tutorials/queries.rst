@@ -169,6 +169,7 @@ And then we relate it to the product by implementing a RelationService and using
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Service/RelationService.php
    :language: php
 
-.. important:: In this case, the relation service needs to be registered in ``NamsepaceMapper::getTypeNamespaceMapping()``.
+We already did, but please remember as this is a type for GraphQL, it needs to be
+registered in the ``NamsepaceMapper::getTypeNamespaceMapping()`` method.
 
 At this point, running our extended query will be possible.
