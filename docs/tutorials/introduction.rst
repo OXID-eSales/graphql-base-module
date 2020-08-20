@@ -14,9 +14,9 @@ So we already prepared a little something: `Skeleton GraphQL OXID module <https:
 
 Let's try this out:
 
-    .. code:: shell
+.. code:: shell
 
-        composer create-project oxid-esales/graphql-module-skeleton
+    composer create-project oxid-esales/graphql-module-skeleton
 
 We get prompted for vendor and package name and end up with a ready to use module. Give it a repo, install
 into OXID eShop via composer, activate.
@@ -55,5 +55,3 @@ controller and type namespaces.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Shared/Service/NamespaceMapper.php
    :language: php
-
-Without the namespace mapper, we'd have to update the module's services.yaml every time we add something new.

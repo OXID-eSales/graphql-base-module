@@ -32,8 +32,8 @@ final class RelationService
     /**
      * @Field()
      */
-    public function getManufacturer(Product $product): ?Manufacturer
+    public function manufacturer(Product $product): ?Manufacturer
     {
-        return $this->productInfrastructure->getManufacturer($product);
+        return $this->productInfrastructure->manufacturer($product);
     }
 }

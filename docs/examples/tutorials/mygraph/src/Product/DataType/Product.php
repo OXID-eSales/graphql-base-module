@@ -23,11 +23,6 @@ final class Product
         $this->product = $product;
     }
 
-    public function getEshopModel(): EshopProductModel
-    {
-        return $this->product;
-    }
-
     /**
      * @Field()
      */

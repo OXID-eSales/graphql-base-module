@@ -1,37 +1,38 @@
 Howto: implement a query
 ========================
 
-Simple Query
+Product Query
 ------------
 
 An example of a simple query would be asking for some product general information. In this
-section we will implement the query for getting the product title:
+section we will implement the query for getting the product title like so.
 
-**Request:**
+**Query**
 
-    .. code:: graphql
+.. code:: graphql
 
-        query {
-            product (
-                id: "dc5ffdf380e15674b56dd562a7cb6aec"
-            ){
-                title
+    query {
+        product (
+            id: "dc5ffdf380e15674b56dd562a7cb6aec"
+        ){
+            title
+        }
+    }
+
+**Response**
+
+.. code:: graphql
+
+    {
+        "data": {
+            "product": {
+                "title": "Kuyichi Ledergürtel JEVER",
             }
         }
-
-**Response:**
-
-    .. code:: graphql
-
-        {
-            "data": {
-                "product": {
-                    "title": "Kuyichi Ledergürtel JEVER",
-                }
-            }
-        }
+    }
 
 .. important::
+
     Products in OXID eShop are multilanguage models. The language id
     is not given in the query itself but is set as parameter of the GraphQL endpoint
     url same as the shop id. So we usually don't need to think much about handling the
@@ -41,8 +42,10 @@ section we will implement the query for getting the product title:
 File structure
 ^^^^^^^^^^^^^^
 
-As stated in the `Introduction <tutorials/introduction.html>`_, we need Controller, DataType, Service, Infrastructure and maybe some Exception.
-Please also have a look at the documentation section about the `Architecture <architecture.html>`_ of our modules.
+As stated in the `Introduction <tutorials/introduction.html>`_, we need Controller,
+DataType, Service, Infrastructure and maybe some Exception. Please also have a look
+at the documentation section about the `Architecture <architecture.html>`_ of
+our modules.
 
 .. code:: shell
 
@@ -69,10 +72,6 @@ In our case we are interested in product id and title:
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/DataType/Product.php
    :language: php
 
-.. note::
-    The ``getEshopModel`` method will be used later in examples of data type relations. Feel free
-    to ignore that one for now.
-
 Repository
 ^^^^^^^^^^
 
@@ -81,7 +80,6 @@ the only one you need to change if something changes in the shop.
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Infrastructure/ProductRepository.php
    :language: php
-
 
 Service
 ^^^^^^^
@@ -107,23 +105,15 @@ The Controller takes the request parameters and links it to the business logic l
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Controller/Product.php
    :language: php
 
-So now we are ready to send a request (you might find more details in `Requests <requests.html>`_) against the API
-
-::
-
-    https://<your host address>/graphql/?shp=1&lang=1
-
-.. important::
-    Usually you'll need to protect some parts of your API against unauthorized access. This
-    is described in an `Authorization. <authorization.html>`_ section.
-
+Now we are ready to send a request (you might find more details in `Requests <requests.html>`_) against the API.
 
 Relation with other Data Types
 ------------------------------
 
-Let's try to extend the query a little and also fetch information about the product's manufacturer:
+Let's try to extend the GraphQL schema a little so we are able to fetch
+information about the manufacturer assigned to a product.
 
-**Request:**
+**Query**
 
 .. code:: graphql
 
@@ -139,7 +129,7 @@ Let's try to extend the query a little and also fetch information about the prod
         }
     }
 
-**Response:**
+**Response**
 
 .. code:: graphql
 
@@ -155,15 +145,15 @@ Let's try to extend the query a little and also fetch information about the prod
         }
     }
 
-.. important:: As stated in the `Specification <specification.html>`_ section, if no manufacturer can be found for the product, we get a null.
+.. important::
+   As stated in the `Specification <specification.html>`_ section, if no manufacturer can be found for the product, we get a null.
 
 Extending the product DataType
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 We might be tempted to simply extend the product DataType to have a field for the manufacturer id, but
 please check the hints given in `Specification <specification.html>`_ section. The manufacturer should get
-its own datatype and then get a relation to the product.
-So let's add the Manufacturer Data Type:
+its own datatype and then get a relation to the product. So let's add the Manufacturer Data Type:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/DataType/Manufacturer.php
    :language: php

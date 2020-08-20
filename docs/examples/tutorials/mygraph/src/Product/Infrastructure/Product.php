@@ -10,7 +10,7 @@ use MyVendor\GraphQL\MyGraph\Product\DataType\Product as ProductDataType;
 
 final class Product
 {
-    public function getManufacturer(ProductDataType $product): ?ManufacturerDataType
+    public function manufacturer(ProductDataType $product): ?ManufacturerDataType
     {
         /** @var null|EshopManufacturerModel $manufacturer */
         $manufacturer = $product->getEshopModel()->getManufacturer();
