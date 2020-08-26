@@ -3,7 +3,7 @@ Errors and Exceptions
 
 When error occurs in GraphQL, the server adds an ``errors`` entry in the response. Here is an example
 
-.. code:: json
+.. code-block:: json
 
     {
         "errors": [

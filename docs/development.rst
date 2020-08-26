@@ -100,18 +100,18 @@ use Codeception to write your integration tests. As this testing is just against
 and HTTP API, there is no need to run a headless browser, so the ``acceptance.suite.yml``
 is pretty slim and tests are pretty fast.
 
-.. code:: yaml
+.. code-block:: yaml
 
     # suite config
     actor: AcceptanceTester
     path: Acceptance
     modules:
-      enabled:
-        - \Full\Quallified\Namespace\Tests\Codeception\Helper\Acceptance
-        - REST:
-            url: '%SHOP_URL%'
-            depends: PhpBrowser
-            part: Json
+        enabled:
+            - \Full\Quallified\Namespace\Tests\Codeception\Helper\Acceptance
+            - REST:
+                url: '%SHOP_URL%'
+                depends: PhpBrowser
+                part: Json
 
 .. literalinclude:: examples/development/IntegrationTestCodeception.php
    :language: php

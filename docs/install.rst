@@ -8,26 +8,20 @@ To start with `GraphQL <https://www.graphql.org>`_ you need `OXID eShop <https:/
 
 To install the available GraphQL modules, first you have to go to the shop's directory
 
-.. code:: shell
+.. code-block:: bash
 
     cd <shop_directory>
 
-and to register the modules in project's composer.json file.
+and to require the modules via ``composer``:
 
-.. code:: shell
+.. code-block:: bash
 
-    composer require oxid-esales/graphql-base --no-update
-    composer require oxid-esales/graphql-catalogue --no-update
-
-Then install the defined dependencies executing
-
-.. code:: shell
-
-    composer update
+    composer require oxid-esales/graphql-base
+    composer require oxid-esales/graphql-catalogue
 
 After installing the modules you need to add their configurations into the project's configuration file. You can do it by running:
 
-.. code:: shell
+.. code-block:: bash
 
     ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-base/
     ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-catalogue/
@@ -39,7 +33,7 @@ Activation
 
 Now you need to activate the modules, either via OXID eShop admin or CLI.
 
-.. code:: shell
+.. code-block:: bash
 
     ./bin/oe-console oe:module:activate oe/graphql-base
     ./bin/oe-console oe:module:activate oe/graphql-catalogue

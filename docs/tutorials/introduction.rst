@@ -14,7 +14,7 @@ So we already prepared a little something: `Skeleton GraphQL OXID module <https:
 
 Let's try this out:
 
-.. code:: shell
+.. code-block:: bash
 
     composer create-project oxid-esales/graphql-module-skeleton
 
@@ -31,7 +31,7 @@ via the OXID eShop GraphQL API, which means we need to implement a new Controlle
 
 So in our module's ``src`` directory, let's add the ``Product`` directory structure:
 
-.. code:: shell
+.. code-block:: bash
 
     ├── ..
     └── Product
@@ -44,7 +44,7 @@ So in our module's ``src`` directory, let's add the ``Product`` directory struct
 Have a look at the ``Shared/Service/NamespaceMapper.php``, this is the place to register
 controller and type namespaces.
 
-.. code:: shell
+.. code-block:: bash
 
     ├── ..
         ├── Shared

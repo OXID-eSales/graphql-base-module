@@ -71,7 +71,7 @@ Simple direct filter usage example
 In this example, we create a country query with possibility to filter
 countries by title and we will use our String filter for this:
 
-.. code:: php
+.. code-block:: php
 
     /**
      * @Query()
@@ -94,26 +94,30 @@ Later on, we can apply the "title" filter on the query via the GraphQL interface
 As there are several variants possible for String filter (equals, contains, beginsWith),
 we could use any combination of those, but as example, simple "equals" usage is shown:
 
-.. code:: graphql
+.. code-block:: graphql
 
-    query{
-      exampleCountryQuery(titleFilter: {equals: "Deutschland"})
+    query {
+        exampleCountryQuery(
+            titleFilter: {
+                equals: "Deutschland"
+            }
+        )
     }
 
 Result of this query will be one country data with specific name:
 
-.. code:: json
+.. code-block:: json
 
     {
-      "data": {
-        "exampleCountryQuery": [
-          [
-            "a7c40f631fc920687.20179984",
-            "Deutschland",
-            "DE"
-          ]
-        ]
-      }
+        "data": {
+            "exampleCountryQuery": [
+                [
+                    "a7c40f631fc920687.20179984",
+                    "Deutschland",
+                    "DE"
+                ]
+            ]
+        }
     }
 
 
@@ -126,7 +130,7 @@ Filtering by multiple fields
 Often we need more then one field with more then one filter at the time. For
 this reason, we could wrap several filters in some filter list DataType:
 
-.. code:: php
+.. code-block:: php
 
     final class CountryFilterList
     {
@@ -176,7 +180,7 @@ While having this filter list, we will require this DataType in place of our sin
 in controller query from simple filter example, and just apply multiple filters to our
 query builder instead of previously used one:
 
-.. code:: php
+.. code-block:: php
 
     public function exampleCountryQuery(?CountryFilterList $filter = null): array
     {
@@ -194,29 +198,35 @@ query builder instead of previously used one:
 
 Now our filter list can be used in a query:
 
-.. code:: php
+.. code-block:: graphql
 
     query{
-      exampleCountryQuery(filter:{
-        title: {beginsWith: "D"}
-        iso: {beginsWith: "DM"}
-      })
+        exampleCountryQuery (
+            filter: {
+                title: {
+                    beginsWith: "D"
+                }
+                iso: {
+                    beginsWith: "DM"
+                }
+            }
+        )
     }
 
 Gives us a country that was filtered by our conditions:
 
-.. code:: php
+.. code-block:: json
 
     {
-      "data": {
-        "exampleCountryQuery": [
-          [
-            "8f241f11095811ea5.84717844",
-            "Dominica",
-            "DM"
-          ]
-        ]
-      }
+        "data": {
+            "exampleCountryQuery": [
+                [
+                    "8f241f11095811ea5.84717844",
+                    "Dominica",
+                    "DM"
+                ]
+            ]
+        }
     }
 
 How to add your own filters

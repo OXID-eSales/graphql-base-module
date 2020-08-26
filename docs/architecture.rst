@@ -7,7 +7,7 @@ If you are interested in understanding the overall picture, Zvonimir Spajic crea
 
 The file system hierarchy in the ``src`` directory looks similar to this
 
-.. code:: shell
+.. code-block:: bash
 
     ├── ..
     ├── Shared

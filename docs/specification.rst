@@ -74,7 +74,7 @@ Fields
     - example: a product has an ``oxvendorid``, which should not be exposed as ``ID`` or ``String`` field, but as a relation to that specific type
     - you may additionally add the field with the ``ID`` type when necessary
 
-.. code:: graphql
+.. code-block:: graphql
 
     type Product {
         # do

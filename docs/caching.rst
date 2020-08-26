@@ -8,15 +8,15 @@ As stated in other occurrences already, we are heavily relying on GraphQLite for
 
 The ``TheCodingMachine\GraphQLite\SchemaFactory`` needs the DI container and a PSR-16 cache. By default we pass it a null cache.
 
-.. code:: yaml
+.. code-block:: yaml
 
-  oxidesales.graphqlbase.cacheadapter:
-    class: Symfony\Component\Cache\Adapter\NullAdapter
+    oxidesales.graphqlbase.cacheadapter:
+        class: Symfony\Component\Cache\Adapter\NullAdapter
 
-  oxidesales.graphqlbase.cache:
-    class: Symfony\Component\Cache\Psr16Cache
-    arguments:
-      $pool: '@oxidesales.graphqlbase.cacheadapter'
+    oxidesales.graphqlbase.cache:
+        class: Symfony\Component\Cache\Psr16Cache
+        arguments:
+            $pool: '@oxidesales.graphqlbase.cacheadapter'
 
 Change the cache
 ----------------
@@ -30,7 +30,7 @@ Custom cache adapter
 
 You can choose from the ``symfony/cache`` components `adapters <https://symfony.com/doc/current/components/cache.html#available-cache-adapters>`_ or create your own adapter implementing the ``Symfony\Component\Cache\Adapter\AdapterInterface``.
 
-.. code:: yaml
+.. code-block:: yaml
 
     services:
 
@@ -46,7 +46,7 @@ Custom cache
 
 In case you already have another PSR-16 cache, or want to build your own implementation, instead of overriding the ``oxidesales.graphqlbase.cacheadapter`` key, you can use the ``oxidesales.graphqlbase.cache`` key to inject your PSR-16 cache.
 
-.. code:: yaml
+.. code-block:: yaml
 
     services:
 

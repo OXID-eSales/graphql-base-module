@@ -6,14 +6,14 @@ Apache HTTP Authorization
 
 ``php-cgi`` under Apache does not pass HTTP Basic user/pass to PHP by default. For this workaround to work, add these lines to your .htaccess file:
 
-.. code:: apache
+.. code-block:: apache
 
     RewriteCond %{HTTP:Authorization} ^(.+)$
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 or
 
-.. code:: apache
+.. code-block:: apache
 
     SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 
@@ -22,14 +22,14 @@ Query String gets swallowed
 
 When you call the API endpoint with a query string, for example `/graphql/?lang=1` and that `lang` parameter gets swallowed by apache, it is due to the missing `QSA`-`RewriteRule`-Flag. Find the `RewriteRule` that looks like this:
 
-.. code:: apache
+.. code-block:: apache
 
     RewriteRule ^(graphql/)    widget.php?cl=graphql   [NC,L]
 
 
 and make it look like this:
 
-.. code:: apache
+.. code-block:: apache
 
     RewriteRule ^(graphql/)    widget.php?cl=graphql   [QSA,NC,L]
 
@@ -52,7 +52,7 @@ In case you'd like to contribute, installing the modules as described in the `Ox
 
 A more reliable first step in setting things up would be to clone the desired repository in the ``oxideshop`` directory, for example, and symlink it into its respective place in ``source\modules`` like this:
 
-.. code:: shell
+.. code-block:: bash
 
     cd /var/www/oxideshop
     git clone <url-to-module-repository>

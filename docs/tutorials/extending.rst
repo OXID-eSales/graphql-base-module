@@ -6,7 +6,7 @@ information about the manufacturer assigned to a product.
 
 **Query**
 
-.. code:: graphql
+.. code-block:: graphql
 
     query {
         product (
@@ -22,7 +22,7 @@ information about the manufacturer assigned to a product.
 
 **Response**
 
-.. code:: graphql
+.. code-block:: json
 
     {
         "data": {

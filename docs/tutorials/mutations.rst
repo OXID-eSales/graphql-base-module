@@ -47,7 +47,7 @@ This in turn needs some infrastructure layer part, because we need the OXID eSho
 To get a clearer view on what we need for the mutation, here's the relevant
 file structure after the changes from this tutorial applied.
 
-.. code:: shell
+.. code-block:: bash
 
     ├── ..
     └── Product
@@ -69,7 +69,7 @@ file structure after the changes from this tutorial applied.
 
 **Mutation**
 
-.. code:: graphql
+.. code-block:: graphql
 
     mutation {
         productTitleUpdate(
@@ -86,7 +86,7 @@ file structure after the changes from this tutorial applied.
 
 **Response**
 
-.. code:: graphql
+.. code-block:: json
 
     {
         "data": {

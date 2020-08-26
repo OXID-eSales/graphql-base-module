@@ -30,7 +30,7 @@ Shop and language are no special parameters to GraphQL, but will be taken from t
 
 A curl query would look something like this:
 
-.. code:: shell
+.. code-block:: bash
 
     curl \
         -X POST \
@@ -44,7 +44,7 @@ Headers
 - ``Content-Type`` must be ``application/json``.
 - ``Authorization`` enables usage of a token to authenticate with the shop, for example:
 
-.. code:: shell
+.. code-block:: bash
 
     curl \
         -X POST \

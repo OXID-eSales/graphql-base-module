@@ -9,7 +9,7 @@ section we will implement the query for getting the product title like so.
 
 **Query**
 
-.. code:: graphql
+.. code-block:: graphql
 
     query {
         product (
@@ -21,7 +21,7 @@ section we will implement the query for getting the product title like so.
 
 **Response**
 
-.. code:: graphql
+.. code-block:: json
 
     {
         "data": {
@@ -47,7 +47,7 @@ DataType, Service, Infrastructure and maybe some Exception. Please also have a l
 at the documentation section about the `Architecture <architecture.html>`_ of
 our modules.
 
-.. code:: shell
+.. code-block:: bash
 
     ├── ..
     └── Product
