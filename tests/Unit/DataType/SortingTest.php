@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
+use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Sorting;
 
 class SortingTest extends DataTypeTestCase
@@ -29,7 +30,7 @@ class SortingTest extends DataTypeTestCase
         };
 
         $queryBuilder->select()->from('db_table');
-        $sort->addToQuery($queryBuilder, 'db_field');
+        $sort->addToQuery($queryBuilder);
 
         /** @var CompositeExpression */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
@@ -47,7 +48,7 @@ class SortingTest extends DataTypeTestCase
         };
 
         $queryBuilder->select()->from('db_table', 'db_table_alias');
-        $sort->addToQuery($queryBuilder, 'db_field');
+        $sort->addToQuery($queryBuilder);
 
         /** @var CompositeExpression */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
@@ -65,7 +66,7 @@ class SortingTest extends DataTypeTestCase
         };
 
         $queryBuilder->select()->from('db_table');
-        $sort->addToQuery($queryBuilder, 'db_field');
+        $sort->addToQuery($queryBuilder);
 
         /** @var CompositeExpression */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
@@ -82,5 +83,16 @@ class SortingTest extends DataTypeTestCase
             'db_table.bar DESC',
             $orderBy[1]
         );
+    }
+
+    public function testFailAddToQueryWithoutFormPart(): void
+    {
+        $queryBuilder = $this->createQueryBuilderMock();
+
+        $sort = new class([]) extends Sorting {
+        };
+
+        $this->expectException(InvalidArgumentException::class);
+        $sort->addToQuery($queryBuilder);
     }
 }
