@@ -9,9 +9,10 @@ This module provides:
 - authorization and authentication using [JWT](https://jwt.io)
 - a query to log you in and get a JWT for further authentication
 
-## Specification of the API
 
-See [spec](docs/SPECIFICATION.md) in this repository
+## Documentation
+
+Full documentation can be found [here](https://docs.oxid-esales.com).
 
 ## Usage
 
@@ -20,7 +21,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` co
 ### Install
 
 ```bash
-$ composer require oxid-esales/graphql-base --no-update
+$ composer require oxid-esales/graphql-base
 $ composer update
 ```
 
@@ -76,67 +77,7 @@ Authorization: Bearer a-very-long-jwt
 
 ### How to extend
 
-See [oxid-esales/graphql-catalogue](https://github.com/OXID-eSales/graphql-catalogue-module) for example of module
-extending GraphQl Base Module.
-
-### Caching
-
-`TheCodingMachine\GraphQLite\SchemaFactory` is able to cache schema and docs.
-Have a look at the GraphQL Base module's services.yaml file. By default we have a null cache (no caching) injected
-but any cache implementing the `Psr\SimpleCache\CacheInterface` can be used.
-For this you need to add/extend the shop's `var/configuration/configurable_services.yaml` file.
-Either only the `oxidesales.graphqlbase.cacheadapter` is replaced by any of the Symfony cache adapters
-or you can inject your own cache implementation via `oxidesales.graphqlbase.cache`.
-
-* Example for `configurable_services.yaml` when using the Symfony Filesystem cache adapter
-
-    ``` yaml
-    services:
-
-      _defaults:
-        public: false
-        autowire: true
-
-      oxidesales.graphqlbase.cacheadapter:
-        class: Symfony\Component\Cache\Adapter\FilesystemAdapter
-        arguments:
-          $namespace: 'graphql'
-          $defaultLifetime: 1200
-          $directory: '/var/www/oxideshop/source/cache'
-    ```
-
-* Example for `configurable_services.yaml` when using the Symfony APC cache adapter
-
-  ``` yaml
-  services:
-
-    _defaults:
-      public: false
-      autowire: true
-
-      oxidesales.graphqlbase.cacheadapter:
-        class: Symfony\Component\Cache\Adapter\ApcuAdapter
-        arguments:
-            $namespace: 'graphql'
-            $defaultLifetime: 1200
-  ```
-
-* Example for `configurable_services.yaml` when injecting the cache
-
-    ``` yaml
-    services:
-
-    _defaults:
-      public: false
-      autowire: true
-
-    oxidesales.graphqlbase.cache:
-      class: Symfony\Component\Cache\Simple\FilesystemCache
-      arguments:
-        $namespace: 'graphql_simple'
-        $defaultLifetime: 1200
-        $directory: '/var/www/oxideshop/source/cache'
-    ```
+The information on extending GraphQL module can be found in the [OXID eSales documentation](https://docs.oxid-esales.com).
 
 ## Testing
 
@@ -157,45 +98,9 @@ $ composer test
 $ ./vendor/bin/runtests
 ```
 
-## Troubleshooting
+## Issues
 
-### Apache HTTP Authorization
-
-php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default.
-For this workaround to work, add these lines to your .htaccess file:
-
-```apache
-RewriteCond %{HTTP:Authorization} ^(.+)$
-RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-```
-
-or
-
-```apache
-SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
-```
-
-### Query String gets swallowed
-
-When you call the API endpoint with a query string, for example `/graphql/?lang=1` and that `lang` parameter gets swallowed by apache, it is due to the missing `QSA`-`RewriteRule`-Flag. Find the `RewriteRule` that looks like this:
-
-```apache
-RewriteRule ^(graphql/)    widget.php?cl=graphql   [NC,L]
-```
-
-and make it look like this:
-
-```apache
-RewriteRule ^(graphql/)    widget.php?cl=graphql   [QSA,NC,L]
-```
-
-### Composer can not resolve requirements
-
-![Composer Problem](composer-problem.jpg)
-
-If you see something like this when trying to install the module, you tried to
-install with `composer require oxid-esales/graphql-base` which is not working
-correctly because `composer` will not do downgrades upon `composer require`.
+To report issues with GraphQL module please use the [OXID eShop bugtracking system](https://bugs.oxid-esales.com/).
 
 ## Build with
 

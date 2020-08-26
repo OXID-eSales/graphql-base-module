@@ -5,3 +5,4 @@ vendor/
 tests/reports/
 infection.log
 tests/.phpunit.result.cache
+docs/build

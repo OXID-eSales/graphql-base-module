@@ -1,0 +1,60 @@
+/* OXID Style */
+
+h1, h2, h3, h4, h5 {
+  display: table;
+  padding: 5px 8px 0 5px;
+  letter-spacing: 1px;
+  font-family: "DIN Next", Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+h1 {
+  background: #2C2C2C;
+  color: #fff;
+}
+
+.headerlink {
+    display: none !important;
+}
+
+*:hover > .headerlink {
+    display: inline-block !important;
+}
+
+.wy-side-nav-search {
+    background: #fff;
+    color: #000;
+}
+
+.wy-side-nav-search > div.version {
+    color: #000;
+}
+
+.strike {
+    text-decoration: line-through;
+}
+
+a, a:visited, a:hover {
+    color: #C02124;
+}
+
+.wy-menu-vertical a {
+    color: #b3b3b3;
+}
+.wy-menu-vertical a:active {
+    background-color: inherit;
+}
+
+@font-face {
+    font-family: "DIN Next";
+    font-style: normal;
+    font-weight: 400;
+    src: local("DIN Next Regular"), local("DINNext-Regular"), url(fonts/DINNextLTPro-Regular.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "DIN Next";
+    font-style: normal;
+    font-weight: 700;
+    src: local("DIN Next Bold"), local("DINNExt-Bold"), url(fonts/DINNextLTPro-Bold.otf) format("opentype");
+}
