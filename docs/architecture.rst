@@ -1,9 +1,9 @@
 Architecture
 ============
 
-For the GraphQL modules we built we choose a hexagonal architecture, also known as ports and adapters. In case you see some way to improve this implementation, feel free to ping us or make a pull request any time.
+For the GraphQL modules we choose a hexagonal architecture, also known as ports and adapters. In case you see some way to improve this implementation, feel free to ping us or make a pull request any time.
 
-If you are interested in understanding the overall picture, Zvonimir Spajic created a `blog post demystifing hexagonal architecture <https://madewithlove.com/hexagonal-architecture-demystified/>`_.
+If you are interested in understanding the overall picture, Zvonimir Spajic created a blog post about `demystifing hexagonal architecture <https://madewithlove.com/hexagonal-architecture-demystified/>`_.
 
 The file system hierarchy in the ``src`` directory looks similar to this
 
