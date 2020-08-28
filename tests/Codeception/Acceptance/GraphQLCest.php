@@ -46,5 +46,6 @@ class GraphQLCest
         $I->seeResponseCodeIs(\Codeception\Util\HttpCode::UNAUTHORIZED);
         $I->seeResponseIsJson();
         $I->seeResponseContains('errors');
+        $I->canSeeHttpHeader('WWW-Authenticate', 'Bearer');
     }
 }

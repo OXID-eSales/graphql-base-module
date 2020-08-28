@@ -72,6 +72,11 @@ class GraphQL extends WidgetController
         ];
 
         header('Content-Type: application/json', true, $status);
+
+        if (401 == $status) {
+            header('WWW-Authenticate: Bearer', true, $status);
+        }
+
         print json_encode($body);
 
         exit;
