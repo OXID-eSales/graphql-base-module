@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 use Exception;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
+use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
@@ -67,7 +68,8 @@ class Legacy
 
         return new UserData(
             $user->getId(),
-            $user->getFieldData('oxrights')
+            $user->getFieldData('oxrights'),
+            $this->getUserGroupIds($user)
         );
     }
 
@@ -156,5 +158,22 @@ class Legacy
         }
 
         throw new InvalidLogin('Invalid usergroup');
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    private function getUserGroupIds(User $user): array
+    {
+        /** @var EshopListModel $userGroupList */
+        $userGroupList = $user->getUserGroups();
+
+        $return = [];
+
+        foreach ($userGroupList->getArray() as $group) {
+            $return[(string) $group->getId()] = (string) $group->getId();
+        }
+
+        return $return;
     }
 }

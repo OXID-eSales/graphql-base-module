@@ -159,7 +159,7 @@ class AuthorizationTest extends TestCase
             ->will($this->returnCallback(
                 function ($claim) {
                     if ($claim == Authentication::CLAIM_GROUP) {
-                        return 'group';
+                        return ['group' => 'group'];
                     }
 
                     if ($claim == Authentication::CLAIM_USERNAME) {

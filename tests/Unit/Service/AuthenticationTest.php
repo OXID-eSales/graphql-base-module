@@ -259,7 +259,7 @@ class AuthenticationTest extends TestCase
     public function testGetUserId(): void
     {
         $this->legacyService->method('login')
-            ->willReturn(new UserData('the_admin_oxid', 'admin'));
+            ->willReturn(new UserData('the_admin_oxid', 'admin', ['oxidadmin']));
 
         $authenticationService = $this->getAuthenticationService();
         self::$token           = $authenticationService->createToken('admin', 'admin');

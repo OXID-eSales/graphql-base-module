@@ -21,10 +21,19 @@ class UserData
      */
     private $userGroup;
 
-    public function __construct(string $userId, string $userGroup)
+    /**
+     * @var array<string,string>
+     */
+    private $userGroupIds;
+
+    /**
+     * @param array<string,string> $userGroupIds
+     */
+    public function __construct(string $userId, string $userGroup, array $userGroupIds)
     {
-        $this->userId    = $userId;
-        $this->userGroup = $userGroup;
+        $this->userId       = $userId;
+        $this->userGroup    = $userGroup;
+        $this->userGroupIds = $userGroupIds;
     }
 
     public function getUserId(): string
@@ -38,5 +47,13 @@ class UserData
     public function getUserGroup(): string
     {
         return $this->userGroup;
+    }
+
+    /**
+     * @return array<string,string>
+     */
+    public function getUserGroupIds(): array
+    {
+        return $this->userGroupIds;
     }
 }

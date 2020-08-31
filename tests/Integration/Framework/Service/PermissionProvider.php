@@ -16,10 +16,13 @@ class PermissionProvider implements PermissionProviderInterface
     public function getPermissions(): array
     {
         return [
-            'admin' => [
+            'oxidadmin' => [
+                'TODO',
                 'FOOBAR',
+                'WAHOO',
             ],
             'malladmin' => [
+                'GAGA',
                 'FOOBAR',
             ],
         ];

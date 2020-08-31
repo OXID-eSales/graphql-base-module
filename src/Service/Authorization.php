@@ -73,16 +73,17 @@ class Authorization implements AuthorizationServiceInterface
             return false;
         }
 
-        $group = $this->token->getClaim(Authentication::CLAIM_GROUP);
+        $groups = $this->token->getClaim(Authentication::CLAIM_GROUP);
 
-        if (!isset($this->permissions[$group])) {
-            return false;
+        $isAllowed = false;
+
+        foreach ($groups as $id) {
+            if (isset($this->permissions[$id]) &&
+                !(array_search($right, $this->permissions[$id], true) === false)) {
+                $isAllowed = true;
+            }
         }
 
-        if (array_search($right, $this->permissions[$group], true) === false) {
-            return false;
-        }
-
-        return true;
+        return $isAllowed;
     }
 }

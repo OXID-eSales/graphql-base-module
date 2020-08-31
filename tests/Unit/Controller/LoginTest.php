@@ -55,13 +55,14 @@ class LoginTest extends TestCase
             'id'  => 1,
         ];
         $user = [
-            'username' => 'admin',
-            'password' => 'admin',
-            'group'    => Legacy::GROUP_ADMIN,
-            'id'       => 'some_nice_user_id',
+            'username'   => 'admin',
+            'password'   => 'admin',
+            'group'      => Legacy::GROUP_ADMIN,
+            'id'         => 'some_nice_user_id',
+            'usergroups' => ['onegroup', 'oxidadmin', 'othergroup'],
         ];
 
-        $userData = new UserData($user['id'], $user['group']);
+        $userData = new UserData($user['id'], $user['group'], $user['usergroups']);
         $this->legacy->method('login')->willReturn($userData);
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
@@ -77,7 +78,7 @@ class LoginTest extends TestCase
         $this->assertTrue($token->validate($data));
         $this->assertEquals($user['username'], $token->getClaim('username'));
         $this->assertEquals($shop['id'], $token->getClaim('shopid'));
-        $this->assertEquals($user['group'], $token->getClaim('group'));
+        $this->assertEquals($user['usergroups'], $token->getClaim('group'));
         $this->assertEquals($user['id'], $token->getClaim('userid'));
     }
 }

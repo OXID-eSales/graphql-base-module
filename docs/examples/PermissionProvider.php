@@ -11,7 +11,7 @@ final class PermissionProvider implements PermissionProviderInterface
     public function getPermissions(): array
     {
         return [
-            'admin' => [
+            'oxidadmin' => [
                 'SEE_BASKET',
             ],
         ];

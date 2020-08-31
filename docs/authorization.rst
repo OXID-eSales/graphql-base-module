@@ -88,7 +88,7 @@ Map rights to groups
 ^^^^^^^^^^^^^^^^^^^^
 
 In order to use the ``SEE_BASKET`` right as we have seen in the last example, we
-need to map this right to a group. For this to work we need to create a
+need to map this right to a user group. For this to work we need to create a
 ``PermissionProvider`` in our module and register it with the ``graphql_permission_provider``
 tag in our ``services.yaml`` file.
 

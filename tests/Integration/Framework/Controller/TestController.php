@@ -49,6 +49,16 @@ class TestController
 
     /**
      * @Query
+     * @Logged
+     * @Right("BARFOO")
+     */
+    public function testLoggedButNoRightQuery(string $foo): string
+    {
+        return $foo;
+    }
+
+    /**
+     * @Query
      */
     public function exceptionQuery(string $foo): string
     {
