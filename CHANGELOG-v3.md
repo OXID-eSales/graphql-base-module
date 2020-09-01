@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve exception handling to get a GraphQL error message instead of shop's maintenance page.
 - `\OxidEsales\GraphQL\Base\Exception\InvalidToken` now returns 401 status code instead of 403.
 
+### Deprecated
+
+- Authorizaion via `oxuser.oxrights`. From next major version on, this will be handled by user groups.
+- `\OxidEsales\GraphQL\Base\Framework\UserData::getUserGroup()`
+
 ## [3.1.3] 2020-06-26
 
 ### Changed
