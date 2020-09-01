@@ -92,3 +92,18 @@ And the result will be sorted by iso descending:
             ]
         }
     }
+
+Some of the lists have default sorting depending on their position. In case you want to sort by other field you need to reset the default sorting. Let's say you want to sort the categories by title and not by position. You will have to set the position to an empty string otherwise its default value will be taken into account. Here is an example:
+
+.. code-block:: graphql
+
+    query {
+        categories (
+            sort: {
+                position: "",
+                title: "ASC"
+            }
+        ) {
+            title
+        }
+    }
