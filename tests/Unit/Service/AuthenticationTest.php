@@ -119,9 +119,6 @@ class AuthenticationTest extends TestCase
         $this->legacyService
              ->method('login');
         $this->legacyService
-             ->method('getUserGroup')
-             ->willReturn(LegacyService::GROUP_ADMIN);
-        $this->legacyService
              ->method('getShopUrl')
              ->willReturn('https://whatever.com');
         $this->legacyService
@@ -259,7 +256,7 @@ class AuthenticationTest extends TestCase
     public function testGetUserId(): void
     {
         $this->legacyService->method('login')
-            ->willReturn(new UserData('the_admin_oxid', 'admin', ['oxidadmin']));
+            ->willReturn(new UserData('the_admin_oxid', ['oxidadmin']));
 
         $authenticationService = $this->getAuthenticationService();
         self::$token           = $authenticationService->createToken('admin', 'admin');

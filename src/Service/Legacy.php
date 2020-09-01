@@ -38,22 +38,6 @@ class Legacy
     }
 
     /**
-     * @deprecated since v3.0.0 (2020-06-12); Please use Legacy::login().
-     *
-     * @throws InvalidLogin
-     */
-    public function checkCredentials(string $username, string $password): void
-    {
-        try {
-            /** @var User */
-            $user = oxNew(User::class);
-            $user->login($username, $password, false);
-        } catch (Exception $e) {
-            throw new InvalidLogin('Username/password combination is invalid');
-        }
-    }
-
-    /**
      * @throws InvalidLogin
      */
     public function login(string $username, string $password): UserData
@@ -68,31 +52,8 @@ class Legacy
 
         return new UserData(
             $user->getId(),
-            $user->getFieldData('oxrights'),
             $this->getUserGroupIds($user)
         );
-    }
-
-    /**
-     * @deprecated since v3.0.0 (2020-06-12)
-     *
-     * @throws InvalidLogin
-     */
-    public function getUserGroup(string $username): string
-    {
-        $queryBuilder = $this->queryBuilderFactory->create();
-        /** @var \Doctrine\DBAL\Driver\Statement<array> */
-        $result       = $queryBuilder->select('OXRIGHTS')
-            ->from('oxuser')
-            ->where($queryBuilder->expr()->eq('OXUSERNAME', ':username'))
-            ->setParameter('username', $username)
-            ->execute();
-
-        foreach ($result->fetchAll() as $row) {
-            return $this->mapUserGroup($row['OXRIGHTS']);
-        }
-        # In fact this should not happen because the credentials should already have been checked
-        throw new InvalidLogin('User does not exist.');
     }
 
     /**

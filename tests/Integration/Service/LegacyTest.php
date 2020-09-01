@@ -39,7 +39,7 @@ class LegacyTest extends UnitTestCase
     public function testValidLogin(): void
     {
         $works = false;
-        $this->legacyService->checkCredentials('admin', 'admin');
+        $this->legacyService->login('admin', 'admin');
         $works = true;
         $this->assertTrue($works);
     }
@@ -47,65 +47,16 @@ class LegacyTest extends UnitTestCase
     public function testInvalidLogin(): void
     {
         $this->expectException(InvalidLogin::class);
-        $this->legacyService->checkCredentials(
+        $this->legacyService->login(
             'admin',
             'wrongpassword'
-        );
-    }
-
-    public function testGetUsergroupAdmin(): void
-    {
-        $this->assertEquals(
-            LegacyService::GROUP_ADMIN,
-            $this->legacyService->getUserGroup('admin')
-        );
-    }
-
-    public function testGetUserGroupShopadmin(): void
-    {
-        $this->createUser('1');
-        $this->assertEquals(
-            LegacyService::GROUP_ADMIN,
-            $this->legacyService->getUserGroup('testuser')
-        );
-    }
-
-    public function testGetUserGroupShopadminWrongShop(): void
-    {
-        $this->expectException(InvalidLogin::class);
-        $this->createUser('3');
-        $this->legacyService->getUserGroup('testuser');
-    }
-
-    public function testGetUserGroupIllegalGroup(): void
-    {
-        $this->expectException(InvalidLogin::class);
-        $this->createUser('bla');
-        $this->legacyService->getUserGroup('testuser');
-    }
-
-    public function testGetUserGroupCustomer(): void
-    {
-        $this->createUser('user');
-        $this->assertEquals(
-            LegacyService::GROUP_CUSTOMERS,
-            $this->legacyService->getUserGroup('testuser')
-        );
-    }
-
-    public function testGetUserGroupNotExistingUser(): void
-    {
-        $this->expectException(InvalidLogin::class);
-        $this->assertEquals(
-            LegacyService::GROUP_CUSTOMERS,
-            $this->legacyService->getUserGroup('testuser')
         );
     }
 
     private function createUser($dbusergroup): void
     {
         // Needed to get the permissions for setting the user group
-        $this->legacyService->checkCredentials('admin', 'admin');
+        $this->legacyService->login('admin', 'admin');
 
         $oUser = oxNew(User::class);
         $oUser->setId('_testUser');

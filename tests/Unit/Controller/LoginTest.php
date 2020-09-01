@@ -57,12 +57,11 @@ class LoginTest extends TestCase
         $user = [
             'username'   => 'admin',
             'password'   => 'admin',
-            'group'      => Legacy::GROUP_ADMIN,
             'id'         => 'some_nice_user_id',
             'usergroups' => ['onegroup', 'oxidadmin', 'othergroup'],
         ];
 
-        $userData = new UserData($user['id'], $user['group'], $user['usergroups']);
+        $userData = new UserData($user['id'], $user['usergroups']);
         $this->legacy->method('login')->willReturn($userData);
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);

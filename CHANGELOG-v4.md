@@ -12,5 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- `\OxidEsales\GraphQL\Base\Framework\UserData::getUserGroup()`
+- `OxidEsales\GraphQL\Base\Service\Legacy::checkCredentials()`
+- `OxidEsales\GraphQL\Base\Service\Legacy::getUserGroup()`
+
 
 [4.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v3.2.0...v4.0.0

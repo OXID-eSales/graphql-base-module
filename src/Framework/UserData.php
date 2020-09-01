@@ -15,13 +15,6 @@ class UserData
     private $userId;
 
     /**
-     * @deprecated since v3.1.3 (2020-06-26);
-     *
-     * @var string
-     */
-    private $userGroup;
-
-    /**
      * @var array<string,string>
      */
     private $userGroupIds;
@@ -29,24 +22,15 @@ class UserData
     /**
      * @param array<string,string> $userGroupIds
      */
-    public function __construct(string $userId, string $userGroup, array $userGroupIds)
+    public function __construct(string $userId, array $userGroupIds)
     {
         $this->userId       = $userId;
-        $this->userGroup    = $userGroup;
         $this->userGroupIds = $userGroupIds;
     }
 
     public function getUserId(): string
     {
         return $this->userId;
-    }
-
-    /**
-     * @deprecated since v3.1.3 (2020-06-26);
-     */
-    public function getUserGroup(): string
-    {
-        return $this->userGroup;
     }
 
     /**
