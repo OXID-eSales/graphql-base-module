@@ -17,6 +17,7 @@ class DateTimeImmutableFactoryTest extends DataTypeTestCase
     public function testGetNullOnIncorrectString(): void
     {
         $this->assertNull(DateTimeImmutableFactory::fromString(''));
+        $this->assertNull(DateTimeImmutableFactory::fromString('-'));
         $this->assertNull(DateTimeImmutableFactory::fromString('0000-00-00'));
         $this->assertNull(DateTimeImmutableFactory::fromString('0000-00-00 00:00:00'));
     }
