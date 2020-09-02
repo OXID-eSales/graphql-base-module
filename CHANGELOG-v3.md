@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `\OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase`
 - Abstract sorting support through `\OxidEsales\GraphQL\Base\DataType\Sorting` OXDEV-3794
 - Send `WWW-Authenticate: Bearer` Header in case of 401 response.
+- `\OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory` which produces null on 0 time
 
 ### Changed
 
