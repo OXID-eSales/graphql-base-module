@@ -30,9 +30,9 @@ class Authentication implements AuthenticationServiceInterface
 
     public const CLAIM_USERNAME = 'username';
 
-    public const CLAIM_USERID = 'userid';
+    public const CLAIM_USERID   = 'userid';
 
-    public const CLAIM_GROUP  = 'group';
+    public const CLAIM_GROUPS   = 'groups';
 
     /** @var KeyRegistry */
     private $keyRegistry;
@@ -83,7 +83,7 @@ class Authentication implements AuthenticationServiceInterface
         $builder   = $this->getTokenBuilder()
             ->withClaim(self::CLAIM_USERNAME, $username)
             ->withClaim(self::CLAIM_USERID, $userData->getUserId())
-            ->withClaim(self::CLAIM_GROUP, $userData->getUserGroupIds());
+            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds());
 
         return $builder->getToken(
             $this->getSigner(),

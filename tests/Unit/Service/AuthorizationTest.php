@@ -146,7 +146,7 @@ class AuthorizationTest extends TestCase
         $token->method('hasClaim')
             ->will($this->returnCallback(
                 function ($claim) {
-                    if ($claim == Authentication::CLAIM_GROUP) {
+                    if ($claim == Authentication::CLAIM_GROUPS) {
                         return true;
                     }
 
@@ -158,8 +158,8 @@ class AuthorizationTest extends TestCase
         $token->method('getClaim')
             ->will($this->returnCallback(
                 function ($claim) {
-                    if ($claim == Authentication::CLAIM_GROUP) {
-                        return ['group' => 'group'];
+                    if ($claim == Authentication::CLAIM_GROUPS) {
+                        return ['groups' => 'group'];
                     }
 
                     if ($claim == Authentication::CLAIM_USERNAME) {

@@ -77,7 +77,7 @@ class LoginTest extends TestCase
         $this->assertTrue($token->validate($data));
         $this->assertEquals($user['username'], $token->getClaim('username'));
         $this->assertEquals($shop['id'], $token->getClaim('shopid'));
-        $this->assertEquals($user['usergroups'], $token->getClaim('group'));
+        $this->assertEquals($user['usergroups'], $token->getClaim('groups'));
         $this->assertEquals($user['id'], $token->getClaim('userid'));
     }
 }
