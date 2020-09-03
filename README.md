@@ -22,7 +22,6 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` co
 
 ```bash
 $ composer require oxid-esales/graphql-base
-$ composer update
 ```
 
 After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
