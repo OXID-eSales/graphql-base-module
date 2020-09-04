@@ -23,6 +23,7 @@ class ResponseWriter
      */
     public function renderJsonResponse(array $result, int $httpStatus): void
     {
+        header('Access-Control-Allow-Origin: *', true, $httpStatus);
         header('Content-Type: application/json', true, $httpStatus);
 
         exit(json_encode($result));
