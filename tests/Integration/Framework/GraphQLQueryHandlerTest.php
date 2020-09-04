@@ -185,10 +185,10 @@ class GraphQLQueryHandlerTest extends TestCase
                         equals: true
                     }
                     price: {
-                        lowerThen: 19.99
+                        lessThan: 19.99
                     }
                     stock: {
-                        greaterThen: 10
+                        greaterThan: 10
                     }
                     title: {
                         contains: "foo"

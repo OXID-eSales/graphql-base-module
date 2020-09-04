@@ -32,18 +32,18 @@ class FloatFilterTest extends DataTypeTestCase
         );
     }
 
-    public function testGivesLowerThen(): void
+    public function testGivesLowerThan(): void
     {
         $this->assertSame(
             2.0,
             (FloatFilter::fromUserInput(
                 null,
                 2.0
-            ))->lowerThen()
+            ))->lessThan()
         );
     }
 
-    public function testGivesGreaterThen(): void
+    public function testGivesGreaterThan(): void
     {
         $this->assertSame(
             2.0,
@@ -51,7 +51,7 @@ class FloatFilterTest extends DataTypeTestCase
                 null,
                 null,
                 2.0
-            ))->greaterThen()
+            ))->greaterThan()
         );
     }
 
@@ -73,11 +73,11 @@ class FloatFilterTest extends DataTypeTestCase
         );
         $this->assertSame(
             10.0,
-            $filter->lowerThen()
+            $filter->lessThan()
         );
         $this->assertSame(
             1.0,
-            $filter->greaterThen()
+            $filter->greaterThan()
         );
         $this->assertSame(
             [
@@ -201,10 +201,10 @@ class FloatFilterTest extends DataTypeTestCase
 
         $this->assertEquals($where::TYPE_AND, $where->getType());
         $this->assertEquals(
-            'db_table.DB_FIELD BETWEEN :db_field_lower AND :db_field_upper',
+            'db_table.DB_FIELD BETWEEN :db_field_less AND :db_field_upper',
             (string) $where
         );
-        $this->assertEquals($numbers[0], $queryBuilder->getParameter(':db_field_lower'));
+        $this->assertEquals($numbers[0], $queryBuilder->getParameter(':db_field_less'));
         $this->assertEquals($numbers[1], $queryBuilder->getParameter(':db_field_upper'));
     }
 

@@ -23,10 +23,10 @@ class IntegerFilter implements FilterInterface
     private $equals;
 
     /** @var ?int */
-    private $lowerThen;
+    private $lessThan;
 
     /** @var ?int */
-    private $greaterThen;
+    private $greaterThan;
 
     /** @var array{0: int, 1: int}|null */
     private $between;
@@ -36,21 +36,21 @@ class IntegerFilter implements FilterInterface
      */
     public function __construct(
         ?int $equals = null,
-        ?int $lowerThen = null,
-        ?int $greaterThen = null,
+        ?int $lessThan = null,
+        ?int $greaterThan = null,
         ?array $between = null
     ) {
         if (
             $equals === null &&
-            $lowerThen === null &&
-            $greaterThen === null &&
+            $lessThan === null &&
+            $greaterThan === null &&
             $between === null
         ) {
             throw new Error('At least one field for type IntegerFilter must be provided');
         }
         $this->equals      = $equals;
-        $this->lowerThen   = $lowerThen;
-        $this->greaterThen = $greaterThen;
+        $this->lessThan    = $lessThan;
+        $this->greaterThan = $greaterThan;
         $this->between     = $between;
     }
 
@@ -59,14 +59,14 @@ class IntegerFilter implements FilterInterface
         return $this->equals;
     }
 
-    public function lowerThen(): ?int
+    public function lessThan(): ?int
     {
-        return $this->lowerThen;
+        return $this->lessThan;
     }
 
-    public function greaterThen(): ?int
+    public function greaterThan(): ?int
     {
-        return $this->greaterThen;
+        return $this->greaterThan;
     }
 
     /**
@@ -93,20 +93,20 @@ class IntegerFilter implements FilterInterface
             return;
         }
 
-        if ($this->lowerThen) {
+        if ($this->lessThan) {
             $builder->andWhere(sprintf('%s.%s < :%s_lt', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_lt', $this->lowerThen);
+                    ->setParameter(':' . $field . '_lt', $this->lessThan);
         }
 
-        if ($this->greaterThen) {
+        if ($this->greaterThan) {
             $builder->andWhere(sprintf('%s.%s > :%s_gt', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_gt', $this->greaterThen);
+                    ->setParameter(':' . $field . '_gt', $this->greaterThan);
         }
 
         if ($this->between) {
-            $where = sprintf('%s.%s BETWEEN :%s_lower AND :%s_upper', $table, strtoupper($field), $field, $field);
+            $where = sprintf('%s.%s BETWEEN :%s_less AND :%s_upper', $table, strtoupper($field), $field, $field);
             $builder->andWhere($where)
-                    ->setParameter(':' . $field . '_lower', $this->between[0])
+                    ->setParameter(':' . $field . '_less', $this->between[0])
                     ->setParameter(':' . $field . '_upper', $this->between[1]);
         }
     }
@@ -118,8 +118,8 @@ class IntegerFilter implements FilterInterface
      */
     public static function fromUserInput(
         ?int $equals = null,
-        ?int $lowerThen = null,
-        ?int $greaterThen = null,
+        ?int $lessThan = null,
+        ?int $greaterThan = null,
         ?array $between = null
     ): self {
         if (
@@ -134,8 +134,8 @@ class IntegerFilter implements FilterInterface
         /** @var array{0: int, 1: int} $between */
         return new self(
             $equals,
-            $lowerThen,
-            $greaterThen,
+            $lessThan,
+            $greaterThan,
             $between
         );
     }

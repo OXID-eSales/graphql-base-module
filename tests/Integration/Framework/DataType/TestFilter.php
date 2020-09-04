@@ -40,12 +40,12 @@ class TestFilter
     {
         $s  = 'active: ' . ($this->active->equals() ? 'true' : 'false') . PHP_EOL;
         $s .= 'price-eq: ' . $this->price->equals() . PHP_EOL;
-        $s .= 'price-lt: ' . $this->price->lowerThen() . PHP_EOL;
-        $s .= 'price-gt: ' . $this->price->greaterThen() . PHP_EOL;
+        $s .= 'price-lt: ' . $this->price->lessThan() . PHP_EOL;
+        $s .= 'price-gt: ' . $this->price->greaterThan() . PHP_EOL;
         $s .= 'price-between: ' . print_r($this->price->between(), true) . PHP_EOL;
         $s .= 'stock-eq: ' . $this->stock->equals() . PHP_EOL;
-        $s .= 'stock-lt: ' . $this->stock->lowerThen() . PHP_EOL;
-        $s .= 'stock-gt: ' . $this->stock->greaterThen() . PHP_EOL;
+        $s .= 'stock-lt: ' . $this->stock->lessThan() . PHP_EOL;
+        $s .= 'stock-gt: ' . $this->stock->greaterThan() . PHP_EOL;
         $s .= 'stock-between: ' . print_r($this->stock->between(), true) . PHP_EOL;
         $s .= 'title-eq: ' . $this->title->equals() . PHP_EOL;
         $s .= 'title-contains: ' . $this->title->contains() . PHP_EOL;

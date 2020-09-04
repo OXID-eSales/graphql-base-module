@@ -20,12 +20,12 @@ filters you might need to use, out of the box:
     - equals
         get rows where field is equal to the value given;
         example: ``{equals: 5}``
-    - lowerThen
-        get rows where field is lower then the value given;
-        example: ``{lowerThen: 5}``
-    - greaterThen
+    - lessThan
+        get rows where field is less then the value given;
+        example: ``{lessThan: 5}``
+    - greaterThan
         get rows where field is greater then the value given;
-        example: ``{greaterThen: 5}``
+        example: ``{greaterThan: 5}``
     - between
         get rows where field value is between given values;
         example: ``{between: [1, 5]}``
