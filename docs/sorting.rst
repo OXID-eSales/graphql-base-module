@@ -44,7 +44,7 @@ filters earlier:
         ...
     }
 
-Simple as that! Now we can add filter to our query:
+Simple as that! Now we can add sorting to our query:
 
 .. code-block:: graphql
 

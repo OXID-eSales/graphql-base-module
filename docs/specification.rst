@@ -47,8 +47,9 @@ Additional to the rules applied for the queries, when querying for lists the que
 
     - the fields of this ``FilterInput`` type should be of one of the provided filter input types
 
+- ``sort`` which should be of type ``ObjectSorting`` (which you have to create and name accordingly)
 - ``limit`` which must be of type ``Int`` (if ommitted must behave as no limit)
-- ``start`` which must be of type ``Int`` (if ommitted must behave as 0)
+- ``offset`` which must be of type ``Int`` (if ommitted must behave as 0)
 
 Mutations
 ^^^^^^^^^

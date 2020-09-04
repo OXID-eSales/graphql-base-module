@@ -31,13 +31,15 @@ Exceptions in your module
 
 The ``graphql-base`` module provides the following exceptions you can use or extend from
 
-============  ===============  ==================================== ================
-Class         Category         Description                          HTTP Status code
-============  ===============  ==================================== ================
-InvalidLogin  permissionerror  Thrown when we have an invalid login 401
-InvalidToken  permissionerror  Thrown when a token is invalid       403
-NotFound      requesterror     Thrown when a record was not found   404
-============  ===============  ==================================== ================
+============  ===============  ================================================================================== ================
+Class         Category         Description                                                                        HTTP Status code
+============  ===============  ================================================================================== ================
+InvalidLogin  permissionerror  Thrown when we have an invalid login                                               401
+InvalidToken  permissionerror  Thrown when a token is invalid                                                     403
+NotFound      requesterror     Thrown when a record was not found                                                 404
+Exists        requesterror     Thrown when a record exists (when we want to register already registered customer) 400
+OutOfBounds   requesterror     Thrown when values are out of bounds                                               400
+============  ===============  ================================================================================== ================
 
 Exception to GraphQL Error
 --------------------------
@@ -64,9 +66,9 @@ Here is an example of a custom exception which tells us that a product was not f
 .. literalinclude:: examples/exceptions/ProductNotFoundException.php
    :language: php
 
-Here is an example of an exception when specific record already exists:
+Here is an example of an exception when customer's password does not match the requirements:
 
-.. literalinclude:: examples/exceptions/RecordExistsException.php
+.. literalinclude:: examples/exceptions/PasswordMismatchException.php
    :language: php
 
 

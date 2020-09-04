@@ -9,11 +9,11 @@ use GraphQL\Error\ClientAware;
 use OxidEsales\GraphQL\Base\Exception\ErrorCategories;
 use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 
-final class RecordExists extends Exception implements ClientAware, HttpErrorInterface
+final class PasswordMismatchException extends Exception implements ClientAware, HttpErrorInterface
 {
     public function getHttpStatus(): int
     {
-        return 400;
+        return 403;
     }
 
     public function isClientSafe(): bool
@@ -26,8 +26,13 @@ final class RecordExists extends Exception implements ClientAware, HttpErrorInte
         return ErrorCategories::REQUESTERROR;
     }
 
-    public static function byUniqueField(string $field): self
+    public static function byOldPassword(): self
     {
-        return new self(sprintf("Record with field '%s' already exists!", $field));
+        return new self('Old password does not match our records');
+    }
+
+    public static function byLength(): self
+    {
+        return new self('Password does not match length requirements');
     }
 }
