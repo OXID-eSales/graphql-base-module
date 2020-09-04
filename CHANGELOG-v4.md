@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **BC-BREAK!** fix wording of `lowerThen` / `greaterThen` to `lessThan` /
-  `greaterThan` - OXDEV-3956
+  `greaterThan` - OXDEV-3956, thanks [@Zockman](https://github.com/Zockman)
 
 ## [4.0.0] 2020-09-03
 
