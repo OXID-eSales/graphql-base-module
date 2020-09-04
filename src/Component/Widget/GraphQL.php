@@ -36,8 +36,8 @@ class GraphQL extends WidgetController
             strtoupper($_SERVER['REQUEST_METHOD']) === 'OPTIONS' &&
             isset(
                 $_SERVER['HTTP_ORIGIN'],
-                $_SERVER['HTTP_ACCESS-CONTROL-REQUEST-METHOD'],
-                $_SERVER['HTTP_ACCESS-CONTROL-REQUEST-HEADERS']
+                $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'],
+                $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']
             )
         ) {
             $header = oxNew(\OxidEsales\Eshop\Core\Header::class);
