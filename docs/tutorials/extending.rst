@@ -61,6 +61,6 @@ And then we relate it to the product by implementing a RelationService and using
    :language: php
 
 Please remember as this is a new type for GraphQL, it needs to be
-registered in the ``NamsepaceMapper::getTypeNamespaceMapping()`` method!
+registered in the ``NamespaceMapper::getTypeNamespaceMapping()`` method!
 
 At this point, running our extended query will be possible.
