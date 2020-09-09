@@ -48,4 +48,32 @@ class GraphQLCest
         $I->seeResponseContains('errors');
         $I->canSeeHttpHeader('WWW-Authenticate', 'Bearer');
     }
+
+    public function testLoginAndQuery(AcceptanceTester $I): void
+    {
+        $I->haveHTTPHeader('Content-Type', 'application/json');
+        $I->sendPOST('/widget.php?cl=graphql', [
+            'query' => 'query {token(username:"admin", password:"admin")}',
+        ]);
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseContains('data');
+        $I->seeResponseContains('token');
+
+//        $token = $I->grabDataFromResponseByJsonPath('$.data.token');
+//
+//        $I->amBearerAuthenticated($token[0]);
+        $I->sendPOST('/widget.php?cl=graphql', [
+            'query' => 'query{
+              product(id: "09602cddb5af0aba745293d08ae6bcf6"){
+                id
+                active
+              }
+            }',
+        ]);
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseContains('data');
+        $I->seeResponseContains('"active":false');
+    }
 }
