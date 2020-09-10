@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use Exception;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Core\Email;
 use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
@@ -102,6 +103,14 @@ class Legacy
     }
 
     /**
+     * @return Email|object
+     */
+    public function getEmail()
+    {
+        return oxNew(Email::class);
+    }
+
+    /**
      * @throws InvalidLogin
      */
     private function mapUserGroup(?string $dbGroup): string
@@ -136,10 +145,5 @@ class Legacy
         }
 
         return $return;
-    }
-
-    public function getEmail()
-    {
-        return oxNew(\OxidEsales\Eshop\Core\Email::class);
     }
 }
