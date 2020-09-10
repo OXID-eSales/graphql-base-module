@@ -137,4 +137,9 @@ class Legacy
 
         return $return;
     }
+
+    public function getEmail()
+    {
+        return oxNew(\OxidEsales\Eshop\Core\Email::class);
+    }
 }
