@@ -26,6 +26,7 @@ Table of contents
         development
         specification
         troubleshooting
+        GraphQL schema <https://oxid-esales.github.io/graphql-base-module/>
 
 GraphQL?!?
 ----------
