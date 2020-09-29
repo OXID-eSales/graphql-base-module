@@ -15,10 +15,7 @@ class GraphQLCest
 {
     public function testLoginWithInvalidCredentials(AcceptanceTester $I): void
     {
-        $I->haveHTTPHeader('Content-Type', 'application/json');
-        $I->sendPOST('/widget.php?cl=graphql', [
-            'query' => 'query {token(username:"wrong", password:"wrong")}',
-        ]);
+        $I->sendGQLQuery('query {token(username:"wrong", password:"wrong")}');
         $I->seeResponseCodeIs(\Codeception\Util\HttpCode::UNAUTHORIZED);
         $I->seeResponseIsJson();
         $I->seeResponseContains('{"category":"permissionerror"}');
@@ -26,26 +23,26 @@ class GraphQLCest
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
     {
-        $I->haveHTTPHeader('Content-Type', 'application/json');
-        $I->sendPOST('/widget.php?cl=graphql', [
-            'query' => 'query {token(username:"admin", password:"admin")}',
-        ]);
-        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->seeResponseContains('data');
-        $I->seeResponseContains('token');
+        $I->login('user@oxid-esales.com', 'useruser');
     }
 
     public function testQueryWithInvalidToken(AcceptanceTester $I): void
     {
-        $I->haveHTTPHeader('Content-Type', 'application/json');
         $I->amBearerAuthenticated('invalid_token');
-        $I->sendPOST('/widget.php?cl=graphql', [
-            'query' => 'query {token(username:"admin", password:"admin")}',
-        ]);
+        $I->sendGQLQuery('query {token(username:"admin", password:"admin")}');
         $I->seeResponseCodeIs(\Codeception\Util\HttpCode::UNAUTHORIZED);
         $I->seeResponseIsJson();
         $I->seeResponseContains('errors');
+        $I->seeResponseMatchesJsonType([
+            'errors' => [
+                [
+                    'message'    => 'string:=The token is invalid',
+                    'extensions' => [
+                        'category' => 'string:=permissionerror',
+                    ],
+                ],
+            ],
+        ]);
         $I->canSeeHttpHeader('WWW-Authenticate', 'Bearer');
     }
 }

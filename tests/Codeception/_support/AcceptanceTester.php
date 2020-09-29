@@ -28,8 +28,4 @@ namespace OxidEsales\GraphQL\Base\Tests\Codeception;
 class AcceptanceTester extends \Codeception\Actor
 {
     use _generated\AcceptanceTesterActions;
-
-    /*
-     * Define custom actions here
-     */
 }

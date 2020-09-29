@@ -3,8 +3,21 @@ actor: AcceptanceTester
 path: Acceptance
 modules:
   enabled:
+    - Asserts
     - \OxidEsales\GraphQL\Base\Tests\Codeception\Helper\Acceptance
+    - \OxidEsales\GraphQL\Base\Tests\Codeception\Module\AcceptanceHelper
     - REST:
         url: '%SHOP_URL%'
         depends: PhpBrowser
         part: Json
+    - PhpBrowser:
+          url: '%SHOP_URL%'
+          cookies:
+              cookie-1:
+                  Name: XDEBUG_SESSION_START
+                  Value: PHPSTORM
+                  HttpOnly: false
+              cookie-2:
+                  Name: XDEBUG_SESSION
+                  Value: PHPSTORM
+                  HttpOnly: false
