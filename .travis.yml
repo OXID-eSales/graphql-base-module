@@ -26,7 +26,7 @@ env:
     - DEPENDENCIES=" --prefer-lowest"
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest --prefer-dist"
-    - DOCS_BUILD_BRANCH="master-schema_documentation-OXDEV-3979"
+    - DOCS_BUILD_BRANCH="master"
     - GITHUB_PAGES_BRANCH="schema"
 
 install:
