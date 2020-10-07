@@ -6,9 +6,9 @@ notifications:
     email: false
 
 php:
-    - "7.1"
-    - "7.2"
-    - "7.3"
+#    - "7.1"
+#    - "7.2"
+#    - "7.3"
     - "7.4"
 
 services: mysql
@@ -23,10 +23,10 @@ matrix:
 env:
   matrix:
     - DEPENDENCIES=""
-    - DEPENDENCIES=" --prefer-lowest"
+#    - DEPENDENCIES=" --prefer-lowest"
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest --prefer-dist"
-    - DOCS_BUILD_BRANCH="master"
+    - DOCS_BUILD_BRANCH="master-schema_documentation-OXDEV-3979"
     - GITHUB_PAGES_BRANCH="schema"
 
 install:
@@ -34,22 +34,22 @@ install:
 
 script:
     - composer test:syntax
-    - composer test:lint
-    - composer test:unit
-    - composer test:infection
-    - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") == "74" -a "$DEPENDENCIES" == "" ]; then composer test:static; fi;
+#    - composer test:lint
+#    - composer test:unit
+#    - composer test:infection
+#    - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") == "74" -a "$DEPENDENCIES" == "" ]; then composer test:static; fi;
 
 after_success:
     - sudo chmod +775 schema.sh
     - ./schema.sh
 
-deploy:
-    provider: pages
-    skip_cleanup: true
-    github_token: $GITHUB_TOKEN
-    keep_history: true
-    local_dir: ./docs/_static/schema
-    target_branch: $GITHUB_PAGES_BRANCH
-    on:
-        branch: $DOCS_BUILD_BRANCH
-        condition: $TRAVIS_PHP_VERSION = "7.4" && $DEPENDENCIES = ""
+#deploy:
+#    provider: pages
+#    skip_cleanup: true
+#    github_token: $GITHUB_TOKEN
+#    keep_history: true
+#    local_dir: ./docs/_static/schema
+#    target_branch: $GITHUB_PAGES_BRANCH
+#    on:
+#        branch: $DOCS_BUILD_BRANCH
+#        condition: $TRAVIS_PHP_VERSION = "7.4" && $DEPENDENCIES = ""
