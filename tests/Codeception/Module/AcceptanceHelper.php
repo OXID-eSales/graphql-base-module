@@ -9,14 +9,35 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Module;
 
+use Codeception\Lib\Interfaces\DependsOnModule;
+use Codeception\Module;
 use Codeception\Module\REST;
 use InvalidArgumentException;
 use Lcobucci\JWT\Parser;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\AssertionFailedError;
 
-class AcceptanceHelper extends \Codeception\Module
+class AcceptanceHelper extends Module  implements DependsOnModule
 {
+    /** @var REST */
+    private $rest;
+
+    /**
+     * @return array|mixed
+     */
+    public function _depends()
+    {
+        return [REST::class => 'Codeception\Module\REST is required'];
+    }
+
+    /**
+     * @param REST $rest
+     */
+    public function _inject(REST $rest)
+    {
+        $this->rest = $rest;
+    }
+
     public function _beforeSuite($settings = []): void // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
         exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe/graphql-base');
@@ -24,10 +45,8 @@ class AcceptanceHelper extends \Codeception\Module
 
     public function sendGQLQuery(string $query, ?array $variables = null, int $language = 0, int $shopId = 1): void
     {
-        $rest = $this->getRest();
-
-        $rest->haveHTTPHeader('Content-Type', 'application/json');
-        $rest->sendPOST('/graphql?lang=' . $language . '&shp=' . $shopId, [
+        $this->rest->haveHTTPHeader('Content-Type', 'application/json');
+        $this->rest->sendPOST('/graphql?lang=' . $language . '&shp=' . $shopId, [
             'query'     => $query,
             'variables' => $variables,
         ]);
@@ -35,8 +54,6 @@ class AcceptanceHelper extends \Codeception\Module
 
     public function login(string $username, string $password, int $shopId = 1): void
     {
-        $rest = $this->getRest();
-
         $this->logout();
 
         $query     = 'query ($username: String!, $password: String!) { token (username: $username, password: $password) }';
@@ -46,21 +63,21 @@ class AcceptanceHelper extends \Codeception\Module
         ];
 
         $this->sendGQLQuery($query, $variables, 0, $shopId);
-        $rest->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
-        $rest->seeResponseIsJson();
+        $this->rest->seeResponseCodeIs(\Codeception\Util\HttpCode::OK);
+        $this->rest->seeResponseIsJson();
         $this->seeResponseContainsValidJWTToken();
 
-        $rest->amBearerAuthenticated($this->grabTokenFromResponse());
+        $this->rest->amBearerAuthenticated($this->grabTokenFromResponse());
     }
 
     public function logout(): void
     {
-        $this->getRest()->deleteHeader('Authorization');
+        $this->rest->deleteHeader('Authorization');
     }
 
     public function grabJsonResponseAsArray(): array
     {
-        return json_decode($this->getRest()->grabResponse(), true);
+        return json_decode($this->rest->grabResponse(), true);
     }
 
     public function grabTokenFromResponse(): string
@@ -78,10 +95,5 @@ class AcceptanceHelper extends \Codeception\Module
         } catch (InvalidArgumentException $e) {
             throw new AssertionFailedError(sprintf('Not a valid JWT token: %s', $token));
         }
-    }
-
-    protected function getRest(): REST
-    {
-        return $this->getModule('REST');
     }
 }

@@ -5,7 +5,6 @@ modules:
   enabled:
     - Asserts
     - \OxidEsales\GraphQL\Base\Tests\Codeception\Helper\Acceptance
-    - \OxidEsales\GraphQL\Base\Tests\Codeception\Module\AcceptanceHelper
     - REST:
         url: '%SHOP_URL%'
         depends: PhpBrowser
@@ -21,3 +20,6 @@ modules:
                   Name: XDEBUG_SESSION
                   Value: PHPSTORM
                   HttpOnly: false
+    - \OxidEsales\GraphQL\Base\Tests\Codeception\Module\AcceptanceHelper:
+        depends:
+            - REST
