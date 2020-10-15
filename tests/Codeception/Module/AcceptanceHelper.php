@@ -17,7 +17,7 @@ use Lcobucci\JWT\Parser;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\AssertionFailedError;
 
-class AcceptanceHelper extends Module  implements DependsOnModule
+class AcceptanceHelper extends Module implements DependsOnModule
 {
     /** @var REST */
     private $rest;
@@ -30,10 +30,7 @@ class AcceptanceHelper extends Module  implements DependsOnModule
         return [REST::class => 'Codeception\Module\REST is required'];
     }
 
-    /**
-     * @param REST $rest
-     */
-    public function _inject(REST $rest)
+    public function _inject(REST $rest): void
     {
         $this->rest = $rest;
     }

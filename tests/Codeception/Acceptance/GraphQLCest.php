@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Acceptance;
 
+use OxidEsales\Facts\Facts;
 use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
 class GraphQLCest
@@ -23,7 +24,15 @@ class GraphQLCest
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
     {
-        $I->login('user@oxid-esales.com', 'useruser');
+        $password = 'user';
+
+        $facts = new Facts();
+
+        if ($facts->isEnterprise()) {
+            $password = 'useruser';
+        }
+
+        $I->login('user@oxid-esales.com', $password);
     }
 
     public function testQueryWithInvalidToken(AcceptanceTester $I): void
