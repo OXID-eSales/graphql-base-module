@@ -27,7 +27,7 @@ $ composer require oxid-esales/graphql-base
 After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
 
 ```bash
-$ ./bin/oe-console oe:module:activate oe/graphql-base
+$ ./bin/oe-console oe:module:activate oe_graphql_base
 ```
 
 ### How to use

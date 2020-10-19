@@ -86,7 +86,7 @@ function activateGraphQLBaseModule(): void
         ->setValue($keyRegistry->generateSignatureKey());
 
     $moduleConfiguration = new ModuleConfiguration();
-    $moduleConfiguration->setId('oe/graphql-base');
+    $moduleConfiguration->setId('oe_graphql_base');
     $moduleConfiguration->setPath(
         dirname(__FILE__) . DIRECTORY_SEPARATOR .
         'vendor' . DIRECTORY_SEPARATOR .
@@ -107,7 +107,7 @@ function activateGraphQLBaseModule(): void
         ->getContainer()
         ->get(ModuleActivationBridgeInterface::class);
 
-    $settingDao->activate('oe/graphql-base', 1);
+    $settingDao->activate('oe_graphql_base', 1);
 }
 
 function prepareDatabase()

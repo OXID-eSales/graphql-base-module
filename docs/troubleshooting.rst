@@ -56,10 +56,10 @@ A more reliable first step in setting things up would be to clone the desired re
 
     cd /var/www/oxideshop
     git clone <url-to-module-repository>
-    ln -s <module-directory-name> ./source/modules/<module-name>
+    ln -s <module-directory-path> ./source/modules/<target-directory>
 
 .. important::
 
-    The path should be the same as the name in the module's ``metadata.php``, so for ``oe/graphql-base`` it's ``source/modules/oe/graphql-base``.
+    The <target-directory> should be the same as the ``target-directory`` value in the module's ``composer.json`` file, so for ``graphql-base-module`` it's ``source/modules/oe/graphql-base``.
 
 After that, you can continue from step ``2. Register module package in project composer.json`` in the `docs <https://docs.oxid-esales.com/developer/en/6.0/modules/good_practices/module_setup.html>`_.

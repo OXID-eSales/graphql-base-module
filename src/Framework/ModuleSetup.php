@@ -40,7 +40,7 @@ class ModuleSetup
         $this->moduleSettings->save(
             KeyRegistry::SIGNATUREKEYNAME,
             $this->keyRegistry->generateSignatureKey(),
-            'oe/graphql-base'
+            'oe_graphql_base'
         );
     }
 

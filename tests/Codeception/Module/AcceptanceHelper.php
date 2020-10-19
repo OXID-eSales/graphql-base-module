@@ -37,7 +37,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function _beforeSuite($settings = []): void // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
-        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe/graphql-base');
+        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe_graphql_base');
     }
 
     public function sendGQLQuery(string $query, ?array $variables = null, int $language = 0, int $shopId = 1): void

@@ -16,7 +16,7 @@ $sMetadataVersion = '2.0';
  * Module information
  */
 $aModule = [
-    'id'          => 'oe/graphql-base',
+    'id'          => 'oe_graphql_base',
     'title'       => [
         'de'      => 'GraphQL Base',
         'en'      => 'GraphQL Base',
