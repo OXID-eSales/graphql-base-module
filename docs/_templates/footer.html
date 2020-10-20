@@ -1,0 +1,7 @@
+{% extends '!footer.html' %}
+
+{% block extrafooter %}
+{{ super() }}
+<div style="clear: both;"></div>
+<a href="https://docs.oxid-esales.com/en/" title="OXID docs"><img alt="OXID docs" src="{{ pathto('_images/home.png',1) }}"> OXID docs</a> | <a title="Imprint" href="https://www.oxid-esales.com/en/imprint/">Imprint</a> | <a title="Privacy" href="https://www.oxid-esales.com/en/privacy/">Privacy</a> | <a title="Contact" href="https://www.oxid-esales.com/en/contact/">Contact</a>
+{% endblock %}
