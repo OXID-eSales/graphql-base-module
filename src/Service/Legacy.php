@@ -15,6 +15,7 @@ use OxidEsales\Eshop\Core\Email;
 use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
@@ -88,7 +89,7 @@ class Legacy
 
     public function createUniqueIdentifier(): string
     {
-        /** @var \OxidEsales\EshopCommunity\Core\UtilsObject */
+        /** @var UtilsObject */
         $utils = Registry::getUtilsObject();
 
         return $utils->generateUId();
