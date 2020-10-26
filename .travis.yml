@@ -30,7 +30,7 @@ env:
     - GITHUB_PAGES_BRANCH="schema"
 
 before_install:
-    - composer self-update 1.10.16
+    - composer self-update --1
 
 install:
     - travis_retry composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
