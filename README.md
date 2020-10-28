@@ -12,7 +12,8 @@ This module provides:
 
 ## Documentation
 
-Full documentation can be found [here](https://docs.oxid-esales.com).
+* Full documentation can be found [here](https://docs.oxid-esales.com/modules/graphql/en/master/).
+* Schema documentation available [here](https://oxid-esales.github.io/graphql-base-module).
 
 ## Usage
 
@@ -76,7 +77,9 @@ Authorization: Bearer a-very-long-jwt
 
 ### How to extend
 
-The information on extending GraphQL module can be found in the [OXID eSales documentation](https://docs.oxid-esales.com).
+The information on extending any module can be found in the [OXID eSales documentation](https://docs.oxid-esales.com).
+
+How to extend GraphQL module types and implement your new mutations and queries is shown in [GraphQL module documentation](https://docs.oxid-esales.com/modules/graphql/en/master/tutorials/index.html).
 
 ## Testing
 
