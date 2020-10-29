@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 
@@ -49,8 +49,11 @@ class ModuleSetup
      */
     public static function onActivate(): void
     {
+        $container = (new ContainerBuilderFactory())->create()->getContainer();
+        $container->compile();
+
         /** @var ModuleSetup $moduleSetup */
-        $moduleSetup = ContainerFactory::getInstance()->getContainer()->get(self::class);
+        $moduleSetup = $container->get(self::class);
         $moduleSetup->runSetup();
     }
 
