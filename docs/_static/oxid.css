@@ -6,7 +6,7 @@
     font-weight: 400;
     src: local("DIN Next Regular"), local("DINNext-Regular"), url(fonts/DINNextLTPro-Regular.otf) format("opentype");
 }
-  
+
 @font-face {
     font-family: "DIN Next";
     font-style: normal;
@@ -26,8 +26,8 @@ h1, h2, h3, h4, h5 {
     padding: 5px 8px 0 0px;
     font-family: "DIN Next", Arial, sans-serif;
     text-transform: uppercase;
-  }
-  
+}
+
 h1 {
     background: #2C2C2C;
     color: #fff;
@@ -73,8 +73,8 @@ h1 {
 }
 
 .pre{
-   color: #00008B; 
-   background-color: #F8F8FF;
+    color: #00008B;
+    background-color: #F8F8FF;
 }
 
 code, .rst-content code{
@@ -92,7 +92,7 @@ code, .rst-content code{
 .rst-content .toctree-wrapper p.caption {
     font-family: "DIN Next", Arial, sans-serif;
     text-transform: uppercase;
-}     
+}
 
 /* Screenshots mit Schatten */
 .with-shadow {
@@ -120,7 +120,7 @@ div.wy-table-responsive table.colwidths-given.docutils {
     background-color: #bfbfbf;
     padding: 5px;
     /*  background-color: #c6d9ec;
-        color: #00008B; */
+    color: #00008B; */
 }
 
 /* Kompaktere Tabellen, horizontale und vertikale Ausrichtung in der Tabelle */
@@ -155,28 +155,28 @@ div.section img {
 .headerlink {
     display: none !important;
 }
-  
+
 *:hover > .headerlink {
     display: inline-block !important;
 }
-  
+
 .wy-side-nav-search {
     background: #fff;
     color: #000;
 }
-  
+
 .wy-side-nav-search > div.version {
     color: #000;
 }
-  
+
 .strike {
     text-decoration: line-through;
 }
-  
+
 a, a:visited, a:hover {
     color: #C02124;
 }
-  
+
 .wy-menu-vertical a {
     color: #b3b3b3;
 }
@@ -187,10 +187,10 @@ a, a:visited, a:hover {
 
 /*  Überschrift im Navigationsmenü */
 .wy-menu-vertical header, .wy-menu-vertical p.caption {
-    color: #6f6f6f;	
-   }
+    color: #6f6f6f;
+}
 
-   /* Rand des Suchfeldes */
+/* Rand des Suchfeldes */
 .wy-side-nav-search input[type="text"] {
     border-color: #aa1d20;
 }
