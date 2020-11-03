@@ -1,5 +1,39 @@
 /* OXID Style */
 
+@font-face {
+    font-family: "DIN Next";
+    font-style: normal;
+    font-weight: 400;
+    src: local("DIN Next Regular"), local("DINNext-Regular"), url(fonts/DINNextLTPro-Regular.otf) format("opentype");
+}
+  
+@font-face {
+    font-family: "DIN Next";
+    font-style: normal;
+    font-weight: 700;
+    src: local("DIN Next Bold"), local("DINNExt-Bold"), url(fonts/DINNextLTPro-Bold.otf) format("opentype");
+}
+
+/* Standardschriftart DIN Next für alles außer Code */
+body {
+    font-family: "DIN Next", "proxima-nova", "Helvetica Neue", Arial, sans-serif;
+    font-weight: normal;
+    color: #404040;
+}
+
+h1, h2, h3, h4, h5 {
+    display: table;
+    padding: 5px 8px 0 0px;
+    font-family: "DIN Next", Arial, sans-serif;
+    text-transform: uppercase;
+  }
+  
+h1 {
+    background: #2C2C2C;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
 .rst-content .guilabel, .menuselection {
     font-weight: bold;
     border: 0;
@@ -7,6 +41,11 @@
     background: none;
     padding: 0;
     margin: 0;
+}
+
+/*  Beschreibung der Steuerelemente ohne Abstand zur Überschrift */
+.rst-content dl dt {
+    margin-bottom: 0px;
 }
 
 .rst-content .file {
@@ -43,6 +82,17 @@ code, .rst-content code{
     border: 0;
     font-size: 90%;
 }
+
+/* Hintergrund für pre, code, code-block */
+.rst-content pre, .rst-content kbd, .rst-content samp {
+    background-color: #F8F8FF;
+}
+
+/*  Überschrift des Inhaltsverzeichnisses in Großschrift */
+.rst-content .toctree-wrapper p.caption {
+    font-family: "DIN Next", Arial, sans-serif;
+    text-transform: uppercase;
+}     
 
 /* Screenshots mit Schatten */
 .with-shadow {
@@ -102,82 +152,45 @@ div.section img {
     box-shadow: initial !important;
 }
 
-/* Alles aus Florians oxid.css */
+.headerlink {
+    display: none !important;
+}
+  
+*:hover > .headerlink {
+    display: inline-block !important;
+}
+  
+.wy-side-nav-search {
+    background: #fff;
+    color: #000;
+}
+  
+.wy-side-nav-search > div.version {
+    color: #000;
+}
+  
+.strike {
+    text-decoration: line-through;
+}
+  
+a, a:visited, a:hover {
+    color: #C02124;
+}
+  
+.wy-menu-vertical a {
+    color: #b3b3b3;
+}
 
-h1, h2, h3, h4, h5 {
-    display: table;
-    padding: 5px 8px 0 5px;
-    letter-spacing: 1px;
-    font-family: "DIN Next", Arial, sans-serif;
-    text-transform: uppercase;
-  }
-  
-  h1 {
-    background: #2C2C2C;
-    color: #fff;
-  }
-  
-  .headerlink {
-      display: none !important;
-  }
-  
-  *:hover > .headerlink {
-      display: inline-block !important;
-  }
-  
-  .wy-side-nav-search {
-      background: #fff;
-      color: #000;
-  }
-  
-  .wy-side-nav-search > div.version {
-      color: #000;
-  }
-  
-  .strike {
-      text-decoration: line-through;
-  }
-  
-  a, a:visited, a:hover {
-      color: #C02124;
-  }
-  
-  .wy-menu-vertical a {
-      color: #b3b3b3;
-  }
-  .wy-menu-vertical a:active {
-      background-color: inherit;
-  }
-  
-  @font-face {
-      font-family: "DIN Next";
-      font-style: normal;
-      font-weight: 400;
-      src: local("DIN Next Regular"), local("DINNext-Regular"), url(fonts/DINNextLTPro-Regular.otf) format("opentype");
-  }
-  
-  @font-face {
-      font-family: "DIN Next";
-      font-style: normal;
-      font-weight: 700;
-      src: local("DIN Next Bold"), local("DINNExt-Bold"), url(fonts/DINNextLTPro-Bold.otf) format("opentype");
-  }
+.wy-menu-vertical a:active {
+    background-color: inherit;
+}
 
-/* Teststrecke */
+/*  Überschrift im Navigationsmenü */
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+    color: #6f6f6f;	
+   }
 
-/* Rand des Suchfeldes */
+   /* Rand des Suchfeldes */
 .wy-side-nav-search input[type="text"] {
-     border-color: #aa1d20;
-}
-
-/* Standardschriftart DIN Next für alles außer Code */
-body {
-    font-family: "DIN Next", "proxima-nova", "Helvetica Neue", Arial, sans-serif;
-    font-weight: normal;
-    color: #404040;
-}
-
-/* Hintergrund für pre, code, code-block */
-.rst-content pre, .rst-content kbd, .rst-content samp {
-    background-color: #F8F8FF;
+    border-color: #aa1d20;
 }
