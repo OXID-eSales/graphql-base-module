@@ -32,6 +32,7 @@ h1 {
     background: #2C2C2C;
     color: #fff;
     letter-spacing: 1px;
+    padding-left: 5px;
 }
 
 .rst-content .guilabel, .menuselection {
