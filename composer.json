@@ -50,7 +50,6 @@
         "test": [
             "@test:syntax",
             "@test:lint",
-            "@test:lint-fixer",
             "@test:static",
             "@test:unit",
             "@test:infection"
