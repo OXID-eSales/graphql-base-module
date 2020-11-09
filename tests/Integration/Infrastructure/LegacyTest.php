@@ -13,13 +13,13 @@ use oxField;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\TestingLibrary\UnitTestCase;
 
 class LegacyTest extends UnitTestCase
 {
-    /** @var LegacyService */
-    private $legacyService;
+    /** @var Legacy */
+    private $legacyInfrastructure;
 
     public function setUp(): void
     {
@@ -27,7 +27,7 @@ class LegacyTest extends UnitTestCase
         $containerFactory = new TestContainerFactory();
         $container        = $containerFactory->create();
         $container->compile();
-        $this->legacyService = $container->get(LegacyService::class);
+        $this->legacyInfrastructure = $container->get(Legacy::class);
     }
 
     public function tearDown(): void
@@ -39,7 +39,7 @@ class LegacyTest extends UnitTestCase
     public function testValidLogin(): void
     {
         $works = false;
-        $this->legacyService->login('admin', 'admin');
+        $this->legacyInfrastructure->login('admin', 'admin');
         $works = true;
         $this->assertTrue($works);
     }
@@ -47,7 +47,7 @@ class LegacyTest extends UnitTestCase
     public function testInvalidLogin(): void
     {
         $this->expectException(InvalidLogin::class);
-        $this->legacyService->login(
+        $this->legacyInfrastructure->login(
             'admin',
             'wrongpassword'
         );
