@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
-use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 
 use function bin2hex;
 use function is_string;

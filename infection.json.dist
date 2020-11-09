@@ -7,7 +7,7 @@
         "excludes": [
             "Component",
             "Service/NamespaceMapper.php",
-            "Service/Legacy.php"
+            "Infrastructure/Legacy.php"
         ]
     },
     "phpUnit": {

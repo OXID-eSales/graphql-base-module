@@ -19,7 +19,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\UserData;
-use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
 use function time;

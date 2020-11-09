@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
-use OxidEsales\GraphQL\Base\Service\Legacy as LegacyService;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
