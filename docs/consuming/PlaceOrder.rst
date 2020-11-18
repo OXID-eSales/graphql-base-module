@@ -1,0 +1,274 @@
+Place an Order
+==============
+
+The big picture
+---------------
+
+In order to successfully place an order via the GraphQL API you need to first
+
+- create a basket and fill with products
+- set a delivery address (in case it is different from invoice address)
+- set desired delivery option
+- set desired payment option
+- and finaly place the order
+
+.. uml::
+   :align: center
+
+   Client -> Server: basketCreate mutation
+   Client <- Server: Basket datatype or error
+   Client -> Server: basketAddProduct mutation
+   Client <- Server: Basket datatype or error
+   Client -> Server: basketDeliveryMethods query
+   Client <- Server: array of DeliveryMethod data types
+   Client -> Server: basketSetDeliveryMethod mutation
+   Client <- Server: Basket datatype or error
+   Client -> Server: basketPayments query
+   Client <- Server: array of Payment data types
+   Client -> Server: basketSetPayment mutation
+   Client <- Server: Basket datatype or error
+   Client -> Server: placeOrder mutation
+   Client <- Server: Order datatype or error
+
+
+Setup the basket
+----------------
+
+As there is no server side session available and the GraphQL API is as explicit
+as possible, your first step towards placing an order is to create a basket via
+the ``basketCreate`` mutation:
+
+.. code-block:: graphql
+   :caption: call to ``basketCreate`` mutation
+
+    mutation {
+        basketCreate(
+            basket: {
+                title: "myBasket",
+                public: false
+            }
+        ){
+            id
+        }
+    }
+
+.. code-block:: json
+   :caption: ``basketCreate`` mutation response
+
+    {
+        "data": {
+            "basketCreate": {
+                "id": "310e50a2b1be309b255d70462cd75507"
+            }
+        }
+    }
+
+It is your resposibility to store this ID locally, as you will need it to add
+products to this basket, as well as do any other preperation and checkout.
+
+If you happen to "forget" the ID, you can fetch all baskets belonging to a user
+via the ``baskets`` field in the ``customer`` query.
+
+This newly create basket is empty, so lets add a product to it.
+
+.. code-block:: graphql
+   :caption: call to ``basketAddProduct`` mutation
+
+   mutation {
+        basketAddProduct(
+            basketId: "310e50a2b1be309b255d70462cd75507",
+            productId:"05848170643ab0deb9914566391c0c63",
+            amount: 1
+        ) {
+            items {
+                amount
+                product {
+                    id
+                    title
+                }
+            }
+        }
+    }
+
+.. code-block:: json
+   :caption: ``basketAddProduct`` mutation response
+
+    {
+        "data": {
+            "basketAddProduct": {
+                "items": [
+                    {
+                        "amount": 1,
+                        "product": {
+                            "id": "05848170643ab0deb9914566391c0c63",
+                            "title": "Trapez ION MADTRIXX"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+
+Set the desired delivery option
+-------------------------------
+
+In order to set your desired delivery option you need to no the available
+delivery options for this basket, You may query those via the
+``basketDeliveryMethods`` query.
+
+.. code-block:: graphql
+   :caption: call to ``basketDeliveryMethods`` query
+
+    query {
+        basketDeliveryMethods(
+            basketId: "310e50a2b1be309b255d70462cd75507"
+        ) {
+            id
+            title
+        }
+    }
+
+.. code-block:: json
+   :caption: ``basketDeliveryMethods`` query response
+
+    {
+        "data": {
+            "basketDeliveryMethods": [
+                {
+                    "id": "oxidstandard",
+                    "title": "Standard"
+                }
+            ]
+        }
+    }
+
+Now that you now about the available options, you can set the desired delivery
+option.
+
+.. code-block:: graphql
+   :caption: call to ``basketSetDeliveryMethod`` mutation
+
+    mutation {
+        basketSetDeliveryMethod(
+            basketId: "310e50a2b1be309b255d70462cd75507",
+            deliveryMethodId:"oxidstandard"
+        ) {
+            id
+        }
+    }
+
+.. code-block:: json
+   :caption: ``basketSetDeliveryMethod`` mutation response
+
+    {
+        "data": {
+            "basketSetDeliveryMethod": {
+                "id": "310e50a2b1be309b255d70462cd75507"
+            }
+        }
+    }
+
+Set the desired payment option
+------------------------------
+
+Orders somehow need to be paid for, even in the case you place an order via
+GraphQL. For choosing and setting a payment option the workflow is the same as
+with choosing the delivery option. Query available payment options for this
+basket via the ``basketPayments`` query and set the desired one via the
+``basketSetPayment`` mutation.
+
+.. code-block:: graphql
+   :caption: call to ``basketPayments`` query
+
+   query {
+        basketPayments(
+            basketId: "310e50a2b1be309b255d70462cd75507"
+        ) {
+            id
+            title
+        }
+    }
+
+.. code-block:: json
+   :caption: ``basketPayments`` query response
+
+    {
+        "data": {
+            "basketPayments": [
+                {
+                    "id": "oxidpayadvance",
+                    "title": "Vorauskasse"
+                },
+                {
+                    "id": "oxiddebitnote",
+                    "title": "Bankeinzug/Lastschrift"
+                },
+                {
+                    "id": "oxidcashondel",
+                    "title": "Nachnahme"
+                }
+            ]
+        }
+    }
+
+.. code-block:: graphql
+   :caption: call to ``basketSetPayment`` mutation
+
+    mutation {
+        basketSetPayment(
+            basketId: "310e50a2b1be309b255d70462cd75507",
+            paymentId:"oxidpayadvance"
+        ) {
+            payment {
+                id
+                title
+            }
+        }
+    }
+
+.. code-block:: json
+   :caption: ``basketSetPayment`` mutation response
+
+    {
+        "data": {
+            "basketSetPayment": {
+                "payment": {
+                    "id": "oxidpayadvance",
+                    "title": "Vorauskasse"
+                }
+            }
+        }
+    }
+
+Finally placing the order
+-------------------------
+
+Now that the stage is setup, all that needs to be done is to place the order via
+the ``placeOrder`` mutation.
+
+.. code-block:: graphql
+   :caption: final call to ``placeOrder`` mutation
+
+    mutation {
+        placeOrder(
+            basketId:"310e50a2b1be309b255d70462cd75507"
+        ) {
+            id
+            orderNumber
+        }
+    }
+
+.. code-block:: json
+   :caption: ``placeOrder`` mutation response
+
+    {
+        "data": {
+            "placeOrder": {
+              "id": "20804e7bef3ed3a1dda5b2506e914989",
+              "orderNumber": 1
+            }
+        }
+    }
+
+You successfully placed your first order!

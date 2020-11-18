@@ -24,9 +24,10 @@ Table of contents
         tutorials/index
         architecture
         development
+        consuming/index
+        GraphQL schema <https://oxid-esales.github.io/graphql-base-module/>
         specification
         troubleshooting
-        GraphQL schema <https://oxid-esales.github.io/graphql-base-module/>
 
 GraphQL?!?
 ----------
