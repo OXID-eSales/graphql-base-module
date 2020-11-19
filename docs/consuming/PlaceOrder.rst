@@ -15,20 +15,20 @@ In order to successfully place an order via the GraphQL API you need to first
 .. uml::
    :align: center
 
-   Client -> Server: basketCreate mutation
-   Client <- Server: Basket datatype or error
-   Client -> Server: basketAddProduct mutation
-   Client <- Server: Basket datatype or error
-   Client -> Server: basketDeliveryMethods query
-   Client <- Server: array of DeliveryMethod data types
-   Client -> Server: basketSetDeliveryMethod mutation
-   Client <- Server: Basket datatype or error
-   Client -> Server: basketPayments query
-   Client <- Server: array of Payment data types
-   Client -> Server: basketSetPayment mutation
-   Client <- Server: Basket datatype or error
-   Client -> Server: placeOrder mutation
-   Client <- Server: Order datatype or error
+   "Client (PWA)" -> "GraphQL API": basketCreate mutation
+   "Client (PWA)" <- "GraphQL API": Basket datatype or error
+   "Client (PWA)" -> "GraphQL API": basketAddProduct mutation
+   "Client (PWA)" <- "GraphQL API": Basket datatype or error
+   "Client (PWA)" -> "GraphQL API": basketDeliveryMethods query
+   "Client (PWA)" <- "GraphQL API": array of DeliveryMethod data types
+   "Client (PWA)" -> "GraphQL API": basketSetDeliveryMethod mutation
+   "Client (PWA)" <- "GraphQL API": Basket datatype or error
+   "Client (PWA)" -> "GraphQL API": basketPayments query
+   "Client (PWA)" <- "GraphQL API": array of Payment data types
+   "Client (PWA)" -> "GraphQL API": basketSetPayment mutation
+   "Client (PWA)" <- "GraphQL API": Basket datatype or error
+   "Client (PWA)" -> "GraphQL API": placeOrder mutation
+   "Client (PWA)" <- "GraphQL API": Order datatype or error
 
 
 Setup the basket
