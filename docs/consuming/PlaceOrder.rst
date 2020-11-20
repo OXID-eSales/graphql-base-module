@@ -64,12 +64,12 @@ the ``basketCreate`` mutation:
     }
 
 It is your resposibility to store this ID locally, as you will need it to add
-products to this basket, as well as do any other preperation and checkout.
+products to this basket as well as to do any other preparation and the checkout.
 
 If you happen to "forget" the ID, you can fetch all baskets belonging to a user
 via the ``baskets`` field in the ``customer`` query.
 
-This newly create basket is empty, so lets add a product to it.
+This newly created basket is empty, so let's add a product to it.
 
 .. code-block:: graphql
    :caption: call to ``basketAddProduct`` mutation
@@ -113,8 +113,8 @@ This newly create basket is empty, so lets add a product to it.
 Set the desired delivery option
 -------------------------------
 
-In order to set your desired delivery option you need to no the available
-delivery options for this basket, You may query those via the
+In order to set your desired delivery option, you need to know the available
+delivery options for this basket. You may query those via the
 ``basketDeliveryMethods`` query.
 
 .. code-block:: graphql
@@ -143,7 +143,7 @@ delivery options for this basket, You may query those via the
         }
     }
 
-Now that you now about the available options, you can set the desired delivery
+Now that you know about the available options, you can set the desired delivery
 option.
 
 .. code-block:: graphql
@@ -172,8 +172,8 @@ option.
 Set the desired payment option
 ------------------------------
 
-Orders somehow need to be paid for, even in the case you place an order via
-GraphQL. For choosing and setting a payment option the workflow is the same as
+Orders need to be paid for, even in the case you place an order via
+GraphQL. For choosing and setting a payment option, the workflow is the same as
 with choosing the delivery option. Query available payment options for this
 basket via the ``basketPayments`` query and set the desired one via the
 ``basketSetPayment`` mutation.
@@ -244,7 +244,7 @@ basket via the ``basketPayments`` query and set the desired one via the
 Finally placing the order
 -------------------------
 
-Now that the stage is setup, all that needs to be done is to place the order via
+Now that the stage is set up, all that needs to be done is to place the order via
 the ``placeOrder`` mutation.
 
 .. code-block:: graphql
