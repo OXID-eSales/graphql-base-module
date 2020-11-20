@@ -12,6 +12,9 @@ In order to successfully place an order via the GraphQL API you need to first
 - set desired payment option
 - and finaly place the order
 
+Keep in mind, that you will need to send a valid
+JWT in Authorization header for any of the following queries or mutations.
+
 .. uml::
    :align: center
 
