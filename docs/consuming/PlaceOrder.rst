@@ -1,6 +1,11 @@
 Place an Order
 ==============
 
+.. important::
+   To place an order you need the  `GraphQL Checkout module
+   <https://github.com/OXID-eSales/graphql-checkout-module/>`_ installed which
+   is not available in a stable relase as of this writing
+
 The big picture
 ---------------
 
