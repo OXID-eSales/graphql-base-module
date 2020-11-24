@@ -12,7 +12,7 @@ This module provides:
 
 ## Documentation
 
-* Full documentation can be found [here](https://docs.oxid-esales.com/modules/graphql/en/master/).
+* Full documentation can be found [here](https://docs.oxid-esales.com/modules/graphql/en/5.1/).
 * Schema documentation available [here](https://oxid-esales.github.io/graphql-base-module).
 
 ## Usage
