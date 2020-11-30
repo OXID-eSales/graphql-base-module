@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use DateTimeImmutable;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
@@ -20,8 +21,8 @@ use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
+use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 use function time;
 
 class Authentication implements AuthenticationServiceInterface
@@ -120,14 +121,15 @@ class Authentication implements AuthenticationServiceInterface
      */
     private function getTokenBuilder(): Builder
     {
-        $time = time();
+        $time   = new DateTimeImmutable('now');
+        $expire = (new DateTimeImmutable())->setTimestamp(time() + 3600 * 8);
 
         return (new Builder())
             ->issuedBy($this->legacyService->getShopUrl())
             ->permittedFor($this->legacyService->getShopUrl())
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time)
-            ->expiresAt($time + 3600 * 8)
+            ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId());
     }
 
@@ -141,7 +143,7 @@ class Authentication implements AuthenticationServiceInterface
      */
     private function isValidToken(Token $token): bool
     {
-        if (!$token->verify($this->getSigner(), $this->getSignatureKey()->getContent())) {
+        if (!$token->verify($this->getSigner(), $this->getSignatureKey())) {
             return false;
         }
         $validation = new ValidationData();
