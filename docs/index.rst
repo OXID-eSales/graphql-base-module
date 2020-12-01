@@ -1,16 +1,13 @@
-GraphQL
-=======
-
-OXID implements GraphQL modules to provide an alternative to REST and SOAP.
-
-Table of contents
------------------
+Interface Documentation
+=======================
 
 .. toctree::
         :titlesonly:
         :maxdepth: 1
+        :caption: OXID GraphQL API
         :glob:
 
+        introduction
         install
         requests
         authorization
@@ -28,11 +25,6 @@ Table of contents
         GraphQL schema <https://oxid-esales.github.io/graphql-base-module/>
         specification
         troubleshooting
-
-About GraphQL
--------------
-
-`GraphQL <https://www.graphql.org>`_ is a data query language developed internally by Facebook in 2012 before being publicly released in 2015.
 
 .. image:: media/icons/home.png
     :width: 0 px
