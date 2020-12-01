@@ -23,7 +23,6 @@ use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
-use function time;
 
 class Authentication implements AuthenticationServiceInterface
 {
@@ -122,7 +121,7 @@ class Authentication implements AuthenticationServiceInterface
     private function getTokenBuilder(): Builder
     {
         $time   = new DateTimeImmutable('now');
-        $expire = (new DateTimeImmutable())->setTimestamp(time() + 3600 * 8);
+        $expire = new DateTimeImmutable('+8 hours');
 
         return (new Builder())
             ->issuedBy($this->legacyService->getShopUrl())
