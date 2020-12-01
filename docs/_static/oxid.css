@@ -195,3 +195,11 @@ a, a:visited, a:hover {
 .wy-side-nav-search input[type="text"] {
     border-color: #aa1d20;
 }
+
+.wy-nav-top {
+    background: #C02124;
+}
+
+.wy-nav-top a:visited, .wy-nav-top a:hover {
+    color: #fff;
+}
