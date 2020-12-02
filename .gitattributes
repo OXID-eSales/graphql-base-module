@@ -1,5 +1,4 @@
 .travis.yml          export-ignore
 .gitattributes       export-ignore
-schema.sh            export-ignore
-schema_database.php  export-ignore
 graphdocs.php        export-ignore
+deploy.sh            export-ignore

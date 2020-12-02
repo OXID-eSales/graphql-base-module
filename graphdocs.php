@@ -5,8 +5,10 @@
  * See LICENSE file for license details.
  */
 
-define('VENDOR_OX_BASE_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'source' . DIRECTORY_SEPARATOR);
-require_once VENDOR_OX_BASE_PATH . DIRECTORY_SEPARATOR . "bootstrap.php";
+define('INSTALLATION_ROOT_PATH', __DIR__ . '/vendor/oxid-esales/oxideshop-ce/');
+define('VENDOR_PATH', __DIR__ . '/vendor/');
+
+require_once __DIR__ . '/vendor/oxid-esales/oxideshop-ce/source/bootstrap.php';
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
