@@ -4,7 +4,7 @@ Place an Order
 .. important::
    To place an order you need the  `GraphQL Checkout module
    <https://github.com/OXID-eSales/graphql-checkout-module/>`_ installed which
-   is not available in a stable relase as of this writing
+   is not available in a stable release as of this writing
 
 The big picture
 ---------------
@@ -15,7 +15,7 @@ In order to successfully place an order via the GraphQL API you need to first
 - set a delivery address (in case it is different from invoice address)
 - set desired delivery option
 - set desired payment option
-- and finaly place the order
+- and finally place the order
 
 Keep in mind, that you will need to send a valid
 JWT in Authorization header for any of the following queries or mutations.
@@ -71,7 +71,7 @@ the ``basketCreate`` mutation:
         }
     }
 
-It is your resposibility to store this ID locally, as you will need it to add
+It is your responsibility to store this ID locally, as you will need it to add
 products to this basket as well as to do any other preparation and the checkout.
 
 If you happen to "forget" the ID, you can fetch all baskets belonging to a user
@@ -280,3 +280,31 @@ the ``placeOrder`` mutation.
     }
 
 You successfully placed your first order!
+
+.. important::
+   In case that **Users have to Confirm General Terms and Conditions during Check-Out** option is active, **placeOrder** will fail with an error if **confirmTermsAndConditions** input field is missing or its value is false
+
+.. code-block:: graphql
+   :caption: final call to ``placeOrder`` mutation plus ``confirmTermsAndConditions`` input field
+
+    mutation {
+        placeOrder(
+            basketId:"310e50a2b1be309b255d70462cd75507"
+            confirmTermsAndConditions: true
+        ) {
+            id
+            orderNumber
+        }
+    }
+
+.. code-block:: json
+   :caption: ``placeOrder`` mutation response
+
+    {
+        "data": {
+            "placeOrder": {
+              "id": "20804e7bef3ed3a1dda5b2506e914989",
+              "orderNumber": 1
+            }
+        }
+    }
