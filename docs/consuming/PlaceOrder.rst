@@ -117,6 +117,45 @@ This newly created basket is empty, so let's add a product to it.
         }
     }
 
+It is also possible for you to add a voucher to your basket. In order to do that,
+you need to know the number of an existing and available voucher that you could use.
+If the voucher does not exist or otherwise is not applicable, the API will return
+an error with a proper message.
+
+.. code-block:: graphql
+   :caption: call to ``basketAddVoucher`` mutation
+
+    mutation {
+        basketAddVoucher(
+            basketId: "310e50a2b1be309b255d70462cd75507",
+            voucherNumber: "MyVoucher"
+        )
+        {
+            id
+            vouchers{
+              number
+            }
+        }
+    }
+
+In case the voucher exists and is applicable, the following response will be returned:
+
+.. code-block:: json
+   :caption: ``basketAddVoucher`` mutation response
+
+    {
+        "data": {
+            "basketAddVoucher": {
+                "id": "e461fcdcda96b96b9a89a7d0fdc956eb",
+                "vouchers": [
+                    {
+                      "number": "MyVoucher"
+                    }
+                ]
+            }
+        }
+    }
+
 
 Set the desired delivery option
 -------------------------------
