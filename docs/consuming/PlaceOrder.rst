@@ -17,6 +17,9 @@ In order to successfully place an order via the GraphQL API you need to first
 - set desired payment option
 - and finally place the order
 
+.. important::
+   Ordered Basket will be removed on order creation!
+
 Keep in mind, that you will need to send a valid
 JWT in Authorization header for any of the following queries or mutations.
 
@@ -254,6 +257,9 @@ Finally placing the order
 
 Now that the stage is set up, all that needs to be done is to place the order via
 the ``placeOrder`` mutation.
+
+.. important::
+   Ordered Basket will be removed on order creation!
 
 .. code-block:: graphql
    :caption: final call to ``placeOrder`` mutation
