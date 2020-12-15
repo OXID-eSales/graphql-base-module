@@ -61,7 +61,7 @@ In the error response you might want to see a ``category`` entry, which describe
 Example
 -------
 
-Here is an example of a custom exception which tells us that a product was not found. It is part of the ``graphql-catalogue`` module.
+Here is an example of a custom exception which tells us that a product was not found. It is part of the ``graphql-storefront`` module.
 
 .. literalinclude:: examples/exceptions/ProductNotFoundException.php
    :language: php

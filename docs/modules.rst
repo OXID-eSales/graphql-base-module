@@ -15,23 +15,16 @@ GraphQL-Base module
 to provide the basic integration of GraphQL into the OXID eShop. You need this module
 installed if you want to use GraphQL within OXID eShop.
 
-GraphQL-Catalogue module
-------------------------
+GraphQL-Storefront module
+-------------------------
 
-The `GraphQL-Catalogue module's <https://github.com/OXID-eSales/graphql-catalogue-module>`_
-mission is to provide you with all queries you need to create a view of the catalogue with
-categories, products and everything related.
+The `GraphQL-Storefront module's <https://github.com/OXID-eSales/graphql-storefront-module>`_
+mission is to
 
-
-GraphQL-Account module
-----------------------
-
-`GraphQL-Account module <https://github.com/OXID-eSales/graphql-account-module>`_
-exposes all queries and mutations for everything account based. It allows you to
-manage customers addresses, as well as newsletter subscription, order history and
-so on. It does not support placing new orders, for this there will be a new module.
-
-Next
-----
-
-The next module will allow to process checkout using GraphQL API
+* provide you with all queries you need to create a view of the catalogue with categories, products
+  and everything related.
+* expose all queries and mutations for everything account based. It allows you to manage customers
+  addresses, as well as newsletter subscription, order history and so on.
+* support placing new orders. It is possible to manage multiple userbaskets, add/remove products
+  from those baskets, query and chose delivery address, shipping method and payment and in the end
+  place the order. See :doc:`Consuming the API - Place an Order <./consuming/PlaceOrder>`.

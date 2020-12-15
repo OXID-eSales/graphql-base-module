@@ -17,14 +17,14 @@ and to require the modules via ``composer``:
 .. code-block:: bash
 
     composer require oxid-esales/graphql-base
-    composer require oxid-esales/graphql-catalogue
+    composer require oxid-esales/graphql-storefront
 
 After installing the modules you need to add their configurations into the project's configuration file. You can do it by running:
 
 .. code-block:: bash
 
     ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-base/
-    ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-catalogue/
+    ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-storefront/
 
 This will overwrite the configuration of the modules if it was already present in the project's configuration file.
 
@@ -36,7 +36,7 @@ Now you need to activate the modules, either via OXID eShop admin or CLI.
 .. code-block:: bash
 
     ./bin/oe-console oe:module:activate oe_graphql_base
-    ./bin/oe-console oe:module:activate oe_graphql_catalogue
+    ./bin/oe-console oe:module:activate oe_graphql_storefront
 
 
 .. important::
