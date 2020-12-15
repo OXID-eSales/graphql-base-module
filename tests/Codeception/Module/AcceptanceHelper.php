@@ -40,10 +40,23 @@ class AcceptanceHelper extends Module implements DependsOnModule
         exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe_graphql_base');
     }
 
-    public function sendGQLQuery(string $query, ?array $variables = null, int $language = 0, int $shopId = 1): void
-    {
+    public function sendGQLQuery(
+        string $query,
+        ?array $variables = null,
+        int $language = 0,
+        int $shopId = 1,
+        bool $skipSession = true,
+        array $additionalParameters = []
+    ): void {
+        $uri = '/graphql?lang=' . $language . '&shp=' . $shopId;
+        $uri = $skipSession? $uri . '&skipSession=true' : $uri;
+
+        foreach ($additionalParameters as $key => $value) {
+            $uri .= '&' . $key . '=' . $value;
+        }
+
         $this->rest->haveHTTPHeader('Content-Type', 'application/json');
-        $this->rest->sendPOST('/graphql?lang=' . $language . '&shp=' . $shopId, [
+        $this->rest->sendPOST($uri, [
             'query'     => $query,
             'variables' => $variables,
         ]);
