@@ -9,7 +9,7 @@ use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use Full\Qualified\Namespace\Context\DataType\Category as CategoryDataType;
 use Full\Qualified\Namespace\Context\Exception\CategoryNotFound;
-use OxidEsales\GraphQL\Catalogue\Shared\Infrastructure\Repository;
+use OxidEsales\GraphQL\Storefront\Shared\Infrastructure\Repository;
 
 final class Category
 {

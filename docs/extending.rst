@@ -24,7 +24,7 @@ Given that you have
     - extends the ``OxidEsales\Eshop\Application\Model\Article`` model with a ``subtitle()`` method
 
 - want this field exposed via the GraphQL API
-- have installed the ``oxid-esales/graphql-catalogue`` module
+- have installed the ``oxid-esales/graphql-storefront`` module
 
 Create the extend type
 ^^^^^^^^^^^^^^^^^^^^^^

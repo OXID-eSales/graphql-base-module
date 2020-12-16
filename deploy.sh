@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# install graphql catalogue module
+# install graphql storefront module
 mkdir ../graphql-doc
 cd ../graphql-doc
-git clone https://github.com/OXID-eSales/graphql-catalogue-module.git .
+git clone https://github.com/OXID-eSales/graphql-storefront-module.git .
 git checkout $(git tag | tail -1)
 composer update $DEFAULT_COMPOSER_FLAGS
 

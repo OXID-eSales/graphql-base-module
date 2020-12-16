@@ -2,8 +2,8 @@ Place an Order
 ==============
 
 .. important::
-   To place an order you need the  `GraphQL Checkout module
-   <https://github.com/OXID-eSales/graphql-checkout-module/>`_ installed which
+   To place an order you need the  `GraphQL Storefront module
+   <https://github.com/OXID-eSales/graphql-storefront-module/>`_ installed which
    is not available in a stable release as of this writing
 
 The big picture

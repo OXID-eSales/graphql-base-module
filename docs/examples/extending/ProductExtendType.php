@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Full\Quallified\Namespace\Service;
 
-use OxidEsales\GraphQL\Catalogue\Product\DataType\Product;
+use OxidEsales\GraphQL\Storefront\Product\DataType\Product;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\ExtendType;
 
