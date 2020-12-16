@@ -10,9 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use DateTimeInterface;
-use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Token;
-use Lcobucci\JWT\ValidationData;
 
 class NullToken extends Token
 {
@@ -20,16 +18,6 @@ class NullToken extends Token
     {
         // ignore all parameters to parent
         parent::__construct();
-    }
-
-    public function verify(Signer $signer, $key)
-    {
-        return true;
-    }
-
-    public function validate(ValidationData $data)
-    {
-        return true;
     }
 
     public function isExpired(?DateTimeInterface $now = null)

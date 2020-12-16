@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
-use Lcobucci\JWT\Signer\Key;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
-use Lcobucci\JWT\ValidationData;
+use Lcobucci\JWT\Validation\Constraint\IssuedBy;
+use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
@@ -79,16 +79,26 @@ class Authentication implements AuthenticationServiceInterface
     public function createToken(string $username, string $password): Token
     {
         /** @var UserData $userData */
-        $userData  = $this->legacyService->login($username, $password);
-        $builder   = $this->getTokenBuilder()
+        $userData = $this->legacyService->login($username, $password);
+        $time     = new DateTimeImmutable('now');
+        $expire   = new DateTimeImmutable('+8 hours');
+        $config   = $this->getConfig();
+
+        return $config->builder()
+            ->issuedBy($this->legacyService->getShopUrl())
+            ->withHeader('iss', $this->legacyService->getShopUrl())
+            ->permittedFor($this->legacyService->getShopUrl())
+            ->issuedAt($time)
+            ->canOnlyBeUsedAfter($time)
+            ->expiresAt($expire)
+            ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $username)
             ->withClaim(self::CLAIM_USERID, $userData->getUserId())
-            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds());
-
-        return $builder->getToken(
-            $this->getSigner(),
-            $this->getSignatureKey()
-        );
+            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds())
+            ->getToken(
+                $config->signer(),
+                $config->signingKey()
+            );
     }
 
     /**
@@ -100,7 +110,7 @@ class Authentication implements AuthenticationServiceInterface
             throw new InvalidToken('The token is invalid');
         }
 
-        return (string) $this->token->getClaim(self::CLAIM_USERNAME);
+        return (string) $this->token->claims()->get(self::CLAIM_USERNAME);
     }
 
     /**
@@ -112,24 +122,21 @@ class Authentication implements AuthenticationServiceInterface
             throw new InvalidToken('The token is invalid');
         }
 
-        return (string) $this->token->getClaim(self::CLAIM_USERID);
+        return (string) $this->token->claims()->get(self::CLAIM_USERID);
     }
 
-    /**
-     * @internal
-     */
-    private function getTokenBuilder(): Builder
+    public function getConfig(): Configuration
     {
-        $time   = new DateTimeImmutable('now');
-        $expire = new DateTimeImmutable('+8 hours');
+        $config = Configuration::forSymmetricSigner(
+            new Sha512(),
+            InMemory::plainText($this->keyRegistry->getSignatureKey())
+        );
 
-        return (new Builder())
-            ->issuedBy($this->legacyService->getShopUrl())
-            ->permittedFor($this->legacyService->getShopUrl())
-            ->issuedAt($time)
-            ->canOnlyBeUsedAfter($time)
-            ->expiresAt($expire)
-            ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId());
+        $issuedBy     = new IssuedBy($this->legacyService->getShopUrl());
+        $permittedFor = new PermittedFor($this->legacyService->getShopUrl());
+        $config->setValidationConstraints($issuedBy, $permittedFor);
+
+        return $config;
     }
 
     /**
@@ -142,41 +149,21 @@ class Authentication implements AuthenticationServiceInterface
      */
     private function isValidToken(Token $token): bool
     {
-        if (!$token->verify($this->getSigner(), $this->getSignatureKey())) {
-            return false;
-        }
-        $validation = new ValidationData();
-        $validation->setIssuer($this->legacyService->getShopUrl());
-        $validation->setAudience($this->legacyService->getShopUrl());
+        $config    = $this->getConfig();
+        $validator = $config->validator();
 
-        if (!$token->validate($validation)) {
+        if (!$validator->validate($token, ...$config->validationConstraints())) {
             return false;
         }
 
-        if (!$token->hasClaim(self::CLAIM_SHOPID)) {
+        if (!$token->claims()->has(self::CLAIM_SHOPID)) {
             return false;
         }
 
-        if ($token->getClaim(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
+        if ($token->claims()->get(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
             return false;
         }
 
         return true;
-    }
-
-    /**
-     * @internal
-     */
-    private function getSignatureKey(): Key
-    {
-        return new Key($this->keyRegistry->getSignatureKey());
-    }
-
-    /**
-     * @internal
-     */
-    private function getSigner(): Signer
-    {
-        return new Sha512();
     }
 }

@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\ValidationData;
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\UserData;
@@ -22,14 +20,14 @@ use PHPUnit\Framework\TestCase;
 
 class LoginTest extends TestCase
 {
-    /** @var AuthenticationService */
-    private $authenticationService;
+    /** @var Authentication */
+    private $authentication;
 
-    /** @var KeyRegistryInterface|MockObject */
+    /** @var KeyRegistry|MockObject */
     private $keyRegistry;
 
-    /** @var LegacyServiceInterface|MockObject */
-    private $legacyService;
+    /** @var Legacy|MockObject */
+    private $legacy;
 
     public function setUp(): void
     {
@@ -68,16 +66,15 @@ class LoginTest extends TestCase
 
         $loginController = new Login($this->authentication);
 
-        $token = (new Parser())->parse($loginController->token($user['username'], $user['password']));
+        $jwt       = $loginController->token($user['username'], $user['password']);
+        $config    = $this->authentication->getConfig();
+        $token     = $config->parser()->parse($jwt);
+        $validator = $config->validator();
 
-        $data = new ValidationData();
-        $data->setIssuer($shop['url']);
-        $data->setAudience($shop['url']);
-
-        $this->assertTrue($token->validate($data));
-        $this->assertEquals($user['username'], $token->getClaim('username'));
-        $this->assertEquals($shop['id'], $token->getClaim('shopid'));
-        $this->assertEquals($user['usergroups'], $token->getClaim('groups'));
-        $this->assertEquals($user['id'], $token->getClaim('userid'));
+        $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
+        $this->assertEquals($user['username'], $token->claims()->get(Authentication::CLAIM_USERNAME));
+        $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
+        $this->assertEquals($user['usergroups'], $token->claims()->get(Authentication::CLAIM_GROUPS));
+        $this->assertEquals($user['id'], $token->claims()->get(Authentication::CLAIM_USERID));
     }
 }

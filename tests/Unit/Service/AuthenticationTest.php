@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
@@ -134,7 +135,7 @@ class AuthenticationTest extends TestCase
         self::$token = $authenticationService->createToken('admin', 'admin');
 
         $this->assertInstanceOf(
-            \Lcobucci\JWT\Token::class,
+            Token::class,
             self::$token
         );
     }

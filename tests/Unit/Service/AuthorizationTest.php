@@ -142,31 +142,16 @@ class AuthorizationTest extends TestCase
 
     private function getTokenMock(): Token
     {
+        $claims = new Token\DataSet(
+            [
+                Authentication::CLAIM_GROUPS   => ['group'],
+                Authentication::CLAIM_USERNAME => 'testuser',
+            ],
+            ''
+        );
+
         $token = $this->getMockBuilder(Token::class)->getMock();
-        $token->method('hasClaim')
-            ->will($this->returnCallback(
-                function ($claim) {
-                    if ($claim == Authentication::CLAIM_GROUPS) {
-                        return true;
-                    }
-
-                    if ($claim == Authentication::CLAIM_USERNAME) {
-                        return true;
-                    }
-                }
-            ));
-        $token->method('getClaim')
-            ->will($this->returnCallback(
-                function ($claim) {
-                    if ($claim == Authentication::CLAIM_GROUPS) {
-                        return ['groups' => 'group'];
-                    }
-
-                    if ($claim == Authentication::CLAIM_USERNAME) {
-                        return 'testuser';
-                    }
-                }
-            ));
+        $token->method('claims')->willReturn($claims);
 
         return $token;
     }
