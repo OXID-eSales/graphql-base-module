@@ -14,7 +14,9 @@ use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
+use OxidEsales\GraphQL\Base\Service\Authentication as GraphQLAuthenticationService;
 use Throwable;
 
 /**
@@ -51,6 +53,8 @@ class GraphQL extends WidgetController
         }
 
         try {
+            $this->handleShopSession();
+
             ContainerFactory::getInstance()
                 ->getContainer()
                 ->get(GraphQLQueryHandler::class)
@@ -60,6 +64,23 @@ class GraphQL extends WidgetController
         } catch (Throwable $e) {
             EshopRegistry::getLogger()->error($e->getMessage(), [$e]);
             self::sendErrorResponse(FormattedError::createFromException($e), 500);
+        }
+    }
+
+    private function handleShopSession(): void
+    {
+        EshopRegistry::getSession()->setUser(null);
+        EshopRegistry::getSession()->setBasket(null);
+        EshopRegistry::getSession()->setVariable('usr', null);
+
+        try {
+            $userId = ContainerFactory::getInstance()
+                ->getContainer()
+                ->get(GraphQLAuthenticationService::class)
+                ->getUserId();
+            EshopRegistry::getSession()->setVariable('usr', $userId);
+        } catch (InvalidToken $exception) {
+            //all is well so far
         }
     }
 
