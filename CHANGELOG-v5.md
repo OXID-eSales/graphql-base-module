@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.1.1] - Unreleased
+## [5.1.1] - 2020-12-16
 
 ### Changed
 - Updated documentation after catalogue, account and checkout module have been merged as
   storefront graphql module.
+- deployment for GraphQL schema docs has been polished
+- update `lcobucci/jwt` from `^3.3.1` to `^3.4.1` and fixed deprecation warnings
 
 ## [5.1.0] - 2020-11-23
 
@@ -39,5 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Preflight CORS handling
 - Fixed module activation/deactivation event pointers
 
+[5.1.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v4.0.0...v5.0.0
