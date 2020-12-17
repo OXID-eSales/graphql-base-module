@@ -106,4 +106,23 @@ class AcceptanceHelper extends Module implements DependsOnModule
             throw new AssertionFailedError(sprintf('Not a valid JWT token: %s', $token));
         }
     }
+
+    public function extractSidFromResponseCookies(): string
+    {
+        $cookieHeaders = $this->rest->grabHttpHeader('Set-Cookie', false);
+
+        $sid = '';
+
+        foreach ($cookieHeaders as $value) {
+            preg_match('/^(sid=)([a-z0-9]*);/', $value, $matches);
+
+            if (isset($matches[2])) {
+                $sid = $matches[2];
+
+                break;
+            }
+        }
+
+        return $sid;
+    }
 }
