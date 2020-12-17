@@ -23,9 +23,26 @@ class ResponseWriter
      */
     public function renderJsonResponse(array $result, int $httpStatus): void
     {
+        $this->cleanHeaders();
+
         header('Access-Control-Allow-Origin: *', true, $httpStatus);
         header('Content-Type: application/json', true, $httpStatus);
 
         exit(json_encode($result));
+    }
+
+    /**
+     * Remove all headers the shop core might have set
+     */
+    private function cleanHeaders(): bool
+    {
+        //in case headers have already been sent nothing can be cleaned
+        if (!headers_sent()) {
+            header_remove();
+
+            return true;
+        }
+
+        return false;
     }
 }
