@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication as GraphQLAuthenticationService;
@@ -68,6 +69,19 @@ class GraphQL extends WidgetController
     }
 
     private function handleShopSession(): void
+    {
+        $safeRequest = (bool) EshopRegistry::getRequest()->getRequestParameter('skipSession') &
+                       !EshopRegistry::getRequest()->getRequestParameter('sid') &
+                       !EshopRegistry::getRequest()->getRequestParameter('force_sid');
+
+        if (!$safeRequest) {
+            throw new InvalidRequest('Invalid GET parameters detected.');
+        }
+
+        $this->setShopUserFromToken();
+    }
+
+    private function setShopUserFromToken(): void
     {
         EshopRegistry::getSession()->setUser(null);
         EshopRegistry::getSession()->setBasket(null);
