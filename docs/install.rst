@@ -41,3 +41,14 @@ Now you need to activate the modules, either via OXID eShop admin or CLI.
 
 .. important::
     Keep in mind that you have to activate the **GraphQL Base** module first.
+
+.. important::
+    To ensure that php session is not used by accident (by sending sid parameter or cookie),
+    please ensure that 'skipSession=true' parameter is sent for each request. Easiest way to do this
+    is to extend the shop's .htaccess file with the following lines
+
+    .. code-block:: bash
+
+       RewriteRule ^graphql/?$    widget.php?cl=graphql&skipSession=1   [QSA,NC,L]
+
+
