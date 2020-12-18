@@ -35,6 +35,11 @@ class AcceptanceHelper extends Module implements DependsOnModule
         $this->rest = $rest;
     }
 
+    public function getRest(): REST
+    {
+        return $this->rest;
+    }
+
     public function _beforeSuite($settings = []): void // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
         exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe_graphql_base');
