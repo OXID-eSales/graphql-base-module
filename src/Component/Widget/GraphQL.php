@@ -70,12 +70,13 @@ class GraphQL extends WidgetController
 
     private function handleShopSession(): void
     {
-        $safeRequest = (bool) EshopRegistry::getRequest()->getRequestParameter('skipSession') &
-                       !EshopRegistry::getRequest()->getRequestParameter('sid') &
-                       !EshopRegistry::getRequest()->getRequestParameter('force_sid');
+        $request = EshopRegistry::getRequest();
+        $safeRequest = (bool) $request->getRequestParameter('skipSession') &
+                       !$request->getRequestParameter('sid') &
+                       !$request->getRequestParameter('force_sid');
 
         if (!$safeRequest) {
-            throw new InvalidRequest('Invalid GET parameters detected.');
+            throw new InvalidRequest('Forcing the session id is not supported for GraphQL modules.');
         }
 
         $this->setShopUserFromToken();
@@ -83,16 +84,18 @@ class GraphQL extends WidgetController
 
     private function setShopUserFromToken(): void
     {
-        EshopRegistry::getSession()->setUser(null);
-        EshopRegistry::getSession()->setBasket(null);
-        EshopRegistry::getSession()->setVariable('usr', null);
+        $session = EshopRegistry::getSession();
+
+        $session->setUser(null);
+        $session->setBasket(null);
+        $session->setVariable('usr', null);
 
         try {
             $userId = ContainerFactory::getInstance()
                 ->getContainer()
                 ->get(GraphQLAuthenticationService::class)
                 ->getUserId();
-            EshopRegistry::getSession()->setVariable('usr', $userId);
+            $session->setVariable('usr', $userId);
         } catch (InvalidToken $exception) {
             //all is well so far
         }
