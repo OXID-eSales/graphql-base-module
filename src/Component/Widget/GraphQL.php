@@ -12,9 +12,9 @@ namespace OxidEsales\GraphQL\Base\Component\Widget;
 use GraphQL\Error\FormattedError;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
+use OxidEsales\Eshop\Core\Session;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
-use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication as GraphQLAuthenticationService;
@@ -70,13 +70,12 @@ class GraphQL extends WidgetController
 
     private function handleShopSession(): void
     {
-        $request = EshopRegistry::getRequest();
-        $safeRequest = (bool) $request->getRequestParameter('skipSession') &
-                       !$request->getRequestParameter('sid') &
-                       !$request->getRequestParameter('force_sid');
-
-        if (!$safeRequest) {
-            throw new InvalidRequest('Forcing the session id is not supported for GraphQL modules.');
+        //Reset static user variable and destroy current session
+        $session = EshopRegistry::getSession();
+        if ($session->isSessionStarted()) {
+            $session->setUser(null);
+            $session->destroy();
+            EshopRegistry::set(Session::class, null);
         }
 
         $this->setShopUserFromToken();
@@ -84,18 +83,17 @@ class GraphQL extends WidgetController
 
     private function setShopUserFromToken(): void
     {
-        $session = EshopRegistry::getSession();
-
-        $session->setUser(null);
-        $session->setBasket(null);
-        $session->setVariable('usr', null);
-
         try {
             $userId = ContainerFactory::getInstance()
                 ->getContainer()
                 ->get(GraphQLAuthenticationService::class)
                 ->getUserId();
-            $session->setVariable('usr', $userId);
+
+            if ($userId) {
+                $session = EshopRegistry::getSession();
+                $session->initNewSession();
+                $session->setVariable('usr', $userId);
+            }
         } catch (InvalidToken $exception) {
             //all is well so far
         }
