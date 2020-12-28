@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Component\Widget;
 
 use GraphQL\Error\FormattedError;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
+use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidEsales\Eshop\Core\Session;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
@@ -70,12 +71,13 @@ class GraphQL extends WidgetController
 
     private function handleShopSession(): void
     {
-        //Reset static user variable and destroy current session
+        //Reset static user variable and destroy current session and initialized config
         $session = EshopRegistry::getSession();
         if ($session->isSessionStarted()) {
             $session->setUser(null);
             $session->destroy();
             EshopRegistry::set(Session::class, null);
+            EshopRegistry::set(Config::class, null);
         }
 
         $this->setShopUserFromToken();
