@@ -11,11 +11,10 @@ namespace OxidEsales\GraphQL\Base\Component\Widget;
 
 use GraphQL\Error\FormattedError;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
-use OxidEsales\Eshop\Core\Config;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
-use OxidEsales\Eshop\Core\Session;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication as GraphQLAuthenticationService;
@@ -71,16 +70,9 @@ class GraphQL extends WidgetController
 
     private function handleShopSession(): void
     {
-        //Reset static user variable and destroy current session and initialized config
-        $session = EshopRegistry::getSession();
-        if ($session->isSessionStarted()) {
-            $session->setUser(null);
-            //Session::setSession() is @deprecated since OXID eShop v6.4.0 (2019-05-17);
-            //This method will be removed completely in the next major OXID eShop version.
-            $session->setSession(null);
-            $session->destroy();
-            EshopRegistry::set(Session::class, null);
-            EshopRegistry::set(Config::class, null);
+        //if there's already a php session running, bail out to prevent inconsistent behaviour
+        if (PHP_SESSION_NONE !== session_status()) {
+            throw new InvalidRequest('Encountered unexpected running PHP session.');
         }
 
         $this->setShopUserFromToken();
