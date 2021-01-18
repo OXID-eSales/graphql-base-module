@@ -54,4 +54,29 @@ class GraphQLCest
         ]);
         $I->canSeeHttpHeader('WWW-Authenticate', 'Bearer');
     }
+
+    public function testQueryWithoutSkipSession(AcceptanceTester $I): void
+    {
+        $I->sendGQLQuery(
+            'query {token(username:"admin", password:"admin")}',
+            null,
+            0,
+            1,
+            [],
+            false
+        );
+        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::INTERNAL_SERVER_ERROR);
+        $I->seeResponseIsJson();
+        $I->seeResponseContains('errors');
+        $I->seeResponseMatchesJsonType([
+            'errors' => [
+                [
+                    'message'    => 'string:=Encountered unexpected running PHP session.',
+                    'extensions' => [
+                        'category' => 'string:=requesterror',
+                    ],
+                ],
+            ],
+        ]);
+    }
 }
