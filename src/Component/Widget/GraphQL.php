@@ -75,6 +75,9 @@ class GraphQL extends WidgetController
         $session = EshopRegistry::getSession();
         if ($session->isSessionStarted()) {
             $session->setUser(null);
+            //Session::setSession() is @deprecated since OXID eShop v6.4.0 (2019-05-17);
+            //This method will be removed completely in the next major OXID eShop version.
+            $session->setSession(null);
             $session->destroy();
             EshopRegistry::set(Session::class, null);
             EshopRegistry::set(Config::class, null);
