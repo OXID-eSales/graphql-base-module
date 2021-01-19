@@ -26,7 +26,7 @@ env:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest --prefer-dist"
 
 before_install:
-    - composer self-update --1
+    - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") != "74" -o "$DEPENDENCIES" == " --prefer-lowest" ]; then composer self-update --1; fi;
 
 install:
     - travis_retry composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
