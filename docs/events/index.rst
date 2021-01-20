@@ -7,3 +7,4 @@ Events
         :glob:
 
         BeforeAuthorization
+        BeforePlaceOrder
