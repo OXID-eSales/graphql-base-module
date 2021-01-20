@@ -1,6 +1,7 @@
 # oxid-esales/graphql-base
 
 [![Build Status](https://flat.badgen.net/travis/OXID-eSales/graphql-base-module/?icon=travis&label=build&cache=300&scale=1.1)](https://travis-ci.com/OXID-eSales/graphql-base-module)
+[![Build Status](https://flat.badgen.net/github/status/OXID-eSales/graphql-base-module/?icon=github&label=build&cache=300&scale=1.1)](https://travis-ci.com/OXID-eSales/graphql-base-module)
 [![PHP Version](https://flat.badgen.net/packagist/php/OXID-eSales/graphql-base/?cache=300&scale=1.1)](https://github.com/oxid-esales/graphql-base-module)
 [![Stable Version](https://flat.badgen.net/packagist/v/OXID-eSales/graphql-base/latest/?label=latest&cache=300&scale=1.1)](https://packagist.org/packages/oxid-esales/graphql-base)
 

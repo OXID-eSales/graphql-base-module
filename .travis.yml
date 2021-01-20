@@ -6,9 +6,6 @@ notifications:
     email: false
 
 php:
-    - "7.1"
-    - "7.2"
-    - "7.3"
     - "7.4"
 
 cache:
@@ -19,24 +16,14 @@ matrix:
     fast_finish: true
 
 env:
-  matrix:
-    - DEPENDENCIES=""
-    - DEPENDENCIES=" --prefer-lowest"
   global:
+    - DEPENDENCIES=""
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest --prefer-dist"
-
-before_install:
-    - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") != "74" -o "$DEPENDENCIES" == " --prefer-lowest" ]; then composer self-update --1; fi;
 
 install:
     - travis_retry composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
 
-script:
-    - composer test:syntax
-    - composer test:lint
-    - composer test:unit
-    - composer test:infection
-    - if [ $(php -r "echo PHP_MAJOR_VERSION . PHP_MINOR_VERSION;") == "74" -a "$DEPENDENCIES" == "" ]; then composer test:static; fi;
+script: skip
 
 before_deploy:
     - sudo chmod +775 deploy.sh
