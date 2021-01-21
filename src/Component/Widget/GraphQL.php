@@ -80,6 +80,11 @@ class GraphQL extends WidgetController
 
     private function setShopUserFromToken(): void
     {
+        $session = EshopRegistry::getSession();
+        $session->setUser(null);
+        $session->setBasket(null);
+        $session->setVariable('usr', null);
+
         try {
             $userId = ContainerFactory::getInstance()
                 ->getContainer()
@@ -87,8 +92,6 @@ class GraphQL extends WidgetController
                 ->getUserId();
 
             if ($userId) {
-                $session = EshopRegistry::getSession();
-                $session->initNewSession();
                 $session->setVariable('usr', $userId);
             }
         } catch (InvalidToken $exception) {
