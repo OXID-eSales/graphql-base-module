@@ -1,3 +1,5 @@
+.. _troubleshooting:
+
 Troubleshooting
 ===============
 
@@ -26,13 +28,26 @@ When you call the API endpoint with a query string, for example `/graphql/?lang=
 
     RewriteRule ^(graphql/)    widget.php?cl=graphql   [NC,L]
 
-
 and make it look like this:
 
 .. code-block:: apache
 
-    RewriteRule ^(graphql/)    widget.php?cl=graphql   [QSA,NC,L]
+    RewriteRule ^(graphql/)    widget.php?cl=graphql&skipSession=1   [QSA,NC,L]
 
+Side-Effects due to OXID Session
+--------------------------------
+
+To enforce that PHP session is not used by accident (by sending ``sid``
+parameter or cookie) and no unneeded PHP session is created, please ensure that
+``skipSession=true`` parameter is sent for each request. Easiest way to do this
+is to extend the shop's ``.htaccess`` file with the following lines
+
+.. code-block:: apache
+
+    RewriteRule ^graphql/?$    widget.php?cl=graphql&skipSession=1   [QSA,NC,L]
+
+Otherwise in newer GraphQL versions you will be presented with an error when
+sending GraphQL requests with a session id.
 
 Graphql schema appears incomplete
 ---------------------------------
