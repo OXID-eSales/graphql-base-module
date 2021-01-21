@@ -1,0 +1,9 @@
+services:
+
+    _defaults:
+        public: false
+        autowire: true
+
+    Full\Qualified\Namespace\DeveloperBeforePlaceOrderEventSubscriber:
+        class: Full\Qualified\Namespace\DeveloperBeforePlaceOrderEventSubscriber
+        tags: ['kernel.event_subscriber']
