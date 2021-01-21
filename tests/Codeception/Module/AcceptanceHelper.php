@@ -50,11 +50,9 @@ class AcceptanceHelper extends Module implements DependsOnModule
         ?array $variables = null,
         int $language = 0,
         int $shopId = 1,
-        array $additionalParameters = [],
-        bool $skipSession = true
+        array $additionalParameters = []
     ): void {
         $uri = '/graphql?lang=' . $language . '&shp=' . $shopId;
-        $uri = $skipSession? $uri . '&skipSession=true' : $uri;
 
         foreach ($additionalParameters as $key => $value) {
             $uri .= '&' . $key . '=' . $value;

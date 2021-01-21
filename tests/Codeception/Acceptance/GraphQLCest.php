@@ -57,14 +57,14 @@ class GraphQLCest
 
     public function testQueryWithoutSkipSession(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery(
-            'query {token(username:"admin", password:"admin")}',
-            null,
-            0,
-            1,
-            [],
-            false
-        );
+        $uri = '/widget.php?cl=graphql&lang=0&shp=1';
+
+        $I->getRest()->haveHTTPHeader('Content-Type', 'application/json');
+        $I->getRest()->sendPOST($uri, [
+            'query'     => 'query {token(username:"admin", password:"admin")}',
+            'variables' => [],
+        ]);
+
         $I->seeResponseCodeIs(\Codeception\Util\HttpCode::INTERNAL_SERVER_ERROR);
         $I->seeResponseIsJson();
         $I->seeResponseContains('errors');
