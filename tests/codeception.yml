@@ -19,3 +19,12 @@ settings:
 extensions:
   enabled:
     - Codeception\Extension\RunFailed
+
+coverage:
+  enabled: true
+  remote: true
+  local: false
+  c3_url: '%SHOP_URL%'
+  remote_config: 'vendor/oxid-esales/graphql-base/tests/codeception.yml'
+  include:
+      - ../src/*
