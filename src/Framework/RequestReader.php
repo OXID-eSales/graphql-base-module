@@ -60,8 +60,8 @@ class RequestReader
     public function getGraphQLRequestData(string $inputFile = 'php://input'): array
     {
         if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-            $raw  = file_get_contents($inputFile) ? : '';
-            $data = json_decode($raw, true) ? : [];
+            $raw  = file_get_contents($inputFile) ?: '';
+            $data = json_decode($raw, true) ?: [];
         } else {
             $data = $_REQUEST;
 
