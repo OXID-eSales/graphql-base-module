@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+
 use function header;
 use function json_encode;
 
@@ -27,6 +29,7 @@ class ResponseWriter
 
         header('Access-Control-Allow-Origin: *', true, $httpStatus);
         header('Content-Type: application/json', true, $httpStatus);
+        header($this->generateServerTimingHeader(), true, $httpStatus);
 
         exit(json_encode($result));
     }
@@ -44,5 +47,18 @@ class ResponseWriter
         }
 
         return false;
+    }
+
+    private function generateServerTimingHeader(): string
+    {
+        /** @var TimerHandler */
+        $timerHandler = ContainerFactory::getInstance()->getContainer()->get(TimerHandler::class);
+        $result       = 'Server-Timing: ';
+
+        foreach ($timerHandler->getTimers() as $name => $timer) {
+            $result .= sprintf('%s;dur=%.3f,', $name, $timer->getDurationMs());
+        }
+
+        return $result;
     }
 }

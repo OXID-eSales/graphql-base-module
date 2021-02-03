@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
+use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication as GraphQLAuthenticationService;
 use Throwable;
 
@@ -52,6 +53,10 @@ class GraphQL extends WidgetController
 
             exit;
         }
+
+        /** @var TimerHandler */
+        $timerHandler = ContainerFactory::getInstance()->getContainer()->get(TimerHandler::class);
+        $timerHandler->create('bootstrap')->startAt($_SERVER['REQUEST_TIME_FLOAT'])->stop();
 
         try {
             $this->handleShopSession();

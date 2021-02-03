@@ -32,6 +32,9 @@ class GraphQLQueryHandler
     /** @var ResponseWriter */
     private $responseWriter;
 
+    /** @var TimerHandler */
+    private $timerHandler;
+
     private $loggingErrorFormatter;
 
     public function __construct(
@@ -39,13 +42,15 @@ class GraphQLQueryHandler
         SchemaFactory $schemaFactory,
         ErrorCodeProvider $errorCodeProvider,
         RequestReader $requestReader,
-        ResponseWriter $responseWriter
+        ResponseWriter $responseWriter,
+        TimerHandler $timerHandler
     ) {
         $this->logger            = $logger;
         $this->schemaFactory     = $schemaFactory;
         $this->errorCodeProvider = $errorCodeProvider;
         $this->requestReader     = $requestReader;
         $this->responseWriter    = $responseWriter;
+        $this->timerHandler      = $timerHandler;
 
         $this->loggingErrorFormatter = function (Error $error) {
             $this->logger->error((string) $error);
@@ -88,13 +93,21 @@ class GraphQLQueryHandler
             $operationName = $queryData['operationName'];
         }
 
-        return $graphQL->executeQuery(
-            $this->schemaFactory->getSchema(),
+        $schemaTimer = $this->timerHandler->create('schema')->start();
+        $schema      = $this->schemaFactory->getSchema();
+        $schemaTimer->stop();
+
+        $queryTimer = $this->timerHandler->create('query')->start();
+        $result     = $graphQL->executeQuery(
+            $schema,
             $queryData['query'],
             null,
             null,
             $variables,
             $operationName
         );
+        $queryTimer->stop();
+
+        return $result;
     }
 }
