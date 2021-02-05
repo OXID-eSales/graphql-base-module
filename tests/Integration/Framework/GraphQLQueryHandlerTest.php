@@ -218,6 +218,34 @@ class GraphQLQueryHandlerTest extends TestCase
         );
     }
 
+    public function testResultWithError(): void
+    {
+        $result = $this->query('
+            query {
+                resultWithError
+            }
+        ');
+        $this->assertEquals(
+            [
+                'status' => 400,
+                'body'   => [
+                    'data' => [
+                        'resultWithError' => true,
+                    ],
+                    'errors' => [
+                        [
+                            'message'    => 'error message',
+                            'extensions' => [
+                                'category' => 'graphql',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            $result
+        );
+    }
+
     protected static function beforeContainerCompile(): void
     {
         $loader      = new YamlFileLoader(static::$container, new FileLocator());

@@ -17,6 +17,9 @@ use Throwable;
 
 class GraphQLQueryHandler
 {
+    /** @var Error[] */
+    private static $errors = [];
+
     /** @var LoggerInterface */
     private $logger;
 
@@ -81,33 +84,44 @@ class GraphQLQueryHandler
      */
     private function executeQuery(array $queryData): ExecutionResult
     {
-        $graphQL   = new \GraphQL\GraphQL();
-        $variables = null;
+        $graphQL       = new \GraphQL\GraphQL();
+        $variables     = null;
+        $operationName = null;
 
         if (isset($queryData['variables'])) {
             $variables = $queryData['variables'];
         }
-        $operationName = null;
 
         if (isset($queryData['operationName'])) {
             $operationName = $queryData['operationName'];
         }
 
         $schemaTimer = $this->timerHandler->create('schema')->start();
-        $schema      = $this->schemaFactory->getSchema();
         $schemaTimer->stop();
 
         $queryTimer = $this->timerHandler->create('query')->start();
-        $result     = $graphQL->executeQuery(
-            $schema,
+
+        $result = $graphQL->executeQuery(
+            $this->schemaFactory->getSchema(),
             $queryData['query'],
             null,
             null,
             $variables,
             $operationName
         );
+
         $queryTimer->stop();
 
+        $result->errors = array_merge(
+            $result->errors,
+            self::$errors
+        );
+
         return $result;
+    }
+
+    public static function addError(Error $e): void
+    {
+        self::$errors[] = $e;
     }
 }

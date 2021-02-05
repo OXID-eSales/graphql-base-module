@@ -10,8 +10,10 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller;
 
 use Exception;
+use GraphQL\Error\Error;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilter;
 use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestSorting;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
@@ -94,6 +96,20 @@ class TestController
      */
     public function basicSortingQuery(?TestSorting $sort = null): bool
     {
+        return true;
+    }
+
+    /**
+     * @Query
+     */
+    public function resultWithError(): bool
+    {
+        GraphQLQueryHandler::addError(
+            new Error(
+                'error message'
+            )
+        );
+
         return true;
     }
 }
