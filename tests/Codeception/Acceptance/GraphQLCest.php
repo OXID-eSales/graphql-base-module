@@ -20,6 +20,7 @@ class GraphQLCest
         $I->seeResponseCodeIs(\Codeception\Util\HttpCode::UNAUTHORIZED);
         $I->seeResponseIsJson();
         $I->seeResponseContains('{"category":"permissionerror"}');
+        $I->canSeeHttpHeader('Server-Timing');
     }
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
@@ -33,6 +34,7 @@ class GraphQLCest
         }
 
         $I->login('user@oxid-esales.com', $password);
+        $I->canSeeHttpHeader('Server-Timing');
     }
 
     public function testQueryWithInvalidToken(AcceptanceTester $I): void
@@ -53,6 +55,7 @@ class GraphQLCest
             ],
         ]);
         $I->canSeeHttpHeader('WWW-Authenticate', 'Bearer');
+        $I->cantSeeHttpHeader('Server-Timing');
     }
 
     public function testQueryWithoutSkipSession(AcceptanceTester $I): void
@@ -78,5 +81,6 @@ class GraphQLCest
                 ],
             ],
         ]);
+        $I->cantSeeHttpHeader('Server-Timing');
     }
 }

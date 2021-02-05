@@ -21,6 +21,10 @@ services:
   OxidEsales\GraphQL\Base\Framework\ResponseWriter:
     class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
+  OxidEsales\GraphQL\Base\Framework\TimerHandler:
+    class: OxidEsales\GraphQL\Base\Framework\TimerHandler
+    public: true
+
   OxidEsales\GraphQL\Base\Service\KeyRegistry:
     class: OxidEsales\GraphQL\Base\Service\KeyRegistry
     public: true
