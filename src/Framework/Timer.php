@@ -11,6 +11,8 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 /**
  * Basic timing construct, start and end values are expected to be seconds.
+ *
+ * @internal This class is not covered by the backward compatibility promise
  */
 class Timer
 {
@@ -48,10 +50,5 @@ class Timer
     public function getDuration(): float
     {
         return $this->end - $this->start;
-    }
-
-    public function getDurationMs(): float
-    {
-        return $this->getDuration() * 1000;
     }
 }

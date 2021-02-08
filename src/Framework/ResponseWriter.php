@@ -9,13 +9,19 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-
 use function header;
 use function json_encode;
 
 class ResponseWriter
 {
+    /** @var TimerHandler */
+    private $timerHandler;
+
+    public function __construct(TimerHandler $timerHandler)
+    {
+        $this->timerHandler = $timerHandler;
+    }
+
     /**
      * Return a JSON Object with the graphql results
      *
@@ -51,14 +57,12 @@ class ResponseWriter
 
     private function generateServerTimingHeader(): string
     {
-        /** @var TimerHandler */
-        $timerHandler = ContainerFactory::getInstance()->getContainer()->get(TimerHandler::class);
-        $result       = 'Server-Timing: ';
+        $timings = [];
 
-        foreach ($timerHandler->getTimers() as $name => $timer) {
-            $result .= sprintf('%s;dur=%.3f,', $name, $timer->getDurationMs());
+        foreach ($this->timerHandler->getTimers() as $name => $timer) {
+            $timings[] = sprintf('%s;dur=%.3f', $name, $timer->getDuration() * 1000);
         }
 
-        return $result;
+        return 'Server-Timing: ' . implode(',', $timings);
     }
 }

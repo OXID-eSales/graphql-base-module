@@ -11,14 +11,35 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Framework\Timer;
 use PHPUnit\Framework\TestCase;
+use function usleep;
 
 class TimerTest extends TestCase
 {
     public function testTimer(): void
     {
         $timer = new Timer();
+        $timer->start();
+        usleep(1);
+        $timer->stop();
+        $this->assertGreaterThan(
+            0.0,
+            $timer->getDuration()
+        );
+        $this->assertLessThan(
+            1.0,
+            $timer->getDuration()
+        );
+    }
 
-        $this->assertGreaterThan(0.0, $timer->start()->stop()->getDurationMs());
-        $this->assertEquals($timer->getDuration() * 1000, $timer->getDurationMs());
+    public function testTimerAt(): void
+    {
+        $timer = new Timer();
+        $timer->startAt(microtime(true));
+        usleep(1);
+        $timer->stop();
+        $this->assertGreaterThan(
+            0.0,
+            $timer->getDuration()
+        );
     }
 }

@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+/**
+ * @internal This class is not covered by the backward compatibility promise
+ */
 class TimerHandler
 {
     /** @var array<Timer> */
