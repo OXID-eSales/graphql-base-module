@@ -2,6 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis/com/OXID-eSales/graphql-base-module/master?logo=travis&style=for-the-badge)](https://travis-ci.com/OXID-eSales/graphql-base-module)
 [![Build Status](https://img.shields.io/github/workflow/status/OXID-eSales/graphql-base-module/CI?logo=github-actions&style=for-the-badge)](https://github.com/OXID-eSales/graphql-base-module/actions)
+[![Build
+Status](https://img.shields.io/sonar/quality_gate/OXID-eSales_graphql-base-module?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonarcloud)](https://sonarcloud.io/dashboard?id=OXID-eSales_graphql-base-module)
 [![Stable Version](https://img.shields.io/packagist/v/OXID-eSales/graphql-base?style=for-the-badge&logo=composer&label=latest)](https://packagist.org/packages/oxid-esales/graphql-base)
 [![PHP Version](https://img.shields.io/packagist/php-v/oxid-esales/graphql-base?style=for-the-badge)](https://github.com/oxid-esales/graphql-base-module)
 
