@@ -54,7 +54,7 @@ token you need to replace the username and password below with valid login
 credentials.
 
 ```bash
-$ curl http://oxideshop.local/widget.php?cl=graphql \
+$ curl http://oxideshop.local/graphql/ \
   -H 'Content-Type: application/json' \
   --data-binary '{"query":"query {token(username: \"admin\", password: \"admin\")}"}'
 ```
