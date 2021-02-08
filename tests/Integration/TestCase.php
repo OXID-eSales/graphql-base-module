@@ -14,6 +14,7 @@ use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
+use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
@@ -40,7 +41,9 @@ abstract class TestCase extends PHPUnitTestCase
         $containerFactory  = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = new ResponseWriterStub();
+        $responseWriter = new ResponseWriterStub(
+            new TimerHandler()
+        );
 
         static::$container->set(
             ResponseWriter::class,
