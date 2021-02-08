@@ -112,26 +112,6 @@ class Legacy
     }
 
     /**
-     * @throws InvalidLogin
-     */
-    private function mapUserGroup(?string $dbGroup): string
-    {
-        if ($dbGroup === 'user') {
-            return self::GROUP_CUSTOMERS;
-        }
-
-        if ($dbGroup == 'malladmin') {
-            return self::GROUP_ADMIN;
-        }
-
-        if ((int) $dbGroup == $this->context->getCurrentShopId()) {
-            return self::GROUP_ADMIN;
-        }
-
-        throw new InvalidLogin('Invalid usergroup');
-    }
-
-    /**
      * @return array<string,string>
      */
     private function getUserGroupIds(User $user): array
