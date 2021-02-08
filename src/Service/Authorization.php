@@ -79,7 +79,7 @@ class Authorization implements AuthorizationServiceInterface
 
         foreach ($groups as $id) {
             if (isset($this->permissions[$id]) &&
-                !(array_search($right, $this->permissions[$id], true) === false)) {
+                array_search($right, $this->permissions[$id], true) !== false) {
                 $isAllowed = true;
             }
         }
