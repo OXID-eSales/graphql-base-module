@@ -53,7 +53,7 @@ class AuthenticationTest extends TestCase
         $this->expectException(InvalidLogin::class);
         $this->legacyService
              ->method('login')
-             ->willThrowException(new InvalidLogin());
+             ->willThrowException(new InvalidLogin('Username/password combination is invalid'));
 
         $authenticationService = new Authentication(
             $this->keyRegistry,

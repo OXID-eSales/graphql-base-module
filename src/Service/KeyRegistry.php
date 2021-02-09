@@ -49,8 +49,12 @@ class KeyRegistry
         // TODO: legacy wrapper
         $signature = $this->legacyService->getConfigParam(static::SIGNATUREKEYNAME);
 
-        if (!is_string($signature) || strlen($signature) < 64) {
-            throw new MissingSignatureKey();
+        if (!is_string($signature)) {
+            throw MissingSignatureKey::wrongType();
+        }
+
+        if (strlen($signature) < 64) {
+            throw MissingSignatureKey::wrongSize();
         }
 
         return $signature;
