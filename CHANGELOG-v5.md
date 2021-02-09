@@ -9,7 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update module to use the new API from [lcobucci/jwt](https://lcobucci-jwt.readthedocs.io/en/latest/upgrading/#v3x-to-v4x) 4.0.0
 - Prevent accidental php session usage.
-- Added server timing for API requests
 
 ### Added
 - [`Server-Timing`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing) response header
