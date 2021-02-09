@@ -15,7 +15,7 @@ Interface Documentation
         filtering
         sorting
         caching
-        exceptions
+        exceptions/index
         extending
         modules
         tutorials/index

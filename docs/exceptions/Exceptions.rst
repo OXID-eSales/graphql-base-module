@@ -1,30 +1,5 @@
-Errors and Exceptions
-=====================
-
-When error occurs in GraphQL, the server adds an ``errors`` entry in the response. Here is an example
-
-.. code-block:: json
-
-    {
-        "errors": [
-            {
-                "message": "Wished price was not found by id: some-id",
-                "locations": [
-                    {
-                        "line": 2,
-                        "column": 3
-                    }
-                ],
-                "path": [
-                    "wishedPrice"
-                ]
-            }
-        ]
-    }
-
-You can read more about `GraphQL errors in the official spec <http://spec.graphql.org/June2018/#sec-Errors>`_.
-
-In most cases the HTTP status code will also reflect the error condition. So for example it will be ``404`` in case something was not found.
+Exceptions
+==========
 
 Exceptions in your module
 -------------------------
@@ -63,13 +38,12 @@ Example
 
 Here is an example of a custom exception which tells us that a product was not found. It is part of the ``graphql-storefront`` module.
 
-.. literalinclude:: examples/exceptions/ProductNotFoundException.php
+.. literalinclude:: ../examples/exceptions/ProductNotFoundException.php
    :language: php
 
 Here is an example of an exception when customer's password does not match the requirements:
 
-.. literalinclude:: examples/exceptions/PasswordMismatchException.php
+.. literalinclude:: ../examples/exceptions/PasswordMismatchException.php
    :language: php
-
 
 In this example you can see the usage of ``ClientAware``, ``HttpErrorInterface`` and ``ErrorCategories``.
