@@ -9,10 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-use Exception;
-use GraphQL\Error\ClientAware;
-
-class InvalidToken extends Exception implements ClientAware, HttpErrorInterface
+class InvalidToken extends Error implements HttpErrorInterface
 {
     public function getHttpStatus(): int
     {

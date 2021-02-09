@@ -9,10 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-use Exception;
-use GraphQL\Error\ClientAware;
-
-class Exists extends Exception implements ClientAware, HttpErrorInterface
+class Exists extends Error implements HttpErrorInterface
 {
     public function getHttpStatus(): int
     {
