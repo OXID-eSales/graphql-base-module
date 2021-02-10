@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Acceptance;
 
 use OxidEsales\Facts\Facts;
+use OxidEsales\GraphQL\Base\Component\Widget\GraphQL;
 use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
 class GraphQLCest
@@ -74,7 +75,7 @@ class GraphQLCest
         $I->seeResponseMatchesJsonType([
             'errors' => [
                 [
-                    'message'    => 'string:=Encountered unexpected running PHP session.',
+                    'message'    => 'string:=' . GraphQL::SESSION_ERROR_MESSAGE,
                     'extensions' => [
                         'category' => 'string:=requesterror',
                     ],

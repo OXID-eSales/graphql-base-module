@@ -29,6 +29,10 @@ use Throwable;
  */
 class GraphQL extends WidgetController
 {
+    public const SESSION_ERROR_MESSAGE = 'OXID eShop PHP session spotted. Ensure you have skipSession=1 '
+        . 'parameter sent to the widget.php. For more information about the problem, check '
+        . 'Troubleshooting section in documentation.';
+
     /**
      * Init function
      */
@@ -77,10 +81,7 @@ class GraphQL extends WidgetController
     {
         //if there's already a php session running, bail out to prevent inconsistent behaviour
         if (PHP_SESSION_NONE !== session_status()) {
-            $message = 'OXID eShop PHP session spotted. Ensure you have skipSession=1 parameter '
-                . 'sent to the widget.php. For more information about the problem, check Troubleshooting'
-                . 'section in documentation.';
-            throw new InvalidRequest($message);
+            throw new InvalidRequest(self::SESSION_ERROR_MESSAGE);
         }
 
         $this->setShopUserFromToken();
