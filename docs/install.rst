@@ -19,14 +19,25 @@ and to require the modules via ``composer``:
     composer require oxid-esales/graphql-base
     composer require oxid-esales/graphql-storefront
 
-After installing the modules you need to add their configurations into the project's configuration file. You can do it by running:
+After installing the modules you need to add their configurations into the project's
+configuration file and run migrations. You can do it by running:
 
 .. code-block:: bash
 
     ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-base/
     ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-storefront/
 
+    ./vendor/bin/oe-eshop-doctrine_migration migration:migrate oe_graphql_storefront
+
 This will overwrite the configuration of the modules if it was already present in the project's configuration file.
+
+.. important::
+    Please ensure you have proper ``/graphql/`` entry point configuration in
+    your ``.htaccess`` file:
+
+    .. code-block:: bash
+
+        RewriteRule ^graphql/?$    widget.php?cl=graphql&skipSession=1   [QSA,NC,L]
 
 Activation
 ----------
@@ -41,7 +52,3 @@ Now you need to activate the modules, either via OXID eShop admin or CLI.
 
 .. important::
     Keep in mind that you have to activate the **GraphQL Base** module first.
-
-.. important::
-    If you are missing the ``skipSession=1`` part in your ``.htaccess`` checkout
-    the :ref:`troubleshooting` secion!
