@@ -32,4 +32,4 @@ In most cases the HTTP status code will also reflect the error condition. So for
         :glob:
 
         Exceptions
-        Partially Successfull
+        Partially Successful

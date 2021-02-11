@@ -1,5 +1,5 @@
-Partially Successfull
-=====================
+Partially Successful
+====================
 
 GraphQL allows for the response to have a ``data`` and ``errors`` key. If you
 have a situation where you can recover from an error during GraphQL execution,
