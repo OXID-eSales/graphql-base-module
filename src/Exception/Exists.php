@@ -16,11 +16,6 @@ class Exists extends Error implements HttpErrorInterface
         return 400;
     }
 
-    public function isClientSafe(): bool
-    {
-        return true;
-    }
-
     public function getCategory(): string
     {
         return ErrorCategories::REQUESTERROR;

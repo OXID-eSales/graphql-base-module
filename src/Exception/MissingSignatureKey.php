@@ -17,13 +17,11 @@ class MissingSignatureKey extends Error
 
     public static function wrongType(): self
     {
-        /** @var MissingSignatureKey */
         return new self(self::WRONG_TYPE_MESSAGE);
     }
 
     public static function wrongSize(): self
     {
-        /** @var MissingSignatureKey */
         return new self(self::WRONG_SIZE_MESSAGE);
     }
 }

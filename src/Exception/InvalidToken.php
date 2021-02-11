@@ -16,11 +16,6 @@ class InvalidToken extends Error implements HttpErrorInterface
         return 401;
     }
 
-    public function isClientSafe(): bool
-    {
-        return true;
-    }
-
     public function getCategory(): string
     {
         return ErrorCategories::PERMISSIONERRORS;

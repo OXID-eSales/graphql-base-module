@@ -16,11 +16,6 @@ class InvalidRequest extends Error implements HttpErrorInterface
         return 500;
     }
 
-    public function isClientSafe(): bool
-    {
-        return true;
-    }
-
     public function getCategory(): string
     {
         return ErrorCategories::REQUESTERROR;
