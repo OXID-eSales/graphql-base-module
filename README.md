@@ -107,6 +107,11 @@ $ ./vendor/bin/runtests
 
 To report issues with GraphQL module please use the [OXID eShop bugtracking system](https://bugs.oxid-esales.com/).
 
+## Contributing
+
+You like to contribute? 🙌 AWESOME 🙌\
+Go and check the [contribution guidelines](CONTRIBUTING.md)
+
 ## Build with
 
 - [GraphQLite](https://graphqlite.thecodingmachine.io/)
