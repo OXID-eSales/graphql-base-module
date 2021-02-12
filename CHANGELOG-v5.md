@@ -8,16 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update module to use the new API from [lcobucci/jwt](https://lcobucci-jwt.readthedocs.io/en/latest/upgrading/#v3x-to-v4x) 4.0.0
-- Prevent accidental php session usage.
+- Prevent accidental PHP session usage
 
 ### Added
 - [`Server-Timing`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing) response header
+- Allow `errors` in response with `data`
 
 ## [5.1.1] - 2020-12-16
 
 ### Changed
 - Updated documentation after catalogue, account and checkout module have been merged as
-  storefront graphql module.
+  storefront graphql module
 - deployment for GraphQL schema docs has been polished
 - update `lcobucci/jwt` from `^3.3.1` to `^3.4.1` and fixed deprecation warnings
 
