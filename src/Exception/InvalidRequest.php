@@ -9,19 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-use Exception;
-use GraphQL\Error\ClientAware;
-
-class InvalidRequest extends Exception implements ClientAware, HttpErrorInterface
+class InvalidRequest extends Error implements HttpErrorInterface
 {
     public function getHttpStatus(): int
     {
         return 500;
-    }
-
-    public function isClientSafe(): bool
-    {
-        return true;
     }
 
     public function getCategory(): string
