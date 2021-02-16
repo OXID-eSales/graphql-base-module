@@ -96,13 +96,12 @@ class GraphQLQueryHandler
             $operationName = $queryData['operationName'];
         }
 
-        $schemaTimer = $this->timerHandler->create('schema')->start();
-        $schemaTimer->stop();
+        $schema = $this->schemaFactory->getSchema();
 
-        $queryTimer = $this->timerHandler->create('query')->start();
+        $queryTimer = $this->timerHandler->create('query-exec')->start();
 
         $result = $graphQL->executeQuery(
-            $this->schemaFactory->getSchema(),
+            $schema,
             $queryData['query'],
             null,
             null,
@@ -110,12 +109,12 @@ class GraphQLQueryHandler
             $operationName
         );
 
-        $queryTimer->stop();
-
         $result->errors = array_merge(
             $result->errors,
             self::$errors
         );
+
+        $queryTimer->stop();
 
         return $result;
     }

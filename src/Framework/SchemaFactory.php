@@ -42,6 +42,9 @@ class SchemaFactory
     /** @var CacheInterface */
     private $cache;
 
+    /** @var TimerHandler */
+    private $timerHandler;
+
     /**
      * @param NamespaceMapperInterface[] $namespaceMappers
      */
@@ -50,6 +53,7 @@ class SchemaFactory
         Authentication $authentication,
         Authorization $authorization,
         ContainerInterface $container,
+        TimerHandler $timerHandler,
         ?CacheInterface $cache = null
     ) {
         foreach ($namespaceMappers as $namespaceMapper) {
@@ -61,6 +65,7 @@ class SchemaFactory
         $this->cache          = $cache ?? new Psr16Cache(
             new NullAdapter()
         );
+        $this->timerHandler      = $timerHandler;
     }
 
     public function getSchema(): Schema
@@ -68,6 +73,10 @@ class SchemaFactory
         if (null !== $this->schema) {
             return $this->schema;
         }
+
+        $queryTimer = $this->timerHandler
+                           ->create('schema-gen')
+                           ->start();
 
         $factory = new GraphQLiteSchemaFactory(
             $this->cache,
@@ -99,6 +108,9 @@ class SchemaFactory
         $factory->setAuthenticationService($this->authentication)
                 ->setAuthorizationService($this->authorization);
 
-        return $this->schema = $factory->createSchema();
+        $this->schema = $factory->createSchema();
+        $queryTimer->stop();
+
+        return $this->schema;
     }
 }
