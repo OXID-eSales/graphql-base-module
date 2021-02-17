@@ -30,6 +30,8 @@ class Authentication implements AuthenticationServiceInterface
 
     public const CLAIM_USERNAME = 'username';
 
+    public const CLAIM_MODE = 'mode';
+
     public const CLAIM_USERID   = 'userid';
 
     public const CLAIM_GROUPS   = 'groups';
@@ -95,6 +97,7 @@ class Authentication implements AuthenticationServiceInterface
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $username)
+            ->withClaim(self::CLAIM_MODE, true)
             ->withClaim(self::CLAIM_USERID, $userData->getUserId())
             ->withClaim(self::CLAIM_GROUPS, $groups)
             ->getToken(
@@ -118,6 +121,7 @@ class Authentication implements AuthenticationServiceInterface
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
+            ->withClaim(self::CLAIM_MODE, false)
             ->withClaim(self::CLAIM_USERID, $anonUserId)
             ->withClaim(self::CLAIM_GROUPS, ['oxtoken' => 'oxtoken'])
             ->getToken(
@@ -153,6 +157,18 @@ class Authentication implements AuthenticationServiceInterface
         }
 
         return (string) $this->token->claims()->get(self::CLAIM_USERID);
+    }
+
+    /**
+     * @throws InvalidToken
+     */
+    public function getUserMode(): bool
+    {
+        if (!$this->isLogged() || !$this->token) {
+            throw new InvalidToken('The token is invalid');
+        }
+
+        return (bool) $this->token->claims()->get(self::CLAIM_MODE);
     }
 
     public function getConfig(): Configuration
