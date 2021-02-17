@@ -83,6 +83,8 @@ class Authentication implements AuthenticationServiceInterface
         $time     = new DateTimeImmutable('now');
         $expire   = new DateTimeImmutable('+8 hours');
         $config   = $this->getConfig();
+        $groups   = $userData->getUserGroupIds();
+        $groups['oxtoken'] = 'oxtoken';
 
         return $config->builder()
             ->issuedBy($this->legacyService->getShopUrl())
@@ -94,7 +96,7 @@ class Authentication implements AuthenticationServiceInterface
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $username)
             ->withClaim(self::CLAIM_USERID, $userData->getUserId())
-            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds())
+            ->withClaim(self::CLAIM_GROUPS, $groups)
             ->getToken(
                 $config->signer(),
                 $config->signingKey()
@@ -117,7 +119,7 @@ class Authentication implements AuthenticationServiceInterface
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERID, $anonUserId)
-            ->withClaim(self::CLAIM_GROUPS, 'oxidnotyetordered')
+            ->withClaim(self::CLAIM_GROUPS, ['oxtoken' => 'oxtoken'])
             ->getToken(
                 $config->signer(),
                 $config->signingKey()
@@ -126,7 +128,7 @@ class Authentication implements AuthenticationServiceInterface
 
     private function generateAnonUserData()
     {
-        return md5('anonymous');
+        return md5(uniqid());
     }
 
     /**
