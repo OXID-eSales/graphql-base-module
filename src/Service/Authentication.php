@@ -101,6 +101,34 @@ class Authentication implements AuthenticationServiceInterface
             );
     }
 
+    public function createAnonToken()
+    {
+        $anonUserId = $this->generateAnonUserData();
+        $time     = new DateTimeImmutable('now');
+        $expire   = new DateTimeImmutable('+8 hours');
+        $config   = $this->getConfig();
+
+        return $config->builder()
+            ->issuedBy($this->legacyService->getShopUrl())
+            ->withHeader('iss', $this->legacyService->getShopUrl())
+            ->permittedFor($this->legacyService->getShopUrl())
+            ->issuedAt($time)
+            ->canOnlyBeUsedAfter($time)
+            ->expiresAt($expire)
+            ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
+            ->withClaim(self::CLAIM_USERID, $anonUserId)
+            ->withClaim(self::CLAIM_GROUPS, 'oxidnotyetordered')
+            ->getToken(
+                $config->signer(),
+                $config->signingKey()
+            );
+    }
+
+    private function generateAnonUserData()
+    {
+        return md5('anonymous');
+    }
+
     /**
      * @throws InvalidToken
      */
