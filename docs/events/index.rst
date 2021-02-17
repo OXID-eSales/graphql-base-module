@@ -7,4 +7,5 @@ Events
         :glob:
 
         BeforeAuthorization
+        BeforeTokenCreation
         BeforePlaceOrder

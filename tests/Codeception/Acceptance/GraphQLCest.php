@@ -85,4 +85,10 @@ class GraphQLCest
         ]);
         $I->cantSeeHttpHeader('Server-Timing');
     }
+
+    public function testLoginAnonymousToken(AcceptanceTester $I): void
+    {
+        $I->login(null, null);
+        $I->canSeeHttpHeader('Server-Timing');
+    }
 }

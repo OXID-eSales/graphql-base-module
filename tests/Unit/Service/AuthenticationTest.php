@@ -13,6 +13,7 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
@@ -25,6 +26,8 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 class AuthenticationTest extends TestCase
 {
     protected static $token = null;
+
+    protected static $anonymousToken = null;
 
     // phpcs:disable
     protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
@@ -276,6 +279,7 @@ class AuthenticationTest extends TestCase
         );
 
         $this->assertSame('the_admin_oxid', $authenticationService->getUserId());
+        $this->assertNotNull($authenticationService->getUserName());
     }
 
     public function testGetUserIdForNullToken(): void
@@ -284,6 +288,181 @@ class AuthenticationTest extends TestCase
 
         $this->expectException(InvalidToken::class);
         $authenticationService->getUserId();
+    }
+
+    public function testGetUserIdForAnonymousToken(): void
+    {
+        $this->legacyService
+            ->method('login')
+            ->willReturn(new AnonymousUserData());
+        $authenticationService = $this->getAuthenticationService();
+        $anonymousToken        = $authenticationService->createToken();
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            $anonymousToken,
+            new EventDispatcher()
+        );
+
+        $this->assertNotEmpty($authenticationService->getUserId());
+    }
+
+    public function testCreateAnonymousToken(): void
+    {
+        $this->legacyService
+            ->method('login')
+            ->willReturn(new AnonymousUserData());
+        $this->legacyService
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacyService
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            new Token(),
+            new EventDispatcher()
+        );
+
+        self::$anonymousToken = $authenticationService->createToken();
+
+        $this->assertInstanceOf(
+            Token::class,
+            self::$anonymousToken
+        );
+        $this->assertEquals(
+            ['oxidanonymous'],
+            self::$anonymousToken->claims()->get(Authentication::CLAIM_GROUPS)
+        );
+
+        $this->assertNull(
+            self::$anonymousToken->claims()->get(Authentication::CLAIM_USERNAME)
+        );
+    }
+
+    /**
+     * @depends testCreateAnonymousToken
+     */
+    public function testIsLoggedWithAnonymousToken(): void
+    {
+        $this->legacyService
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacyService
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$anonymousToken,
+            new EventDispatcher()
+        );
+
+        $this->assertFalse($authenticationService->isLogged());
+    }
+
+    /**
+     * @depends testCreateAnonymousToken
+     */
+    public function testIsUserAnonymous(): void
+    {
+        $this->legacyService
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacyService
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$anonymousToken,
+            new EventDispatcher()
+        );
+
+        $this->assertTrue($authenticationService->isUserAnonymous());
+    }
+
+    /**
+     * @depends testCreateTokenWithValidCredentials
+     */
+    public function testLoggedUserIsNotAnonymous(): void
+    {
+        $this->legacyService
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacyService
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$token,
+            new EventDispatcher()
+        );
+
+        $this->assertFalse($authenticationService->isUserAnonymous());
+    }
+
+    public function testIsAnonymousWithNullToken(): void
+    {
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            new NullToken(),
+            new EventDispatcher()
+        );
+
+        $this->expectException(InvalidToken::class);
+
+        $authenticationService->isUserAnonymous();
+    }
+
+    /**
+     * @depends testCreateAnonymousToken
+     */
+    public function testGetUserNameForAnonymousToken(): void
+    {
+        $this->legacyService
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacyService
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$anonymousToken,
+            new EventDispatcher()
+        );
+
+        $this->expectException(InvalidToken::class);
+
+        $authenticationService->getUserName();
+    }
+
+    public function testLoggedUserInAnonymousGroup(): void
+    {
+        $this->legacyService->method('login')
+            ->willReturn(new UserData('the_admin_oxid', ['oxidanonymous']));
+
+        $authenticationService = $this->getAuthenticationService();
+        $token                 = $authenticationService->createToken('admin', 'admin');
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            $token,
+            new EventDispatcher()
+        );
+
+        $this->assertTrue($authenticationService->isUserAnonymous());
     }
 
     private function getAuthenticationService(): Authentication

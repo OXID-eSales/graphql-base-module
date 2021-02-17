@@ -28,7 +28,7 @@ class Login
      *
      * @Query
      */
-    public function token(string $username, string $password): string
+    public function token(?string $username = null, ?string $password = null): string
     {
         return (string) $this->authentication->createToken(
             $username,

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use OxidEsales\GraphQL\Base\Controller\Login;
+use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
@@ -58,7 +59,12 @@ class LoginTest extends TestCase
             'username'   => 'admin',
             'password'   => 'admin',
             'id'         => 'some_nice_user_id',
-            'usergroups' => ['onegroup', 'oxidadmin', 'othergroup'],
+            'usergroups' => [
+                'onegroup',
+                'oxidadmin',
+                'othergroup',
+                'oxidcustomer',
+            ],
         ];
 
         $userData = new UserData($user['id'], $user['usergroups']);
@@ -68,15 +74,87 @@ class LoginTest extends TestCase
 
         $loginController = new Login($this->authentication);
 
-        $jwt       = $loginController->token($user['username'], $user['password']);
-        $config    = $this->authentication->getConfig();
-        $token     = $config->parser()->parse($jwt);
-        $validator = $config->validator();
+        $jwt        = $loginController->token($user['username'], $user['password']);
+        $config     = $this->authentication->getConfig();
+        $token      = $config->parser()->parse($jwt);
+        $validator  = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($user['username'], $token->claims()->get(Authentication::CLAIM_USERNAME));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
         $this->assertEquals($user['usergroups'], $token->claims()->get(Authentication::CLAIM_GROUPS));
         $this->assertEquals($user['id'], $token->claims()->get(Authentication::CLAIM_USERID));
+    }
+
+    public function testCreateTokenWithMissingPassword(): void
+    {
+        $shop = [
+            'url' => 'https://whatever.com',
+            'id'  => 1,
+        ];
+
+        $this->legacy->method('getShopUrl')->willReturn($shop['url']);
+        $this->legacy->method('getShopId')->willReturn($shop['id']);
+        $this->legacy->method('login')->willReturn(new AnonymousUserData());
+
+        $loginController = new Login($this->authentication);
+
+        $jwt       = $loginController->token('none');
+        $config    = $this->authentication->getConfig();
+        $token     = $config->parser()->parse($jwt);
+        $validator = $config->validator();
+
+        $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
+        $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
+        $this->assertEquals(['oxidanonymous'], $token->claims()->get(Authentication::CLAIM_GROUPS));
+        $this->assertNotEmpty($token->claims()->get(Authentication::CLAIM_USERID));
+    }
+
+    public function testCreateTokenWithMissingUsername(): void
+    {
+        $shop = [
+            'url' => 'https://whatever.com',
+            'id'  => 1,
+        ];
+
+        $this->legacy->method('getShopUrl')->willReturn($shop['url']);
+        $this->legacy->method('getShopId')->willReturn($shop['id']);
+        $this->legacy->method('login')->willReturn(new AnonymousUserData());
+
+        $loginController = new Login($this->authentication);
+
+        $jwt       = $loginController->token(null, 'none');
+        $config    = $this->authentication->getConfig();
+        $token     = $config->parser()->parse($jwt);
+        $validator = $config->validator();
+
+        $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
+        $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
+        $this->assertEquals(['oxidanonymous'], $token->claims()->get(Authentication::CLAIM_GROUPS));
+        $this->assertNotEmpty($token->claims()->get(Authentication::CLAIM_USERID));
+    }
+
+    public function testCreateAnonymousToken(): void
+    {
+        $shop = [
+            'url' => 'https://whatever.com',
+            'id'  => 1,
+        ];
+
+        $this->legacy->method('getShopUrl')->willReturn($shop['url']);
+        $this->legacy->method('getShopId')->willReturn($shop['id']);
+        $this->legacy->method('login')->willReturn(new AnonymousUserData());
+
+        $loginController = new Login($this->authentication);
+
+        $jwt       = $loginController->token();
+        $config    = $this->authentication->getConfig();
+        $token     = $config->parser()->parse($jwt);
+        $validator = $config->validator();
+
+        $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
+        $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
+        $this->assertEquals(['oxidanonymous'], $token->claims()->get(Authentication::CLAIM_GROUPS));
+        $this->assertNotEmpty($token->claims()->get(Authentication::CLAIM_USERID));
     }
 }

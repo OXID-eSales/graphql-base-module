@@ -65,11 +65,11 @@ class AcceptanceHelper extends Module implements DependsOnModule
         ]);
     }
 
-    public function login(string $username, string $password, int $shopId = 1): void
+    public function login(?string $username = null, ?string $password = null, int $shopId = 1): void
     {
         $this->logout();
 
-        $query     = 'query ($username: String!, $password: String!) { token (username: $username, password: $password) }';
+        $query     = 'query ($username: String, $password: String) { token (username: $username, password: $password) }';
         $variables = [
             'username' => $username,
             'password' => $password,
