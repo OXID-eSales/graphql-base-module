@@ -30,7 +30,7 @@ class Authentication implements AuthenticationServiceInterface
 
     public const CLAIM_USERNAME = 'username';
 
-    public const CLAIM_MODE = 'mode';
+    public const CLAIM_ANONYMOUS = 'anonymous';
 
     public const CLAIM_USERID   = 'userid';
 
@@ -85,8 +85,6 @@ class Authentication implements AuthenticationServiceInterface
         $time     = new DateTimeImmutable('now');
         $expire   = new DateTimeImmutable('+8 hours');
         $config   = $this->getConfig();
-        $groups   = $userData->getUserGroupIds();
-        $groups['oxtoken'] = 'oxtoken';
 
         return $config->builder()
             ->issuedBy($this->legacyService->getShopUrl())
@@ -97,9 +95,9 @@ class Authentication implements AuthenticationServiceInterface
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $username)
-            ->withClaim(self::CLAIM_MODE, true)
+            ->withClaim(self::CLAIM_ANONYMOUS, false)
             ->withClaim(self::CLAIM_USERID, $userData->getUserId())
-            ->withClaim(self::CLAIM_GROUPS, $groups)
+            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds())
             ->getToken(
                 $config->signer(),
                 $config->signingKey()
@@ -121,9 +119,9 @@ class Authentication implements AuthenticationServiceInterface
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
-            ->withClaim(self::CLAIM_MODE, false)
+            ->withClaim(self::CLAIM_ANONYMOUS, true)
             ->withClaim(self::CLAIM_USERID, $anonUserId)
-            ->withClaim(self::CLAIM_GROUPS, ['oxtoken' => 'oxtoken'])
+            ->withClaim(self::CLAIM_GROUPS, ['oxidanonymous' => 'oxidanonymous'])
             ->getToken(
                 $config->signer(),
                 $config->signingKey()
@@ -162,13 +160,13 @@ class Authentication implements AuthenticationServiceInterface
     /**
      * @throws InvalidToken
      */
-    public function getUserMode(): bool
+    public function isUserAnonymous(): bool
     {
         if (!$this->isLogged() || !$this->token) {
             throw new InvalidToken('The token is invalid');
         }
 
-        return (bool) $this->token->claims()->get(self::CLAIM_MODE);
+        return (bool) $this->token->claims()->get(self::CLAIM_ANONYMOUS);
     }
 
     public function getConfig(): Configuration
