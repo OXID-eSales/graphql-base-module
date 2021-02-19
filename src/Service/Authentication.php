@@ -68,6 +68,10 @@ class Authentication implements AuthenticationServiceInterface
             return false;
         }
 
+        if ($this->isUserAnonymous()) {
+            return false;
+        }
+
         if ($this->isValidToken($this->token)) {
             return true;
         }
@@ -107,9 +111,9 @@ class Authentication implements AuthenticationServiceInterface
     public function createAnonToken()
     {
         $anonUserId = $this->generateAnonUserData();
-        $time     = new DateTimeImmutable('now');
-        $expire   = new DateTimeImmutable('+8 hours');
-        $config   = $this->getConfig();
+        $time       = new DateTimeImmutable('now');
+        $expire     = new DateTimeImmutable('+8 hours');
+        $config     = $this->getConfig();
 
         return $config->builder()
             ->issuedBy($this->legacyService->getShopUrl())
@@ -126,11 +130,6 @@ class Authentication implements AuthenticationServiceInterface
                 $config->signer(),
                 $config->signingKey()
             );
-    }
-
-    private function generateAnonUserData()
-    {
-        return md5(uniqid());
     }
 
     /**
@@ -150,7 +149,7 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function getUserId(): string
     {
-        if (!$this->isLogged() || !$this->token) {
+        if ((!$this->isLogged() && !$this->isUserAnonymous()) || !$this->token) {
             throw new InvalidToken('The token is invalid');
         }
 
@@ -162,11 +161,21 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function isUserAnonymous(): bool
     {
-        if (!$this->isLogged() || !$this->token) {
+        if (!$this->token) {
             throw new InvalidToken('The token is invalid');
         }
 
         return (bool) $this->token->claims()->get(self::CLAIM_ANONYMOUS);
+    }
+
+    /**
+     * @throws InvalidToken
+     */
+    public function loggedOrLoggedAnonymous(): void
+    {
+        if (!$this->isLogged() && !$this->isUserAnonymous()) {
+            throw new InvalidToken('The token is invalid');
+        }
     }
 
     public function getConfig(): Configuration
@@ -181,6 +190,11 @@ class Authentication implements AuthenticationServiceInterface
         $config->setValidationConstraints($issuedBy, $permittedFor);
 
         return $config;
+    }
+
+    private function generateAnonUserData()
+    {
+        return md5(uniqid());
     }
 
     /**

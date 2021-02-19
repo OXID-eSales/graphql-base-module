@@ -28,9 +28,9 @@ class Login
      *
      * @Query
      */
-    public function token(string $username = null, string $password = null): string
+    public function token(?string $username = null, ?string $password = null): string
     {
-        if (is_null($username) && is_null($password)) {
+        if (null === $username && null === $password) {
             return (string) $this->authentication->createAnonToken();
         }
 
