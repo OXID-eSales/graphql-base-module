@@ -16,7 +16,7 @@ This module provides:
 ## Documentation
 
 * Full documentation can be found [here](https://docs.oxid-esales.com/interfaces/graphql/en/5.1/).
-* Schema documentation available [here](https://oxid-esales.github.io/graphql-base-module).
+* Schema documentation available [here](https://oxid-esales.github.io/graphql-storefront-module).
 
 ## Usage
 
