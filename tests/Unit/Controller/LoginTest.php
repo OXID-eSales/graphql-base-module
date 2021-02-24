@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class LoginTest extends TestCase
 {
@@ -42,7 +43,8 @@ class LoginTest extends TestCase
         $this->authentication = new Authentication(
             $this->keyRegistry,
             $this->legacy,
-            new NullToken()
+            new NullToken(),
+            new EventDispatcher()
         );
     }
 

@@ -20,13 +20,11 @@
         "@default": true,
         "@arithmetic": {
             "ignore": [
-                "OxidEsales\\GraphQL\\Base\\Service\\Authentication::getTokenBuilder",
                 "OxidEsales\\GraphQL\\Base\\Exception\\*"
             ]
         },
         "@number": {
             "ignore": [
-                "OxidEsales\\GraphQL\\Base\\Service\\Authentication::getTokenBuilder",
                 "OxidEsales\\GraphQL\\Base\\Service\\KeyRegistry::generateSignatureKey"
             ]
         },
@@ -43,6 +41,16 @@
         "IncrementInteger": {
             "ignore": [
                 "OxidEsales\\GraphQL\\Base\\Exception\\*"
+            ]
+        },
+        "GreaterThan": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\DataType\\PaginationFilter::addPaginationToQuery"
+            ]
+        },
+        "LogicalAnd": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\DataType\\PaginationFilter::addPaginationToQuery"
             ]
         }
     }

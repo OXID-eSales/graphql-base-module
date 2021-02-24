@@ -16,12 +16,13 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\PermittedFor;
+use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
 class Authentication implements AuthenticationServiceInterface
@@ -43,14 +44,19 @@ class Authentication implements AuthenticationServiceInterface
     /** @var ?Token */
     private $token;
 
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+
     public function __construct(
         KeyRegistry $keyRegistry,
         LegacyService $legacyService,
-        Token $token
+        Token $token,
+        EventDispatcherInterface $eventDispatcher
     ) {
-        $this->keyRegistry   = $keyRegistry;
-        $this->legacyService = $legacyService;
-        $this->token         = $token;
+        $this->keyRegistry     = $keyRegistry;
+        $this->legacyService   = $legacyService;
+        $this->token           = $token;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -84,7 +90,7 @@ class Authentication implements AuthenticationServiceInterface
         $expire   = new DateTimeImmutable('+8 hours');
         $config   = $this->getConfig();
 
-        return $config->builder()
+        $builder = $config->builder()
             ->issuedBy($this->legacyService->getShopUrl())
             ->withHeader('iss', $this->legacyService->getShopUrl())
             ->permittedFor($this->legacyService->getShopUrl())
@@ -94,11 +100,18 @@ class Authentication implements AuthenticationServiceInterface
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $username)
             ->withClaim(self::CLAIM_USERID, $userData->getUserId())
-            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds())
-            ->getToken(
-                $config->signer(),
-                $config->signingKey()
-            );
+            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds());
+
+        $event = new BeforeTokenCreation($builder, $userData);
+        $this->eventDispatcher->dispatch(
+            BeforeTokenCreation::NAME,
+            $event
+        );
+
+        return $event->getBuilder()->getToken(
+            $config->signer(),
+            $config->signingKey()
+        );
     }
 
     /**

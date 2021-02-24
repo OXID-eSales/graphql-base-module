@@ -20,6 +20,7 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AuthenticationTest extends TestCase
 {
@@ -58,7 +59,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken()
+            new NullToken(),
+            new EventDispatcher()
         );
 
         $authenticationService
@@ -70,7 +72,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken()
+            new NullToken(),
+            new EventDispatcher()
         );
 
         $this->assertFalse(
@@ -83,7 +86,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            (new Parser())->parse(self::$invalidToken)
+            (new Parser())->parse(self::$invalidToken),
+            new EventDispatcher()
         );
 
         $e = null;
@@ -107,7 +111,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken()
+            new NullToken(),
+            new EventDispatcher()
         );
 
         $this->assertFalse(
@@ -129,7 +134,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken()
+            new NullToken(),
+            new EventDispatcher()
         );
 
         self::$token = $authenticationService->createToken('admin', 'admin');
@@ -155,7 +161,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token
+            self::$token,
+            new EventDispatcher()
         );
 
         $this->assertTrue($authenticationService->isLogged());
@@ -177,7 +184,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token
+            self::$token,
+            new EventDispatcher()
         );
 
         $authenticationService->isLogged();
@@ -202,7 +210,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token
+            self::$token,
+            new EventDispatcher()
         );
 
         $authenticationService->isLogged();
@@ -240,7 +249,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token
+            self::$token,
+            new EventDispatcher()
         );
 
         $this->assertSame($username, $authenticationService->getUserName());
@@ -265,7 +275,8 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token
+            self::$token,
+            new EventDispatcher()
         );
 
         $this->assertSame('the_admin_oxid', $authenticationService->getUserId());
@@ -291,7 +302,8 @@ class AuthenticationTest extends TestCase
         return new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken()
+            new NullToken(),
+            new EventDispatcher()
         );
     }
 }
