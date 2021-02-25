@@ -17,10 +17,7 @@ class LoginTest extends TestCase
     {
         $result = $this->query('query { token }');
 
-        $this->assertEquals(
-            400,
-            $result['status']
-        );
+        $this->assertNotEmpty($result['body']['errors']);
     }
 
     public function testLoginWithWrongCredentials(): void
@@ -28,8 +25,8 @@ class LoginTest extends TestCase
         $result = $this->query('query { token (username: "foo", password: "bar") }');
 
         $this->assertEquals(
-            401,
-            $result['status']
+            $result['body']['errors'][0]['message'],
+            'Username/password combination is invalid'
         );
     }
 
@@ -37,10 +34,7 @@ class LoginTest extends TestCase
     {
         $result = $this->query('query { token (username: "admin", password: "admin") }');
 
-        $this->assertEquals(
-            200,
-            $result['status']
-        );
+        $this->assertNotEmpty($result['body']['data']['token']);
     }
 
     public function testLoginWithValidCredentialsInVariables(): void
@@ -53,9 +47,6 @@ class LoginTest extends TestCase
             ]
         );
 
-        $this->assertEquals(
-            200,
-            $result['status']
-        );
+        $this->assertNotEmpty($result['body']['data']['token']);
     }
 }

@@ -9,13 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class InvalidRequest extends Error implements HttpErrorInterface
+class InvalidRequest extends Error
 {
-    public function getHttpStatus(): int
-    {
-        return 500;
-    }
-
     public function getCategory(): string
     {
         return ErrorCategories::REQUESTERROR;

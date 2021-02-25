@@ -9,13 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class Exists extends Error implements HttpErrorInterface
+class Exists extends Error
 {
-    public function getHttpStatus(): int
-    {
-        return 400;
-    }
-
     public function getCategory(): string
     {
         return ErrorCategories::REQUESTERROR;

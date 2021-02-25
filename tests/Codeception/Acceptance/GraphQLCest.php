@@ -18,10 +18,13 @@ class GraphQLCest
     public function testLoginWithInvalidCredentials(AcceptanceTester $I): void
     {
         $I->sendGQLQuery('query {token(username:"wrong", password:"wrong")}');
-        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::UNAUTHORIZED);
         $I->seeResponseIsJson();
         $I->seeResponseContains('{"category":"permissionerror"}');
         $I->canSeeHttpHeader('Server-Timing');
+        $I->seeResponseContains('errors');
+
+        $result = $I->grabJsonResponseAsArray();
+        $I->assertEquals('Username/password combination is invalid', $result['errors'][0]['message']);
     }
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
@@ -42,7 +45,6 @@ class GraphQLCest
     {
         $I->amBearerAuthenticated('invalid_token');
         $I->sendGQLQuery('query {token(username:"admin", password:"admin")}');
-        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::UNAUTHORIZED);
         $I->seeResponseIsJson();
         $I->seeResponseContains('errors');
         $I->seeResponseMatchesJsonType([
@@ -69,7 +71,6 @@ class GraphQLCest
             'variables' => [],
         ]);
 
-        $I->seeResponseCodeIs(\Codeception\Util\HttpCode::INTERNAL_SERVER_ERROR);
         $I->seeResponseIsJson();
         $I->seeResponseContains('errors');
         $I->seeResponseMatchesJsonType([

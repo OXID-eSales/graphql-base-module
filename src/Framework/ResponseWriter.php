@@ -29,13 +29,13 @@ class ResponseWriter
      *
      * @param mixed[] $result
      */
-    public function renderJsonResponse(array $result, int $httpStatus): void
+    public function renderJsonResponse(array $result): void
     {
         $this->cleanHeaders();
 
-        header('Access-Control-Allow-Origin: *', true, $httpStatus);
-        header('Content-Type: application/json', true, $httpStatus);
-        header($this->generateServerTimingHeader(), true, $httpStatus);
+        header('Access-Control-Allow-Origin: *', true, 200);
+        header('Content-Type: application/json', true, 200);
+        header($this->generateServerTimingHeader(), true, 200);
 
         exit(json_encode($result));
     }

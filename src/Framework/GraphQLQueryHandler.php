@@ -26,9 +26,6 @@ class GraphQLQueryHandler
     /** @var SchemaFactory */
     private $schemaFactory;
 
-    /** @var ErrorCodeProvider */
-    private $errorCodeProvider;
-
     /** @var RequestReader */
     private $requestReader;
 
@@ -43,14 +40,12 @@ class GraphQLQueryHandler
     public function __construct(
         LoggerInterface $logger,
         SchemaFactory $schemaFactory,
-        ErrorCodeProvider $errorCodeProvider,
         RequestReader $requestReader,
         ResponseWriter $responseWriter,
         TimerHandler $timerHandler
     ) {
         $this->logger            = $logger;
         $this->schemaFactory     = $schemaFactory;
-        $this->errorCodeProvider = $errorCodeProvider;
         $this->requestReader     = $requestReader;
         $this->responseWriter    = $responseWriter;
         $this->timerHandler      = $timerHandler;
@@ -67,11 +62,9 @@ class GraphQLQueryHandler
         $result = $this->executeQuery(
             $this->requestReader->getGraphQLRequestData()
         );
-        $httpStatus = $this->errorCodeProvider->getHttpReturnCode($result);
         $result->setErrorFormatter($this->loggingErrorFormatter);
         $this->responseWriter->renderJsonResponse(
-            $result->toArray(true),
-            $httpStatus
+            $result->toArray(true)
         );
     }
 

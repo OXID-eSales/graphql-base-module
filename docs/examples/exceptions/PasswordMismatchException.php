@@ -7,15 +7,9 @@ namespace MyVendor\MyModule\Record\Exception;
 use Exception;
 use GraphQL\Error\ClientAware;
 use OxidEsales\GraphQL\Base\Exception\ErrorCategories;
-use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
 
-final class PasswordMismatchException extends Exception implements ClientAware, HttpErrorInterface
+final class PasswordMismatchException extends Exception implements ClientAware
 {
-    public function getHttpStatus(): int
-    {
-        return 403;
-    }
-
     public function isClientSafe(): bool
     {
         return true;

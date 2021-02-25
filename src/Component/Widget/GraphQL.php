@@ -13,7 +13,8 @@ use GraphQL\Error\FormattedError;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\GraphQL\Base\Exception\HttpErrorInterface;
+use OxidEsales\GraphQL\Base\Exception\Error;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
@@ -69,8 +70,9 @@ class GraphQL extends WidgetController
                 ->getContainer()
                 ->get(GraphQLQueryHandler::class)
                 ->executeGraphQLQuery();
-        } catch (HttpErrorInterface $e) {
-            self::sendErrorResponse(FormattedError::createFromException($e), $e->getHttpStatus());
+        } catch (Error $e) {
+            $isAuthenticated = !($e instanceof InvalidLogin || $e instanceof InvalidToken);
+            self::sendErrorResponse(FormattedError::createFromException($e), 200, $isAuthenticated);
         } catch (Throwable $e) {
             EshopRegistry::getLogger()->error($e->getMessage(), [$e]);
             self::sendErrorResponse(FormattedError::createFromException($e), 500);
@@ -108,7 +110,7 @@ class GraphQL extends WidgetController
         }
     }
 
-    public static function sendErrorResponse(array $message, int $status): void
+    public static function sendErrorResponse(array $message, int $status, bool $isAuthenticated = true): void
     {
         $body = [
             'errors' => [
@@ -118,7 +120,7 @@ class GraphQL extends WidgetController
 
         header('Content-Type: application/json', true, $status);
 
-        if (401 == $status) {
+        if (!$isAuthenticated) {
             header('WWW-Authenticate: Bearer', true, $status);
         }
 

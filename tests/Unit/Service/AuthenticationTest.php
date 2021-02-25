@@ -96,10 +96,6 @@ class AuthenticationTest extends TestCase
             InvalidToken::class,
             $e
         );
-        $this->assertSame(
-            401,
-            $e->getHttpStatus()
-        );
     }
 
     public function testIsLoggedWithNullToken(): void
