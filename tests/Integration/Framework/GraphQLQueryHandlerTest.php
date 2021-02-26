@@ -28,10 +28,7 @@ class GraphQLQueryHandlerTest extends TestCase
     public function testClientAwareException(): void
     {
         $result = $this->query('query { clientAwareExceptionQuery(foo: "bar") }');
-        $this->assertEquals(
-            401,
-            $result['status']
-        );
+
         $this->assertEquals(
             'invalid token message',
             $result['body']['errors'][0]['message']
@@ -41,10 +38,7 @@ class GraphQLQueryHandlerTest extends TestCase
     public function testNotFoundExceptionQuery(): void
     {
         $result = $this->query('query { notFoundExceptionQuery(foo: "bar") }');
-        $this->assertEquals(
-            404,
-            $result['status']
-        );
+
         $this->assertEquals(
             'Foo does not exist',
             $result['body']['errors'][0]['message']
@@ -54,10 +48,7 @@ class GraphQLQueryHandlerTest extends TestCase
     public function testExceptionInQuery(): void
     {
         $result = $this->query('query { exceptionQuery(foo: "bar") }');
-        $this->assertEquals(
-            400,
-            $result['status']
-        );
+
         $this->assertEquals(
             'Internal server error',
             $result['body']['errors'][0]['message']
@@ -74,7 +65,6 @@ class GraphQLQueryHandlerTest extends TestCase
 
         $this->assertEquals(
             [
-                'status' => 200,
                 'body'   => [
                     'data' => [
                         'testQuery' => 'bar',
@@ -93,28 +83,21 @@ class GraphQLQueryHandlerTest extends TestCase
             'noOp'
         );
 
-        $this->assertEquals(
-            400,
-            $result['status']
-        );
+        $this->assertNotEmpty($result['body']['errors']);
     }
 
     public function testNonExistantQuery(): void
     {
         $result = $this->query('query { nonExistant }');
-        $this->assertEquals(
-            400,
-            $result['status']
-        );
+
+        $this->assertNotEmpty($result['body']['errors']);
     }
 
     public function testInvalidQuery(): void
     {
         $result = $this->query('FOOBAR');
-        $this->assertEquals(
-            400,
-            $result['status']
-        );
+
+        $this->assertNotEmpty($result['body']['errors']);
     }
 
     public function testLoggedQuery(): void
@@ -128,7 +111,6 @@ class GraphQLQueryHandlerTest extends TestCase
         $result = $this->query('query { testLoggedQuery(foo: "bar") }');
         $this->assertEquals(
             [
-                'status' => 200,
                 'body'   => [
                     'data' => [
                         'testLoggedQuery' => 'bar',
@@ -151,7 +133,6 @@ class GraphQLQueryHandlerTest extends TestCase
         $result = $this->query('query { testLoggedRightQuery(foo: "bar") }');
         $this->assertEquals(
             [
-                'status' => 200,
                 'body'   => [
                     'data' => [
                         'testLoggedRightQuery' => 'bar',
@@ -172,7 +153,7 @@ class GraphQLQueryHandlerTest extends TestCase
         $this->setUp();
 
         $result = $this->query('query { testLoggedButNoRightQuery(foo: "bar") }');
-        $this->assertResponseStatus(400, $result);
+        $this->assertNotEmpty($result['body']['errors']);
         static::$container = null;
     }
 
@@ -196,10 +177,8 @@ class GraphQLQueryHandlerTest extends TestCase
                 })
             }
         ');
-        $this->assertEquals(
-            200,
-            $result['status']
-        );
+
+        $this->assertNotEmpty($result['body']['data']['basicInputFilterQuery']);
     }
 
     public function testBasicSortingQuery(): void
@@ -212,10 +191,8 @@ class GraphQLQueryHandlerTest extends TestCase
                 })
             }
         ');
-        $this->assertEquals(
-            200,
-            $result['status']
-        );
+
+        $this->assertNotEmpty($result['body']['data']['basicSortingQuery']);
     }
 
     public function testResultWithError(): void
@@ -227,7 +204,6 @@ class GraphQLQueryHandlerTest extends TestCase
         ');
         $this->assertEquals(
             [
-                'status' => 400,
                 'body'   => [
                     'data' => [
                         'resultWithError' => true,

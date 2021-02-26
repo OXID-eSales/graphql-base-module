@@ -9,14 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class NotFound extends Error implements HttpErrorInterface
+class NotFound extends Error
 {
     protected const NOT_FOUND_MESSAGE = 'Queried data was not found';
-
-    public function getHttpStatus(): int
-    {
-        return 404;
-    }
 
     public function getCategory(): string
     {

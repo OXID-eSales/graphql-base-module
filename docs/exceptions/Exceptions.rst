@@ -23,11 +23,6 @@ The GraphQL modules are build using `GraphQLite <https://graphqlite.thecodingmac
 
 In short: If you want the consumer to see the message of your exception, it needs to implement the ``GraphQL\Error\ClientAware`` interface.
 
-HTTP Status code
-----------------
-
-If you want to change the HTTP status code in your custom exception, you have to implement ``OxidEsales\GraphQL\Base\Exception\HttpErrorInterface``
-
 Error categories
 ----------------
 
@@ -46,4 +41,4 @@ Here is an example of an exception when customer's password does not match the r
 .. literalinclude:: ../examples/exceptions/PasswordMismatchException.php
    :language: php
 
-In this example you can see the usage of ``ClientAware``, ``HttpErrorInterface`` and ``ErrorCategories``.
+In this example you can see the usage of ``ClientAware`` and ``ErrorCategories``.

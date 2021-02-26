@@ -9,13 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class InvalidLogin extends Error implements HttpErrorInterface
+class InvalidLogin extends Error
 {
-    public function getHttpStatus(): int
-    {
-        return 401;
-    }
-
     public function getCategory(): string
     {
         return ErrorCategories::PERMISSIONERRORS;

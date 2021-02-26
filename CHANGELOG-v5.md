@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [`Server-Timing`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing) response header
 - Allow `errors` in response with `data`
 
+### Removed
+- Interfaces
+    - `OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider`
+    - `OxidEsales\GraphQL\Base\Exception\HttpErrorInterface`
+- Methods
+    - `OxidEsales\GraphQL\Base\Exception\Exists::getHttpStatus`
+    - `OxidEsales\GraphQL\Base\Exception\InvalidLogin::getHttpStatus`
+    - `OxidEsales\GraphQL\Base\Exception\InvalidRequest::getHttpStatus`
+    - `OxidEsales\GraphQL\Base\Exception\InvalidToken::getHttpStatus`
+    - `OxidEsales\GraphQL\Base\Exception\NotFound::getHttpStatus`
+    - `OxidEsales\GraphQL\Base\Exception\OutOfBounds::getHttpStatus`
+
 ## [5.1.1] - 2020-12-16
 
 ### Changed

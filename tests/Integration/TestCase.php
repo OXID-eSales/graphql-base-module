@@ -139,26 +139,14 @@ abstract class TestCase extends PHPUnitTestCase
         return static::$queryResult;
     }
 
-    /**
-     * @param array{status: int} $result
-     */
-    protected function assertResponseStatus(int $expectedStatus, array $result): void
-    {
-        $this->assertEquals(
-            $expectedStatus,
-            $result['status']
-        );
-    }
-
     protected function setGETRequestParameter(string $name, string $value): void
     {
         $_GET[$name] = $value;
     }
 
-    public static function responseCallback($body, $status): void
+    public static function responseCallback($body): void
     {
         static::$queryResult = [
-            'status' => $status,
             'body'   => $body,
         ];
     }
@@ -186,9 +174,9 @@ abstract class TestCase extends PHPUnitTestCase
 
 class ResponseWriterStub extends ResponseWriter
 {
-    public function renderJsonResponse(array $result, int $httpStatus): void
+    public function renderJsonResponse(array $result): void
     {
-        TestCase::responseCallback($result, $httpStatus);
+        TestCase::responseCallback($result);
     }
 }
 
