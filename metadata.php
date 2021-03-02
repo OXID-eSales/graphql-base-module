@@ -31,6 +31,7 @@ $aModule = [
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => [
+        \OxidEsales\Eshop\Core\Config::class  => \OxidEsales\GraphQL\Base\Framework\Config::class,
     ],
     'controllers' => [
         // Widget Controller
