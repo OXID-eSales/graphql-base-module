@@ -1,7 +1,7 @@
 namespace: OxidEsales\GraphQL\Base\Tests\Codeception
 
 params:
-    - Codeception/params.php
+    - Codeception/Config/params.php
 
 paths:
     tests: Codeception

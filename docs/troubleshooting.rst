@@ -49,16 +49,16 @@ is to extend the shop's ``.htaccess`` file with the following lines
 Otherwise in newer GraphQL versions you will be presented with an error when
 sending GraphQL requests with a session id.
 
-Graphql schema appears incomplete
----------------------------------
+Maximum function nesting level is reached
+-----------------------------------------
 
-Your client's introspection requests get the available schema based upon your access rights. Make sure you are logged in and using the correct token in the ``Authorization`` header.
+When XDebug is active, request call will take a while and eventually Xdebug will detect a possible infinite loop.
+That is caused because GraphQL library tends to use a very deep stack.
+Simply increase the maximum allowed nesting level in XDebug config
 
-If you're having trouble finding admin panel requests, this could also be caused by insufficient account rights,
+.. code-block:: bash
 
-.. note::
-
-    You may want to doublecheck this in the database, as the administrative dashboard setting name could be different. E.g. it could say a user has been granted ``admin`` rights, but actually they are a ``malladmin``. It is not the same and does not give enough access to query, as an example, the shop version
+    xdebug.max_nesting_level=512
 
 Installation issues for dev environment
 ---------------------------------------

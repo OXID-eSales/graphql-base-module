@@ -64,9 +64,6 @@ file structure after the changes from this tutorial applied.
             ├── ProductTitleInput.php
             └── Product.php
 
-.. important:: As stated in section `Authorization <authorization.html>`_, when using the ``@Logged`` annotation as done here, we need to send the `token` in the HTTP `Authorization` header in order to see the mutation in the schema.
-
-
 **Mutation**
 
 .. code-block:: graphql

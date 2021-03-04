@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Acceptance;
 
-use OxidEsales\Facts\Facts;
 use OxidEsales\GraphQL\Base\Component\Widget\GraphQL;
 use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
@@ -29,15 +28,7 @@ class GraphQLCest
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
     {
-        $password = 'user';
-
-        $facts = new Facts();
-
-        if ($facts->isEnterprise()) {
-            $password = 'useruser';
-        }
-
-        $I->login('user@oxid-esales.com', $password);
+        $I->login('user@oxid-esales.com', 'useruser');
         $I->canSeeHttpHeader('Server-Timing');
     }
 

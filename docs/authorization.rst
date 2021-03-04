@@ -67,7 +67,7 @@ Web Token, as well as resolving the ``@Logged`` annoation.
 .. literalinclude:: examples/ControllerWithLogged.php
    :language: php
 
-Using the ``@Logged()`` annotations prevents consumers from seeing and using
+Using the ``@Logged()`` annotations prevents consumers from using
 your resolver without a valid JWT.
 
 Authorization
