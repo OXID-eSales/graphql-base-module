@@ -19,14 +19,12 @@ use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\UserData;
+use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 
 class Legacy
 {
-    public const GROUP_ADMIN = 'admin';
-
-    public const GROUP_CUSTOMERS = 'customer';
-
     /** @var QueryBuilderFactoryInterface */
     private $queryBuilderFactory;
 
@@ -42,8 +40,12 @@ class Legacy
     /**
      * @throws InvalidLogin
      */
-    public function login(string $username, string $password): UserData
+    public function login(?string $username = null, ?string $password = null): UserDataInterface
     {
+        if ($username === null || $password === null) {
+            return new AnonymousUserData();
+        }
+
         try {
             /** @var User */
             $user = oxNew(User::class);
@@ -87,14 +89,6 @@ class Legacy
         return (int) $requestParameter;
     }
 
-    public function createUniqueIdentifier(): string
-    {
-        /** @var UtilsObject */
-        $utils = Registry::getUtilsObject();
-
-        return $utils->generateUId();
-    }
-
     public function isValidEmail(string $email): bool
     {
         /** @var EhopMailValidator */
@@ -112,19 +106,27 @@ class Legacy
     }
 
     /**
-     * @return array<string,string>
+     * @return string[]
      */
     private function getUserGroupIds(User $user): array
     {
         /** @var EshopListModel $userGroupList */
         $userGroupList = $user->getUserGroups();
 
-        $return = [];
+        $userGroupIds = [];
 
         foreach ($userGroupList->getArray() as $group) {
-            $return[(string) $group->getId()] = (string) $group->getId();
+            $userGroupIds[] = (string) $group->getId();
         }
 
-        return $return;
+        return $userGroupIds;
+    }
+
+    public static function createUniqueIdentifier(): string
+    {
+        /** @var UtilsObject */
+        $utils = Registry::getUtilsObject();
+
+        return $utils->generateUId();
     }
 }

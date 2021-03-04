@@ -9,18 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
-class UserData
+class UserData implements UserDataInterface
 {
     /** @var string */
     private $userId;
 
     /**
-     * @var array<string,string>
+     * @var string[]
      */
     private $userGroupIds;
 
     /**
-     * @param array<string,string> $userGroupIds
+     * @param string[] $userGroupIds
      */
     public function __construct(string $userId, array $userGroupIds)
     {
@@ -34,7 +34,7 @@ class UserData
     }
 
     /**
-     * @return array<string,string>
+     * @return string[]
      */
     public function getUserGroupIds(): array
     {

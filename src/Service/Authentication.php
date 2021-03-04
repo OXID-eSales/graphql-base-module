@@ -20,7 +20,6 @@ use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
-use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
@@ -72,6 +71,10 @@ class Authentication implements AuthenticationServiceInterface
             return false;
         }
 
+        if ($this->isUserAnonymous()) {
+            return false;
+        }
+
         if ($this->isValidToken($this->token)) {
             return true;
         }
@@ -82,13 +85,12 @@ class Authentication implements AuthenticationServiceInterface
     /**
      * @throws InvalidLogin
      */
-    public function createToken(string $username, string $password): Token
+    public function createToken(?string $username = null, ?string $password = null): Token
     {
-        /** @var UserData $userData */
-        $userData = $this->legacyService->login($username, $password);
-        $time     = new DateTimeImmutable('now');
-        $expire   = new DateTimeImmutable('+8 hours');
-        $config   = $this->getConfig();
+        $userData  = $this->legacyService->login($username, $password);
+        $time      = new DateTimeImmutable('now');
+        $expire    = new DateTimeImmutable('+8 hours');
+        $config    = $this->getConfig();
 
         $builder = $config->builder()
             ->issuedBy($this->legacyService->getShopUrl())
@@ -131,11 +133,25 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function getUserId(): string
     {
-        if (!$this->isLogged() || !$this->token) {
+        if ($this->token instanceof NullToken || !$this->token) {
             throw new InvalidToken('The token is invalid');
         }
 
         return (string) $this->token->claims()->get(self::CLAIM_USERID);
+    }
+
+    /**
+     * @throws InvalidToken
+     */
+    public function isUserAnonymous(): bool
+    {
+        if ($this->token instanceof NullToken || !$this->token) {
+            throw new InvalidToken('The token is invalid');
+        }
+
+        $groups = $this->token->claims()->get(self::CLAIM_GROUPS);
+
+        return is_array($groups) && in_array('oxidanonymous', $groups);
     }
 
     public function getConfig(): Configuration

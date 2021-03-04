@@ -10,10 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update module to use the new API from [lcobucci/jwt](https://lcobucci-jwt.readthedocs.io/en/latest/upgrading/#v3x-to-v4x) 4.0.0
 - Prevent accidental PHP session usage
 - Move Schema documentation to https://oxid-esales.github.io/graphql-storefront-module
+- Changed `OxidEsales\GraphQL\Base\Infrastructure\Legacy::createUniqueIdentifier` method to static.
 
 ### Added
 - [`Server-Timing`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing) response header
 - Allow `errors` in response with `data`
+- Introduce anonymous token with claim to a randomly generated userid and group `oxidanonymous`.
+- Event `BeforeTokenCreation` - using it you may change the builder object before token gets created.
 
 ### Removed
 - Interfaces

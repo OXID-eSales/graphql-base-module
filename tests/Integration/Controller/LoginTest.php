@@ -15,9 +15,23 @@ class LoginTest extends TestCase
 {
     public function testLoginWithMissingCredentials(): void
     {
-        $result = $this->query('query { token }');
+        $result = $this->query('query { token }'); //anonymous token
 
-        $this->assertNotEmpty($result['body']['errors']);
+        $this->assertNotEmpty($result['body']['data']['token']);
+    }
+
+    public function testLoginWithIncompleteCredentialsPassword(): void
+    {
+        $result = $this->query('query {  token (username: "foo") }'); //anonymous token
+
+        $this->assertNotEmpty($result['body']['data']['token']);
+    }
+
+    public function testLoginWithIncompleteCredentialsUsername(): void
+    {
+        $result = $this->query('query {  token (password: "foo") }'); //anonymous token
+
+        $this->assertNotEmpty($result['body']['data']['token']);
     }
 
     public function testLoginWithWrongCredentials(): void
