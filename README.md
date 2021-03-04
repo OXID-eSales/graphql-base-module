@@ -22,6 +22,11 @@ This module provides:
 
 This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` component, which is part of the `6.2.0` compilation) up and running.
 
+## Branch Compatibility
+
+* master branch is compatible with OXID eShop compilation master
+* b-6.x branch is compatible with OXID eShop compilation 6.2
+
 ### Install
 
 ```bash
