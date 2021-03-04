@@ -106,8 +106,8 @@ class Authentication implements AuthenticationServiceInterface
 
         $event = new BeforeTokenCreation($builder, $userData);
         $this->eventDispatcher->dispatch(
-            BeforeTokenCreation::NAME,
-            $event
+            $event,
+            BeforeTokenCreation::NAME
         );
 
         return $event->getBuilder()->getToken(
@@ -166,6 +166,12 @@ class Authentication implements AuthenticationServiceInterface
         $config->setValidationConstraints($issuedBy, $permittedFor);
 
         return $config;
+    }
+
+    public function getUser(): ?object
+    {
+        // TODO: Implement getUser() method.
+        return null;
     }
 
     /**

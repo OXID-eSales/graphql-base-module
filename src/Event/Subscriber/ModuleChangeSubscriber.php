@@ -13,8 +13,8 @@ use OxidEsales\EshopCommunity\Internal\Framework\Module\Setting\Event\SettingCha
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Event\FinalizingModuleActivationEvent;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Setup\Event\FinalizingModuleDeactivationEvent;
 use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class ModuleChangeSubscriber implements EventSubscriberInterface
 {
