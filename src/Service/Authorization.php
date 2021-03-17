@@ -47,7 +47,10 @@ class Authorization implements AuthorizationServiceInterface
         $this->token           = $token;
     }
 
-    public function isAllowed(string $right): bool
+    /**
+     * @param mixed $subject
+     */
+    public function isAllowed(string $right, $subject = null): bool
     {
         if ($this->token === null) {
             return false;
@@ -59,8 +62,8 @@ class Authorization implements AuthorizationServiceInterface
         );
 
         $this->eventDispatcher->dispatch(
-            BeforeAuthorization::NAME,
-            $event
+            $event,
+            BeforeAuthorization::NAME
         );
 
         $authByEvent = $event->getAuthorized();

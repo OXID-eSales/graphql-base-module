@@ -31,6 +31,7 @@ services:
 
   OxidEsales\GraphQL\Base\Service\Authentication:
     class: OxidEsales\GraphQL\Base\Service\Authentication
+    public: true
 
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy
@@ -47,6 +48,9 @@ services:
   OxidEsales\GraphQL\Base\Service\NamespaceMapper:
     class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']
+
+  OxidEsales\GraphQL\Base\Middlewares\DebugFieldMiddleware:
+    class: OxidEsales\GraphQL\Base\Middlewares\DebugFieldMiddleware
 
   OxidEsales\GraphQL\Base\Framework\SchemaFactory:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory

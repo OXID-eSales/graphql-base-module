@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Event;
 
 use Lcobucci\JWT\Builder;
 use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeTokenCreation extends Event
 {
