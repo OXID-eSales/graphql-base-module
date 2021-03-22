@@ -25,6 +25,7 @@ Interface Documentation
         GraphQL schema <https://oxid-esales.github.io/graphql-storefront-module/>
         specification
         troubleshooting
+        thirdpartypayments/index
 
 .. image:: media/icons/home.png
     :width: 0 px
