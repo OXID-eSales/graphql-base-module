@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Event `BeforeTokenCreation` - using it you may change the builder object before token gets created.
 
 ### Removed
+- Removed CORS headers (https://docs.oxid-esales.com/interfaces/graphql/en/latest/troubleshooting.html)
 - Interfaces
     - `OxidEsales\GraphQL\Base\Framework\ErrorCodeProvider`
     - `OxidEsales\GraphQL\Base\Exception\HttpErrorInterface`

@@ -78,3 +78,37 @@ A more reliable first step in setting things up would be to clone the desired re
     The <target-directory> should be the same as the ``target-directory`` value in the module's ``composer.json`` file, so for ``graphql-base-module`` it's ``source/modules/oe/graphql-base``.
 
 After that, you can continue from step ``2. Register module package in project composer.json`` in the `docs <https://docs.oxid-esales.com/developer/en/6.0/modules/good_practices/module_setup.html>`_.
+
+Allowing Cross-Origin Resource Sharing (CORS)
+---------------------------------------------
+
+In case your front-end code is served on ``sitea.intranet`` and the access to the OXID GraphQL functionality is on ``siteb.intranet``, you will need to perform cross-domain requests between ``sitea.intranet`` and ``siteb.intranet``. This may be done using `CORS headers <https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#examples_of_access_control_scenarios>`_. One way to do this is to amend the ``apache2/sites-enabled/*.conf`` file:
+
+.. code-block:: apache
+
+    Define APACHE_CORS_ALLOWED_DOMAINS "sitea.intranet|siteb.intranet"
+    Define APACHE_CORS_ALLOWED_METHODS "POST, GET, OPTIONS"
+    Define APACHE_CORS_ALLOWED_HEADERS "Content-Type, Authorization"
+
+    <IfModule mod_headers.c>
+        SetEnvIf Origin "http(s)?://(www\.)?(${APACHE_CORS_ALLOWED_DOMAINS})$" AccessControlAllowOrigin=$0
+        Header always set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+        Header always set Access-Control-Allow-Methods "${APACHE_CORS_ALLOWED_METHODS}"
+        Header always set Access-Control-Allow-Headers "${APACHE_CORS_ALLOWED_HEADERS}"
+        Header merge Vary Origin
+    </IfModule>
+
+    RewriteEngine On
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+
+.. important::
+    Keep in mind that the ``mod_headers`` and ``mod_rewrite`` must be enabled on the apache server.
+
+.. code-block:: sh
+
+    # On Debian/Ubuntu, you can enable mod_headers & mod_rewrite, by running:
+    a2enmod headers
+    a2enmod rewrite
+    # Restart the apache server
+    apachectl -k graceful
