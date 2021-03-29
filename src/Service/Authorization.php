@@ -27,7 +27,7 @@ class Authorization implements AuthorizationServiceInterface
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var ?Token */
+    /** @var Token */
     private $token;
 
     /** @var LegacyService */
@@ -55,10 +55,6 @@ class Authorization implements AuthorizationServiceInterface
 
     public function isAllowed(string $right): bool
     {
-        if ($this->token === null) {
-            return false;
-        }
-
         $event = new BeforeAuthorization(
             $this->token,
             $right

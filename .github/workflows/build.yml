@@ -5,7 +5,7 @@ on:
     - pull_request
 
 env:
-    DEFAULT_COMPOSER_FLAGS: --no-interaction --no-ansi --no-progress --no-suggest --prefer-dist
+    DEFAULT_COMPOSER_FLAGS: --no-interaction --no-ansi --no-progress --no-suggest --prefer-dist --no-plugins
 
 jobs:
     build:
@@ -49,6 +49,9 @@ jobs:
             - name: Install dependencies
               run: composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
 
+            - name: Generated Unified Namespace
+              run: ./vendor/bin/oe-eshop-unified_namespace_generator
+
             - name: Test syntax
               run: composer test:syntax
 
@@ -75,15 +78,15 @@ jobs:
                   restore-keys: |
                       docker-layer-caching-${{ github.workflow }}-${{ matrix.php }}-
 
-            - name: Build docker
-              if: ${{ matrix.php != '7.1' && env.DEPENDENCIES == '' }}
+            - name: Build docker for 6.3.x
+              if: ${{ matrix.php != '7.1' &&  matrix.php != '7.2' && env.DEPENDENCIES == '' }}
               run: |
                   cd /home/runner/work/
                   git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git
                   cd docker-eshop-sdk
                   make .env
                   sed "s/PHP_VERSION=.*/PHP_VERSION=${{ matrix.php }}/" -i .env
-                  git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.2.x --single-branch data/oxideshop
+                  git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.3.x --single-branch data/oxideshop
                   mkdir data/oxideshop/debug
                   make permissions
                   make data/oxideshop/vendor/
@@ -92,14 +95,31 @@ jobs:
                   sleep 10
                   make reset-db
 
+            -   name: Build docker for 6.2.x
+                if: ${{ matrix.php == '7.2' && matrix.env=='DEPENDENCIES=" --prefer-lowest"' }}
+                run: |
+                    cd /home/runner/work/
+                    git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git
+                    cd docker-eshop-sdk
+                    make .env
+                    sed "s/PHP_VERSION=.*/PHP_VERSION=${{ matrix.php }}/" -i .env
+                    git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.2.x --single-branch data/oxideshop
+                    mkdir data/oxideshop/debug
+                    make permissions
+                    make data/oxideshop/vendor/
+                    make data/oxideshop/source/config.inc.php
+                    docker-compose up -d php
+                    sleep 10
+                    make reset-db
+
             - name: Prepare shop and run codeception in docker
-              if: ${{ matrix.php != '7.1' && env.DEPENDENCIES == '' }}
+              if: ${{ matrix.php != '7.1' && ((matrix.php != '7.2' && matrix.env == 'DEPENDENCIES=""') || (matrix.php == '7.2'  && matrix.env == 'DEPENDENCIES=" --prefer-lowest"' )) }}
               run: |
                   cd /home/runner/work/docker-eshop-sdk/data/oxideshop/
                   cp -r $GITHUB_WORKSPACE graphql-base-module
                   docker-compose exec -T --user oxid php composer config repositories.grapqhl-base path ./graphql-base-module/
                   docker-compose exec -T --user oxid php composer require oxid-esales/graphql-base
-                  docker-compose exec -T --user oxid php composer require codeception/module-rest --dev
+                  docker-compose exec -T --user oxid php composer require codeception/module-rest:*
                   docker-compose exec -T --user oxid php composer require codeception/module-phpbrowser --dev
                   docker-compose exec -T --user oxid php php bin/oe-console oe:module:install-configuration source/modules/oe/graphql-base/
                   docker-compose exec -T --user oxid php php bin/oe-console oe:module:activate oe_graphql_base
