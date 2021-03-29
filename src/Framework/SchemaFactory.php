@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+use GraphQL\GraphQL;
+use GraphQL\Type\SchemaConfig;
 use Mouf\Composer\ClassNameMapper;
 use OxidEsales\GraphQL\Base\Middlewares\CommentFieldMiddleware;
 use OxidEsales\GraphQL\Base\Service\Authentication;
@@ -112,6 +114,10 @@ class SchemaFactory
         $factory->addFieldMiddleware(
             new CommentFieldMiddleware()
         );
+
+        $directives = array_merge(GraphQL::getStandardDirectives(), [new \OxidEsales\GraphQL\Base\Directive\Authorized()]);
+        $schemaConfig = SchemaConfig::create()->setDirectives($directives);
+        $factory->setSchemaConfig($schemaConfig);
 
         $this->schema = $factory->createSchema();
         $queryTimer->stop();
