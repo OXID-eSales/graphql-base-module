@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prevent accidental PHP session usage
 - Move Schema documentation to https://oxid-esales.github.io/graphql-storefront-module
 - Changed `OxidEsales\GraphQL\Base\Infrastructure\Legacy::createUniqueIdentifier` method to static.
+- Token does not contain information for customer's groups as changes to the groups should take immediate effect.
 
 ### Added
 - [`Server-Timing`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Server-Timing) response header

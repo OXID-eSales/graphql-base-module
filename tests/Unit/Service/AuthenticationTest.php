@@ -266,7 +266,7 @@ class AuthenticationTest extends TestCase
     public function testGetUserId(): void
     {
         $this->legacyService->method('login')
-            ->willReturn(new UserData('the_admin_oxid', ['oxidadmin']));
+            ->willReturn(new UserData('the_admin_oxid'));
 
         $authenticationService = $this->getAuthenticationService();
         self::$token           = $authenticationService->createToken('admin', 'admin');
@@ -333,10 +333,6 @@ class AuthenticationTest extends TestCase
             Token::class,
             self::$anonymousToken
         );
-        $this->assertEquals(
-            ['oxidanonymous'],
-            self::$anonymousToken->claims()->get(Authentication::CLAIM_GROUPS)
-        );
 
         $this->assertNull(
             self::$anonymousToken->claims()->get(Authentication::CLAIM_USERNAME)
@@ -354,6 +350,9 @@ class AuthenticationTest extends TestCase
         $this->legacyService
             ->method('getShopId')
             ->willReturn(1);
+        $this->legacyService
+            ->method('getUserGroupIds')
+            ->willReturn(['oxidanonymous']);
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
@@ -376,6 +375,9 @@ class AuthenticationTest extends TestCase
         $this->legacyService
             ->method('getShopId')
             ->willReturn(1);
+        $this->legacyService
+            ->method('getUserGroupIds')
+            ->willReturn(['oxidanonymous']);
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
@@ -434,6 +436,9 @@ class AuthenticationTest extends TestCase
         $this->legacyService
             ->method('getShopId')
             ->willReturn(1);
+        $this->legacyService
+            ->method('getUserGroupIds')
+            ->willReturn(['oxidanonymous']);
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
@@ -450,7 +455,10 @@ class AuthenticationTest extends TestCase
     public function testLoggedUserInAnonymousGroup(): void
     {
         $this->legacyService->method('login')
-            ->willReturn(new UserData('the_admin_oxid', ['oxidanonymous']));
+            ->willReturn(new AnonymousUserData());
+
+        $this->legacyService->method('getUserGroupIds')
+            ->willReturn(['oxidanonymous']);
 
         $authenticationService = $this->getAuthenticationService();
         $token                 = $authenticationService->createToken('admin', 'admin');

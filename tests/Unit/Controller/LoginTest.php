@@ -59,15 +59,9 @@ class LoginTest extends TestCase
             'username'   => 'admin',
             'password'   => 'admin',
             'id'         => 'some_nice_user_id',
-            'usergroups' => [
-                'onegroup',
-                'oxidadmin',
-                'othergroup',
-                'oxidcustomer',
-            ],
         ];
 
-        $userData = new UserData($user['id'], $user['usergroups']);
+        $userData = new UserData($user['id']);
         $this->legacy->method('login')->willReturn($userData);
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
@@ -82,7 +76,6 @@ class LoginTest extends TestCase
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($user['username'], $token->claims()->get(Authentication::CLAIM_USERNAME));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
-        $this->assertEquals($user['usergroups'], $token->claims()->get(Authentication::CLAIM_GROUPS));
         $this->assertEquals($user['id'], $token->claims()->get(Authentication::CLAIM_USERID));
     }
 
@@ -106,7 +99,6 @@ class LoginTest extends TestCase
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
-        $this->assertEquals(['oxidanonymous'], $token->claims()->get(Authentication::CLAIM_GROUPS));
         $this->assertNotEmpty($token->claims()->get(Authentication::CLAIM_USERID));
     }
 
@@ -130,7 +122,6 @@ class LoginTest extends TestCase
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
-        $this->assertEquals(['oxidanonymous'], $token->claims()->get(Authentication::CLAIM_GROUPS));
         $this->assertNotEmpty($token->claims()->get(Authentication::CLAIM_USERID));
     }
 
@@ -154,7 +145,6 @@ class LoginTest extends TestCase
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
-        $this->assertEquals(['oxidanonymous'], $token->claims()->get(Authentication::CLAIM_GROUPS));
         $this->assertNotEmpty($token->claims()->get(Authentication::CLAIM_USERID));
     }
 }

@@ -23,6 +23,9 @@ use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 
+/**
+ * @codeCoverageIgnore - Remove when integration tests are added to the coverage report
+ */
 class Legacy
 {
     /** @var QueryBuilderFactoryInterface */
@@ -55,8 +58,7 @@ class Legacy
         }
 
         return new UserData(
-            $user->getId(),
-            $this->getUserGroupIds($user)
+            $user->getId()
         );
     }
 
@@ -108,8 +110,19 @@ class Legacy
     /**
      * @return string[]
      */
-    private function getUserGroupIds(User $user): array
+    public function getUserGroupIds(?string $userId): array
     {
+        if (!$userId) {
+            return [];
+        }
+
+        /** @var User $user */
+        $user = oxNew(User::class);
+
+        if (!$user->load($userId)) {
+            return ['oxidanonymous'];
+        }
+
         /** @var EshopListModel $userGroupList */
         $userGroupList = $user->getUserGroups();
 

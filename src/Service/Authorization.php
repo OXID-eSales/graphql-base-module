@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Security\AuthorizationServiceInterface;
 
@@ -29,13 +30,17 @@ class Authorization implements AuthorizationServiceInterface
     /** @var ?Token */
     private $token;
 
+    /** @var LegacyService */
+    private $legacyService;
+
     /**
      * @param PermissionProviderInterface[] $permissionProviders
      */
     public function __construct(
         iterable $permissionProviders,
         EventDispatcherInterface $eventDispatcher,
-        Token $token
+        Token $token,
+        LegacyService $legacyService
     ) {
         foreach ($permissionProviders as $permissionProvider) {
             $this->permissions = array_merge_recursive(
@@ -45,6 +50,7 @@ class Authorization implements AuthorizationServiceInterface
         }
         $this->eventDispatcher = $eventDispatcher;
         $this->token           = $token;
+        $this->legacyService   = $legacyService;
     }
 
     public function isAllowed(string $right): bool
@@ -69,11 +75,8 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        if (!$this->token->claims()->has(Authentication::CLAIM_GROUPS)) {
-            return false;
-        }
-
-        $groups = $this->token->claims()->get(Authentication::CLAIM_GROUPS);
+        $userId = $this->token->claims()->get(Authentication::CLAIM_USERID);
+        $groups = $this->legacyService->getUserGroupIds($userId);
 
         $isAllowed = false;
 
