@@ -78,6 +78,10 @@ class Authorization implements AuthorizationServiceInterface
         $userId = $this->token->claims()->get(Authentication::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
 
+        if (in_array('oxidblocked', $groups)) {
+            return false;
+        }
+
         $isAllowed = false;
 
         foreach ($groups as $id) {
