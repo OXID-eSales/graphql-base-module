@@ -12,9 +12,4 @@ namespace OxidEsales\GraphQL\Base\Framework;
 interface UserDataInterface
 {
     public function getUserId(): string;
-
-    /**
-     * @return string[]
-     */
-    public function getUserGroupIds(): array;
 }

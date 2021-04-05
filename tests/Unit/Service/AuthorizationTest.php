@@ -13,6 +13,7 @@ use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use PHPUnit\Framework\TestCase;
@@ -26,7 +27,8 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            new NullToken()
+            new NullToken(),
+            $this->getLegacyMock()
         );
 
         $this->assertFalse(
@@ -39,7 +41,8 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            $this->getTokenMock()
+            $this->getTokenMock(),
+            $this->getUserGroupsMock()
         );
 
         $this->assertFalse(
@@ -52,7 +55,8 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            new NullToken()
+            new NullToken(),
+            $this->getLegacyMock()
         );
 
         $this->assertFalse(
@@ -65,7 +69,8 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            $this->getTokenMock()
+            $this->getTokenMock(),
+            $this->getUserGroupsMock()
         );
 
         $this->assertTrue(
@@ -94,7 +99,8 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            $this->getTokenMock()
+            $this->getTokenMock(),
+            $this->getUserGroupsMock()
         );
 
         $this->assertTrue(
@@ -123,7 +129,8 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            $this->getTokenMock()
+            $this->getTokenMock(),
+            $this->getUserGroupsMock()
         );
 
         $this->assertFalse(
@@ -144,7 +151,6 @@ class AuthorizationTest extends TestCase
     {
         $claims = new Token\DataSet(
             [
-                Authentication::CLAIM_GROUPS   => ['group'],
                 Authentication::CLAIM_USERNAME => 'testuser',
             ],
             ''
@@ -184,5 +190,22 @@ class AuthorizationTest extends TestCase
     {
         return $this->getMockBuilder(EventDispatcherInterface::class)
                     ->getMock();
+    }
+
+    private function getLegacyMock(): Legacy
+    {
+        return $this->getMockBuilder(Legacy::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    private function getUserGroupsMock(): Legacy
+    {
+        $legacyMock = $this->getLegacyMock();
+        $legacyMock
+            ->method('getUserGroupIds')
+            ->willReturn(['group']);
+
+        return $legacyMock;
     }
 }

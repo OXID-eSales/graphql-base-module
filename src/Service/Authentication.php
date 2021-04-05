@@ -32,8 +32,6 @@ class Authentication implements AuthenticationServiceInterface
 
     public const CLAIM_USERID   = 'userid';
 
-    public const CLAIM_GROUPS   = 'groups';
-
     /** @var KeyRegistry */
     private $keyRegistry;
 
@@ -101,8 +99,7 @@ class Authentication implements AuthenticationServiceInterface
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $username)
-            ->withClaim(self::CLAIM_USERID, $userData->getUserId())
-            ->withClaim(self::CLAIM_GROUPS, $userData->getUserGroupIds());
+            ->withClaim(self::CLAIM_USERID, $userData->getUserId());
 
         $event = new BeforeTokenCreation($builder, $userData);
         $this->eventDispatcher->dispatch(
@@ -149,7 +146,8 @@ class Authentication implements AuthenticationServiceInterface
             throw new InvalidToken('The token is invalid');
         }
 
-        $groups = $this->token->claims()->get(self::CLAIM_GROUPS);
+        $userId = $this->token->claims()->get(self::CLAIM_USERID);
+        $groups = $this->legacyService->getUserGroupIds($userId);
 
         return is_array($groups) && in_array('oxidanonymous', $groups);
     }

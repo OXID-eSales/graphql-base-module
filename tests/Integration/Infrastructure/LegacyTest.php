@@ -53,15 +53,46 @@ class LegacyTest extends UnitTestCase
         );
     }
 
-    private function createUser($dbusergroup): void
+    public function testUserGroups(): void
     {
-        // Needed to get the permissions for setting the user group
-        $this->legacyService->login('admin', 'admin');
-
         $oUser = oxNew(User::class);
+
+        $noUserGroups = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $this->assertSame([], $noUserGroups);
+
         $oUser->setId('_testUser');
-        $oUser->oxuser__oxusername = new oxField('testuser', oxField::T_RAW);
-        $oUser->oxuser__oxrights   = new oxField($dbusergroup, oxField::T_RAW);
-        $oUser->createUser();
+
+        $anonymousUserGroup = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $this->assertSame(['oxidanonymous'], $anonymousUserGroup);
+
+        $groups = ['_testGroup', '_tempGroup'];
+        $this->addToGroups($oUser, $groups);
+
+        $withUserGroups = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $this->assertCount(2, $withUserGroups);
+        $this->assertEmpty(array_diff($groups, array_values($withUserGroups)));
+
+        $otherGroups = ['_newGroup', '_hiddenGroup', '_wrongGroup'];
+        $this->addToGroups($oUser, $otherGroups);
+
+        $allGroups     = array_merge($groups, $otherGroups);
+        $allUserGroups = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $this->assertCount(5, $allUserGroups);
+        $this->assertEmpty(array_diff($groups, array_values($allGroups)));
+    }
+
+    private function addToGroups($oUser, array $groups = []): void
+    {
+        foreach ($groups as $group) {
+            $oGroup = oxNew('oxGroups');
+            $oGroup->setId($group);
+            $oGroup->oxgroups__oxtitle  = new oxField($group, oxField::T_RAW);
+            $oGroup->oxgroups__oxactive = new oxField(1, oxField::T_RAW);
+            $oGroup->save();
+
+            $oUser->addToGroup($group);
+        }
+
+        $oUser->save();
     }
 }

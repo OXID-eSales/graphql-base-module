@@ -19,11 +19,10 @@ class BeforeTokenCreationTest extends TestCase
     public function testBasicGetters(): void
     {
         $userId = 'user-id';
-        $groups = ['group' => 'group'];
 
         $event = new BeforeTokenCreation(
             new Builder(),
-            new UserData($userId, $groups)
+            new UserData($userId)
         );
 
         $this->assertInstanceOf(
@@ -37,10 +36,6 @@ class BeforeTokenCreationTest extends TestCase
         $this->assertSame(
             $userId,
             $event->getUserData()->getUserId()
-        );
-        $this->assertSame(
-            $groups,
-            $event->getUserData()->getUserGroupIds()
         );
     }
 }

@@ -14,30 +14,13 @@ class UserData implements UserDataInterface
     /** @var string */
     private $userId;
 
-    /**
-     * @var string[]
-     */
-    private $userGroupIds;
-
-    /**
-     * @param string[] $userGroupIds
-     */
-    public function __construct(string $userId, array $userGroupIds)
+    public function __construct(string $userId)
     {
-        $this->userId       = $userId;
-        $this->userGroupIds = $userGroupIds;
+        $this->userId = $userId;
     }
 
     public function getUserId(): string
     {
         return $this->userId;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getUserGroupIds(): array
-    {
-        return $this->userGroupIds;
     }
 }
