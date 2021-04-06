@@ -245,6 +245,33 @@ class AuthenticationTest extends TestCase
         );
     }
 
+    /**
+     * @depends testCreateTokenWithValidCredentials
+     */
+    public function testIsLoggedWithValidCredentialsForBlockedUser(): void
+    {
+        $this->legacyService
+            ->method('login');
+        $this->legacyService
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacyService
+            ->method('getShopId')
+            ->willReturn(1);
+        $this->legacyService
+            ->method('getUserGroupIds')
+            ->willReturn(['foo', 'oxidblocked', 'bar']);
+
+        $authenticationService = new Authentication(
+            $this->keyRegistry,
+            $this->legacyService,
+            self::$token,
+            new EventDispatcher()
+        );
+
+        $this->assertFalse($authenticationService->isLogged());
+    }
+
     public function providerGetUserName()
     {
         return [

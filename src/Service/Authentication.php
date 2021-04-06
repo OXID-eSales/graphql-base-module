@@ -73,6 +73,13 @@ class Authentication implements AuthenticationServiceInterface
             return false;
         }
 
+        $userId = $this->token->claims()->get(self::CLAIM_USERID);
+        $groups = $this->legacyService->getUserGroupIds($userId);
+
+        if (in_array('oxidblocked', $groups)) {
+            return false;
+        }
+
         if ($this->isValidToken($this->token)) {
             return true;
         }
