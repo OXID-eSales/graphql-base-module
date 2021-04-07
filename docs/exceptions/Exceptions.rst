@@ -6,15 +6,15 @@ Exceptions in your module
 
 The ``graphql-base`` module provides the following exceptions you can use or extend from
 
-============  ===============  ================================================================================== ================
-Class         Category         Description                                                                        HTTP Status code
-============  ===============  ================================================================================== ================
-InvalidLogin  permissionerror  Thrown when we have an invalid login                                               401
-InvalidToken  permissionerror  Thrown when a token is invalid                                                     403
-NotFound      requesterror     Thrown when a record was not found                                                 404
-Exists        requesterror     Thrown when a record exists (when we want to register already registered customer) 400
-OutOfBounds   requesterror     Thrown when values are out of bounds                                               400
-============  ===============  ================================================================================== ================
+============  ===============  ==================================================================================
+Class         Category         Description
+============  ===============  ==================================================================================
+InvalidLogin  permissionerror  Thrown when we have an invalid login
+InvalidToken  permissionerror  Thrown when a token is invalid
+NotFound      requesterror     Thrown when a record was not found
+Exists        requesterror     Thrown when a record exists (when we want to register already registered customer)
+OutOfBounds   requesterror     Thrown when values are out of bounds
+============  ===============  ==================================================================================
 
 Exception to GraphQL Error
 --------------------------
