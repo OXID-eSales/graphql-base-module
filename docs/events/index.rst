@@ -8,4 +8,5 @@ Events
 
         BeforeAuthorization
         BeforeTokenCreation
+        BeforeBasketPayments
         BeforePlaceOrder
