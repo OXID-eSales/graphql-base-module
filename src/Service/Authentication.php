@@ -173,6 +173,9 @@ class Authentication implements AuthenticationServiceInterface
         return $config;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getUser(): ?object
     {
         // TODO: Implement getUser() method.
