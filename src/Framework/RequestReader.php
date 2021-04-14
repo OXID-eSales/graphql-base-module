@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use Exception;
+use GraphQL\Upload\UploadMiddleware;
+use Laminas\Diactoros\ServerRequestFactory;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -62,6 +64,11 @@ class RequestReader
         if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
             $raw  = file_get_contents($inputFile) ?: '';
             $data = json_decode($raw, true) ?: [];
+        } elseif (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
+            $request          = ServerRequestFactory::fromGlobals();
+            $uploadMiddleware = new UploadMiddleware();
+            $request          = $uploadMiddleware->processRequest($request);
+            $data             = $request->getParsedBody();
         } else {
             $data = $_REQUEST;
 
