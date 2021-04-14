@@ -1,0 +1,9 @@
+services:
+
+    _defaults:
+        public: false
+        autowire: true
+
+    Full\Qualified\Namespace\DeveloperBeforeBasketPaymentsEventSubscriber:
+        class: Full\Qualified\Namespace\DeveloperBeforeBasketPaymentsEventSubscriber
+        tags: ['kernel.event_subscriber']
