@@ -12,12 +12,12 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 use Exception;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Email;
-use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use OxidEsales\EshopCommunity\Internal\Utility\Email\EmailValidatorServiceInterface as EhopEmailValidator;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\UserData;
@@ -34,10 +34,17 @@ class Legacy
     /** @var ContextInterface */
     private $context;
 
-    public function __construct(QueryBuilderFactoryInterface $queryBuilderFactory, ContextInterface $context)
-    {
-        $this->queryBuilderFactory = $queryBuilderFactory;
-        $this->context             = $context;
+    /** @var EhopEmailValidator */
+    private $emailValidatorService;
+
+    public function __construct(
+        QueryBuilderFactoryInterface $queryBuilderFactory,
+        ContextInterface $context,
+        EhopEmailValidator $emailValidatorService
+    ) {
+        $this->queryBuilderFactory   = $queryBuilderFactory;
+        $this->context               = $context;
+        $this->emailValidatorService = $emailValidatorService;
     }
 
     /**
@@ -93,10 +100,7 @@ class Legacy
 
     public function isValidEmail(string $email): bool
     {
-        /** @var EhopMailValidator */
-        $validator = oxNew(EhopMailValidator::class);
-
-        return $validator->isValidEmail($email);
+        return $this->emailValidatorService->isEmailValid($email);
     }
 
     /**

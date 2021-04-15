@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Codeception\Module;
 use Codeception\Lib\Interfaces\DependsOnModule;
 use Codeception\Module;
 use Codeception\Module\REST;
+use Exception;
 use InvalidArgumentException;
 use Lcobucci\JWT\Parser;
 use OxidEsales\Facts\Facts;
@@ -42,7 +43,21 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function _beforeSuite($settings = []): void // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
-        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe_graphql_base');
+        $rootPath      = (new Facts())->getShopRootPath();
+        $possiblePaths = [
+            '/bin/oe-console',
+            '/vendor/bin/oe-console',
+        ];
+
+        foreach ($possiblePaths as $path) {
+            if (is_file($rootPath . $path)) {
+                exec($rootPath . $path . ' oe:module:activate oe_graphql_base');
+
+                return;
+            }
+        }
+
+        throw new Exception('Could not find script "/bin/oe-console" to activate module');
     }
 
     public function sendGQLQuery(

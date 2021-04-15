@@ -14,12 +14,12 @@ use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
-use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 abstract class TestCase extends PHPUnitTestCase
 {
@@ -27,6 +27,7 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected static $logResult = null;
 
+    /** @var ?ContainerBuilder */
     protected static $container = null;
 
     protected static $query = null;
@@ -41,29 +42,11 @@ abstract class TestCase extends PHPUnitTestCase
         $containerFactory  = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = new ResponseWriterStub(
-            new TimerHandler()
-        );
+        $responseWriterDefinition = static::$container->getDefinition(ResponseWriter::class);
+        $responseWriterDefinition->setClass(ResponseWriterStub::class);
 
-        static::$container->set(
-            ResponseWriter::class,
-            $responseWriter
-        );
-        static::$container->autowire(
-            ResponseWriter::class,
-            ResponseWriter::class
-        );
-
-        $requestReader = new RequestReaderStub();
-
-        static::$container->set(
-            RequestReader::class,
-            $requestReader
-        );
-        static::$container->autowire(
-            RequestReader::class,
-            RequestReader::class
-        );
+        $requestReaderDefinition = static::$container->getDefinition(RequestReader::class);
+        $requestReaderDefinition->setClass(RequestReaderStub::class);
 
         $logger = new LoggerStub();
 
