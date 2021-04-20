@@ -107,7 +107,7 @@ is pretty slim and tests are pretty fast.
     path: Acceptance
     modules:
         enabled:
-            - \Full\Quallified\Namespace\Tests\Codeception\Helper\Acceptance
+            - \Full\Qualified\Namespace\Tests\Codeception\Helper\Acceptance
             - REST:
                 url: '%SHOP_URL%'
                 depends: PhpBrowser

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Full\Quallified\Namespace\Tests\Integration\Context\Controller;
+namespace Full\Qualified\Namespace\Tests\Integration\Context\Controller;
 
 use OxidEsales\GraphQL\Base\Tests\Integration\TokenTestCase;
 

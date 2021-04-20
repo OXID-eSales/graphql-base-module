@@ -7,9 +7,9 @@
 
 declare(strict_types=1);
 
-namespace Full\Quallified\Namespace\Tests\Codeception\Acceptance;
+namespace Full\Qualified\Namespace\Tests\Codeception\Acceptance;
 
-use Full\Quallified\Namespace\Tests\Codeception\AcceptanceTester;
+use Full\Qualified\Namespace\Tests\Codeception\AcceptanceTester;
 
 class CategoryQueryCest
 {
