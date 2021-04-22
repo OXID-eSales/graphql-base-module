@@ -25,7 +25,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` co
 ## Branch Compatibility
 
 * master branch is compatible with OXID eShop compilation master
-* b-6.x branch is compatible with OXID eShop compilation 6.2
+* b-6.x branch is compatible with OXID eShop compilation 6.2 and 6.3 (NOTE: no support of PHP 8)
 
 ### Install
 

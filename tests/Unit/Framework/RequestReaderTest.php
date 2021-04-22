@@ -86,9 +86,14 @@ class RequestReaderTest extends TestCase
             // add also a whitespace to the beginning if the header
             // to test the trim() call
             $_SERVER[$header] = ' Bearer ' . self::$token;
+            $token            = $requestReader->getAuthToken();
             $this->assertInstanceOf(
                 Token::class,
-                $requestReader->getAuthToken()
+                $token
+            );
+            $this->assertNotInstanceOf(
+                NullToken::class,
+                $token
             );
             unset($_SERVER[$header]);
         }
