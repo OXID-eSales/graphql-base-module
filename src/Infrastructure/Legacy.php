@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 use Exception;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Email;
+use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
@@ -60,6 +61,8 @@ class Legacy
             /** @var User */
             $user = oxNew(User::class);
             $user->login($username, $password, false);
+        } catch (SystemComponentException $e) {
+            throw $e;
         } catch (Exception $e) {
             throw new InvalidLogin('Username/password combination is invalid');
         }
