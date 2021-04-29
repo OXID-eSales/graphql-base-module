@@ -269,7 +269,8 @@ class AuthenticationTest extends TestCase
             new EventDispatcher()
         );
 
-        $this->assertFalse($authenticationService->isLogged());
+        $this->expectException(InvalidToken::class);
+        $authenticationService->isLogged();
     }
 
     public function providerGetUserName()
