@@ -73,14 +73,14 @@ class Authentication implements AuthenticationServiceInterface
         $groups = $this->legacyService->getUserGroupIds($userId);
 
         if (in_array('oxidblocked', $groups)) {
-            return false;
+            throw InvalidToken::userBlocked();
         }
 
         if ($this->isValidToken($this->token)) {
             return true;
         }
 
-        throw new InvalidToken('The token is invalid');
+        throw InvalidToken::invalidToken();
     }
 
     /**
@@ -122,7 +122,7 @@ class Authentication implements AuthenticationServiceInterface
     public function getUserName(): string
     {
         if (!$this->isLogged()) {
-            throw new InvalidToken('The token is invalid');
+            throw InvalidToken::invalidToken();
         }
 
         return (string) $this->token->claims()->get(self::CLAIM_USERNAME);
@@ -134,7 +134,7 @@ class Authentication implements AuthenticationServiceInterface
     public function getUserId(): string
     {
         if ($this->token instanceof NullToken) {
-            throw new InvalidToken('The token is invalid');
+            throw InvalidToken::invalidToken();
         }
 
         return (string) $this->token->claims()->get(self::CLAIM_USERID);
@@ -146,7 +146,7 @@ class Authentication implements AuthenticationServiceInterface
     public function isUserAnonymous(): bool
     {
         if ($this->token instanceof NullToken) {
-            throw new InvalidToken('The token is invalid');
+            throw InvalidToken::invalidToken();
         }
 
         $userId = $this->token->claims()->get(self::CLAIM_USERID);
