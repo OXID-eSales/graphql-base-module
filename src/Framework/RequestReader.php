@@ -46,7 +46,7 @@ class RequestReader
         try {
             $token = (new Parser())->parse($jwt);
         } catch (Exception $e) {
-            throw new InvalidToken('The token is invalid');
+            throw InvalidToken::unableToParse();
         }
 
         return $token;

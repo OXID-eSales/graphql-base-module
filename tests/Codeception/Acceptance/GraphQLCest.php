@@ -50,7 +50,7 @@ class GraphQLCest
         $I->seeResponseMatchesJsonType([
             'errors' => [
                 [
-                    'message'    => 'string:=The token is invalid',
+                    'message'    => 'string:=Unable to parse token',
                     'extensions' => [
                         'category' => 'string:=permissionerror',
                     ],
