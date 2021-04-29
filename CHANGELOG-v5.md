@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [5.2.0-rc1] 2021-04-29
 
 ### Changed
 - Update module to use the new API from [lcobucci/jwt](https://lcobucci-jwt.readthedocs.io/en/latest/upgrading/#v3x-to-v4x) 4.0.0
@@ -69,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Preflight CORS handling
 - Fixed module activation/deactivation event pointers
 
+[5.2.0-rc1]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.1.1...v5.2.0-rc1
 [5.1.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.1.0...v5.1.1
 [5.1.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v4.0.0...v5.0.0

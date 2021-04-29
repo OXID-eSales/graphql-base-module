@@ -15,7 +15,7 @@ This module provides:
 
 ## Documentation
 
-* Full documentation can be found [here](https://docs.oxid-esales.com/interfaces/graphql/en/5.1/).
+* Full documentation can be found [here](https://docs.oxid-esales.com/interfaces/graphql/en/5.2/).
 * Schema documentation available [here](https://oxid-esales.github.io/graphql-storefront-module).
 
 ## Usage
@@ -25,7 +25,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` co
 ## Branch Compatibility
 
 * master branch is compatible with OXID eShop compilation master
-* b-6.x branch is compatible with OXID eShop compilation 6.2 and 6.3 (NOTE: no support of PHP 8)
+* b-6.x branch is compatible with OXID eShop compilation 6.2 and 6.3 (NOTE: no support for PHP 8)
 
 ### Install
 
@@ -87,7 +87,7 @@ Authorization: Bearer a-very-long-jwt
 
 The information on extending any module can be found in the [OXID eSales documentation](https://docs.oxid-esales.com).
 
-How to extend GraphQL module types and implement your new mutations and queries is shown in [OXID GraphQL API documentation](https://docs.oxid-esales.com/modules/graphql/en/5.1/tutorials/index.html).
+How to extend GraphQL module types and implement your new mutations and queries is shown in [OXID GraphQL API documentation](https://docs.oxid-esales.com/modules/graphql/en/5.2/tutorials/index.html).
 
 ## Testing
 
