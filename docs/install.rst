@@ -24,8 +24,8 @@ configuration file and run migrations. You can do it by running:
 
 .. code-block:: bash
 
-    ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-base/
-    ./bin/oe-console oe:module:install-configuration source/modules/oe/graphql-storefront/
+    ./vendor/bin/oe-console oe:module:install-configuration source/modules/oe/graphql-base/
+    ./vendor/bin/oe-console oe:module:install-configuration source/modules/oe/graphql-storefront/
 
     ./vendor/bin/oe-eshop-doctrine_migration migration:migrate oe_graphql_storefront
 
