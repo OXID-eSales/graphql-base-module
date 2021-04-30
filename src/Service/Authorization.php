@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -75,7 +76,7 @@ class Authorization implements AuthorizationServiceInterface
         $groups = $this->legacyService->getUserGroupIds($userId);
 
         if (in_array('oxidblocked', $groups)) {
-            return false;
+            throw InvalidToken::userBlocked();
         }
 
         $isAllowed = false;

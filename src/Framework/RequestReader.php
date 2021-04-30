@@ -13,6 +13,8 @@ use Exception;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Service\Authentication;
 
 use function apache_request_headers;
 use function array_change_key_case;
@@ -24,6 +26,15 @@ use function trim;
 
 class RequestReader
 {
+    /** @var LegacyService */
+    private $legacyService;
+
+    public function __construct(
+        LegacyService $legacyService
+    ) {
+        $this->legacyService = $legacyService;
+    }
+
     /**
      * Returns the encoded token from the authorization header
      *
@@ -47,6 +58,18 @@ class RequestReader
             $token = (new Parser())->parse($jwt);
         } catch (Exception $e) {
             throw InvalidToken::unableToParse();
+        }
+
+        $userId = $token->claims()
+                        ->get(Authentication::CLAIM_USERID);
+
+        $groups = $this->legacyService
+                       ->getUserGroupIds(
+                           $userId
+                       );
+
+        if (in_array('oxidblocked', $groups)) {
+            throw InvalidToken::userBlocked();
         }
 
         return $token;

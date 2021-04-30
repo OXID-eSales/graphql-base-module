@@ -14,6 +14,7 @@ use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use PHPUnit\Framework\TestCase;
 
 class RequestReaderTest extends TestCase
@@ -21,11 +22,9 @@ class RequestReaderTest extends TestCase
     // phpcs:disable
     protected static $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
 
-    // phpcs:enable
-
     public function testGetAuthTokenWithoutToken(): void
     {
-        $requestReader = new RequestReader();
+        $requestReader = new RequestReader($this->getLegacyMock());
         $this->assertInstanceOf(
             NullToken::class,
             $requestReader->getAuthToken()
@@ -34,7 +33,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetAuthTokenWithWrongFormattedHeader(): void
     {
-        $requestReader = new RequestReader();
+        $requestReader = new RequestReader($this->getLegacyMock());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -52,7 +51,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT(): void
     {
-        $requestReader = new RequestReader();
+        $requestReader = new RequestReader($this->getLegacyMock());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -76,7 +75,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetAuthTokenWithCorrectFormat(): void
     {
-        $requestReader = new RequestReader();
+        $requestReader = new RequestReader($this->getLegacyMock());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -99,9 +98,31 @@ class RequestReaderTest extends TestCase
         }
     }
 
+    public function testGetAuthTokenWithCorrectFormatButBlockedUser(): void
+    {
+        $legacy = $this->getMockBuilder(Legacy::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $legacy->method('getUserGroupIds')
+               ->willReturn(['group', 'oxidblocked', 'anothergroup']);
+
+        $requestReader = new RequestReader($legacy);
+
+        $_SERVER['HTTP_AUTHORIZATION'] = ' Bearer ' . self::$token;
+        $e                             = null;
+
+        try {
+            $token            = $requestReader->getAuthToken();
+        } catch (Exception $e) {
+        }
+        unset($_SERVER['HTTP_AUTHORIZATION']);
+        $this->assertInstanceOf(InvalidToken::class, $e);
+        $this->assertNotNull($e);
+    }
+
     public function testGetGraphQLRequestDataWithEmptyRequest(): void
     {
-        $requestReader = new RequestReader();
+        $requestReader = new RequestReader($this->getLegacyMock());
         $this->assertEquals(
             [
                 'query'         => null,
@@ -114,7 +135,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetGraphQLRequestDataWithInputRequest(): void
     {
-        $requestReader           = new RequestReader();
+        $requestReader           = new RequestReader($this->getLegacyMock());
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
             [
@@ -129,7 +150,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
     {
-        $requestReader             = new RequestReader();
+        $requestReader             = new RequestReader($this->getLegacyMock());
         $_SERVER['CONTENT_TYPE']   = 'text/plain';
         $_REQUEST['query']         = 'query {token_}';
         $_REQUEST['variables']     = '{"foo":"bar"}';
@@ -143,5 +164,14 @@ class RequestReaderTest extends TestCase
             $requestReader->getGraphQLRequestData()
         );
         unset($_SERVER['CONTENT_TYPE'], $_REQUEST['query'], $_REQUEST['variables'], $_REQUEST['operationName']);
+    }
+
+    // phpcs:enable
+
+    private function getLegacyMock(): Legacy
+    {
+        return $this->getMockBuilder(Legacy::class)
+             ->disableOriginalConstructor()
+             ->getMock();
     }
 }
