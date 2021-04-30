@@ -94,6 +94,11 @@ html_theme = 'sphinx_rtd_theme'
 
 html_context = {
     'current_version': '5.2',
+    'versions': [
+        ('5.0', 'https://docs.oxid-esales.com/interfaces/graphql/en/5.0/'),
+        ('5.1', 'https://docs.oxid-esales.com/interfaces/graphql/en/5.1/'),
+        ('5.2', 'https://docs.oxid-esales.com/interfaces/graphql/en/5.2/')
+    ],
     'theme_logo_only': True,
     'show_sphinx': False,
     'display_github': True,
