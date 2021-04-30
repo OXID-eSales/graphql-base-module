@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Full\Quallified\Namespace\Service;
+namespace Full\Qualified\Namespace\Service;
 
 use OxidEsales\GraphQL\Storefront\Product\DataType\Product;
 use TheCodingMachine\GraphQLite\Annotations\Field;
