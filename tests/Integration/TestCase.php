@@ -14,6 +14,7 @@ use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
@@ -47,6 +48,9 @@ abstract class TestCase extends PHPUnitTestCase
 
         $requestReaderDefinition = static::$container->getDefinition(RequestReader::class);
         $requestReaderDefinition->setClass(RequestReaderStub::class);
+
+        $legacyServiceDefinition = static::$container->getDefinition(Legacy::class);
+        $legacyServiceDefinition->setClass(LegacyStub::class);
 
         $logger = new LoggerStub();
 
@@ -160,6 +164,18 @@ class ResponseWriterStub extends ResponseWriter
     public function renderJsonResponse(array $result): void
     {
         TestCase::responseCallback($result);
+    }
+}
+
+class LegacyStub extends Legacy
+{
+    public function __construct()
+    {
+    }
+
+    public function getUserGroupIds(?string $userId): array
+    {
+        return [];
     }
 }
 

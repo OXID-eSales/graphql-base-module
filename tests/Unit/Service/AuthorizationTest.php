@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
@@ -66,6 +67,8 @@ class AuthorizationTest extends TestCase
 
     public function testIsNotAllowedWithBlockedUserGroup(): void
     {
+        $this->expectException(InvalidToken::class);
+
         $legacyMock = $this->getLegacyMock();
         $legacyMock
             ->method('getUserGroupIds')
@@ -78,7 +81,7 @@ class AuthorizationTest extends TestCase
             $legacyMock
         );
 
-        $this->assertFalse($auth->isAllowed('anything'));
+        $auth->isAllowed('anything');
     }
 
     public function testIsAllowedWithPermissionsAndWithToken(): void
