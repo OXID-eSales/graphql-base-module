@@ -175,7 +175,16 @@ class LegacyStub extends Legacy
 
     public function getUserGroupIds(?string $userId): array
     {
+        if ('oxdefaultadmin' == $userId) {
+            return ['oxidadmin'];
+        }
+
         return [];
+    }
+
+    public function getShopId(): int
+    {
+        return 1;
     }
 }
 
