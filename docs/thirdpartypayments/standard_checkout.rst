@@ -32,7 +32,7 @@ The GraphQL API checkout logic centers around from the ``OxidEsales\Eshop\Applic
 as we don't have a session and therefore need a way to store a basket between requests. This
 ``EshopUserBasketModel`` will get converted into
 an ``OxidEsales\Eshop\Application\Model\Basket``  (``EshopBasketModel``  or session basket) depending on the
-query or mutations being processed. When the shop finalizes an order, he does this with an ``EshopBasketModel``.
+query or mutations being processed. When the shop finalizes an order, it does this with an ``EshopBasketModel``.
 The GraphQL API part of your module needs to prepare that ``EshopBasketModel`` session basket object for the shop to consume in
 ``OxidEsales\Eshop\Application\Model\Order::finalizeOrder()``. The payment (the actual transaction) can be handled
 by the ``\OxidEsales\Eshop\Application\Model\PaymentGateway`` same as for calls coming in via shop frontend.
