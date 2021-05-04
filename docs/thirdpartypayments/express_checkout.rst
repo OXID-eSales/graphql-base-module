@@ -18,14 +18,14 @@ with the 3rd party and all necessary information to place the order is provided 
    "Client (PWA)" -> "Storefront GraphQL API": placeOrder mutation
    "Client (PWA)" <- "Storefront GraphQL API": Order datatype or error
 
-As we have no session in the graphQL storefront to help us identify a possibly anonymous user,
+As we have no session in the GraphQL storefront to help us identify a possibly anonymous user,
 we added the possibility to the `GraphQL-Base module <https://github.com/OXID-eSales/graphql-base-module>`_
-to provide a what we call 'anonymous' token. If no username and/or password is present in the token query,
+to provide a - what we call - anonymous token. If no username and/or password is present in the token query,
 the user gets a random userid which is only present in the token but not in the shop's oxuser table.
-In the token groups claim, he will be put into (virtual group) 'oxidanonymous' and the rights to manipulate a basket
-can be given to that virtual user group.
+Users with such an anonymous token will be put in a virtual `oxidanonymous`
+group and the rights to manipulate a basket can be given to that virtual user group.
 
-.. important:: If such an anonymous user loses his JWT token, he will lose his basket.
+.. important:: If such an anonymous user loses their JWT token, they will lose the basket.
 
 **Request for an anonymous token:**
 
