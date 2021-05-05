@@ -13,6 +13,9 @@ use OxidEsales\Facts\Facts;
 use OxidEsales\GraphQL\Base\Component\Widget\GraphQL;
 use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
+/**
+ * @group oe_graphql_base
+ */
 class GraphQLCest
 {
     public function testLoginWithInvalidCredentials(AcceptanceTester $I): void
