@@ -42,6 +42,11 @@ class InvalidSignatureTest extends TestCase
                                             ->getMock();
     }
 
+    public function tearDown(): void
+    {
+        unset($_SERVER['HTTP_AUTHORIZATION']);
+    }
+
     public function testCreateTokenWithValidCredentials(): void
     {
         $this->legacyService
