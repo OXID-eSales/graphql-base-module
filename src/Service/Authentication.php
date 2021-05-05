@@ -16,6 +16,7 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\PermittedFor;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -164,7 +165,8 @@ class Authentication implements AuthenticationServiceInterface
 
         $issuedBy     = new IssuedBy($this->legacyService->getShopUrl());
         $permittedFor = new PermittedFor($this->legacyService->getShopUrl());
-        $config->setValidationConstraints($issuedBy, $permittedFor);
+        $signedWith   = new SignedWith($config->signer(), $config->verificationKey());
+        $config->setValidationConstraints($issuedBy, $permittedFor, $signedWith);
 
         return $config;
     }
