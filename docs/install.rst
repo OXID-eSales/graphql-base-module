@@ -46,8 +46,8 @@ Now you need to activate the modules, either via OXID eShop admin or CLI.
 
 .. code-block:: bash
 
-    ./bin/oe-console oe:module:activate oe_graphql_base
-    ./bin/oe-console oe:module:activate oe_graphql_storefront
+    ./vendor/bin/oe-console oe:module:activate oe_graphql_base
+    ./vendor/bin/oe-console oe:module:activate oe_graphql_storefront
 
 
 .. important::
