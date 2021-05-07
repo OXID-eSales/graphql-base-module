@@ -54,11 +54,12 @@ class Authorization implements AuthorizationServiceInterface
         $this->legacyService   = $legacyService;
     }
 
-    public function isAllowed(string $right): bool
+    public function isAllowed(string $right, $subject = null): bool
     {
         $event = new BeforeAuthorization(
             $this->token,
-            $right
+            $right,
+            $subject
         );
 
         $this->eventDispatcher->dispatch(

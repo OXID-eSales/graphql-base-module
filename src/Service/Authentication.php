@@ -23,6 +23,7 @@ use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
+use OxidEsales\GraphQL\Base\Framework\UserData;
 
 class Authentication implements AuthenticationServiceInterface
 {
@@ -81,6 +82,16 @@ class Authentication implements AuthenticationServiceInterface
         }
 
         throw InvalidToken::invalidToken();
+    }
+
+    public function getUser(): ?object
+    {
+        if(!$this->isLogged()) {
+            return null;
+        } else {
+            $userId = $this->token->claims()->get(self::CLAIM_USERID);
+            return new UserData( $userId );
+        }
     }
 
     /**

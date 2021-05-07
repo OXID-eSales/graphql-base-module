@@ -9,8 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
+use DateTimeInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Annotations\Security;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 class Login
 {
@@ -34,5 +37,23 @@ class Login
             $username,
             $password
         );
+    }
+
+    /**
+     * @Query
+     * @Security("is_granted('PRINT_STRING', stringToPrint)")
+     */
+    public function printString(string $stringToPrint): string
+    {
+        return $stringToPrint;
+    }
+
+    /**
+     * @Query()
+     * @Security("is_granted('PRINT_DATE', basketID)")
+     */
+    public function printDate(ID $basketID): string
+    {
+        return 'asd';
     }
 }

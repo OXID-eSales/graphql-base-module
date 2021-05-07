@@ -44,6 +44,10 @@ services:
     resource: 'src/Controller/'
     public: true
 
+  OxidEsales\GraphQL\Base\Service\PermissionProvider:
+    class: OxidEsales\GraphQL\Base\Service\PermissionProvider
+    tags: ['graphql_permission_provider']
+
   OxidEsales\GraphQL\Base\Service\NamespaceMapper:
     class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
     tags: ['graphql_namespace_mapper']

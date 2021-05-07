@@ -16,7 +16,7 @@
     "require": {
         "php": "^7.1",
         "ext-json": "*",
-        "thecodingmachine/graphqlite": "^3.1.2",
+        "thecodingmachine/graphqlite": "^4",
         "lcobucci/jwt": "^3.4.1",
         "symfony/cache": "^4.3.0"
     },
