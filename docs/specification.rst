@@ -10,9 +10,8 @@ General
 - entrypoint must be ``/graphql/``
 - default HTTP status code must be ``200``
 - use OXID models and create DataTypes as facades for GraphQLite
-- when the object queried does not exist, the API must respond with a ``404`` HTTP status code
-- when the object exists, but is not accessible for the current user (``oxactive`` set to 0, ``oxhidden`` set to 1 or other reasons), the API must respond with a ``401`` HTTP status code
-- when an inaccessible or non existing object is requested via a relation from another existing object it must be ignored, the resolver needs to return ``null`` in that case
+- relations to other DataTypes should be nullable (and return `null` in case the
+  requested object is not accessible or not existend)
 
 Login/Auth
 ----------
