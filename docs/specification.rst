@@ -8,7 +8,7 @@ General
 
 - the API must be a `GraphQL API as specified <https://www.graphql.org>`_
 - entrypoint must be ``/graphql/``
-- default HTTP status code must be ``200``
+- HTTP response status code must be ``200``
 - use OXID models and create DataTypes as facades for GraphQLite
 - relations to other DataTypes should be nullable (and return `null` in case the
   requested object is not accessible or not existend)
