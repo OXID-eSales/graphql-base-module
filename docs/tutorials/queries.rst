@@ -93,8 +93,8 @@ cases handling:
    :caption: src/Product/Service/Product.php
    :language: php
 
-We'll throw the ``ProductNotFound`` Exception (with a 404 error code) in case the requested
-product cannot be found in the shop. Example of Exception class:
+We'll throw the ``ProductNotFound`` Exception in case the requested product
+cannot be found in the shop. Example of Exception class:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Product/Exception/ProductNotFound.php
    :caption: src/Product/Exception/ProductNotFound.php
