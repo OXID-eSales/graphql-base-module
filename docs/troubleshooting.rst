@@ -54,7 +54,7 @@ Graphql schema appears incomplete
 
 Your client's introspection requests get the available schema based upon your access rights. Make sure you are logged in and using the correct token in the ``Authorization`` header.
 
-If you're having trouble finding admin panel requests, this could also be caused by insufficient account rights,
+If you're having trouble finding admin panel requests, this could also be caused by insufficient account rights.
 
 .. note::
 
