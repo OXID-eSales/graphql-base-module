@@ -24,8 +24,6 @@ When error occur in GraphQL, the server adds an ``errors`` entry in the response
 
 You can read more about `GraphQL errors in the official spec <http://spec.graphql.org/June2018/#sec-Errors>`_.
 
-In most cases the HTTP status code will also reflect the error condition. So for example it will be ``404`` in case something was not found.
-
 .. toctree::
         :titlesonly:
         :maxdepth: 1
