@@ -172,7 +172,10 @@ class Authentication implements AuthenticationServiceInterface
         return $config;
     }
 
-    public function getUser(): Token
+    /**
+     * @return Token
+     */
+    public function getUser(): ?object
     {
         $logged = false;
 
