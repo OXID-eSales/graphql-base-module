@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
+use Exception;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -171,13 +172,20 @@ class Authentication implements AuthenticationServiceInterface
         return $config;
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
-    public function getUser(): ?object
+    public function getUser(): Token
     {
-        // TODO: Implement getUser() method.
-        return null;
+        $logged = false;
+
+        try {
+            $logged = $this->isLogged();
+        } catch (Exception $e) {
+        }
+
+        if ($logged || $this->token instanceof NullToken) {
+            return $this->token;
+        }
+
+        return new NullToken();
     }
 
     /**

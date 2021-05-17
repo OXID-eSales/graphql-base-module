@@ -99,9 +99,14 @@ class AuthenticationTest extends TestCase
             $authenticationService->isLogged();
         } catch (InvalidToken $e) {
         }
+
         $this->assertInstanceOf(
             InvalidToken::class,
             $e
+        );
+        $this->assertInstanceOf(
+            NullToken::class,
+            $authenticationService->getUser()
         );
     }
 
@@ -116,6 +121,11 @@ class AuthenticationTest extends TestCase
 
         $this->assertFalse(
             $authenticationService->isLogged()
+        );
+
+        $this->assertInstanceOf(
+            NullToken::class,
+            $authenticationService->getUser()
         );
     }
 
@@ -165,6 +175,11 @@ class AuthenticationTest extends TestCase
         );
 
         $this->assertTrue($authenticationService->isLogged());
+
+        $this->assertSame(
+            self::$token,
+            $authenticationService->getUser()
+        );
     }
 
     /**
