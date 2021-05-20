@@ -10,3 +10,4 @@ Events
         BeforeTokenCreation
         BeforeBasketPayments
         BeforePlaceOrder
+        BeforeRemoveItem
