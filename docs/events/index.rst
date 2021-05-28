@@ -11,3 +11,4 @@ Events
         BeforeBasketPayments
         BeforePlaceOrder
         BeforeRemoveItem
+        BasketAuthorization

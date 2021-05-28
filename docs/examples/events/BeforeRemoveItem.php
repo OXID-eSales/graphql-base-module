@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Full\Qualified\Namespace;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
-use OxidEsales\GraphQL\Storefront\Basket\Event\BeforePlaceOrder;
+use OxidEsales\GraphQL\Storefront\Basket\Event\BeforeRemoveItem;
 
 class DeveloperBeforeRemoveItemEventSubscriber extends AbstractShopAwareEventSubscriber
 {
