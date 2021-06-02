@@ -1,0 +1,9 @@
+services:
+
+    _defaults:
+        public: false
+        autowire: true
+
+    Full\Qualified\Namespace\DeveloperAfterAddItemEventSubscriber:
+        class: Full\Qualified\Namespace\DeveloperAfterAddItemEventSubscriber
+        tags: ['kernel.event_subscriber']
