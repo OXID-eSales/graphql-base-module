@@ -178,6 +178,24 @@ class RequestReaderTest extends TestCase
         unset($_SERVER['CONTENT_TYPE']);
     }
 
+    public function testGetGraphQLRequestDataWithFileInput(): void
+    {
+        $requestReader           = new RequestReader($this->getLegacyMock());
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
+        $_POST['map']            = '{}';
+        $_POST['operations']     = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
+
+        $this->assertSame(
+            [
+                'query'         => 'query anonymous {token}',
+                'variables'     => ['file' => null],
+                'operationName' => 'anonymous',
+            ],
+            $requestReader->getGraphQLRequestData()
+        );
+        unset($_SERVER['CONTENT_TYPE'], $_POST['map'], $_POST['operations']);
+    }
+
     // phpcs:enable
 
     private function getLegacyMock(): Legacy
