@@ -13,7 +13,7 @@ use OxidEsales\GraphQL\Base\Exception\ErrorCategories;
 use OxidEsales\GraphQL\Base\Exception\FileUploadException;
 use PHPUnit\Framework\TestCase;
 
-class FileUploadExceptionTest extends TestCase
+final class FileUploadExceptionTest extends TestCase
 {
     public function testMaxFileSizeExceed(): void
     {
