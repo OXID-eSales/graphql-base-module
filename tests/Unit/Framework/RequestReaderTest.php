@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use Exception;
+use GraphQL\Error\InvariantViolation;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
@@ -164,6 +165,35 @@ class RequestReaderTest extends TestCase
             $requestReader->getGraphQLRequestData()
         );
         unset($_SERVER['CONTENT_TYPE'], $_REQUEST['query'], $_REQUEST['variables'], $_REQUEST['operationName']);
+    }
+
+    public function testGetGraphQLRequestDataWithInvalidFileInput(): void
+    {
+        $this->expectException(InvariantViolation::class);
+        $requestReader           = new RequestReader($this->getLegacyMock());
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
+
+        $requestReader->getGraphQLRequestData();
+
+        unset($_SERVER['CONTENT_TYPE']);
+    }
+
+    public function testGetGraphQLRequestDataWithFileInput(): void
+    {
+        $requestReader           = new RequestReader($this->getLegacyMock());
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
+        $_POST['map']            = '{}';
+        $_POST['operations']     = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
+
+        $this->assertSame(
+            [
+                'query'         => 'query anonymous {token}',
+                'variables'     => ['file' => null],
+                'operationName' => 'anonymous',
+            ],
+            $requestReader->getGraphQLRequestData()
+        );
+        unset($_SERVER['CONTENT_TYPE'], $_POST['map'], $_POST['operations']);
     }
 
     // phpcs:enable
