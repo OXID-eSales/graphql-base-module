@@ -7,11 +7,12 @@
         "excludes": [
             "Component",
             "Service/NamespaceMapper.php",
-            "Infrastructure/Legacy.php"
+            "Infrastructure/Legacy.php",
+            "Event/Subscriber/ModuleChangeSubscriber.php"
         ]
     },
     "phpUnit": {
-        "configDir": "tests"
+        "configDir": ".infection"
     },
     "logs": {
         "text": "infection.log"
@@ -25,20 +26,11 @@
         },
         "@number": {
             "ignore": [
-                "OxidEsales\\GraphQL\\Base\\Service\\KeyRegistry::generateSignatureKey"
+                "OxidEsales\\GraphQL\\Base\\Service\\KeyRegistry::generateSignatureKey",
+                "OxidEsales\\GraphQL\\Base\\Exception\\*"
             ]
         },
         "IntegerNegation": {
-            "ignore": [
-                "OxidEsales\\GraphQL\\Base\\Exception\\*"
-            ]
-        },
-        "DecrementInteger": {
-            "ignore": [
-                "OxidEsales\\GraphQL\\Base\\Exception\\*"
-            ]
-        },
-        "IncrementInteger": {
             "ignore": [
                 "OxidEsales\\GraphQL\\Base\\Exception\\*"
             ]
@@ -51,6 +43,32 @@
         "LogicalAnd": {
             "ignore": [
                 "OxidEsales\\GraphQL\\Base\\DataType\\PaginationFilter::addPaginationToQuery"
+            ]
+        },
+        "MethodCallRemoval": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\DataType\\IntegerFilter::addToQuery",
+                "OxidEsales\\GraphQL\\Base\\Service\\Authentication::createToken"
+            ]
+        },
+        "UnwrapStrToUpper": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\DataType\\IntegerFilter::addToQuery"
+            ]
+        },
+        "UnwrapArrayChangeKeyCase": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Framework\\RequestReader::getAuthorizationHeader"
+            ]
+        },
+        "UnwrapTrim": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Framework\\RequestReader::getAuthorizationHeader"
+            ]
+        },
+        "FunctionCall": {
+            "ignore": [
+                "OxidEsales\\GraphQL\\Base\\Framework\\RequestReader::getAuthorizationHeader"
             ]
         }
     }

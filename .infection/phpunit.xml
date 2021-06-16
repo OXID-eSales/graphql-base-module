@@ -1,0 +1,30 @@
+<phpunit backupGlobals="true"
+         backupStaticAttributes="false"
+         cacheTokens="true"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
+         processIsolation="false"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         verbose="false">
+    <testsuites>
+        <testsuite name="UnitTests">
+            <directory>../tests/Unit/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true"
+                   processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src</directory>
+            <directory suffix=".php">../tests/Integration/Framework/Controller/</directory>
+            <directory suffix=".php">../tests/Integration/Framework/DataType/</directory>
+            <directory suffix=".php">../tests/Integration/Framework/Service/</directory>
+        </whitelist>
+    </filter>
+</phpunit>
