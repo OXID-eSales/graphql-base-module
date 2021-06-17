@@ -88,7 +88,7 @@ Authorization: Bearer a-very-long-jwt
 
 The information on extending any module can be found in the [OXID eSales documentation](https://docs.oxid-esales.com).
 
-How to extend GraphQL module types and implement your new mutations and queries is shown in [OXID GraphQL API documentation](https://docs.oxid-esales.com/modules/graphql/en/5.2/tutorials/index.html).
+How to extend GraphQL module types and implement your new mutations and queries is shown in [OXID GraphQL API documentation](https://docs.oxid-esales.com/interfaces/graphql/en/5.2/tutorials/index.html).
 
 ## Testing
 
