@@ -83,7 +83,7 @@ abstract class MultishopTestCase extends EnterpriseTestCase
     protected function cleanupCachedRegistry(): void
     {
         Registry::getConfig()->reinitialize();
-        $utilsObject = new \OxidEsales\Eshop\Core\UtilsObject();
+        $utilsObject = \OxidEsales\Eshop\Core\UtilsObject::getInstance();
         $utilsObject->resetInstanceCache();
 
         $keepThese = [
