@@ -9,6 +9,7 @@ Events
         BeforeAuthorization
         BeforeTokenCreation
         BeforeBasketPayments
+        BeforeBasketDeliveryMethods
         BeforePlaceOrder
         BeforeRemoveItem
         BasketAuthorization
