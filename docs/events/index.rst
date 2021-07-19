@@ -12,3 +12,4 @@ Events
         BeforeBasketDeliveryMethods
         BeforePlaceOrder
         BeforeRemoveItem
+        BeforeAddItem
