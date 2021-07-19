@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Full\Qualified\Namespace;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
-use OxidEsales\GraphQL\Storefront\Basket\Event\AfterAddItem;
+use OxidEsales\GraphQL\Storefront\Basket\Event\BeforeAddItem;
 
-class DeveloperAfterAddItemEventSubscriber extends AbstractShopAwareEventSubscriber
+class DeveloperBeforeAddItemEventSubscriber extends AbstractShopAwareEventSubscriber
 {
-    public function handle(AfterAddItem $event): AfterAddItem
+    public function handle(BeforeAddItem $event): BeforeAddItem
     {
         //get the user basket id from event
         $userBasketId = (string) $event->getBasketId();
@@ -28,7 +28,7 @@ class DeveloperAfterAddItemEventSubscriber extends AbstractShopAwareEventSubscri
     public static function getSubscribedEvents()
     {
         return [
-            'OxidEsales\GraphQL\Storefront\Basket\Event\AfterAddItem' => 'handle'
+            'OxidEsales\GraphQL\Storefront\Basket\Event\BeforeAddItem' => 'handle'
         ];
     }
 }
