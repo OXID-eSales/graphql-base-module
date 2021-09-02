@@ -12,8 +12,9 @@ namespace OxidEsales\GraphQL\Base\Framework;
 use Exception;
 use GraphQL\Upload\UploadMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
@@ -57,7 +58,7 @@ class RequestReader
         }
 
         try {
-            $token = (new Parser())->parse($jwt);
+            $token = (new Parser(new JoseEncoder()))->parse($jwt);
         } catch (Exception $e) {
             throw InvalidToken::unableToParse();
         }

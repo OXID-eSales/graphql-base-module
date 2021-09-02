@@ -14,7 +14,8 @@ use Codeception\Module;
 use Codeception\Module\REST;
 use Exception;
 use InvalidArgumentException;
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token\Parser;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\AssertionFailedError;
 
@@ -115,7 +116,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function seeResponseContainsValidJWTToken(): void
     {
-        $parser = new Parser();
+        $parser = new Parser(new JoseEncoder());
         $token  = $this->grabTokenFromResponse();
 
         try {

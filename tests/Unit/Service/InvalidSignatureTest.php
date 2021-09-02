@@ -85,7 +85,7 @@ class InvalidSignatureTest extends TestCase
              ->method('getShopId')
              ->willReturn(1);
 
-        $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . substr((string) self::$token, 0, -10);
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . substr((self::$token)->toString(), 0, -10);
 
         $requestReader = new RequestReader($this->legacyService);
         $token         = $requestReader->getAuthToken();

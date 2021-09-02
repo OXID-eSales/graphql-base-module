@@ -30,9 +30,9 @@ class Login
      */
     public function token(?string $username = null, ?string $password = null): string
     {
-        return (string) $this->authentication->createToken(
+        return $this->authentication->createToken(
             $username,
             $password
-        );
+        )->toString();
     }
 }

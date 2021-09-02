@@ -9,8 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Token\Parser;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\Plain as PlainToken;
+use Lcobucci\JWT\Decoder;
+use Lcobucci\JWT\Token\Signature;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
@@ -30,7 +34,7 @@ class AuthenticationTest extends TestCase
     protected static $anonymousToken = null;
 
     // phpcs:disable
-    protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+    protected static $invalidToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImlzcyI6Imh0dHA6Ly93d3cub3hpZC1lc2hvcC5sb2NhbC8ifQ.eyJpc3MiOiJodHRwOi8vd3d3Lm94aWQtZXNob3AubG9jYWwvIiwiYXVkIjoiaHR0cDovL3d3dy5veGlkLWVzaG9wLmxvY2FsLyIsImlhdCI6MTYzMDkyNTMxOC43MTU2MzMsIm5iZiI6MTYzMDkyNTMxOC43MTU2MzMsImV4cCI6MTYzMDk1NDExOC43MTU2NCwic2hvcGlkIjoxLCJ1c2VybmFtZSI6InVzZXJAb3hpZC1lc2FsZXMuY29tIiwidXNlcmlkIjoiNzJlZDg3OTRkNDI3M2I5Yzc1Y2VjMjMyZTc0OTljN2QifQ.Xj5zRXKr3dPhXyGgbeGrFAn7UzXbhqrvS2b-oVrqgz0-Dmmx6LAup4tkeFo3guqa6uGa-5QDT6YheUU902pzYA';
 
     // phpcs:enable
 
@@ -89,7 +93,7 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            (new Parser())->parse(self::$invalidToken),
+            (new Parser(new JoseEncoder()))->parse(self::$invalidToken),
             new EventDispatcher()
         );
 
@@ -395,7 +399,7 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new Token(),
+            $this->getTestToken(),
             new EventDispatcher()
         );
 
@@ -560,5 +564,21 @@ class AuthenticationTest extends TestCase
             new NullToken(),
             new EventDispatcher()
         );
+    }
+
+    private function getTestToken(): Token
+    {
+        $signature = new Signature('the_hash', '');
+        $headers = new Token\DataSet([], '');
+        $claims = new Token\DataSet(
+            [
+                Authentication::CLAIM_USERNAME => 'testuser',
+            ],
+            ''
+        );
+
+        $token = new PlainToken($headers, $claims, $signature);
+
+        return $token;
     }
 }

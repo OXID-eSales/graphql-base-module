@@ -21,7 +21,7 @@ use PHPUnit\Framework\TestCase;
 class RequestReaderTest extends TestCase
 {
     // phpcs:disable
-    protected static $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
+    protected static $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImlzcyI6Imh0dHA6Ly93d3cub3hpZC1lc2hvcC5sb2NhbC8ifQ.eyJpc3MiOiJodHRwOi8vd3d3Lm94aWQtZXNob3AubG9jYWwvIiwiYXVkIjoiaHR0cDovL3d3dy5veGlkLWVzaG9wLmxvY2FsLyIsImlhdCI6MTYzMDkyNTMxOC43MTU2MzMsIm5iZiI6MTYzMDkyNTMxOC43MTU2MzMsImV4cCI6MTYzMDk1NDExOC43MTU2NCwic2hvcGlkIjoxLCJ1c2VybmFtZSI6InVzZXJAb3hpZC1lc2FsZXMuY29tIiwidXNlcmlkIjoiNzJlZDg3OTRkNDI3M2I5Yzc1Y2VjMjMyZTc0OTljN2QifQ.Xj5zRXKr3dPhXyGgbeGrFAn7UzXbhqrvS2b-oVrqgz0-Dmmx6LAup4tkeFo3guqa6uGa-5QDT6YheUU902pzYA';
 
     public function testGetAuthTokenWithoutToken(): void
     {

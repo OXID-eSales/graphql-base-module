@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\Plain as PlainToken;
+use Lcobucci\JWT\Token\Signature;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
@@ -169,6 +171,8 @@ class AuthorizationTest extends TestCase
 
     private function getTokenMock(): Token
     {
+        $signature = new Signature('the_hash', '');
+        $headers = new Token\DataSet([], '');
         $claims = new Token\DataSet(
             [
                 Authentication::CLAIM_USERNAME => 'testuser',
@@ -176,8 +180,7 @@ class AuthorizationTest extends TestCase
             ''
         );
 
-        $token = $this->getMockBuilder(Token::class)->getMock();
-        $token->method('claims')->willReturn($claims);
+        $token = new PlainToken($headers, $claims, $signature);
 
         return $token;
     }
@@ -229,3 +232,4 @@ class AuthorizationTest extends TestCase
         return $legacyMock;
     }
 }
+

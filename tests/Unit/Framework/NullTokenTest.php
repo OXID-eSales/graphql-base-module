@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use PHPUnit\Framework\TestCase;
+use DateTimeImmutable;
 
 class NullTokenTest extends TestCase
 {
@@ -18,7 +19,7 @@ class NullTokenTest extends TestCase
     {
         $token = new NullToken();
         $this->assertFalse(
-            $token->isExpired()
+            $token->isExpired(new DateTimeImmutable('now'))
         );
     }
 }

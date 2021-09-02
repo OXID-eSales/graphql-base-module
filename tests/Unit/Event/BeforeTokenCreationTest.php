@@ -10,6 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Event;
 
 use Lcobucci\JWT\Builder;
+use Lcobucci\JWT\Configuration as JWTConfiguration;
+use Lcobucci\JWT\Signer\Hmac\Sha512;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Framework\UserData;
 use PHPUnit\Framework\TestCase;
@@ -20,8 +23,13 @@ class BeforeTokenCreationTest extends TestCase
     {
         $userId = 'user-id';
 
+        $config = JWTConfiguration::forSymmetricSigner(
+            new Sha512(),
+            InMemory::plainText('some_fake_key')
+        );
+
         $event = new BeforeTokenCreation(
-            new Builder(),
+            $config->builder(),
             new UserData($userId)
         );
 
