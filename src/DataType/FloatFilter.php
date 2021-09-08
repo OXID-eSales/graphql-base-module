@@ -29,11 +29,11 @@ class FloatFilter implements FilterInterface
     /** @var ?float */
     private $greaterThan;
 
-    /** @var array{0: float, 1: float}|null */
+    /** @var null|array{0: float, 1: float} */
     private $between;
 
     /**
-     * @param array{0: float, 1: float}|null $between
+     * @param null|array{0: float, 1: float} $between
      */
     public function __construct(
         ?float $equals = null,
@@ -71,7 +71,7 @@ class FloatFilter implements FilterInterface
     }
 
     /**
-     * @return array{0: float, 1: float}|null
+     * @return null|array{0: float, 1: float}
      */
     public function between(): ?array
     {
