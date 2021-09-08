@@ -13,8 +13,6 @@ jobs:
         strategy:
             matrix:
                 php:
-                    - "7.1"
-                    - "7.2"
                     - "7.3"
                     - "7.4"
                 env:
@@ -71,7 +69,6 @@ jobs:
               run: composer test:static
 
             - uses: satackey/action-docker-layer-caching@v0.0.11
-              if: ${{ matrix.php != '7.1' && env.DEPENDENCIES == '' }}
               continue-on-error: true
               with:
                   key: docker-layer-caching-${{ github.workflow }}-${{ matrix.php }}-{hash}
@@ -79,7 +76,6 @@ jobs:
                       docker-layer-caching-${{ github.workflow }}-${{ matrix.php }}-
 
             - name: Build docker for 6.3.x
-              if: ${{ matrix.php != '7.1' &&  matrix.php != '7.2' && env.DEPENDENCIES == '' }}
               run: |
                   cd /home/runner/work/
                   git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git
@@ -95,25 +91,7 @@ jobs:
                   sleep 10
                   make reset-db
 
-            -   name: Build docker for 6.2.x
-                if: ${{ matrix.php == '7.2' && matrix.env=='DEPENDENCIES=" --prefer-lowest"' }}
-                run: |
-                    cd /home/runner/work/
-                    git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git
-                    cd docker-eshop-sdk
-                    make .env
-                    sed "s/PHP_VERSION=.*/PHP_VERSION=${{ matrix.php }}/" -i .env
-                    git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.2.x --single-branch data/oxideshop
-                    mkdir data/oxideshop/debug
-                    make permissions
-                    make data/oxideshop/vendor/
-                    make data/oxideshop/source/config.inc.php
-                    docker-compose up -d php
-                    sleep 10
-                    make reset-db
-
             - name: Prepare shop and run codeception in docker
-              if: ${{ matrix.php != '7.1' && ((matrix.php != '7.2' && matrix.env == 'DEPENDENCIES=""') || (matrix.php == '7.2'  && matrix.env == 'DEPENDENCIES=" --prefer-lowest"' )) }}
               run: |
                   cd /home/runner/work/docker-eshop-sdk/data/oxideshop/
                   cp -r $GITHUB_WORKSPACE graphql-base-module
@@ -130,7 +108,6 @@ jobs:
                   cp vendor/oxid-esales/graphql-base/tests/Codeception/_output/OxidEsales.GraphQL.Base.Tests.Codeception.acceptance.remote.coverage.xml $GITHUB_WORKSPACE/coverage.xml
 
             - name: SonarCloud Scan
-              if: ${{ matrix.php != '7.1' && env.DEPENDENCIES == '' }}
               uses: sonarsource/sonarcloud-github-action@master
               env:
                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

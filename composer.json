@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "php": "^7.1",
+        "php": "^7.3",
         "ext-json": "*",
         "thecodingmachine/graphqlite": "^3.1.2",
         "lcobucci/jwt": "^3.4.1",
@@ -26,8 +26,8 @@
         "phpstan/phpstan": "^0.12.26",
         "friendsofphp/php-cs-fixer": "^2.18.2",
         "infection/infection": "0.13",
-        "oxid-esales/oxideshop-ce": "6.7.2",
-        "oxid-esales/oxideshop-unified-namespace-generator": "v2.2.0"
+        "oxid-esales/oxideshop-ce": "dev-b-6.3.x",
+        "oxid-esales/oxideshop-unified-namespace-generator": "^v2.2.0|dev-b-6.3.x"
     },
     "autoload": {
         "psr-4": {
