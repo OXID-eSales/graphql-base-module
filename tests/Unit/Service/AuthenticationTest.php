@@ -25,9 +25,9 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AuthenticationTest extends TestCase
 {
-    protected static $token = null;
+    protected static $token;
 
-    protected static $anonymousToken = null;
+    protected static $anonymousToken;
 
     // phpcs:disable
     protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';

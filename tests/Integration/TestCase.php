@@ -24,13 +24,13 @@ use ReflectionClass;
 
 abstract class TestCase extends PHPUnitTestCase
 {
-    protected static $queryResult = null;
+    protected static $queryResult;
 
-    protected static $logResult = null;
+    protected static $logResult;
 
-    protected static $container = null;
+    protected static $container;
 
-    protected static $query = null;
+    protected static $query;
 
     protected function setUp(): void
     {

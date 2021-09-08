@@ -22,7 +22,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class InvalidSignatureTest extends TestCase
 {
-    protected static $token = null;
+    protected static $token;
 
     /** @var KeyRegistry|MockObject */
     private $keyRegistry;
