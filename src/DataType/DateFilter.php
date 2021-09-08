@@ -30,11 +30,11 @@ class DateFilter implements FilterInterface
     /** @var ?DateTimeInterface */
     private $equals;
 
-    /** @var array{0: DateTimeInterface, 1: DateTimeInterface}|null */
+    /** @var null|array{0: DateTimeInterface, 1: DateTimeInterface} */
     private $between;
 
     /**
-     * @param array{0: DateTimeInterface, 1: DateTimeInterface}|null $between
+     * @param null|array{0: DateTimeInterface, 1: DateTimeInterface} $between
      */
     public function __construct(
         ?DateTimeInterface $equals = null,
@@ -56,7 +56,7 @@ class DateFilter implements FilterInterface
     }
 
     /**
-     * @return array{0: DateTimeInterface, 1: DateTimeInterface}|null
+     * @return null|array{0: DateTimeInterface, 1: DateTimeInterface}
      */
     public function between(): ?array
     {

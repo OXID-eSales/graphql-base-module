@@ -28,11 +28,11 @@ class IntegerFilter implements FilterInterface
     /** @var ?int */
     private $greaterThan;
 
-    /** @var array{0: int, 1: int}|null */
+    /** @var null|array{0: int, 1: int} */
     private $between;
 
     /**
-     * @param array{0: int, 1: int}|null $between
+     * @param null|array{0: int, 1: int} $between
      */
     public function __construct(
         ?int $equals = null,
@@ -70,7 +70,7 @@ class IntegerFilter implements FilterInterface
     }
 
     /**
-     * @return array{0: int, 1: int}|null
+     * @return null|array{0: int, 1: int}
      */
     public function between(): ?array
     {
