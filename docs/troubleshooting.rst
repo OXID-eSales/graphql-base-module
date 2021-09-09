@@ -3,21 +3,31 @@
 Troubleshooting
 ===============
 
-Apache HTTP Authorization
+Authorization (Apache)
 -------------------------
 
-``php-cgi`` under Apache does not pass HTTP Basic user/pass to PHP by default. For this workaround to work, add these lines to your .htaccess file:
+| If ``@Logged`` marked queries and mutations aren't callable, but the authorization token is set and valid, then this is an indication that the Apache server removes the authorization header.
+| See the screenshot below for the typical behavior:
 
-.. code-block:: apache
+.. image:: media/pictures/graphQlAuth.jpg
+  :width: 400
+  :alt: Alternative text
 
-    RewriteCond %{HTTP:Authorization} ^(.+)$
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+As a workaround you can add one of the two following examples (which of the two suits your requirement best) to your
+webserver configuration or to the ``.htaccess`` file of the shop.
 
-or
+1)
 
-.. code-block:: apache
+  .. code-block:: apache
 
-    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+      RewriteCond %{HTTP:Authorization} ^(.+)$
+      RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+2)
+
+  .. code-block:: apache
+
+      SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 
 Query String gets swallowed
 ---------------------------
