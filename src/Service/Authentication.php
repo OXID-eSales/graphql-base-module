@@ -198,4 +198,9 @@ class Authentication implements AuthenticationServiceInterface
 
         return true;
     }
+
+    public function getUser(): ?object
+    {
+        // TODO: Implement getUser() method.
+    }
 }
