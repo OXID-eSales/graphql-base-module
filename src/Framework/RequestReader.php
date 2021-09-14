@@ -10,8 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use Exception;
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Token;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
@@ -40,7 +41,7 @@ class RequestReader
      *
      * @throws InvalidToken
      */
-    public function getAuthToken(): ?Token
+    public function getAuthToken(): Token
     {
         $token      = new NullToken();
         $authHeader = $this->getAuthorizationHeader();
@@ -55,7 +56,12 @@ class RequestReader
         }
 
         try {
-            $token = (new Parser())->parse($jwt);
+            /** @var Configuration $jwtConfiguration */
+            $jwtConfiguration = ContainerFactory::getInstance()
+                ->getContainer()
+                ->get(Configuration::class);
+
+            $token = $jwtConfiguration->parser()->parse($jwt);
         } catch (Exception $e) {
             throw InvalidToken::unableToParse();
         }

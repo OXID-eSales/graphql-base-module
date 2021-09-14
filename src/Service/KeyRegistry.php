@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use OxidEsales\Eshop\Core\Registry;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 
@@ -27,13 +30,13 @@ class KeyRegistry
 {
     public const SIGNATUREKEYNAME = 'sJsonWebTokenSignature';
 
-    /** @var LegacyService */
-    private $legacyService;
+    /** @var ModuleSettingBridgeInterface */
+    private $moduleSettingBridge;
 
     public function __construct(
-        LegacyService $legacyService
+        ModuleSettingBridgeInterface $moduleSettingBridge
     ) {
-        $this->legacyService = $legacyService;
+        $this->moduleSettingBridge = $moduleSettingBridge;
     }
 
     public function generateSignatureKey(): string
@@ -46,8 +49,7 @@ class KeyRegistry
      */
     public function getSignatureKey(): string
     {
-        // TODO: legacy wrapper
-        $signature = $this->legacyService->getConfigParam(static::SIGNATUREKEYNAME);
+        $signature = $this->moduleSettingBridge->get(static::SIGNATUREKEYNAME, 'oe_graphql_base');
 
         if (!is_string($signature)) {
             throw MissingSignatureKey::wrongType();

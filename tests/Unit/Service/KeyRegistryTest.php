@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
@@ -19,10 +20,8 @@ class KeyRegistryTest extends TestCase
 {
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
     {
-        $legacyMock  = $this->getMockBuilder(LegacyService::class)
-                            ->disableOriginalConstructor()
-                            ->getMock();
-        $keyRegistry = new KeyRegistry($legacyMock);
+        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $keyRegistry = new KeyRegistry($moduleSettingBridgeMock);
         $iterations  = 5;
         $keys        = [];
 
@@ -65,13 +64,10 @@ class KeyRegistryTest extends TestCase
      */
     public function testGetSignatureKeyWithInvalidOrNoSignature($signature, bool $valid): void
     {
-        $legacyMock = $this->getMockBuilder(LegacyService::class)
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $legacyMock->method('getConfigParam')
-               ->with(KeyRegistry::SIGNATUREKEYNAME)
-               ->willReturn($signature);
-        $keyRegistry = new KeyRegistry($legacyMock);
+        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('get')->willReturn($signature);
+
+        $keyRegistry = new KeyRegistry($moduleSettingBridgeMock);
         $e           = null;
         $sig         = null;
 

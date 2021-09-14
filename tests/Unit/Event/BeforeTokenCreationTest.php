@@ -20,8 +20,10 @@ class BeforeTokenCreationTest extends TestCase
     {
         $userId = 'user-id';
 
+        $builderMock = $this->getMockBuilder(Builder::class)->getMock();
+
         $event = new BeforeTokenCreation(
-            new Builder(),
+            $builderMock,
             new UserData($userId)
         );
 

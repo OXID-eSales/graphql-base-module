@@ -9,8 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\Token\Parser;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
@@ -89,7 +90,7 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            (new Parser())->parse(self::$invalidToken),
+            (new Parser(new JoseEncoder()))->parse(self::$invalidToken),
             new EventDispatcher()
         );
 
@@ -380,7 +381,7 @@ class AuthenticationTest extends TestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new Token(),
+            new NullToken(),
             new EventDispatcher()
         );
 

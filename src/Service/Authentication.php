@@ -11,12 +11,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Hmac\Sha512;
-use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Token;
-use Lcobucci\JWT\Validation\Constraint\IssuedBy;
-use Lcobucci\JWT\Validation\Constraint\PermittedFor;
-use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -111,10 +106,12 @@ class Authentication implements AuthenticationServiceInterface
             $event
         );
 
-        return $event->getBuilder()->getToken(
+        $token = $event->getBuilder()->getToken(
             $config->signer(),
             $config->signingKey()
         );
+
+        return $token;
     }
 
     /**
@@ -158,17 +155,12 @@ class Authentication implements AuthenticationServiceInterface
 
     public function getConfig(): Configuration
     {
-        $config = Configuration::forSymmetricSigner(
-            new Sha512(),
-            InMemory::plainText($this->keyRegistry->getSignatureKey())
+        $configBuilder = new JwtConfigurationBuilder(
+            $this->keyRegistry,
+            $this->legacyService
         );
 
-        $issuedBy     = new IssuedBy($this->legacyService->getShopUrl());
-        $permittedFor = new PermittedFor($this->legacyService->getShopUrl());
-        $signedWith   = new SignedWith($config->signer(), $config->verificationKey());
-        $config->setValidationConstraints($issuedBy, $permittedFor, $signedWith);
-
-        return $config;
+        return $configBuilder->getConfiguration();
     }
 
     /**

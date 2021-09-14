@@ -16,9 +16,10 @@ class NullTokenTest extends TestCase
 {
     public function testNotExpired(): void
     {
+        $now = new \DateTime();
         $token = new NullToken();
         $this->assertFalse(
-            $token->isExpired()
+            $token->isExpired($now)
         );
     }
 }
