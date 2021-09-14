@@ -195,6 +195,10 @@ class Authentication implements AuthenticationServiceInterface
         if ($token->claims()->get(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
             return false;
         }
+        
+        if ($token->claims()->get('exp') < new DateTimeImmutable('now')) {
+            return false;
+        }
 
         return true;
     }
