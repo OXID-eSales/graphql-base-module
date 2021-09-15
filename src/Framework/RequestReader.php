@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 use Exception;
 use Lcobucci\JWT\Configuration;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -55,12 +56,13 @@ class RequestReader
             return $token;
         }
 
-        try {
-            /** @var Configuration $jwtConfiguration */
-            $jwtConfiguration = ContainerFactory::getInstance()
-                ->getContainer()
-                ->get(Configuration::class);
+        /** @var Configuration $jwtConfiguration */
+        $jwtConfiguration = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(JwtConfigurationBuilder::class)
+            ->getConfiguration();
 
+        try {
             $token = $jwtConfiguration->parser()->parse($jwt);
         } catch (Exception $e) {
             throw InvalidToken::unableToParse();
