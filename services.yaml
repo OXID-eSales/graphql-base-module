@@ -26,6 +26,9 @@ services:
     class: OxidEsales\GraphQL\Base\Service\KeyRegistry
     public: true
 
+  OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder:
+      class: OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder
+
   Lcobucci\JWT\UnencryptedToken:
     factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReader', 'getAuthToken']
 
