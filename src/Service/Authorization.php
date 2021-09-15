@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use Lcobucci\JWT\Token;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
@@ -28,7 +28,7 @@ class Authorization implements AuthorizationServiceInterface
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var Token */
+    /** @var UnencryptedToken */
     private $token;
 
     /** @var LegacyService */
@@ -40,7 +40,7 @@ class Authorization implements AuthorizationServiceInterface
     public function __construct(
         iterable $permissionProviders,
         EventDispatcherInterface $eventDispatcher,
-        Token $token,
+        UnencryptedToken $token,
         LegacyService $legacyService
     ) {
         foreach ($permissionProviders as $permissionProvider) {

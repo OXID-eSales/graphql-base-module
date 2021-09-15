@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 use Exception;
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Token;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
@@ -41,7 +41,7 @@ class RequestReader
      *
      * @throws InvalidToken
      */
-    public function getAuthToken(): Token
+    public function getAuthToken(): UnencryptedToken
     {
         $token      = new NullToken();
         $authHeader = $this->getAuthorizationHeader();

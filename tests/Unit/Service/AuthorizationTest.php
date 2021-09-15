@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
@@ -167,7 +168,7 @@ class AuthorizationTest extends TestCase
         );
     }
 
-    private function getTokenMock(): Token
+    private function getTokenMock(): UnencryptedToken
     {
         $claims = new Token\DataSet(
             [
@@ -176,7 +177,7 @@ class AuthorizationTest extends TestCase
             ''
         );
 
-        $token = $this->getMockBuilder(Token::class)->getMock();
+        $token = $this->getMockBuilder(UnencryptedToken::class)->getMock();
         $token->method('claims')->willReturn($claims);
 
         return $token;

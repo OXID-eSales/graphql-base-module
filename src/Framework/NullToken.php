@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use DateTimeInterface;
-use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Token\DataSet;
 use Lcobucci\JWT\Token\RegisteredClaims;
 use Lcobucci\JWT\Token\Signature;
+use Lcobucci\JWT\UnencryptedToken;
 
-class NullToken implements Token
+class NullToken implements UnencryptedToken
 {
     private $headers;
     private $claims;

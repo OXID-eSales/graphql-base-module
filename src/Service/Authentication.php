@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Token;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -34,7 +34,7 @@ class Authentication implements AuthenticationServiceInterface
     /** @var LegacyService */
     private $legacyService;
 
-    /** @var Token */
+    /** @var UnencryptedToken */
     private $token;
 
     /** @var EventDispatcherInterface */
@@ -43,7 +43,7 @@ class Authentication implements AuthenticationServiceInterface
     public function __construct(
         KeyRegistry $keyRegistry,
         LegacyService $legacyService,
-        Token $token,
+        UnencryptedToken $token,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->keyRegistry     = $keyRegistry;
@@ -82,7 +82,7 @@ class Authentication implements AuthenticationServiceInterface
     /**
      * @throws InvalidLogin
      */
-    public function createToken(?string $username = null, ?string $password = null): Token
+    public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
     {
         $userData  = $this->legacyService->login($username, $password);
         $time      = new DateTimeImmutable('now');
@@ -171,7 +171,7 @@ class Authentication implements AuthenticationServiceInterface
      *
      * @internal
      */
-    private function isValidToken(Token $token): bool
+    private function isValidToken(UnencryptedToken $token): bool
     {
         $config    = $this->getConfig();
         $validator = $config->validator();

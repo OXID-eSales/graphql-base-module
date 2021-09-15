@@ -33,7 +33,7 @@ services:
       factory: ['@OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder', 'getConfiguration']
       public: true
 
-  Lcobucci\JWT\Token:
+  Lcobucci\JWT\UnencryptedToken:
     factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReader', 'getAuthToken']
 
   OxidEsales\GraphQL\Base\Service\Authentication:
