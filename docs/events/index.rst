@@ -11,7 +11,9 @@ Events
         BeforeBasketPayments
         BeforeBasketDeliveryMethods
         BeforePlaceOrder
-        BeforeRemoveItem
         BasketAuthorization
         BeforeAddItem
         AfterAddItem
+        BeforeRemoveItem
+        BeforeBasketRemove
+        BeforeBasketModify
