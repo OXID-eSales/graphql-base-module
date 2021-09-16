@@ -60,7 +60,7 @@ final class PaginationFilter
         }
     }
 
-    /** @Factory(name="PaginationFilterInput" , default=true)) */
+    /** @Factory */
     public static function fromUserInput(
         int $offset = 0,
         ?int $limit = null

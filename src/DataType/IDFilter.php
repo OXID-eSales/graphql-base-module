@@ -46,7 +46,7 @@ class IDFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="IDFilterInput", default=true)
+     * @Factory
      */
     public static function fromUserInput(
         ID $equals

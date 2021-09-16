@@ -88,7 +88,7 @@ class DateFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="DateFilterInput", default=true)
+     * @Factory
      *
      * @param null|string[] $between
      */

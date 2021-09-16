@@ -46,7 +46,7 @@ class BoolFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="BoolFilterInput", default=true)
+     * @Factory
      */
     public static function fromUserInput(
         bool $equals

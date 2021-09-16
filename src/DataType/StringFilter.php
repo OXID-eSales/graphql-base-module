@@ -87,7 +87,7 @@ class StringFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="StringFilterInput", default=true))
+     * @Factory
      */
     public static function fromUserInput(
         ?string $equals = null,
