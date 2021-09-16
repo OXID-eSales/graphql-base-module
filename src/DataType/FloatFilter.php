@@ -13,39 +13,23 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 use InvalidArgumentException;
 use OutOfBoundsException;
-use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
-use TheCodingMachine\GraphQLite\Annotations\Input;
 
 use function count;
 use function strtoupper;
 
-/**
- * @Input
- */
 class FloatFilter implements FilterInterface
 {
-    /**
-     * @Field()
-     * @var ?float
-     */
+    /** @var ?float */
     private $equals;
 
-    /**
-     * @Field()
-     * @var ?float
-     */
+    /** @var ?float */
     private $lessThan;
 
-    /**
-     * @Field()
-     * @var ?float
-     */
+    /** @var ?float */
     private $greaterThan;
 
-    /**
-     * @var null|array{0: float, 1: float}
-     */
+    /** @var null|array{0: float, 1: float} */
     private $between;
 
     /**
