@@ -113,7 +113,7 @@ class FloatFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="FloatFilterInput")
+     * @Factory(name="FloatFilterInput", default=true)
      *
      * @param null|float[] $between
      */

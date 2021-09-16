@@ -112,7 +112,7 @@ class IntegerFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="IntegerFilterInput")
+     * @Factory(name="IntegerFilterInput", default=true)
      *
      * @param null|int[] $between
      */
