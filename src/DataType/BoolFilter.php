@@ -11,13 +11,21 @@ namespace OxidEsales\GraphQL\Base\DataType;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
+use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
+use TheCodingMachine\GraphQLite\Annotations\Input;
 
 use function strtoupper;
 
+/**
+ * @Input
+ */
 class BoolFilter implements FilterInterface
 {
-    /** @var bool */
+    /**
+     * @Field()
+     * @var bool
+     */
     private $equals;
 
     public function __construct(

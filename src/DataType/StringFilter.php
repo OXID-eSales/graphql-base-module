@@ -12,19 +12,33 @@ namespace OxidEsales\GraphQL\Base\DataType;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 use InvalidArgumentException;
+use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
+use TheCodingMachine\GraphQLite\Annotations\Input;
 
 use function strtoupper;
 
+/**
+ * @Input
+ */
 class StringFilter implements FilterInterface
 {
-    /** @var ?string */
+    /**
+     * @Field()
+     * @var ?string
+     */
     private $equals;
 
-    /** @var ?string */
+    /**
+     * @Field()
+     * @var ?string
+     */
     private $contains;
 
-    /** @var ?string */
+    /**
+     * @Field()
+     * @var ?string
+     */
     private $beginsWith;
 
     public function __construct(

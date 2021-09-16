@@ -18,7 +18,7 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 class TestFilterFactory
 {
     /**
-     * @Factory()
+     * @Factory(name="TestFilterInput", default=true)
      */
     public static function createTestFilter(
         ?BoolFilter $active = null,

@@ -13,19 +13,31 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 use InvalidArgumentException;
 use OutOfBoundsException;
+use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
+use TheCodingMachine\GraphQLite\Annotations\Input;
 
 use function count;
 
+/** @Input  */
 class IntegerFilter implements FilterInterface
 {
-    /** @var ?int */
+    /**
+     * @Field()
+     * @var ?int
+     */
     private $equals;
 
-    /** @var ?int */
+    /**
+     * @Field()
+     * @var ?int
+     */
     private $lessThan;
 
-    /** @var ?int */
+    /**
+     * @Field()
+     * @var ?int
+     */
     private $greaterThan;
 
     /** @var null|array{0: int, 1: int} */

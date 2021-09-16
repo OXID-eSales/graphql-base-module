@@ -16,21 +16,29 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 use InvalidArgumentException;
 use OutOfBoundsException;
+use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
+use TheCodingMachine\GraphQLite\Annotations\Input;
 
 use function strtoupper;
 
 /**
- * moar moar moar
+ * @Input
  */
 class DateFilter implements FilterInterface
 {
     public const SQL_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
-    /** @var ?DateTimeInterface */
+    /**
+     * @Field()
+     * @var ?DateTimeInterface
+     */
     private $equals;
 
-    /** @var null|array{0: DateTimeInterface, 1: DateTimeInterface} */
+    /**
+     * @Field()
+     * @var null|array{0: DateTimeInterface, 1: DateTimeInterface}
+     */
     private $between;
 
     /**
