@@ -72,11 +72,11 @@ class Authentication implements AuthenticationServiceInterface
             throw InvalidToken::userBlocked();
         }
 
-        if ($this->isValidToken($this->token)) {
-            return true;
+        if (!$this->isValidToken($this->token)) {
+            throw InvalidToken::invalidToken();
         }
 
-        throw InvalidToken::invalidToken();
+        return true;
     }
 
     /**

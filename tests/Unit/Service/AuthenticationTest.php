@@ -303,12 +303,12 @@ class AuthenticationTest extends TestCase
     public function testGetUserName($username, $password): void
     {
         $authenticationService = $this->getAuthenticationService();
-        self::$token           = $authenticationService->createToken($username, $password);
+        $token = $authenticationService->createToken($username, $password);
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token,
+            $token,
             new EventDispatcher()
         );
 
@@ -329,12 +329,12 @@ class AuthenticationTest extends TestCase
             ->willReturn(new UserData('the_admin_oxid'));
 
         $authenticationService = $this->getAuthenticationService();
-        self::$token           = $authenticationService->createToken('admin', 'admin');
+        $token = $authenticationService->createToken('admin', 'admin');
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token,
+            $token,
             new EventDispatcher()
         );
 
