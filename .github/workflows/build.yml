@@ -13,8 +13,8 @@ jobs:
         strategy:
             matrix:
                 php:
-                    - "7.3"
                     - "7.4"
+                    - "8.0"
                 env:
                     - DEPENDENCIES=""
                     - DEPENDENCIES=" --prefer-lowest"
@@ -28,10 +28,6 @@ jobs:
               with:
                   php-version: ${{ matrix.php }}
                   coverage: xdebug
-
-            - name: Downgrade composer
-              if: ${{ matrix.php != '7.4' || env.DEPENDENCIES == ' --prefer-lowest' }}
-              run: composer self-update --1
 
             - name: Get composer cache directory
               id: composer-cache
@@ -75,14 +71,14 @@ jobs:
                   restore-keys: |
                       docker-layer-caching-${{ github.workflow }}-${{ matrix.php }}-
 
-            - name: Build docker for 6.3.x
+            - name: Build docker for 6.4.x
               run: |
                   cd /home/runner/work/
                   git clone --depth 1 https://github.com/OXID-eSales/docker-eshop-sdk.git
                   cd docker-eshop-sdk
                   make .env
                   sed "s/PHP_VERSION=.*/PHP_VERSION=${{ matrix.php }}/" -i .env
-                  git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.3.x --single-branch data/oxideshop
+                  git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.4.x --single-branch data/oxideshop
                   mkdir data/oxideshop/debug
                   make permissions
                   make data/oxideshop/vendor/
