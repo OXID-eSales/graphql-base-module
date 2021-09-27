@@ -18,6 +18,8 @@ use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -55,9 +57,21 @@ abstract class TestCase extends PHPUnitTestCase
             ResponseWriter::class
         );
 
-        $legacyService = new LegacyStub();
+        $keyRegistry = new KeyRegistryStub();
 
-        $requestReader = new RequestReaderStub($legacyService);
+        static::$container->set(
+            KeyRegistry::class,
+            $keyRegistry
+        );
+        static::$container->autowire(
+            KeyRegistry::class,
+            KeyRegistry::class,
+        );
+
+        $legacyService    = new LegacyStub();
+        $jwtConfigBuilder = new JwtConfigurationBuilder($keyRegistry, $legacyService);
+
+        $requestReader = new RequestReaderStub($legacyService, $jwtConfigBuilder);
 
         static::$container->set(
             RequestReader::class,
@@ -208,5 +222,20 @@ class LoggerStub extends \Psr\Log\AbstractLogger
     public function log($level, $message, array $context = []): void
     {
         TestCase::loggerCallback($message);
+    }
+}
+
+class KeyRegistryStub extends \OxidEsales\GraphQL\Base\Service\KeyRegistry
+{
+    public function __construct()
+    {
+    }
+
+    /**
+     * @throws MissingSignatureKey
+     */
+    public function getSignatureKey(): string
+    {
+        return '5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==';
     }
 }

@@ -19,7 +19,3 @@ services:
   OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider:
     class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider
     tags: ['graphql_permission_provider']
-
-  OxidEsales\GraphQL\Base\Service\KeyRegistry:
-    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\KeyRegistry
-    public: true

@@ -15,16 +15,17 @@ use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use PHPUnit\Framework\TestCase;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
-class RequestReaderTest extends TestCase
+class RequestReaderTest extends BaseTestCase
 {
     // phpcs:disable
     protected static $token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ';
 
     public function testGetAuthTokenWithoutToken(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock());
+        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $this->assertInstanceOf(
             NullToken::class,
             $requestReader->getAuthToken()
@@ -33,7 +34,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetAuthTokenWithWrongFormattedHeader(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock());
+        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -51,7 +52,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock());
+        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -75,7 +76,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetAuthTokenWithCorrectFormat(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock());
+        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -106,7 +107,7 @@ class RequestReaderTest extends TestCase
         $legacy->method('getUserGroupIds')
                ->willReturn(['group', 'oxidblocked', 'anothergroup']);
 
-        $requestReader = new RequestReader($legacy);
+        $requestReader = new RequestReader($legacy, $this->getJwtConfigurationBuilder());
 
         $_SERVER['HTTP_AUTHORIZATION'] = ' Bearer ' . self::$token;
         $e                             = null;
@@ -122,7 +123,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetGraphQLRequestDataWithEmptyRequest(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock());
+        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $this->assertEquals(
             [
                 'query'         => null,
@@ -135,7 +136,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetGraphQLRequestDataWithInputRequest(): void
     {
-        $requestReader           = new RequestReader($this->getLegacyMock());
+        $requestReader           = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
             [
@@ -150,7 +151,7 @@ class RequestReaderTest extends TestCase
 
     public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
     {
-        $requestReader             = new RequestReader($this->getLegacyMock());
+        $requestReader             = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $_SERVER['CONTENT_TYPE']   = 'text/plain';
         $_REQUEST['query']         = 'query {token_}';
         $_REQUEST['variables']     = '{"foo":"bar"}';
@@ -170,8 +171,19 @@ class RequestReaderTest extends TestCase
 
     private function getLegacyMock(): Legacy
     {
-        return $this->getMockBuilder(Legacy::class)
+        $mock = $this->getMockBuilder(Legacy::class)
              ->disableOriginalConstructor()
              ->getMock();
+
+        $mock->expects($this->any())
+            ->method('getShopUrl')
+            ->willReturn('www.myoxidshop.com');
+
+        return $mock;
+    }
+
+    private function getJwtConfigurationBuilder(): JwtConfigurationBuilder
+    {
+        return new JwtConfigurationBuilder($this->getKeyRegistryMock(), $this->getLegacyMock());
     }
 }

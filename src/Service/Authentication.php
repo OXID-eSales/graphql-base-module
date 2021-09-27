@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
+use Exception;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
@@ -106,12 +107,10 @@ class Authentication implements AuthenticationServiceInterface
             $event
         );
 
-        $token = $event->getBuilder()->getToken(
+        return $event->getBuilder()->getToken(
             $config->signer(),
             $config->signingKey()
         );
-
-        return $token;
     }
 
     /**
@@ -164,6 +163,25 @@ class Authentication implements AuthenticationServiceInterface
     }
 
     /**
+     * @return UnencryptedToken
+     */
+    public function getUser(): ?object
+    {
+        $logged = false;
+
+        try {
+            $logged = $this->isLogged();
+        } catch (Exception $e) {
+        }
+
+        if ($logged || $this->token instanceof NullToken) {
+            return $this->token;
+        }
+
+        return new NullToken();
+    }
+
+    /**
      * Checks if given token is valid:
      * - has valid signature
      * - has valid issuer and audience
@@ -189,10 +207,5 @@ class Authentication implements AuthenticationServiceInterface
         }
 
         return true;
-    }
-
-    public function getUser(): ?object
-    {
-        // TODO: Implement getUser() method.
     }
 }

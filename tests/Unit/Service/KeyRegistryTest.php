@@ -11,7 +11,6 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
-use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -21,9 +20,9 @@ class KeyRegistryTest extends TestCase
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
     {
         $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
-        $keyRegistry = new KeyRegistry($moduleSettingBridgeMock);
-        $iterations  = 5;
-        $keys        = [];
+        $keyRegistry              = new KeyRegistry($moduleSettingBridgeMock);
+        $iterations               = 5;
+        $keys                     = [];
 
         for ($i = 0; $i < $iterations; $i++) {
             $key = $keyRegistry->generateSignatureKey();

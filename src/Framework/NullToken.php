@@ -18,7 +18,9 @@ use Lcobucci\JWT\UnencryptedToken;
 class NullToken implements UnencryptedToken
 {
     private $headers;
+
     private $claims;
+
     private $signature;
 
     public function __construct()

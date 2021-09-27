@@ -11,12 +11,11 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 use Exception;
 use Lcobucci\JWT\Configuration;
-use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use Lcobucci\JWT\UnencryptedToken;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 
 use function apache_request_headers;
 use function array_change_key_case;
@@ -31,10 +30,15 @@ class RequestReader
     /** @var LegacyService */
     private $legacyService;
 
+    /** @var JwtConfigurationBuilder */
+    private $jwtConfigurationBuilder;
+
     public function __construct(
-        LegacyService $legacyService
+        LegacyService $legacyService,
+        JwtConfigurationBuilder $jwtConfigurationBuilder
     ) {
-        $this->legacyService = $legacyService;
+        $this->legacyService           = $legacyService;
+        $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
     /**
@@ -57,12 +61,10 @@ class RequestReader
         }
 
         /** @var Configuration $jwtConfiguration */
-        $jwtConfiguration = ContainerFactory::getInstance()
-            ->getContainer()
-            ->get(JwtConfigurationBuilder::class)
-            ->getConfiguration();
+        $jwtConfiguration = $this->jwtConfigurationBuilder->getConfiguration();
 
         try {
+            /** @var UnencryptedToken $token */
             $token = $jwtConfiguration->parser()->parse($jwt);
         } catch (Exception $e) {
             throw InvalidToken::unableToParse();

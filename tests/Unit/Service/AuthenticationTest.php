@@ -87,7 +87,7 @@ class AuthenticationTest extends TestCase
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
     {
-        $this->markTestSkipped("This test looks not needed anymore, as parser will not parse Invalid tokens anymore");
+        $this->markTestSkipped('This test looks not needed anymore, as parser will not parse Invalid tokens anymore');
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
@@ -303,7 +303,7 @@ class AuthenticationTest extends TestCase
     public function testGetUserName($username, $password): void
     {
         $authenticationService = $this->getAuthenticationService();
-        $token = $authenticationService->createToken($username, $password);
+        $token                 = $authenticationService->createToken($username, $password);
 
         $authenticationService = new Authentication(
             $this->keyRegistry,
@@ -329,7 +329,7 @@ class AuthenticationTest extends TestCase
             ->willReturn(new UserData('the_admin_oxid'));
 
         $authenticationService = $this->getAuthenticationService();
-        $token = $authenticationService->createToken('admin', 'admin');
+        $token                 = $authenticationService->createToken('admin', 'admin');
 
         $authenticationService = new Authentication(
             $this->keyRegistry,

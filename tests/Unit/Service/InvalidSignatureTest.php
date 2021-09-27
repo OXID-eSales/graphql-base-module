@@ -15,12 +15,13 @@ use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class InvalidSignatureTest extends TestCase
+class InvalidSignatureTest extends BaseTestCase
 {
     protected static $token;
 
@@ -87,7 +88,7 @@ class InvalidSignatureTest extends TestCase
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . substr(self::$token->toString(), 0, -10);
 
-        $requestReader = new RequestReader($this->legacyService);
+        $requestReader = new RequestReader($this->legacyService, $this->getJwtConfigurationBuilder());
         $token         = $requestReader->getAuthToken();
 
         $authenticationService = new Authentication(
@@ -100,5 +101,10 @@ class InvalidSignatureTest extends TestCase
         $this->expectException(InvalidToken::class);
 
         $authenticationService->isLogged();
+    }
+
+    protected function getJwtConfigurationBuilder(): JwtConfigurationBuilder
+    {
+        return new JwtConfigurationBuilder($this->getKeyRegistryMock(), $this->legacyService);
     }
 }
