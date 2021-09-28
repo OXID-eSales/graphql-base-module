@@ -10,9 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
-use Exception;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -58,16 +58,11 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function isLogged(): bool
     {
-        if ($this->token instanceof NullToken) {
+        if ($this->token instanceof NullToken || $this->isUserAnonymous()) {
             return false;
         }
 
-        if ($this->isUserAnonymous()) {
-            return false;
-        }
-
-        $userId = $this->token->claims()->get(self::CLAIM_USERID);
-        $groups = $this->legacyService->getUserGroupIds($userId);
+        $groups = $this->legacyService->getUserGroupIds($this->getUserId());
 
         if (in_array('oxidblocked', $groups)) {
             throw InvalidToken::userBlocked();
@@ -125,16 +120,9 @@ class Authentication implements AuthenticationServiceInterface
         return (string) $this->token->claims()->get(self::CLAIM_USERNAME);
     }
 
-    /**
-     * @throws InvalidToken
-     */
-    public function getUserId(): string
+    public function getUserId(): ?string
     {
-        if ($this->token instanceof NullToken) {
-            throw InvalidToken::invalidToken();
-        }
-
-        return (string) $this->token->claims()->get(self::CLAIM_USERID);
+        return $this->token->claims()->get(self::CLAIM_USERID);
     }
 
     /**
@@ -146,8 +134,7 @@ class Authentication implements AuthenticationServiceInterface
             throw InvalidToken::invalidToken();
         }
 
-        $userId = $this->token->claims()->get(self::CLAIM_USERID);
-        $groups = $this->legacyService->getUserGroupIds($userId);
+        $groups = $this->legacyService->getUserGroupIds($this->getUserId());
 
         return is_array($groups) && in_array('oxidanonymous', $groups);
     }
@@ -162,23 +149,16 @@ class Authentication implements AuthenticationServiceInterface
         return $configBuilder->getConfiguration();
     }
 
-    /**
-     * @return UnencryptedToken
-     */
-    public function getUser(): ?object
+    public function getUser(): ?User
     {
-        $logged = false;
-
         try {
-            $logged = $this->isLogged();
-        } catch (Exception $e) {
+            $this->isLogged();
+            $userModel = $this->legacyService->getUser($this->getUserId());
+        } catch (InvalidToken $e) {
+            return null;
         }
 
-        if ($logged || $this->token instanceof NullToken) {
-            return $this->token;
-        }
-
-        return new NullToken();
+        return new User($userModel);
     }
 
     /**

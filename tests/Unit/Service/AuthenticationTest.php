@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Token\Parser;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
@@ -325,8 +326,11 @@ class AuthenticationTest extends TestCase
 
     public function testGetUserId(): void
     {
+        $userModel = oxNew(\OxidEsales\Eshop\Application\Model\User::class);
+        $userModel->setId('the_admin_oxid');
+
         $this->legacyService->method('login')
-            ->willReturn(new UserData('the_admin_oxid'));
+            ->willReturn(new User($userModel));
 
         $authenticationService = $this->getAuthenticationService();
         $token                 = $authenticationService->createToken('admin', 'admin');
@@ -346,8 +350,7 @@ class AuthenticationTest extends TestCase
     {
         $authenticationService = $this->getAuthenticationService();
 
-        $this->expectException(InvalidToken::class);
-        $authenticationService->getUserId();
+        $this->assertNull($authenticationService->getUserId());
     }
 
     public function testGetUserIdForAnonymousToken(): void

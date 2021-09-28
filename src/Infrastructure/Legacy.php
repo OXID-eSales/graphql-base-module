@@ -19,9 +19,9 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
-use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 
 /**
@@ -60,9 +60,18 @@ class Legacy
             throw new InvalidLogin('Username/password combination is invalid');
         }
 
-        return new UserData(
-            $user->getId()
-        );
+        return new UserDataType($user);
+    }
+
+    public function getUser(?string $userId): ?User
+    {
+        if (!$userId) {
+            return null;
+        }
+
+        $user = oxNew(User::class);
+        $user->load($userId);
+        return $user;
     }
 
     /**

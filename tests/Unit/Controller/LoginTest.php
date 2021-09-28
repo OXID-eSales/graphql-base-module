@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use OxidEsales\GraphQL\Base\Controller\Login;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\UserData;
@@ -61,7 +62,10 @@ class LoginTest extends TestCase
             'id'         => 'some_nice_user_id',
         ];
 
-        $userData = new UserData($user['id']);
+        $userModel = oxNew(\OxidEsales\Eshop\Application\Model\User::class);
+        $userModel->setId($user['id']);
+        $userData = new User($userModel);
+
         $this->legacy->method('login')->willReturn($userData);
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
