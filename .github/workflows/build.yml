@@ -46,13 +46,13 @@ jobs:
             - name: New Unit Tests configuration
               if: ${{ matrix.php == '8.0'}}
               run: |
-                  vendor/bin/phpunit -c tests/phpunit.xml tests/Unit/ --coverage-clover clover.xml
+                  vendor/bin/phpunit -c tests/phpunit_new.xml tests/Unit/ --coverage-clover clover.xml
                   sed -i 's/\/home\/runner\/work\/graphql-base-module\/graphql-base-module\///' clover.xml
 
             - name: Old Unit Tests configuration
               if: ${{ matrix.php == '7.4'}}
               run: |
-                  vendor/bin/phpunit -c tests/phpunit_old.xml tests/Unit/
+                  vendor/bin/phpunit -c tests/phpunit.xml tests/Unit/
 
             - name: Infection
               if: ${{ matrix.php == '8.0' && env.DEPENDENCIES == '' }}

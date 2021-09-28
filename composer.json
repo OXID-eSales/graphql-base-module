@@ -46,7 +46,7 @@
         "test:syntax": "parallel-lint src/ tests/ metadata.php",
         "test:static": "phpstan --memory-limit=-1 analyse src/",
         "test:unit": "phpunit -c tests/phpunit.xml tests/Unit/",
-        "test:unit-old": "phpunit -c tests/phpunit_old.xml tests/Unit/",
+        "test:unit-new": "phpunit -c tests/phpunit_new.xml tests/Unit/",
         "test:infection": "XDEBUG_MODE=coverage infection --min-msi=75 --min-covered-msi=90",
         "test": [
             "@test:syntax",
