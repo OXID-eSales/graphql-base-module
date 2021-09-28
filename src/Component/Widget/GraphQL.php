@@ -40,16 +40,12 @@ class GraphQL extends WidgetController
     public function init(): void
     {
         /** @var TimerHandler */
-        $timerHandler = ContainerFactory::getInstance()->getContainer()->get(TimerHandler::class);
+        $timerHandler = $this->getContainer()->get(TimerHandler::class);
         $timerHandler->create('bootstrap')->startAt($_SERVER['REQUEST_TIME_FLOAT'])->stop();
 
         try {
             $this->handleShopSession();
-
-            ContainerFactory::getInstance()
-                ->getContainer()
-                ->get(GraphQLQueryHandler::class)
-                ->executeGraphQLQuery();
+            $this->getContainer()->get(GraphQLQueryHandler::class)->executeGraphQLQuery();
         } catch (Error $e) {
             $isAuthenticated = !($e instanceof InvalidLogin || $e instanceof InvalidToken);
             self::sendErrorResponse(FormattedError::createFromException($e), 200, $isAuthenticated);
@@ -76,18 +72,14 @@ class GraphQL extends WidgetController
         $session->setBasket(null);
         $session->setVariable('usr', null);
 
-        try {
-            $userId = ContainerFactory::getInstance()
-                ->getContainer()
-                ->get(GraphQLAuthenticationService::class)
-                ->getUserId();
+        $userId = $this->getContainer()
+            ->get(GraphQLAuthenticationService::class)
+            ->getUserId();
 
-            if ($userId) {
-                $session->setVariable('usr', $userId);
-            }
-        } catch (InvalidToken $exception) {
-            //all is well so far
+        if ($userId) {
+            $session->setVariable('usr', $userId);
         }
+
     }
 
     public static function sendErrorResponse(array $message, int $status, bool $isAuthenticated = true): void
