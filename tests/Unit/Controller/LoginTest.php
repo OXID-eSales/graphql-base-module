@@ -92,7 +92,9 @@ class LoginTest extends TestCase
 
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
-        $this->legacy->method('login')->willReturn(new AnonymousUserData());
+        $this->legacy->method('login')->willReturn(
+            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+        );
 
         $loginController = new Login($this->authentication);
 
@@ -115,7 +117,9 @@ class LoginTest extends TestCase
 
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
-        $this->legacy->method('login')->willReturn(new AnonymousUserData());
+        $this->legacy->method('login')->willReturn(
+            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+        );
 
         $loginController = new Login($this->authentication);
 
@@ -138,7 +142,9 @@ class LoginTest extends TestCase
 
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
-        $this->legacy->method('login')->willReturn(new AnonymousUserData());
+        $this->legacy->method('login')->willReturn(
+            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+        );
 
         $loginController = new Login($this->authentication);
 

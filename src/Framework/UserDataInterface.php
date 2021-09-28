@@ -11,5 +11,7 @@ namespace OxidEsales\GraphQL\Base\Framework;
 
 interface UserDataInterface
 {
-    public function getUserId(): string;
+    public function getUserId(): ?string;
+
+    public function isAnonymous(): bool;
 }

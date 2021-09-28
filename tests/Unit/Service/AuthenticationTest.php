@@ -17,7 +17,6 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
-use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
@@ -355,9 +354,10 @@ class AuthenticationTest extends TestCase
 
     public function testGetUserIdForAnonymousToken(): void
     {
-        $this->legacyService
-            ->method('login')
-            ->willReturn(new AnonymousUserData());
+        $this->legacyService->method('login')->willReturn(
+            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+        );
+
         $authenticationService = $this->getAuthenticationService();
         $anonymousToken        = $authenticationService->createToken();
 
@@ -373,9 +373,10 @@ class AuthenticationTest extends TestCase
 
     public function testCreateAnonymousToken(): void
     {
-        $this->legacyService
-            ->method('login')
-            ->willReturn(new AnonymousUserData());
+        $this->legacyService->method('login')->willReturn(
+            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+        );
+
         $this->legacyService
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
@@ -517,8 +518,9 @@ class AuthenticationTest extends TestCase
 
     public function testLoggedUserInAnonymousGroup(): void
     {
-        $this->legacyService->method('login')
-            ->willReturn(new AnonymousUserData());
+        $this->legacyService->method('login')->willReturn(
+            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+        );
 
         $this->legacyService->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);

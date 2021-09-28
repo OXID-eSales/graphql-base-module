@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 use Exception;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\Email;
-use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
@@ -21,7 +20,6 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 
 /**
@@ -46,21 +44,20 @@ class Legacy
      */
     public function login(?string $username = null, ?string $password = null): UserDataInterface
     {
-        if ($username === null || $password === null) {
-            return new AnonymousUserData();
+        /** @var User */
+        $user = oxNew(User::class);
+        $isAnonymous = true;
+
+        if ($username && $password) {
+            try {
+                $isAnonymous = false;
+                $user->login($username, $password, false);
+            } catch (Exception $e) {
+                throw new InvalidLogin('Username/password combination is invalid');
+            }
         }
 
-        try {
-            /** @var User */
-            $user = oxNew(User::class);
-            $user->login($username, $password, false);
-        } catch (SystemComponentException $e) {
-            throw $e;
-        } catch (Exception $e) {
-            throw new InvalidLogin('Username/password combination is invalid');
-        }
-
-        return new UserDataType($user);
+        return new UserDataType($user, $isAnonymous);
     }
 
     public function getUser(?string $userId): ?User

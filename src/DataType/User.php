@@ -11,15 +11,23 @@ namespace OxidEsales\GraphQL\Base\DataType;
 
 use OxidEsales\Eshop\Application\Model\User as EshopUserModel;
 use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 
 final class User implements UserDataInterface
 {
     /** @var EshopUserModel */
     private $userModel;
 
-    public function __construct(EshopUserModel $userModel)
+    private bool $isAnonymous;
+
+    public function __construct(EshopUserModel $userModel, bool $isAnonymous = false)
     {
         $this->userModel = $userModel;
+        $this->isAnonymous = $isAnonymous;
+
+        if ($this->isAnonymous && !$this->userModel->getId()) {
+            $this->userModel->setId(Legacy::createUniqueIdentifier());
+        }
     }
 
     public function getEshopModel(): EshopUserModel
@@ -30,5 +38,10 @@ final class User implements UserDataInterface
     public function getUserId(): string
     {
         return $this->userModel->getId();
+    }
+
+    public function isAnonymous(): bool
+    {
+        return $this->isAnonymous;
     }
 }
