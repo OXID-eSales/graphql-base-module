@@ -70,14 +70,14 @@ class NullToken implements UnencryptedToken
         return in_array($this->claims->get(RegisteredClaims::ISSUER), $issuers, true);
     }
 
-    public function hasBeenIssuedBefore(DateTimeInterface $now): bool
+    public function hasBeenIssuedBefore(DateTimeInterface $time): bool
     {
-        return $now >= $this->claims->get(RegisteredClaims::ISSUED_AT);
+        return $this->claims->get(RegisteredClaims::ISSUED_AT) <= $time;
     }
 
-    public function isMinimumTimeBefore(DateTimeInterface $now): bool
+    public function isMinimumTimeBefore(DateTimeInterface $time): bool
     {
-        return $now >= $this->claims->get(RegisteredClaims::NOT_BEFORE);
+        return $this->claims->get(RegisteredClaims::NOT_BEFORE) < $time;
     }
 
     public function isExpired(DateTimeInterface $now): bool
