@@ -36,11 +36,9 @@ jobs:
               run: ./vendor/bin/oe-eshop-unified_namespace_generator
 
             - name: Test syntax
-              continue-on-error: true
               run: composer test:syntax
 
             - name: Lint
-              continue-on-error: true
               run: composer test:lint
 
             - name: Unit Tests
