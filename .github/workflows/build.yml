@@ -36,18 +36,26 @@ jobs:
               run: ./vendor/bin/oe-eshop-unified_namespace_generator
 
             - name: Test syntax
+              if: ${{ matrix.php == '8.0'}}
               run: composer test:syntax
 
             - name: Lint
+              if: ${{ matrix.php == '8.0'}}
               run: composer test:lint
 
-            - name: Unit Tests
+            - name: New Unit Tests configuration
+              if: ${{ matrix.php == '8.0'}}
               run: |
                   vendor/bin/phpunit -c tests/phpunit.xml tests/Unit/ --coverage-clover clover.xml
                   sed -i 's/\/home\/runner\/work\/graphql-base-module\/graphql-base-module\///' clover.xml
 
+            - name: Old Unit Tests configuration
+              if: ${{ matrix.php == '7.4'}}
+              run: |
+                  vendor/bin/phpunit -c tests/phpunit_old.xml tests/Unit/
+
             - name: Infection
-              continue-on-error: true
+              if: ${{ matrix.php == '8.0' && env.DEPENDENCIES == '' }}
               run: composer test:infection
 
             - name: Static analysis
