@@ -22,7 +22,7 @@ class NullTokenTest extends TestCase
 
         $this->assertFalse(
             $token->isExpired($now),
-            "Null token cannot be expired"
+            'Null token cannot be expired'
         );
     }
 
@@ -32,7 +32,7 @@ class NullTokenTest extends TestCase
 
         $this->assertEmpty(
             $token->headers()->all(),
-            "There should be no headers in null token"
+            'There should be no headers in null token'
         );
     }
 
@@ -42,7 +42,7 @@ class NullTokenTest extends TestCase
 
         $this->assertEmpty(
             $token->claims()->all(),
-            "There should be no claims in null token"
+            'There should be no claims in null token'
         );
     }
 
@@ -52,7 +52,7 @@ class NullTokenTest extends TestCase
 
         $this->assertEmpty(
             $token->signature()->toString(),
-            "For null token, the signature is empty string"
+            'For null token, the signature is empty string'
         );
     }
 
@@ -61,9 +61,9 @@ class NullTokenTest extends TestCase
         $token = new NullToken();
 
         $this->assertSame(
-            ".",
+            '.',
             $token->payload(),
-            "Payload is empty, but still from two parts, so dot should be the result"
+            'Payload is empty, but still from two parts, so dot should be the result'
         );
     }
 
@@ -72,9 +72,9 @@ class NullTokenTest extends TestCase
         $token = new NullToken();
 
         $this->assertSame(
-            "..",
+            '..',
             $token->toString(),
-            "Its empty token, but still from three parts, so two dots should be the result"
+            'Its empty token, but still from three parts, so two dots should be the result'
         );
     }
 
@@ -83,8 +83,8 @@ class NullTokenTest extends TestCase
         $token = new NullToken();
 
         $this->assertFalse(
-            $token->isPermittedFor("any"),
-            "isPermittedFor should be still functional and give false"
+            $token->isPermittedFor('any'),
+            'isPermittedFor should be still functional and give false'
         );
     }
 
@@ -93,8 +93,8 @@ class NullTokenTest extends TestCase
         $token = new NullToken();
 
         $this->assertFalse(
-            $token->isRelatedTo("any"),
-            "isRelatedTo should be still functional and give false"
+            $token->isRelatedTo('any'),
+            'isRelatedTo should be still functional and give false'
         );
     }
 
@@ -103,8 +103,8 @@ class NullTokenTest extends TestCase
         $token = new NullToken();
 
         $this->assertFalse(
-            $token->isIdentifiedBy("any"),
-            "isIdentifiedBy should be still functional and give false"
+            $token->isIdentifiedBy('any'),
+            'isIdentifiedBy should be still functional and give false'
         );
     }
 
@@ -113,30 +113,30 @@ class NullTokenTest extends TestCase
         $token = new NullToken();
 
         $this->assertFalse(
-            $token->hasBeenIssuedBy("any"),
-            "hasBeenIssuedBy should be still functional and give false"
+            $token->hasBeenIssuedBy('any'),
+            'hasBeenIssuedBy should be still functional and give false'
         );
     }
 
     public function testHasBeenIssuedBefore(): void
     {
-        $time   = new DateTime("1900-01-01");
-        $token = new NullToken();
+        $time   = new DateTime('1900-01-01');
+        $token  = new NullToken();
 
         $this->assertTrue(
             $token->hasBeenIssuedBefore($time),
-            "hasBeenIssuedBefore should be still functional and give true on any old date"
+            'hasBeenIssuedBefore should be still functional and give true on any old date'
         );
     }
 
     public function testIsMinimumTimeBefore(): void
     {
-        $time   = new DateTime("1900-01-01");
-        $token = new NullToken();
+        $time   = new DateTime('1900-01-01');
+        $token  = new NullToken();
 
         $this->assertTrue(
             $token->isMinimumTimeBefore($time),
-            "isMinimumTimeBefore should be still functional and give true to any old time"
+            'isMinimumTimeBefore should be still functional and give true to any old time'
         );
     }
 }
