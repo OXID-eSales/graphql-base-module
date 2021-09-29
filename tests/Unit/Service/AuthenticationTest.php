@@ -12,19 +12,19 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use Lcobucci\JWT\Encoding\JoseEncoder;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Token\Parser;
+use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class AuthenticationTest extends TestCase
+class AuthenticationTest extends BaseTestCase
 {
     protected static $token;
 
@@ -325,8 +325,7 @@ class AuthenticationTest extends TestCase
 
     public function testGetUserId(): void
     {
-        $userModel = oxNew(\OxidEsales\Eshop\Application\Model\User::class);
-        $userModel->setId('the_admin_oxid');
+        $userModel = $this->getUserModelStub('the_admin_oxid');
 
         $this->legacyService->method('login')
             ->willReturn(new User($userModel));
@@ -355,7 +354,7 @@ class AuthenticationTest extends TestCase
     public function testGetUserIdForAnonymousToken(): void
     {
         $this->legacyService->method('login')->willReturn(
-            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+            new User($this->getUserModelStub(), true)
         );
 
         $authenticationService = $this->getAuthenticationService();
@@ -374,7 +373,7 @@ class AuthenticationTest extends TestCase
     public function testCreateAnonymousToken(): void
     {
         $this->legacyService->method('login')->willReturn(
-            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+            new User($this->getUserModelStub(), true)
         );
 
         $this->legacyService
@@ -519,7 +518,7 @@ class AuthenticationTest extends TestCase
     public function testLoggedUserInAnonymousGroup(): void
     {
         $this->legacyService->method('login')->willReturn(
-            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+            new User($this->getUserModelStub(), true)
         );
 
         $this->legacyService->method('getUserGroupIds')

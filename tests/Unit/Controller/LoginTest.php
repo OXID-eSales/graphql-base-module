@@ -9,19 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
+use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\DataType\User;
-use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
 use OxidEsales\GraphQL\Base\Framework\NullToken;
-use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class LoginTest extends TestCase
+class LoginTest extends BaseTestCase
 {
     /** @var Authentication */
     private $authentication;
@@ -62,9 +61,7 @@ class LoginTest extends TestCase
             'id'         => 'some_nice_user_id',
         ];
 
-        $userModel = oxNew(\OxidEsales\Eshop\Application\Model\User::class);
-        $userModel->setId($user['id']);
-        $userData = new User($userModel);
+        $userData = new User($this->getUserModelStub($user['id']));
 
         $this->legacy->method('login')->willReturn($userData);
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
@@ -93,7 +90,7 @@ class LoginTest extends TestCase
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
         $this->legacy->method('login')->willReturn(
-            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+            new User($this->getUserModelStub(), true)
         );
 
         $loginController = new Login($this->authentication);
@@ -118,7 +115,7 @@ class LoginTest extends TestCase
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
         $this->legacy->method('login')->willReturn(
-            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+            new User($this->getUserModelStub(), true)
         );
 
         $loginController = new Login($this->authentication);
@@ -143,7 +140,7 @@ class LoginTest extends TestCase
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
         $this->legacy->method('login')->willReturn(
-            new User(oxNew(\OxidEsales\Eshop\Application\Model\User::class), true)
+            new User($this->getUserModelStub(), true)
         );
 
         $loginController = new Login($this->authentication);
