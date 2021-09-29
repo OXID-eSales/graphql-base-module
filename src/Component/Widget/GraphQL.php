@@ -78,7 +78,6 @@ class GraphQL extends WidgetController
         if ($userId) {
             $session->setVariable('usr', $userId);
         }
-
     }
 
     public static function sendErrorResponse(array $message, int $status, bool $isAuthenticated = true): void

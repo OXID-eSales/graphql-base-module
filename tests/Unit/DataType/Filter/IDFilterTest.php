@@ -14,8 +14,8 @@ use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
-use TheCodingMachine\GraphQLite\Types\ID;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 class IDFilterTest extends DataTypeTestCase
 {

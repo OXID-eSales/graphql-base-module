@@ -45,7 +45,7 @@ class Legacy
     public function login(?string $username = null, ?string $password = null): UserDataInterface
     {
         /** @var UserModel */
-        $user = oxNew(UserModel::class);
+        $user        = oxNew(UserModel::class);
         $isAnonymous = true;
 
         if ($username && $password) {

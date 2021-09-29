@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\ShopModelAwareInterface as ShopModelAwareInterfaceAlias;
 
-final class User implements UserDataInterface, ShopModelAwareInterfaceAlias
+final class User implements ShopModelAwareInterfaceAlias, UserDataInterface
 {
     /** @var EshopUserModel */
     private $userModel;
@@ -23,7 +23,7 @@ final class User implements UserDataInterface, ShopModelAwareInterfaceAlias
 
     public function __construct(EshopUserModel $userModel, bool $isAnonymous = false)
     {
-        $this->userModel = $userModel;
+        $this->userModel   = $userModel;
         $this->isAnonymous = $isAnonymous;
 
         if ($this->isAnonymous && !$this->userModel->getId()) {

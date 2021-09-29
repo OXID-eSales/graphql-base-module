@@ -10,12 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Event;
 
 use Lcobucci\JWT\Builder;
-use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
-use OxidEsales\GraphQL\Base\Framework\UserData;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
-use PHPUnit\Framework\TestCase;
 
 class BeforeTokenCreationTest extends BaseTestCase
 {
@@ -24,7 +21,7 @@ class BeforeTokenCreationTest extends BaseTestCase
         $userId = 'user-id';
 
         $builderMock = $this->getMockBuilder(Builder::class)->getMock();
-        $event = new BeforeTokenCreation(
+        $event       = new BeforeTokenCreation(
             $builderMock,
             new User($this->getUserModelStub($userId))
         );
