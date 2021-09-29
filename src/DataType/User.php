@@ -12,8 +12,9 @@ namespace OxidEsales\GraphQL\Base\DataType;
 use OxidEsales\Eshop\Application\Model\User as EshopUserModel;
 use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use OxidEsales\GraphQL\Base\Infrastructure\ShopModelAwareInterface as ShopModelAwareInterfaceAlias;
 
-final class User implements UserDataInterface
+final class User implements UserDataInterface, ShopModelAwareInterfaceAlias
 {
     /** @var EshopUserModel */
     private $userModel;

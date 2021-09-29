@@ -7,12 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Filter;
 
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
 use InvalidArgumentException;
-use OxidEsales\GraphQL\Base\DataType\StringFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\StringFilter;
+use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 
 class StringFilterTest extends DataTypeTestCase
 {

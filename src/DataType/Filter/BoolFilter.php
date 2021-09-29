@@ -7,27 +7,26 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataType;
+namespace OxidEsales\GraphQL\Base\DataType\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
-use TheCodingMachine\GraphQLite\Types\ID;
 
 use function strtoupper;
 
-class IDFilter implements FilterInterface
+class BoolFilter implements FilterInterface
 {
-    /** @var ID */
+    /** @var bool */
     private $equals;
 
     public function __construct(
-        ID $equals
+        bool $equals = true
     ) {
         $this->equals = $equals;
     }
 
-    public function equals(): ID
+    public function equals(): bool
     {
         return $this->equals;
     }
@@ -42,14 +41,15 @@ class IDFilter implements FilterInterface
         $table = $from[0]['alias'] ?? $from[0]['table'];
 
         $builder->andWhere(sprintf('%s.%s = :%s', $table, strtoupper($field), $field))
-                ->setParameter(':' . $field, $this->equals);
+                ->setParameter(':' . $field, $this->equals ? '1' : '0');
+        // if equals is set, then no other conditions may apply
     }
 
     /**
      * @Factory
      */
     public static function fromUserInput(
-        ID $equals
+        bool $equals
     ): self {
         return new self(
             $equals

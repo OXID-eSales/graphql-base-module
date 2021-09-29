@@ -7,14 +7,15 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Filter;
 
 use DateTime;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
 use InvalidArgumentException;
 use OutOfBoundsException;
-use OxidEsales\GraphQL\Base\DataType\DateFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\DateFilter;
+use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 
 class DateFilterTest extends DataTypeTestCase
 {

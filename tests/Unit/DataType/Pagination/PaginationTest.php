@@ -7,27 +7,28 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Pagination;
 
-use OxidEsales\GraphQL\Base\DataType\PaginationFilter;
+use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
+use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 
-class PaginationFilterTest extends DataTypeTestCase
+class PaginationTest extends DataTypeTestCase
 {
     public function testReturnOnEmptyInitialization(): void
     {
         $this->assertSame(
             0,
-            (new PaginationFilter())->offset()
+            (new Pagination())->offset()
         );
         $this->assertSame(
             null,
-            (new PaginationFilter())->limit()
+            (new Pagination())->limit()
         );
     }
 
     public function testBasicPaginationFilter(): void
     {
-        $filter = PaginationFilter::fromUserInput(
+        $filter = Pagination::fromUserInput(
             1,
             2
         );
@@ -43,7 +44,7 @@ class PaginationFilterTest extends DataTypeTestCase
 
     public function testDefaultNamedConstructor(): void
     {
-        $paging = PaginationFilter::fromUserInput();
+        $paging = Pagination::fromUserInput();
 
         $this->assertSame(
             0,
@@ -64,7 +65,7 @@ class PaginationFilterTest extends DataTypeTestCase
     {
         $this->expectExceptionMessage('PaginationFilter fields must be positive.');
 
-        $filter = PaginationFilter::fromUserInput($offset, $limit);
+        $filter = Pagination::fromUserInput($offset, $limit);
         $filter->offset();
         $filter->limit();
     }
@@ -85,7 +86,7 @@ class PaginationFilterTest extends DataTypeTestCase
     public function testAddPaginationToQuery(int $offset, ?int $limit): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $filter       = PaginationFilter::fromUserInput($offset, $limit);
+        $filter       = Pagination::fromUserInput($offset, $limit);
 
         $filter->addPaginationToQuery($queryBuilder);
 

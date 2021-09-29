@@ -7,13 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataType;
+namespace OxidEsales\GraphQL\Base\DataType\Pagination;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
-final class PaginationFilter
+final class Pagination
 {
     /** @var int */
     private $offset = 0;

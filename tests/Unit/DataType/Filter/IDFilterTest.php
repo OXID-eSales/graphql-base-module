@@ -7,14 +7,15 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Filter;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
-use OxidEsales\GraphQL\Base\DataType\IDFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use TheCodingMachine\GraphQLite\Types\ID;
+use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 
 class IDFilterTest extends DataTypeTestCase
 {

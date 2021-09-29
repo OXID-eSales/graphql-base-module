@@ -7,11 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Filter;
 
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use InvalidArgumentException;
-use OxidEsales\GraphQL\Base\DataType\BoolFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\BoolFilter;
+use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 
 class BoolFilterTest extends DataTypeTestCase
 {

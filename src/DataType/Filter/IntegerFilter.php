@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataType;
+namespace OxidEsales\GraphQL\Base\DataType\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
@@ -16,29 +16,28 @@ use OutOfBoundsException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function count;
-use function strtoupper;
 
-class FloatFilter implements FilterInterface
+class IntegerFilter implements FilterInterface
 {
-    /** @var ?float */
+    /** @var ?int */
     private $equals;
 
-    /** @var ?float */
+    /** @var ?int */
     private $lessThan;
 
-    /** @var ?float */
+    /** @var ?int */
     private $greaterThan;
 
-    /** @var null|array{0: float, 1: float} */
+    /** @var null|array{0: int, 1: int} */
     private $between;
 
     /**
-     * @param null|array{0: float, 1: float} $between
+     * @param null|array{0: int, 1: int} $between
      */
     public function __construct(
-        ?float $equals = null,
-        ?float $lessThan = null,
-        ?float $greaterThan = null,
+        ?int $equals = null,
+        ?int $lessThan = null,
+        ?int $greaterThan = null,
         ?array $between = null
     ) {
         if (
@@ -47,7 +46,7 @@ class FloatFilter implements FilterInterface
             $greaterThan === null &&
             $between === null
         ) {
-            throw new Error('At least one field for type FloatFilter must be provided');
+            throw new Error('At least one field for type IntegerFilter must be provided');
         }
         $this->equals      = $equals;
         $this->lessThan    = $lessThan;
@@ -55,23 +54,23 @@ class FloatFilter implements FilterInterface
         $this->between     = $between;
     }
 
-    public function equals(): ?float
+    public function equals(): ?int
     {
         return $this->equals;
     }
 
-    public function lessThan(): ?float
+    public function lessThan(): ?int
     {
         return $this->lessThan;
     }
 
-    public function greaterThan(): ?float
+    public function greaterThan(): ?int
     {
         return $this->greaterThan;
     }
 
     /**
-     * @return null|array{0: float, 1: float}
+     * @return null|array{0: int, 1: int}
      */
     public function between(): ?array
     {
@@ -115,24 +114,24 @@ class FloatFilter implements FilterInterface
     /**
      * @Factory
      *
-     * @param null|float[] $between
+     * @param null|int[] $between
      */
     public static function fromUserInput(
-        ?float $equals = null,
-        ?float $lessThan = null,
-        ?float $greaterThan = null,
+        ?int $equals = null,
+        ?int $lessThan = null,
+        ?int $greaterThan = null,
         ?array $between = null
     ): self {
         if (
             $between !== null && (
                 count($between) !== 2 ||
-            !is_float($between[0]) ||
-            !is_float($between[1])
+                !is_int($between[0]) ||
+                !is_int($between[1])
             )
         ) {
             throw new OutOfBoundsException();
         }
-        /** @var array{0: float, 1: float} $between */
+        /** @var array{0: int, 1: int} $between */
         return new self(
             $equals,
             $lessThan,

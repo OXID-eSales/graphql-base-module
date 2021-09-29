@@ -7,12 +7,13 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
+namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Sorting;
 
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
 use InvalidArgumentException;
-use OxidEsales\GraphQL\Base\DataType\Sorting;
+use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
+use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 
 class SortingTest extends DataTypeTestCase
 {
