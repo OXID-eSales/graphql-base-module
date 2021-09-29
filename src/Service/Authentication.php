@@ -60,7 +60,7 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function isLogged(): bool
     {
-        if ($this->token instanceof NullToken || $this->isUserAnonymous()) {
+        if ($this->token instanceof NullToken || $this->getUser()->isAnonymous()) {
             return false;
         }
 
@@ -128,18 +128,6 @@ class Authentication implements AuthenticationServiceInterface
         return $this->token->claims()->get(self::CLAIM_USERID);
     }
 
-    /**
-     * @throws InvalidToken
-     */
-    public function isUserAnonymous(): bool
-    {
-        if ($this->token instanceof NullToken) {
-            throw InvalidToken::invalidToken();
-        }
-
-        return $this->token->claims()->get(self::CLAIM_USER_ANONYMOUS);
-    }
-
     public function getConfig(): Configuration
     {
         $configBuilder = new JwtConfigurationBuilder(
@@ -154,7 +142,7 @@ class Authentication implements AuthenticationServiceInterface
     {
         return new User(
             $this->legacyService->getUser($this->getUserId()),
-            $this->isUserAnonymous()
+            $this->token->claims()->get(self::CLAIM_USER_ANONYMOUS, true)
         );
     }
 

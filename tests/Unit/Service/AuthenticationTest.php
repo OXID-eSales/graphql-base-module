@@ -448,7 +448,7 @@ class AuthenticationTest extends BaseTestCase
             new EventDispatcher()
         );
 
-        $this->assertTrue($authenticationService->isUserAnonymous());
+        $this->assertTrue($authenticationService->getUser()->isAnonymous());
     }
 
     /**
@@ -470,7 +470,7 @@ class AuthenticationTest extends BaseTestCase
             new EventDispatcher()
         );
 
-        $this->assertFalse($authenticationService->isUserAnonymous());
+        $this->assertFalse($authenticationService->getUser()->isAnonymous());
     }
 
     public function testIsAnonymousWithNullToken(): void
@@ -482,9 +482,7 @@ class AuthenticationTest extends BaseTestCase
             new EventDispatcher()
         );
 
-        $this->expectException(InvalidToken::class);
-
-        $authenticationService->isUserAnonymous();
+        $this->assertTrue($authenticationService->getUser()->isAnonymous());
     }
 
     /**
@@ -533,7 +531,7 @@ class AuthenticationTest extends BaseTestCase
             new EventDispatcher()
         );
 
-        $this->assertTrue($authenticationService->isUserAnonymous());
+        $this->assertTrue($authenticationService->getUser()->isAnonymous());
     }
 
     private function getAuthenticationService(): Authentication
