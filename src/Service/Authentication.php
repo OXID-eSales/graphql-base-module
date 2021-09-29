@@ -29,6 +29,8 @@ class Authentication implements AuthenticationServiceInterface
 
     public const CLAIM_USERID   = 'userid';
 
+    public const CLAIM_USER_ANONYMOUS   = 'useranonymous';
+
     /** @var KeyRegistry */
     private $keyRegistry;
 
@@ -94,7 +96,8 @@ class Authentication implements AuthenticationServiceInterface
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $username)
-            ->withClaim(self::CLAIM_USERID, $userData->getUserId());
+            ->withClaim(self::CLAIM_USERID, $userData->getUserId())
+            ->withClaim(self::CLAIM_USER_ANONYMOUS, $userData->isAnonymous());
 
         $event = new BeforeTokenCreation($builder, $userData);
         $this->eventDispatcher->dispatch(
@@ -134,9 +137,7 @@ class Authentication implements AuthenticationServiceInterface
             throw InvalidToken::invalidToken();
         }
 
-        $groups = $this->legacyService->getUserGroupIds($this->getUserId());
-
-        return is_array($groups) && in_array('oxidanonymous', $groups);
+        return $this->token->claims()->get(self::CLAIM_USER_ANONYMOUS);
     }
 
     public function getConfig(): Configuration
@@ -149,16 +150,12 @@ class Authentication implements AuthenticationServiceInterface
         return $configBuilder->getConfiguration();
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
-        try {
-            $this->isLogged();
-            $userModel = $this->legacyService->getUser($this->getUserId());
-        } catch (InvalidToken $e) {
-            return null;
-        }
-
-        return new User($userModel);
+        return new User(
+            $this->legacyService->getUser($this->getUserId()),
+            $this->isUserAnonymous()
+        );
     }
 
     /**

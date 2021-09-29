@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use Exception;
-use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\Eshop\Core\Email;
 use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
@@ -44,8 +44,8 @@ class Legacy
      */
     public function login(?string $username = null, ?string $password = null): UserDataInterface
     {
-        /** @var User */
-        $user = oxNew(User::class);
+        /** @var UserModel */
+        $user = oxNew(UserModel::class);
         $isAnonymous = true;
 
         if ($username && $password) {
@@ -60,15 +60,15 @@ class Legacy
         return new UserDataType($user, $isAnonymous);
     }
 
-    public function getUser(?string $userId): ?User
+    public function getUser(?string $userId): UserModel
     {
-        if (!$userId) {
-            return null;
+        $userModel = oxNew(UserModel::class);
+
+        if ($userId) {
+            $userModel->load($userId);
         }
 
-        $user = oxNew(User::class);
-        $user->load($userId);
-        return $user;
+        return $userModel;
     }
 
     /**
@@ -125,8 +125,8 @@ class Legacy
             return [];
         }
 
-        /** @var User $user */
-        $user = oxNew(User::class);
+        /** @var UserModel $user */
+        $user = oxNew(UserModel::class);
 
         if (!$user->load($userId)) {
             return ['oxidanonymous'];
