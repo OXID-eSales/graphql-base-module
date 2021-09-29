@@ -38,6 +38,6 @@ final class Product
      */
     public function title(): string
     {
-        return (string) $this->product->getFieldData('oxtitle');
+        return (string) $this->product->getRawFieldData('oxtitle');
     }
 }
