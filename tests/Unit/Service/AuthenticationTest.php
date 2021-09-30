@@ -15,7 +15,6 @@ use Lcobucci\JWT\Token\Parser;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
@@ -62,12 +61,11 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 
-        $authenticationService
-             ->createToken('foo', 'bar');
+        $authenticationService->createToken('foo', 'bar');
     }
 
     public function testIsLoggedWithoutToken(): void
@@ -75,13 +73,11 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 
-        $this->assertFalse(
-            $authenticationService->isLogged()
-        );
+        $this->assertFalse($authenticationService->isLogged());
     }
 
     public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
@@ -112,13 +108,11 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 
-        $this->assertFalse(
-            $authenticationService->isLogged()
-        );
+        $this->assertFalse($authenticationService->isLogged());
     }
 
     public function testCreateTokenWithValidCredentials(): void
@@ -135,7 +129,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 
@@ -235,7 +229,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 
@@ -350,7 +344,10 @@ class AuthenticationTest extends BaseTestCase
 
         $authenticationService = $this->getAuthenticationService();
 
-        $this->assertNull($authenticationService->getUser()->getUserId());
+        $user = $authenticationService->getUser();
+
+        $this->assertNotNull($user->getUserId());
+        $this->assertTrue($user->isAnonymous());
     }
 
     public function testGetUserIdForAnonymousToken(): void
@@ -391,7 +388,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 
@@ -484,7 +481,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 
@@ -552,7 +549,7 @@ class AuthenticationTest extends BaseTestCase
         return new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
     }

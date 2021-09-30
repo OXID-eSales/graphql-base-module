@@ -16,7 +16,7 @@ class BeforeAuthorization extends Event
 {
     public const NAME = self::class;
 
-    /** @var Token */
+    /** @var ?Token */
     private $token;
 
     /** @var string */
@@ -26,14 +26,14 @@ class BeforeAuthorization extends Event
     private $authorized;
 
     public function __construct(
-        Token $token,
+        ?Token $token,
         string $right
     ) {
         $this->token = $token;
         $this->right = $right;
     }
 
-    public function getToken(): Token
+    public function getToken(): ?Token
     {
         return $this->token;
     }

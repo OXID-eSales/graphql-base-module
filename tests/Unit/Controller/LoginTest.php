@@ -11,7 +11,6 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\DataType\User;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
@@ -43,7 +42,7 @@ class LoginTest extends BaseTestCase
         $this->authentication = new Authentication(
             $this->keyRegistry,
             $this->legacy,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
     }

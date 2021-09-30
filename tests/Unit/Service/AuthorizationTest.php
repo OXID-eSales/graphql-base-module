@@ -29,7 +29,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            new NullToken(),
+            null,
             $this->getLegacyMock()
         );
 
@@ -57,7 +57,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            new NullToken(),
+            null,
             $this->getLegacyMock()
         );
 
@@ -78,7 +78,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            new NullToken(),
+            $this->getTokenMock(),
             $legacyMock
         );
 

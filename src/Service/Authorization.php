@@ -40,7 +40,7 @@ class Authorization implements AuthorizationServiceInterface
     public function __construct(
         iterable $permissionProviders,
         EventDispatcherInterface $eventDispatcher,
-        UnencryptedToken $token,
+        ?UnencryptedToken $token,
         LegacyService $legacyService
     ) {
         foreach ($permissionProviders as $permissionProvider) {
@@ -72,7 +72,11 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        $userId = $this->token->claims()->get(Authentication::CLAIM_USERID);
+        $userId = null;
+        if ($this->token instanceof UnencryptedToken) {
+            $userId = $this->token->claims()->get(Authentication::CLAIM_USERID);
+        }
+
         $groups = $this->legacyService->getUserGroupIds($userId);
 
         if (in_array('oxidblocked', $groups)) {

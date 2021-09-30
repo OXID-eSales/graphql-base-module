@@ -46,18 +46,17 @@ class RequestReader
      *
      * @throws InvalidToken
      */
-    public function getAuthToken(): UnencryptedToken
+    public function getAuthToken(): ?UnencryptedToken
     {
-        $token      = new NullToken();
         $authHeader = $this->getAuthorizationHeader();
 
         if ($authHeader === null) {
-            return $token;
+            return null;
         }
         [$jwt] = sscanf($authHeader, 'Bearer %s');
 
         if (!$jwt) {
-            return $token;
+            return null;
         }
 
         /** @var Configuration $jwtConfiguration */
@@ -70,15 +69,10 @@ class RequestReader
             throw InvalidToken::unableToParse();
         }
 
-        $userId = $token->claims()
-                        ->get(Authentication::CLAIM_USERID);
+        $userId = $token->claims()->get(Authentication::CLAIM_USERID);
+        $userGroups = $this->legacyService->getUserGroupIds($userId);
 
-        $groups = $this->legacyService
-                       ->getUserGroupIds(
-                           $userId
-                       );
-
-        if (in_array('oxidblocked', $groups)) {
+        if (in_array('oxidblocked', $userGroups)) {
             throw InvalidToken::userBlocked();
         }
 

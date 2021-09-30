@@ -62,7 +62,7 @@ class InvalidSignatureTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            new NullToken(),
+            null,
             new EventDispatcher()
         );
 

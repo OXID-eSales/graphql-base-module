@@ -26,10 +26,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetAuthTokenWithoutToken(): void
     {
         $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
-        $this->assertInstanceOf(
-            NullToken::class,
-            $requestReader->getAuthToken()
-        );
+        $this->assertNull($requestReader->getAuthToken());
     }
 
     public function testGetAuthTokenWithWrongFormattedHeader(): void
@@ -42,10 +39,8 @@ class RequestReaderTest extends BaseTestCase
 
         foreach ($headers as $header) {
             $_SERVER[$header] = 'authtoken';
-            $this->assertInstanceOf(
-                NullToken::class,
-                $requestReader->getAuthToken()
-            );
+            $this->assertNull($requestReader->getAuthToken());
+
             unset($_SERVER[$header]);
         }
     }
@@ -89,10 +84,6 @@ class RequestReaderTest extends BaseTestCase
             $token            = $requestReader->getAuthToken();
             $this->assertInstanceOf(
                 Token::class,
-                $token
-            );
-            $this->assertNotInstanceOf(
-                NullToken::class,
                 $token
             );
             unset($_SERVER[$header]);

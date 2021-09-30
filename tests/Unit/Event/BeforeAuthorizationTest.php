@@ -10,20 +10,22 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Event;
 
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
 use PHPUnit\Framework\TestCase;
+use Lcobucci\JWT\Token;
 
 class BeforeAuthorizationTest extends TestCase
 {
     public function testBasicGetters(): void
     {
+        $tokenStub = $this->createPartialMock(Token::class, []);
+
         $event = new BeforeAuthorization(
-            new NullToken(),
+            $tokenStub,
             'right'
         );
 
         $this->assertInstanceOf(
-            NullToken::class,
+            Token::class,
             $event->getToken()
         );
         $this->assertSame(
