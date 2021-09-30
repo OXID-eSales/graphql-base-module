@@ -36,8 +36,8 @@ class Authentication implements AuthenticationServiceInterface
     /** @var LegacyService */
     private $legacyService;
 
-    /** @var ?UnencryptedToken */
-    private $token;
+    /** @var Token */
+    private $tokenService;
 
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
@@ -45,12 +45,12 @@ class Authentication implements AuthenticationServiceInterface
     public function __construct(
         KeyRegistry $keyRegistry,
         LegacyService $legacyService,
-        ?UnencryptedToken $token,
+        Token $tokenService,
         EventDispatcherInterface $eventDispatcher
     ) {
         $this->keyRegistry     = $keyRegistry;
         $this->legacyService   = $legacyService;
-        $this->token           = $token;
+        $this->tokenService    = $tokenService;
         $this->eventDispatcher = $eventDispatcher;
     }
 
@@ -64,14 +64,14 @@ class Authentication implements AuthenticationServiceInterface
         }
 
         $groups = $this->legacyService->getUserGroupIds(
-            $this->getTokenClaim(self::CLAIM_USERID)
+            $this->tokenService->getTokenClaim(self::CLAIM_USERID)
         );
 
         if (in_array('oxidblocked', $groups)) {
             throw InvalidToken::userBlocked();
         }
 
-        if (!$this->isValidToken($this->token)) {
+        if (!$this->isValidToken($this->tokenService->getToken())) {
             throw InvalidToken::invalidToken();
         }
 
@@ -121,7 +121,7 @@ class Authentication implements AuthenticationServiceInterface
             throw InvalidToken::invalidToken();
         }
 
-        return (string) $this->getTokenClaim(self::CLAIM_USERNAME);
+        return (string) $this->tokenService->getTokenClaim(self::CLAIM_USERNAME);
     }
 
     public function getConfig(): Configuration
@@ -137,27 +137,9 @@ class Authentication implements AuthenticationServiceInterface
     public function getUser(): User
     {
         return new User(
-            $this->legacyService->getUserModel($this->getTokenClaim(self::CLAIM_USERID)),
-            $this->getTokenClaim(self::CLAIM_USER_ANONYMOUS, true)
+            $this->legacyService->getUserModel($this->tokenService->getTokenClaim(self::CLAIM_USERID)),
+            $this->tokenService->getTokenClaim(self::CLAIM_USER_ANONYMOUS, true)
         );
-    }
-
-    protected function getTokenClaim(string $claim, $default = null)
-    {
-        if (!$this->token instanceof UnencryptedToken) {
-            return $default;
-        }
-
-        return $this->token->claims()->get($claim, $default);
-    }
-
-    protected function checkTokenHasClaim(string $claim): bool
-    {
-        if (!$this->token instanceof UnencryptedToken) {
-            return false;
-        }
-
-        return $this->token->claims()->has($claim);
     }
 
     /**
@@ -177,11 +159,11 @@ class Authentication implements AuthenticationServiceInterface
             return false;
         }
 
-        if (!$this->checkTokenHasClaim(self::CLAIM_SHOPID)) {
+        if (!$this->tokenService->checkTokenHasClaim(self::CLAIM_SHOPID)) {
             return false;
         }
 
-        if ($this->getTokenClaim(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
+        if ($this->tokenService->getTokenClaim(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
             return false;
         }
 

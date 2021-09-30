@@ -18,6 +18,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -61,7 +62,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -73,7 +74,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -85,7 +86,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -106,7 +107,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -133,7 +134,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token,
+            new TokenService(self::$token),
             new EventDispatcher()
         );
 
@@ -156,7 +157,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token,
+            new TokenService(self::$token),
             new EventDispatcher()
         );
 
@@ -182,7 +183,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token,
+            new TokenService(self::$token),
             new EventDispatcher()
         );
 
@@ -206,7 +207,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -238,7 +239,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token,
+            new TokenService(self::$token),
             new EventDispatcher()
         );
 
@@ -278,7 +279,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            $token,
+            new TokenService($token),
             new EventDispatcher()
         );
 
@@ -306,7 +307,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            $token,
+            new TokenService($token),
             new EventDispatcher()
         );
 
@@ -342,7 +343,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            $anonymousToken,
+            new TokenService($anonymousToken),
             new EventDispatcher()
         );
 
@@ -365,7 +366,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -399,7 +400,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$anonymousToken,
+            new TokenService(self::$anonymousToken),
             new EventDispatcher()
         );
 
@@ -424,7 +425,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$anonymousToken,
+            new TokenService(self::$anonymousToken),
             new EventDispatcher()
         );
 
@@ -446,7 +447,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$token,
+            new TokenService(self::$token),
             new EventDispatcher()
         );
 
@@ -458,7 +459,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -483,7 +484,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            self::$anonymousToken,
+            new TokenService(self::$anonymousToken),
             new EventDispatcher()
         );
 
@@ -507,7 +508,7 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            $token,
+            new TokenService($token),
             new EventDispatcher()
         );
 
@@ -526,7 +527,7 @@ class AuthenticationTest extends BaseTestCase
         return new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
     }

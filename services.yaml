@@ -36,6 +36,9 @@ services:
   OxidEsales\GraphQL\Base\Service\Authentication:
     class: OxidEsales\GraphQL\Base\Service\Authentication
 
+  OxidEsales\GraphQL\Base\Service\Token:
+      class: OxidEsales\GraphQL\Base\Service\Token
+
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy
 

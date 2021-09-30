@@ -20,6 +20,7 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\Token;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -121,20 +122,19 @@ abstract class TestCase extends PHPUnitTestCase
     protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $token                         = static::$container->get(RequestReader::class)
-                                                           ->getAuthToken();
+        $tokenService = new Token(static::$container->get(RequestReader::class)->getAuthToken());
 
         $authentication = static::$container->get(Authentication::class);
         $refClass       = new ReflectionClass(Authentication::class);
-        $prop           = $refClass->getProperty('token');
+        $prop           = $refClass->getProperty('tokenService');
         $prop->setAccessible(true);
-        $prop->setValue($authentication, $token);
+        $prop->setValue($authentication, $tokenService);
 
         $authorization = static::$container->get(Authorization::class);
         $refClass      = new ReflectionClass(Authorization::class);
         $prop          = $refClass->getProperty('token');
         $prop->setAccessible(true);
-        $prop->setValue($authorization, $token);
+        $prop->setValue($authorization, static::$container->get(RequestReader::class)->getAuthToken());
 
         $schema        = static::$container->get(SchemaFactory::class);
         $refClass      = new ReflectionClass(SchemaFactory::class);

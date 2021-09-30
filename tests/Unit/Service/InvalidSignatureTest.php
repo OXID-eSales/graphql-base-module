@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -62,7 +63,7 @@ class InvalidSignatureTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            null,
+            new TokenService(),
             new EventDispatcher()
         );
 
@@ -94,7 +95,7 @@ class InvalidSignatureTest extends BaseTestCase
         $authenticationService = new Authentication(
             $this->keyRegistry,
             $this->legacyService,
-            $token,
+            new TokenService($token),
             new EventDispatcher()
         );
 
