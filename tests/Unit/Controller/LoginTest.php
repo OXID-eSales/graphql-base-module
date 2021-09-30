@@ -13,6 +13,7 @@ use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
@@ -30,6 +31,9 @@ class LoginTest extends BaseTestCase
     /** @var Legacy|MockObject */
     private $legacy;
 
+    /** @var JwtConfigurationBuilder */
+    private $jwtConfigurationBuilder;
+
     public function setUp(): void
     {
         $this->keyRegistry = $this->getMockBuilder(KeyRegistry::class)
@@ -45,6 +49,11 @@ class LoginTest extends BaseTestCase
             $this->legacy,
             new TokenService(),
             new EventDispatcher()
+        );
+
+        $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
+            $this->keyRegistry,
+            $this->legacy
         );
     }
 
@@ -69,7 +78,7 @@ class LoginTest extends BaseTestCase
         $loginController = new Login($this->authentication);
 
         $jwt        = $loginController->token($user['username'], $user['password']);
-        $config     = $this->authentication->getConfig();
+        $config     = $this->jwtConfigurationBuilder->getConfiguration();
         $token      = $config->parser()->parse($jwt);
         $validator  = $config->validator();
 
@@ -95,7 +104,7 @@ class LoginTest extends BaseTestCase
         $loginController = new Login($this->authentication);
 
         $jwt       = $loginController->token('none');
-        $config    = $this->authentication->getConfig();
+        $config     = $this->jwtConfigurationBuilder->getConfiguration();
         $token     = $config->parser()->parse($jwt);
         $validator = $config->validator();
 
@@ -120,7 +129,7 @@ class LoginTest extends BaseTestCase
         $loginController = new Login($this->authentication);
 
         $jwt       = $loginController->token(null, 'none');
-        $config    = $this->authentication->getConfig();
+        $config     = $this->jwtConfigurationBuilder->getConfiguration();
         $token     = $config->parser()->parse($jwt);
         $validator = $config->validator();
 
@@ -145,7 +154,7 @@ class LoginTest extends BaseTestCase
         $loginController = new Login($this->authentication);
 
         $jwt       = $loginController->token();
-        $config    = $this->authentication->getConfig();
+        $config     = $this->jwtConfigurationBuilder->getConfiguration();
         $token     = $config->parser()->parse($jwt);
         $validator = $config->validator();
 

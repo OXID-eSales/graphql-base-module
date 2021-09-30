@@ -124,7 +124,7 @@ class Authentication implements AuthenticationServiceInterface
         return (string) $this->tokenService->getTokenClaim(self::CLAIM_USERNAME);
     }
 
-    public function getConfig(): Configuration
+    protected function getConfig(): Configuration
     {
         $configBuilder = new JwtConfigurationBuilder(
             $this->keyRegistry,
