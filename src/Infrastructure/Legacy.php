@@ -60,7 +60,7 @@ class Legacy
         return new UserDataType($user, $isAnonymous);
     }
 
-    public function getUser(?string $userId): UserModel
+    public function getUserModel(?string $userId): UserModel
     {
         $userModel = oxNew(UserModel::class);
 

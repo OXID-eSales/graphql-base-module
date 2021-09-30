@@ -326,8 +326,8 @@ class AuthenticationTest extends BaseTestCase
     {
         $userModel = $this->getUserModelStub('the_admin_oxid');
 
-        $this->legacyService->method('login')
-            ->willReturn(new User($userModel));
+        $this->legacyService->method('login')->willReturn(new User($userModel));
+        $this->legacyService->method('getUserModel')->with('the_admin_oxid')->willReturn($userModel);
 
         $authenticationService = $this->getAuthenticationService();
         $token                 = $authenticationService->createToken('admin', 'admin');
@@ -339,15 +339,18 @@ class AuthenticationTest extends BaseTestCase
             new EventDispatcher()
         );
 
-        $this->assertSame('the_admin_oxid', $authenticationService->getUserId());
+        $this->assertSame('the_admin_oxid', $authenticationService->getUser()->getUserId());
         $this->assertNotNull($authenticationService->getUserName());
     }
 
     public function testGetUserIdForNullToken(): void
     {
+        $userModel = $this->getUserModelStub();
+        $this->legacyService->method('getUserModel')->with('')->willReturn($userModel);
+
         $authenticationService = $this->getAuthenticationService();
 
-        $this->assertNull($authenticationService->getUserId());
+        $this->assertNull($authenticationService->getUser()->getUserId());
     }
 
     public function testGetUserIdForAnonymousToken(): void
@@ -355,6 +358,9 @@ class AuthenticationTest extends BaseTestCase
         $this->legacyService->method('login')->willReturn(
             new User($this->getUserModelStub(), true)
         );
+
+        $userModel = $this->getUserModelStub();
+        $this->legacyService->method('getUserModel')->willReturn($userModel);
 
         $authenticationService = $this->getAuthenticationService();
         $anonymousToken        = $authenticationService->createToken();
@@ -366,7 +372,7 @@ class AuthenticationTest extends BaseTestCase
             new EventDispatcher()
         );
 
-        $this->assertNotEmpty($authenticationService->getUserId());
+        $this->assertNotEmpty($authenticationService->getUser()->getUserId());
     }
 
     public function testCreateAnonymousToken(): void

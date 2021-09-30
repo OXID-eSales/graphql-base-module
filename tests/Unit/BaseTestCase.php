@@ -31,10 +31,7 @@ class BaseTestCase extends TestCase
 
     protected function getUserModelStub(?string $id = null)
     {
-        $userModelStub = $this->getMockBuilder(UserModel::class)
-            ->onlyMethods([])
-            ->disableOriginalConstructor()
-            ->getMock();
+        $userModelStub = $this->createPartialMock(UserModel::class, []);
 
         if ($id) {
             $userModelStub->setId($id);

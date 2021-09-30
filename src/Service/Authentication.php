@@ -123,7 +123,7 @@ class Authentication implements AuthenticationServiceInterface
         return (string) $this->token->claims()->get(self::CLAIM_USERNAME);
     }
 
-    public function getUserId(): ?string
+    private function getUserId(): ?string
     {
         return $this->token->claims()->get(self::CLAIM_USERID);
     }
@@ -141,7 +141,7 @@ class Authentication implements AuthenticationServiceInterface
     public function getUser(): User
     {
         return new User(
-            $this->legacyService->getUser($this->getUserId()),
+            $this->legacyService->getUserModel($this->getUserId()),
             $this->token->claims()->get(self::CLAIM_USER_ANONYMOUS, true)
         );
     }

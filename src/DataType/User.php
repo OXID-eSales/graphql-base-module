@@ -36,7 +36,7 @@ final class User implements ShopModelAwareInterfaceAlias, UserDataInterface
         return $this->userModel;
     }
 
-    public function getUserId(): string
+    public function getUserId(): ?string
     {
         return $this->userModel->getId();
     }
