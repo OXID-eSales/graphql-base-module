@@ -80,29 +80,6 @@ class AuthenticationTest extends BaseTestCase
         $this->assertFalse($authenticationService->isLogged());
     }
 
-    public function testIsLoggedWithFormallyCorrectButInvalidToken(): void
-    {
-        $this->markTestSkipped('This test looks not needed anymore, as parser will not parse Invalid tokens anymore');
-
-        $authenticationService = new Authentication(
-            $this->keyRegistry,
-            $this->legacyService,
-            (new Parser(new JoseEncoder()))->parse(self::$invalidToken),
-            new EventDispatcher()
-        );
-
-        $e = null;
-
-        try {
-            $authenticationService->isLogged();
-        } catch (InvalidToken $e) {
-        }
-        $this->assertInstanceOf(
-            InvalidToken::class,
-            $e
-        );
-    }
-
     public function testIsLoggedWithNullToken(): void
     {
         $authenticationService = new Authentication(
