@@ -18,6 +18,7 @@ use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -25,18 +26,27 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AuthorizationTest extends TestCase
 {
+    protected function prepareTokenService(
+        ?UnencryptedToken $token = null,
+        ?Legacy $legacyService = null
+    ): TokenService {
+        return new TokenService(
+            $token,
+            $this->createPartialMock(JwtConfigurationBuilder::class, []),
+            $legacyService ?: $this->getLegacyMock()
+        );
+    }
+
     public function testIsNotAllowedWithoutPermissionsAndWithoutToken(): void
     {
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            new TokenService(),
+            $this->prepareTokenService(),
             $this->getLegacyMock()
         );
 
-        $this->assertFalse(
-            $auth->isAllowed('')
-        );
+        $this->assertFalse($auth->isAllowed(''));
     }
 
     public function testIsNotAllowedWithoutPermissionsButWithToken(): void
@@ -44,7 +54,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            new TokenService($this->getTokenMock()),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 
@@ -58,7 +68,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            new TokenService(),
+            $this->prepareTokenService(null, $this->getLegacyMock()),
             $this->getLegacyMock()
         );
 
@@ -79,7 +89,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            new TokenService($this->getTokenMock()),
+            $this->prepareTokenService($this->getTokenMock(), $legacyMock),
             $legacyMock
         );
 
@@ -91,7 +101,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            new TokenService($this->getTokenMock()),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 
@@ -118,10 +128,11 @@ class AuthorizationTest extends TestCase
                 $event->setAuthorized(true);
             }
         );
+
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            new TokenService($this->getTokenMock()),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 
@@ -151,7 +162,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            new TokenService($this->getTokenMock()),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 

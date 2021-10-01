@@ -70,9 +70,12 @@ class InvalidSignatureTest extends BaseTestCase
 
         $authenticationService = new Authentication(
             $this->legacyService,
-            new TokenService(),
-            new EventDispatcher(),
-            $this->jwtConfigurationBuilder
+            new TokenService(
+                null,
+                $this->jwtConfigurationBuilder,
+                $this->legacyService
+            ),
+            new EventDispatcher()
         );
 
         self::$token = $authenticationService->createToken('admin', 'admin');
@@ -102,9 +105,12 @@ class InvalidSignatureTest extends BaseTestCase
 
         $authenticationService = new Authentication(
             $this->legacyService,
-            new TokenService($token),
-            new EventDispatcher(),
-            $this->jwtConfigurationBuilder
+            new TokenService(
+                $token,
+                $this->jwtConfigurationBuilder,
+                $this->legacyService
+            ),
+            new EventDispatcher()
         );
 
         $this->expectException(InvalidToken::class);

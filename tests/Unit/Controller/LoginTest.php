@@ -52,9 +52,12 @@ class LoginTest extends BaseTestCase
 
         $this->authentication = new Authentication(
             $this->legacy,
-            new TokenService(),
-            new EventDispatcher(),
-            $this->jwtConfigurationBuilder
+            new TokenService(
+                null,
+                $this->jwtConfigurationBuilder,
+                $this->legacy
+            ),
+            new EventDispatcher()
         );
     }
 

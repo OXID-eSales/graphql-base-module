@@ -39,19 +39,14 @@ class Authentication implements AuthenticationServiceInterface
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var JwtConfigurationBuilder */
-    private $jwtConfigurationBuilder;
-
     public function __construct(
         LegacyService $legacyService,
         Token $tokenService,
-        EventDispatcherInterface $eventDispatcher,
-        JwtConfigurationBuilder $jwtConfigurationBuilder
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->legacyService   = $legacyService;
         $this->tokenService    = $tokenService;
         $this->eventDispatcher = $eventDispatcher;
-        $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
     /**
@@ -71,7 +66,7 @@ class Authentication implements AuthenticationServiceInterface
             throw InvalidToken::userBlocked();
         }
 
-        if (!$this->isValidToken($this->tokenService->getToken())) {
+        if (!$this->tokenService->isTokenValid($this->tokenService->getToken())) {
             throw InvalidToken::invalidToken();
         }
 
@@ -86,7 +81,7 @@ class Authentication implements AuthenticationServiceInterface
         $userData  = $this->legacyService->login($username, $password);
         $time      = new DateTimeImmutable('now');
         $expire    = new DateTimeImmutable('+8 hours');
-        $config    = $this->jwtConfigurationBuilder->getConfiguration();
+        $config    = $this->tokenService->getConfiguration();
 
         $builder = $config->builder()
             ->issuedBy($this->legacyService->getShopUrl())
@@ -130,33 +125,5 @@ class Authentication implements AuthenticationServiceInterface
             $this->legacyService->getUserModel($this->tokenService->getTokenClaim(self::CLAIM_USERID)),
             $this->tokenService->getTokenClaim(self::CLAIM_USER_ANONYMOUS, true)
         );
-    }
-
-    /**
-     * Checks if given token is valid:
-     * - has valid signature
-     * - has valid issuer and audience
-     * - has valid shop claim
-     *
-     * @internal
-     */
-    private function isValidToken(UnencryptedToken $token): bool
-    {
-        $config    = $this->jwtConfigurationBuilder->getConfiguration();
-        $validator = $config->validator();
-
-        if (!$validator->validate($token, ...$config->validationConstraints())) {
-            return false;
-        }
-
-        if (!$this->tokenService->checkTokenHasClaim(self::CLAIM_SHOPID)) {
-            return false;
-        }
-
-        if ($this->tokenService->getTokenClaim(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
-            return false;
-        }
-
-        return true;
     }
 }
