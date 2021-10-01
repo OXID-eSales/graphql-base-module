@@ -124,7 +124,7 @@ class Authentication implements AuthenticationServiceInterface
     {
         return new User(
             $this->legacyService->getUserModel($this->tokenService->getTokenClaim(self::CLAIM_USERID)),
-            $this->tokenService->getToken() ? $this->tokenService->getTokenClaim(self::CLAIM_USER_ANONYMOUS, true) : false
+            $this->tokenService->getTokenClaim(self::CLAIM_USER_ANONYMOUS, false)
         );
     }
 }
