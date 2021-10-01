@@ -18,6 +18,7 @@ use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -29,7 +30,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            null,
+            new TokenService(),
             $this->getLegacyMock()
         );
 
@@ -43,7 +44,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            $this->getTokenMock(),
+            new TokenService($this->getTokenMock()),
             $this->getUserGroupsMock()
         );
 
@@ -57,7 +58,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            null,
+            new TokenService(),
             $this->getLegacyMock()
         );
 
@@ -78,7 +79,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            $this->getTokenMock(),
+            new TokenService($this->getTokenMock()),
             $legacyMock
         );
 
@@ -90,7 +91,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            $this->getTokenMock(),
+            new TokenService($this->getTokenMock()),
             $this->getUserGroupsMock()
         );
 
@@ -120,7 +121,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            $this->getTokenMock(),
+            new TokenService($this->getTokenMock()),
             $this->getUserGroupsMock()
         );
 
@@ -150,7 +151,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            $this->getTokenMock(),
+            new TokenService($this->getTokenMock()),
             $this->getUserGroupsMock()
         );
 

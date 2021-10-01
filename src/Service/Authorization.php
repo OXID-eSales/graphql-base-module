@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
@@ -28,8 +27,8 @@ class Authorization implements AuthorizationServiceInterface
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var UnencryptedToken */
-    private $token;
+    /** @var Token */
+    private $tokenService;
 
     /** @var LegacyService */
     private $legacyService;
@@ -40,7 +39,7 @@ class Authorization implements AuthorizationServiceInterface
     public function __construct(
         iterable $permissionProviders,
         EventDispatcherInterface $eventDispatcher,
-        ?UnencryptedToken $token,
+        Token $tokenService,
         LegacyService $legacyService
     ) {
         foreach ($permissionProviders as $permissionProvider) {
@@ -50,14 +49,14 @@ class Authorization implements AuthorizationServiceInterface
             );
         }
         $this->eventDispatcher = $eventDispatcher;
-        $this->token           = $token;
-        $this->legacyService   = $legacyService;
+        $this->tokenService = $tokenService;
+        $this->legacyService = $legacyService;
     }
 
     public function isAllowed(string $right, $subject = null): bool
     {
         $event = new BeforeAuthorization(
-            $this->token,
+            $this->tokenService->getToken(),
             $right
         );
 
@@ -72,11 +71,7 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        $userId = null;
-        if ($this->token instanceof UnencryptedToken) {
-            $userId = $this->token->claims()->get(Authentication::CLAIM_USERID);
-        }
-
+        $userId = $this->tokenService->getTokenClaim(Authentication::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
 
         if (in_array('oxidblocked', $groups)) {

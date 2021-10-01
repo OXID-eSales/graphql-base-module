@@ -132,7 +132,7 @@ abstract class TestCase extends PHPUnitTestCase
 
         $authorization = static::$container->get(Authorization::class);
         $refClass      = new ReflectionClass(Authorization::class);
-        $prop          = $refClass->getProperty('token');
+        $prop          = $refClass->getProperty('tokenService');
         $prop->setAccessible(true);
         $prop->setValue($authorization, static::$container->get(RequestReader::class)->getAuthToken());
 
