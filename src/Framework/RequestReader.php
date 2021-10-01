@@ -69,7 +69,7 @@ class RequestReader
             throw InvalidToken::unableToParse();
         }
 
-        $userId = $token->claims()->get(Authentication::CLAIM_USERID);
+        $userId     = $token->claims()->get(Authentication::CLAIM_USERID);
         $userGroups = $this->legacyService->getUserGroupIds($userId);
 
         if (in_array('oxidblocked', $userGroups)) {

@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Event;
 
+use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use PHPUnit\Framework\TestCase;
-use Lcobucci\JWT\Token;
 
 class BeforeAuthorizationTest extends TestCase
 {

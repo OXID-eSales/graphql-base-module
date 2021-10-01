@@ -107,10 +107,10 @@ class LoginTest extends BaseTestCase
 
         $loginController = new Login($this->authentication);
 
-        $jwt       = $loginController->token('none');
+        $jwt        = $loginController->token('none');
         $config     = $this->jwtConfigurationBuilder->getConfiguration();
-        $token     = $config->parser()->parse($jwt);
-        $validator = $config->validator();
+        $token      = $config->parser()->parse($jwt);
+        $validator  = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
@@ -132,10 +132,10 @@ class LoginTest extends BaseTestCase
 
         $loginController = new Login($this->authentication);
 
-        $jwt       = $loginController->token(null, 'none');
+        $jwt        = $loginController->token(null, 'none');
         $config     = $this->jwtConfigurationBuilder->getConfiguration();
-        $token     = $config->parser()->parse($jwt);
-        $validator = $config->validator();
+        $token      = $config->parser()->parse($jwt);
+        $validator  = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));
@@ -157,10 +157,10 @@ class LoginTest extends BaseTestCase
 
         $loginController = new Login($this->authentication);
 
-        $jwt       = $loginController->token();
+        $jwt        = $loginController->token();
         $config     = $this->jwtConfigurationBuilder->getConfiguration();
-        $token     = $config->parser()->parse($jwt);
-        $validator = $config->validator();
+        $token      = $config->parser()->parse($jwt);
+        $validator  = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($shop['id'], $token->claims()->get(Authentication::CLAIM_SHOPID));

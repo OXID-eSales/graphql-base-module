@@ -60,19 +60,6 @@ class AuthenticationTest extends BaseTestCase
         );
     }
 
-    protected function getSut(?UnencryptedToken $token = null): Authentication
-    {
-        return new Authentication(
-            $this->legacyService,
-            new TokenService(
-                $token,
-                $this->jwtConfigurationBuilder,
-                $this->legacyService
-            ),
-            new EventDispatcher()
-        );
-    }
-
     public function testCreateTokenWithInvalidCredentials(): void
     {
         $this->expectException(InvalidLogin::class);
@@ -434,6 +421,19 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService = $this->getSut($token);
 
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
+    }
+
+    protected function getSut(?UnencryptedToken $token = null): Authentication
+    {
+        return new Authentication(
+            $this->legacyService,
+            new TokenService(
+                $token,
+                $this->jwtConfigurationBuilder,
+                $this->legacyService
+            ),
+            new EventDispatcher()
+        );
     }
 
     private function getAuthenticationService(): Authentication

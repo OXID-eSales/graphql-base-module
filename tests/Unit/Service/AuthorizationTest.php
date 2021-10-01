@@ -13,7 +13,6 @@ use Lcobucci\JWT\Token;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
@@ -26,17 +25,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class AuthorizationTest extends TestCase
 {
-    protected function prepareTokenService(
-        ?UnencryptedToken $token = null,
-        ?Legacy $legacyService = null
-    ): TokenService {
-        return new TokenService(
-            $token,
-            $this->createPartialMock(JwtConfigurationBuilder::class, []),
-            $legacyService ?: $this->getLegacyMock()
-        );
-    }
-
     public function testIsNotAllowedWithoutPermissionsAndWithoutToken(): void
     {
         $auth = new Authorization(
@@ -177,6 +165,17 @@ class AuthorizationTest extends TestCase
         $this->assertFalse(
             $auth->isAllowed('permission1'),
             'Permission "permission1" must not be granted to group "group"'
+        );
+    }
+
+    protected function prepareTokenService(
+        ?UnencryptedToken $token = null,
+        ?Legacy $legacyService = null
+    ): TokenService {
+        return new TokenService(
+            $token,
+            $this->createPartialMock(JwtConfigurationBuilder::class, []),
+            $legacyService ?: $this->getLegacyMock()
         );
     }
 

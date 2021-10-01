@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 use Exception;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;

@@ -62,8 +62,7 @@ class LegacyTest extends UnitTestCase
         ?bool $expectedAnonymous,
         ?bool $expectedUserIdNull,
         bool $expectedException
-    ): void
-    {
+    ): void {
         if ($expectedException) {
             $this->expectException(InvalidLogin::class);
         }
@@ -78,39 +77,39 @@ class LegacyTest extends UnitTestCase
     {
         return [
             'no login' => [
-                'login' => null,
-                'password' => 'any',
-                'expectedAnonymous' => true,
+                'login'              => null,
+                'password'           => 'any',
+                'expectedAnonymous'  => true,
                 'expectedUserIdNull' => false,
-                'expectedException' => false,
+                'expectedException'  => false,
             ],
             'no password' => [
-                'login' => 'any',
-                'password' => null,
-                'expectedAnonymous' => true,
+                'login'              => 'any',
+                'password'           => null,
+                'expectedAnonymous'  => true,
                 'expectedUserIdNull' => false,
-                'expectedException' => false,
+                'expectedException'  => false,
             ],
             'no values' => [
-                'login' => null,
-                'password' => null,
-                'expectedAnonymous' => true,
+                'login'              => null,
+                'password'           => null,
+                'expectedAnonymous'  => true,
                 'expectedUserIdNull' => false,
-                'expectedException' => false,
+                'expectedException'  => false,
             ],
             'wrong login' => [
-                'login' => 'xxx',
-                'password' => 'yyy',
-                'expectedAnonymous' => null,
+                'login'              => 'xxx',
+                'password'           => 'yyy',
+                'expectedAnonymous'  => null,
                 'expectedUserIdNull' => null,
-                'expectedException' => true
+                'expectedException'  => true,
             ],
             'correct login' => [
-                'login' => 'admin',
-                'password' => 'admin',
-                'expectedAnonymous' => false,
+                'login'              => 'admin',
+                'password'           => 'admin',
+                'expectedAnonymous'  => false,
                 'expectedUserIdNull' => false,
-                'expectedException' => false
+                'expectedException'  => false,
             ],
         ];
     }

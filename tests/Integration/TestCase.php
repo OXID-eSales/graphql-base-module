@@ -122,7 +122,7 @@ abstract class TestCase extends PHPUnitTestCase
     protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $tokenService = static::$container->get(Token::class);
+        $tokenService                  = static::$container->get(Token::class);
 
         $authentication = static::$container->get(Authentication::class);
         $refClass       = new ReflectionClass(Authentication::class);
