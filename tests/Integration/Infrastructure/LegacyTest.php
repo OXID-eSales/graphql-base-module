@@ -53,6 +53,68 @@ class LegacyTest extends UnitTestCase
         );
     }
 
+    /**
+     * @dataProvider loginResponseTestDataProvider
+     */
+    public function testLoginResponseIsAnonymousOnLoginMissing(
+        ?string $login,
+        ?string $password,
+        ?bool $expectedAnonymous,
+        ?bool $expectedUserIdNull,
+        bool $expectedException
+    ): void
+    {
+        if ($expectedException) {
+            $this->expectException(InvalidLogin::class);
+        }
+
+        $userDataType = $this->legacyInfrastructure->login($login, $password);
+
+        $this->assertSame($expectedAnonymous, $userDataType->isAnonymous());
+        $this->assertSame($expectedUserIdNull, null === $userDataType->getUserId());
+    }
+
+    public function loginResponseTestDataProvider(): array
+    {
+        return [
+            'no login' => [
+                'login' => null,
+                'password' => 'any',
+                'expectedAnonymous' => true,
+                'expectedUserIdNull' => false,
+                'expectedException' => false,
+            ],
+            'no password' => [
+                'login' => 'any',
+                'password' => null,
+                'expectedAnonymous' => true,
+                'expectedUserIdNull' => false,
+                'expectedException' => false,
+            ],
+            'no values' => [
+                'login' => null,
+                'password' => null,
+                'expectedAnonymous' => true,
+                'expectedUserIdNull' => false,
+                'expectedException' => false,
+            ],
+            'wrong login' => [
+                'login' => 'xxx',
+                'password' => 'yyy',
+                'expectedAnonymous' => null,
+                'expectedUserIdNull' => null,
+                'expectedException' => true
+            ],
+            'correct login' => [
+                'login' => 'admin',
+                'password' => 'admin',
+                'expectedAnonymous' => false,
+                'expectedUserIdNull' => false,
+                'expectedException' => false
+            ],
+        ];
+    }
+
     public function testUserGroups(): void
     {
         $oUser = oxNew(User::class);

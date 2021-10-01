@@ -25,10 +25,6 @@ final class User implements ShopModelAwareInterfaceAlias, UserDataInterface
     {
         $this->userModel   = $userModel;
         $this->isAnonymous = $isAnonymous;
-
-        if ($this->isAnonymous && !$this->userModel->getId()) {
-            $this->userModel->setId(Legacy::createUniqueIdentifier());
-        }
     }
 
     public function getEshopModel(): EshopUserModel

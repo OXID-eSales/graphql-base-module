@@ -44,8 +44,8 @@ class Legacy
      */
     public function login(?string $username = null, ?string $password = null): UserDataInterface
     {
-        /** @var UserModel */
-        $user        = oxNew(UserModel::class);
+        /** @var UserModel $user */
+        $user = oxNew(UserModel::class);
         $isAnonymous = true;
 
         if ($username && $password) {
@@ -55,6 +55,8 @@ class Legacy
             } catch (Exception $e) {
                 throw new InvalidLogin('Username/password combination is invalid');
             }
+        } else {
+            $user->setId(self::createUniqueIdentifier());
         }
 
         return new UserDataType($user, $isAnonymous);

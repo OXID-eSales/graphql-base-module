@@ -290,12 +290,13 @@ class AuthenticationTest extends BaseTestCase
 
     public function testGetUserIdForAnonymousToken(): void
     {
+        $someRandomModelStub = $this->getUserModelStub('someRandomId');
+
         $this->legacyService->method('login')->willReturn(
-            new User($this->getUserModelStub(), true)
+            new User($someRandomModelStub, true)
         );
 
-        $userModel = $this->getUserModelStub();
-        $this->legacyService->method('getUserModel')->willReturn($userModel);
+        $this->legacyService->method('getUserModel')->willReturn($someRandomModelStub);
 
         $authenticationService = $this->getAuthenticationService();
         $anonymousToken        = $authenticationService->createToken();

@@ -102,7 +102,7 @@ class LoginTest extends BaseTestCase
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
         $this->legacy->method('login')->willReturn(
-            new User($this->getUserModelStub(), true)
+            new User($this->getUserModelStub('someRandomId'), true)
         );
 
         $loginController = new Login($this->authentication);
@@ -127,7 +127,7 @@ class LoginTest extends BaseTestCase
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
         $this->legacy->method('login')->willReturn(
-            new User($this->getUserModelStub(), true)
+            new User($this->getUserModelStub('someRandomId'), true)
         );
 
         $loginController = new Login($this->authentication);
@@ -152,7 +152,7 @@ class LoginTest extends BaseTestCase
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
         $this->legacy->method('getShopId')->willReturn($shop['id']);
         $this->legacy->method('login')->willReturn(
-            new User($this->getUserModelStub(), true)
+            new User($this->getUserModelStub('someRandomId'), true)
         );
 
         $loginController = new Login($this->authentication);
