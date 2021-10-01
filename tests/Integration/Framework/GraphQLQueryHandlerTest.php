@@ -187,6 +187,52 @@ class GraphQLQueryHandlerTest extends TestCase
         static::$container = null;
     }
 
+    public function testRightOnlyQueryWithoutToken(): void
+    {
+        static::$container = null;
+        $this->setUp();
+
+        $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
+        $this->assertNotEmpty($result['body']['errors']);
+        static::$container = null;
+    }
+
+    public function testRightOnlyQueryWithUserToken(): void
+    {
+        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $this->setAuthToken($result['body']['data']['token']);
+
+        static::$container = null;
+        $this->setUp();
+
+        $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
+        $this->assertNotEmpty($result['body']['errors']);
+        static::$container = null;
+    }
+
+    public function testRightOnlyQueryWithAnonymousToken(): void
+    {
+        $result = $this->query('query { token }');
+        $this->setAuthToken($result['body']['data']['token']);
+
+        static::$container = null;
+        $this->setUp();
+
+        $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
+
+        $this->assertEquals(
+            [
+                'body'   => [
+                    'data' => [
+                        'testOnlyRightQuery' => 'bar',
+                    ],
+                ],
+            ],
+            $result
+        );
+        static::$container = null;
+    }
+
     public function testBasicInputFilterQuery(): void
     {
         $result = $this->query('

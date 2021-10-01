@@ -61,6 +61,15 @@ class TestController
 
     /**
      * @Query
+     * @Right("FOOBARBAZ")
+     */
+    public function testOnlyRightQuery(string $foo): string
+    {
+        return $foo;
+    }
+
+    /**
+     * @Query
      */
     public function exceptionQuery(string $foo): string
     {
