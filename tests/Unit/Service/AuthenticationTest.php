@@ -285,8 +285,7 @@ class AuthenticationTest extends BaseTestCase
 
         $user = $authenticationService->getUser();
 
-        $this->assertNotNull($user->getUserId());
-        $this->assertTrue($user->isAnonymous());
+        $this->assertNull($user->getUserId());
     }
 
     public function testGetUserIdForAnonymousToken(): void
@@ -394,7 +393,7 @@ class AuthenticationTest extends BaseTestCase
     {
         $authenticationService = $this->getSut();
 
-        $this->assertTrue($authenticationService->getUser()->isAnonymous());
+        $this->assertFalse($authenticationService->getUser()->isAnonymous());
     }
 
     /**
