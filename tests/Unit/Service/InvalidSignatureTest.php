@@ -32,6 +32,9 @@ class InvalidSignatureTest extends BaseTestCase
     /** @var LegacyService|MockObject */
     private $legacyService;
 
+    /** @var JwtConfigurationBuilder */
+    private $jwtConfigurationBuilder;
+
     public function setUp(): void
     {
         $this->keyRegistry = $this->getMockBuilder(KeyRegistry::class)
@@ -42,6 +45,11 @@ class InvalidSignatureTest extends BaseTestCase
         $this->legacyService         = $this->getMockBuilder(LegacyService::class)
                                             ->disableOriginalConstructor()
                                             ->getMock();
+
+        $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
+            $this->keyRegistry,
+            $this->legacyService
+        );
     }
 
     public function tearDown(): void
@@ -61,10 +69,10 @@ class InvalidSignatureTest extends BaseTestCase
              ->willReturn(1);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         self::$token = $authenticationService->createToken('admin', 'admin');
@@ -93,10 +101,10 @@ class InvalidSignatureTest extends BaseTestCase
         $token         = $requestReader->getAuthToken();
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService($token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->expectException(InvalidToken::class);

@@ -30,9 +30,6 @@ class Authentication implements AuthenticationServiceInterface
 
     public const CLAIM_USER_ANONYMOUS   = 'useranonymous';
 
-    /** @var KeyRegistry */
-    private $keyRegistry;
-
     /** @var LegacyService */
     private $legacyService;
 
@@ -42,16 +39,19 @@ class Authentication implements AuthenticationServiceInterface
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
+    /** @var JwtConfigurationBuilder */
+    private $jwtConfigurationBuilder;
+
     public function __construct(
-        KeyRegistry $keyRegistry,
         LegacyService $legacyService,
         Token $tokenService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        JwtConfigurationBuilder $jwtConfigurationBuilder
     ) {
-        $this->keyRegistry     = $keyRegistry;
         $this->legacyService   = $legacyService;
         $this->tokenService    = $tokenService;
         $this->eventDispatcher = $eventDispatcher;
+        $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
     /**
@@ -86,7 +86,7 @@ class Authentication implements AuthenticationServiceInterface
         $userData  = $this->legacyService->login($username, $password);
         $time      = new DateTimeImmutable('now');
         $expire    = new DateTimeImmutable('+8 hours');
-        $config    = $this->getConfig();
+        $config    = $this->jwtConfigurationBuilder->getConfiguration();
 
         $builder = $config->builder()
             ->issuedBy($this->legacyService->getShopUrl())
@@ -124,16 +124,6 @@ class Authentication implements AuthenticationServiceInterface
         return (string) $this->tokenService->getTokenClaim(self::CLAIM_USERNAME);
     }
 
-    protected function getConfig(): Configuration
-    {
-        $configBuilder = new JwtConfigurationBuilder(
-            $this->keyRegistry,
-            $this->legacyService
-        );
-
-        return $configBuilder->getConfiguration();
-    }
-
     public function getUser(): User
     {
         return new User(
@@ -152,7 +142,7 @@ class Authentication implements AuthenticationServiceInterface
      */
     private function isValidToken(UnencryptedToken $token): bool
     {
-        $config    = $this->getConfig();
+        $config    = $this->jwtConfigurationBuilder->getConfiguration();
         $validator = $config->validator();
 
         if (!$validator->validate($token, ...$config->validationConstraints())) {

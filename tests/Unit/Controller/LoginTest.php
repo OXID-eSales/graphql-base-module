@@ -44,16 +44,17 @@ class LoginTest extends BaseTestCase
         $this->legacy         = $this->getMockBuilder(Legacy::class)
                                      ->disableOriginalConstructor()
                                      ->getMock();
-        $this->authentication = new Authentication(
-            $this->keyRegistry,
-            $this->legacy,
-            new TokenService(),
-            new EventDispatcher()
-        );
 
         $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
             $this->keyRegistry,
             $this->legacy
+        );
+
+        $this->authentication = new Authentication(
+            $this->legacy,
+            new TokenService(),
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
     }
 

@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
@@ -40,6 +41,9 @@ class AuthenticationTest extends BaseTestCase
     /** @var LegacyService|MockObject */
     private $legacyService;
 
+    /** @var JwtConfigurationBuilder */
+    private $jwtConfigurationBuilder;
+
     public function setUp(): void
     {
         $this->keyRegistry = $this->getMockBuilder(KeyRegistry::class)
@@ -50,6 +54,11 @@ class AuthenticationTest extends BaseTestCase
         $this->legacyService         = $this->getMockBuilder(LegacyService::class)
                                             ->disableOriginalConstructor()
                                             ->getMock();
+
+        $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
+            $this->keyRegistry,
+            $this->legacyService
+        );
     }
 
     public function testCreateTokenWithInvalidCredentials(): void
@@ -60,10 +69,10 @@ class AuthenticationTest extends BaseTestCase
              ->willThrowException(new InvalidLogin('Username/password combination is invalid'));
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $authenticationService->createToken('foo', 'bar');
@@ -72,10 +81,10 @@ class AuthenticationTest extends BaseTestCase
     public function testIsLoggedWithoutToken(): void
     {
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertFalse($authenticationService->isLogged());
@@ -84,10 +93,10 @@ class AuthenticationTest extends BaseTestCase
     public function testIsLoggedWithNullToken(): void
     {
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertFalse($authenticationService->isLogged());
@@ -105,10 +114,10 @@ class AuthenticationTest extends BaseTestCase
              ->willReturn(1);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         self::$token = $authenticationService->createToken('admin', 'admin');
@@ -132,10 +141,10 @@ class AuthenticationTest extends BaseTestCase
              ->willReturn(1);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertTrue($authenticationService->isLogged());
@@ -155,10 +164,10 @@ class AuthenticationTest extends BaseTestCase
              ->willReturn(-1);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $authenticationService->isLogged();
@@ -181,10 +190,10 @@ class AuthenticationTest extends BaseTestCase
              ->willReturn(1);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $authenticationService->isLogged();
@@ -205,10 +214,10 @@ class AuthenticationTest extends BaseTestCase
              ->willReturn(['foo', 'oxidblocked', 'bar']);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         self::$token = $authenticationService->createToken('admin', 'admin');
@@ -237,10 +246,10 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(['foo', 'oxidblocked', 'bar']);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->expectException(InvalidToken::class);
@@ -277,10 +286,10 @@ class AuthenticationTest extends BaseTestCase
         $token                 = $authenticationService->createToken($username, $password);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService($token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertSame($username, $authenticationService->getUserName());
@@ -305,10 +314,10 @@ class AuthenticationTest extends BaseTestCase
         $token                 = $authenticationService->createToken('admin', 'admin');
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService($token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertSame('the_admin_oxid', $authenticationService->getUser()->getUserId());
@@ -341,10 +350,10 @@ class AuthenticationTest extends BaseTestCase
         $anonymousToken        = $authenticationService->createToken();
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService($anonymousToken),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertNotEmpty($authenticationService->getUser()->getUserId());
@@ -364,10 +373,10 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(1);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         self::$anonymousToken = $authenticationService->createToken();
@@ -398,10 +407,10 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(['oxidanonymous']);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$anonymousToken),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertFalse($authenticationService->isLogged());
@@ -423,10 +432,10 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(['oxidanonymous']);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$anonymousToken),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
@@ -445,10 +454,10 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(1);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
@@ -457,10 +466,10 @@ class AuthenticationTest extends BaseTestCase
     public function testIsAnonymousWithNullToken(): void
     {
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
@@ -482,10 +491,10 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(['oxidanonymous']);
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(self::$anonymousToken),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->expectException(InvalidToken::class);
@@ -506,10 +515,10 @@ class AuthenticationTest extends BaseTestCase
         $token                 = $authenticationService->createToken('admin', 'admin');
 
         $authenticationService = new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService($token),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
 
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
@@ -525,10 +534,10 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(1);
 
         return new Authentication(
-            $this->keyRegistry,
             $this->legacyService,
             new TokenService(),
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->jwtConfigurationBuilder
         );
     }
 }
