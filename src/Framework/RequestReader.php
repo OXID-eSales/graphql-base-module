@@ -13,8 +13,6 @@ use Exception;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 
 use function apache_request_headers;
@@ -27,17 +25,12 @@ use function trim;
 
 class RequestReader
 {
-    /** @var LegacyService */
-    private $legacyService;
-
     /** @var JwtConfigurationBuilder */
     private $jwtConfigurationBuilder;
 
     public function __construct(
-        LegacyService $legacyService,
         JwtConfigurationBuilder $jwtConfigurationBuilder
     ) {
-        $this->legacyService           = $legacyService;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
@@ -67,13 +60,6 @@ class RequestReader
             $token = $jwtConfiguration->parser()->parse($jwt);
         } catch (Exception $e) {
             throw InvalidToken::unableToParse();
-        }
-
-        $userId     = $token->claims()->get(Authentication::CLAIM_USERID);
-        $userGroups = $this->legacyService->getUserGroupIds($userId);
-
-        if (in_array('oxidblocked', $userGroups)) {
-            throw InvalidToken::userBlocked();
         }
 
         return $token;

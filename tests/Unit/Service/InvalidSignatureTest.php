@@ -99,7 +99,7 @@ class InvalidSignatureTest extends BaseTestCase
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . substr(self::$token->toString(), 0, -10);
 
-        $requestReader = new RequestReader($this->legacyService, $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
         $token         = $requestReader->getAuthToken();
 
         $authenticationService = new Authentication(

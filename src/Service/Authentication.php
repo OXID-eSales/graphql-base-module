@@ -53,13 +53,9 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function isLogged(): bool
     {
-        $token = $this->tokenService->getToken();
-
-        if (!$token || $this->getUser()->isAnonymous()) {
+        if (!$this->tokenService->getToken() || $this->getUser()->isAnonymous()) {
             return false;
         }
-
-        $this->tokenService->validateToken($token);
 
         return true;
     }
@@ -110,11 +106,26 @@ class Authentication implements AuthenticationServiceInterface
         return (string) $this->tokenService->getTokenClaim(self::CLAIM_USERNAME);
     }
 
+    /**
+     * @throws InvalidToken
+     */
     public function getUser(): User
     {
+        $this->validateNotEmptyToken();
+
         return new User(
             $this->legacyService->getUserModel($this->tokenService->getTokenClaim(self::CLAIM_USERID)),
             $this->tokenService->getTokenClaim(self::CLAIM_USER_ANONYMOUS, false)
         );
+    }
+
+    /**
+     * @throws InvalidToken
+     */
+    protected function validateNotEmptyToken(): void
+    {
+        if ($token = $this->tokenService->getToken()) {
+            $this->tokenService->validateToken($token);
+        }
     }
 }

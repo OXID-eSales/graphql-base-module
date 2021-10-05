@@ -72,7 +72,7 @@ abstract class TestCase extends PHPUnitTestCase
         $legacyService    = new LegacyStub();
         $jwtConfigBuilder = new JwtConfigurationBuilder($keyRegistry, $legacyService);
 
-        $requestReader = new RequestReaderStub($legacyService, $jwtConfigBuilder);
+        $requestReader = new RequestReaderStub($jwtConfigBuilder);
 
         static::$container->set(
             RequestReader::class,

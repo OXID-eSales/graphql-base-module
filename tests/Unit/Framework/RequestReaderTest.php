@@ -24,13 +24,13 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetAuthTokenWithoutToken(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
         $this->assertNull($requestReader->getAuthToken());
     }
 
     public function testGetAuthTokenWithWrongFormattedHeader(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -46,7 +46,7 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -70,7 +70,7 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetAuthTokenWithCorrectFormat(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -89,31 +89,9 @@ class RequestReaderTest extends BaseTestCase
         }
     }
 
-    public function testGetAuthTokenWithCorrectFormatButBlockedUser(): void
-    {
-        $legacy = $this->getMockBuilder(Legacy::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $legacy->method('getUserGroupIds')
-               ->willReturn(['group', 'oxidblocked', 'anothergroup']);
-
-        $requestReader = new RequestReader($legacy, $this->getJwtConfigurationBuilder());
-
-        $_SERVER['HTTP_AUTHORIZATION'] = ' Bearer ' . self::$token;
-        $e                             = null;
-
-        try {
-            $token            = $requestReader->getAuthToken();
-        } catch (Exception $e) {
-        }
-        unset($_SERVER['HTTP_AUTHORIZATION']);
-        $this->assertInstanceOf(InvalidToken::class, $e);
-        $this->assertNotNull($e);
-    }
-
     public function testGetGraphQLRequestDataWithEmptyRequest(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
         $this->assertEquals(
             [
                 'query'         => null,
@@ -126,7 +104,7 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequest(): void
     {
-        $requestReader           = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader           = new RequestReader($this->getJwtConfigurationBuilder());
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
             [
@@ -141,7 +119,7 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
     {
-        $requestReader             = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader             = new RequestReader($this->getJwtConfigurationBuilder());
         $_SERVER['CONTENT_TYPE']   = 'text/plain';
         $_REQUEST['query']         = 'query {token_}';
         $_REQUEST['variables']     = '{"foo":"bar"}';
