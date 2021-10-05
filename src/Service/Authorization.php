@@ -71,18 +71,17 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
+        if ($this->tokenService->getToken()) {
+            $this->tokenService->validateToken($this->tokenService->getToken());
+        }
+
         $userId = $this->tokenService->getTokenClaim(Authentication::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
-
-        if (in_array('oxidblocked', $groups)) {
-            throw InvalidToken::userBlocked();
-        }
 
         $isAllowed = false;
 
         foreach ($groups as $id) {
-            if (isset($this->permissions[$id]) &&
-                array_search($right, $this->permissions[$id], true) !== false) {
+            if (isset($this->permissions[$id]) && array_search($right, $this->permissions[$id], true) !== false) {
                 $isAllowed = true;
             }
         }

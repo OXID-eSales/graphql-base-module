@@ -15,8 +15,6 @@ use PHPUnit\Framework\TestCase;
 
 class BaseTestCase extends TestCase
 {
-    // phpcs:enable
-
     protected function getKeyRegistryMock(): KeyRegistry
     {
         $keyRegistry = $this->getMockBuilder(KeyRegistry::class)

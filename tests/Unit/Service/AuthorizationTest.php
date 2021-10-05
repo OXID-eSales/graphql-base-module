@@ -19,11 +19,11 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
-use PHPUnit\Framework\TestCase;
+use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class AuthorizationTest extends TestCase
+class AuthorizationTest extends BaseTestCase
 {
     public function testIsNotAllowedWithoutPermissionsAndWithoutToken(): void
     {
@@ -172,11 +172,16 @@ class AuthorizationTest extends TestCase
         ?UnencryptedToken $token = null,
         ?Legacy $legacyService = null
     ): TokenService {
-        return new TokenService(
+        return new class(
             $token,
             $this->createPartialMock(JwtConfigurationBuilder::class, []),
             $legacyService ?: $this->getLegacyMock()
-        );
+        ) extends TokenService {
+            protected function areConstraintsValid(UnencryptedToken $token): bool
+            {
+                return true;
+            }
+        };
     }
 
     private function getTokenMock(): UnencryptedToken

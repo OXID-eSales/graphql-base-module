@@ -15,6 +15,7 @@ use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Validation\Constraint\IssuedBy;
 use Lcobucci\JWT\Validation\Constraint\PermittedFor;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use OxidEsales\GraphQL\Base\Framework\Constraint\BelongsToShop;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 
 class JwtConfigurationBuilder
@@ -40,10 +41,12 @@ class JwtConfigurationBuilder
             InMemory::plainText($this->keyRegistry->getSignatureKey())
         );
 
-        $issuedBy     = new IssuedBy($this->legacyService->getShopUrl());
-        $permittedFor = new PermittedFor($this->legacyService->getShopUrl());
-        $signedWith   = new SignedWith($config->signer(), $config->verificationKey());
-        $config->setValidationConstraints($issuedBy, $permittedFor, $signedWith);
+        $issuedBy      = new IssuedBy($this->legacyService->getShopUrl());
+        $permittedFor  = new PermittedFor($this->legacyService->getShopUrl());
+        $signedWith    = new SignedWith($config->signer(), $config->verificationKey());
+        $belongsToShop = new BelongsToShop($this->legacyService->getShopId());
+
+        $config->setValidationConstraints($issuedBy, $permittedFor, $signedWith, $belongsToShop);
 
         return $config;
     }

@@ -207,6 +207,11 @@ class LegacyStub extends Legacy
     {
         return [];
     }
+
+    public function getShopId(): int
+    {
+        return 1;
+    }
 }
 
 class RequestReaderStub extends RequestReader
