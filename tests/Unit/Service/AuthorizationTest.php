@@ -175,7 +175,8 @@ class AuthorizationTest extends TestCase
         return new TokenService(
             $token,
             $this->createPartialMock(JwtConfigurationBuilder::class, []),
-            $legacyService ?: $this->getLegacyMock()
+            $legacyService ?: $this->getLegacyMock(),
+            new EventDispatcher()
         );
     }
 
@@ -183,7 +184,7 @@ class AuthorizationTest extends TestCase
     {
         $claims = new Token\DataSet(
             [
-                Authentication::CLAIM_USERNAME => 'testuser',
+                TokenService::CLAIM_USERNAME => 'testuser',
             ],
             ''
         );

@@ -10,10 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataType;
 
 use OxidEsales\Eshop\Application\Model\User as EshopUserModel;
-use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
-use OxidEsales\GraphQL\Base\Infrastructure\ShopModelAwareInterface as ShopModelAwareInterfaceAlias;
+use TheCodingMachine\GraphQLite\Annotations\Type;
 
-final class User implements ShopModelAwareInterfaceAlias, UserDataInterface
+/**
+ * @Type()
+ */
+final class User implements DataTypeInterface
 {
     /** @var EshopUserModel */
     private $userModel;
@@ -36,8 +38,18 @@ final class User implements ShopModelAwareInterfaceAlias, UserDataInterface
         return $this->userModel->getId();
     }
 
+    public function getUserName(): string
+    {
+        return (string) $this->userModel->getFieldData('oxusername');
+    }
+
     public function isAnonymous(): bool
     {
         return $this->isAnonymous;
+    }
+
+    public static function getModelClass(): string
+    {
+        return EshopUserModel::class;
     }
 }

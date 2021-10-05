@@ -71,7 +71,7 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        $userId = $this->tokenService->getTokenClaim(Authentication::CLAIM_USERID);
+        $userId = $this->tokenService->getTokenClaim(Token::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
 
         if (in_array('oxidblocked', $groups)) {

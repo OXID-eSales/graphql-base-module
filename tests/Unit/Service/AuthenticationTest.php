@@ -11,13 +11,13 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,41 +34,32 @@ class AuthenticationTest extends BaseTestCase
 
     // phpcs:enable
 
-    /** @var KeyRegistry|MockObject */
-    private $keyRegistry;
-
     /** @var LegacyService|MockObject */
-    private $legacyService;
+    private $legacy;
 
     /** @var JwtConfigurationBuilder */
     private $jwtConfigurationBuilder;
 
+    /** @var TokenService */
+    private $tokenService;
+
     public function setUp(): void
     {
-        $this->keyRegistry = $this->getMockBuilder(KeyRegistry::class)
-                                  ->disableOriginalConstructor()
-                                  ->getMock();
-        $this->keyRegistry->method('getSignatureKey')
-             ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
-        $this->legacyService         = $this->getMockBuilder(LegacyService::class)
-                                            ->disableOriginalConstructor()
-                                            ->getMock();
+        $this->legacy = $this->getMockBuilder(LegacyService::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
 
         $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
-            $this->keyRegistry,
-            $this->legacyService
+            $this->getKeyRegistryMock(),
+            $this->legacy
         );
-    }
 
-    public function testCreateTokenWithInvalidCredentials(): void
-    {
-        $this->expectException(InvalidLogin::class);
-        $this->legacyService
-             ->method('login')
-             ->willThrowException(new InvalidLogin('Username/password combination is invalid'));
-
-        $authenticationService = $this->getSut();
-        $authenticationService->createToken('foo', 'bar');
+        $this->tokenService = new TokenService(
+            null,
+            $this->jwtConfigurationBuilder,
+            $this->legacy,
+            new EventDispatcher()
+        );
     }
 
     public function testIsLoggedWithoutToken(): void
@@ -83,123 +74,83 @@ class AuthenticationTest extends BaseTestCase
         $this->assertFalse($authenticationService->isLogged());
     }
 
-    public function testCreateTokenWithValidCredentials(): void
-    {
-        $this->legacyService
-             ->method('login');
-        $this->legacyService
-             ->method('getShopUrl')
-             ->willReturn('https://whatever.com');
-        $this->legacyService
-             ->method('getShopId')
-             ->willReturn(1);
-
-        $authenticationService = $this->getSut();
-
-        self::$token = $authenticationService->createToken('admin', 'admin');
-
-        $this->assertInstanceOf(
-            Token::class,
-            self::$token
-        );
-    }
-
-    /**
-     * @depends testCreateTokenWithValidCredentials
-     */
     public function testIsLoggedWithValidToken(): void
     {
-        $this->legacyService
+        $this->legacy
              ->method('getShopUrl')
              ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
              ->method('getShopId')
              ->willReturn(1);
+        $this->legacy
+            ->method('login')
+            ->willReturn(new User($this->getUserModelStub('the_admin_oxid')));
 
-        $authenticationService = $this->getSut(self::$token);
+        $token = $this->tokenService->createToken('admin', 'admin');
+        $authenticationService = $this->getSut($token);
 
         $this->assertTrue($authenticationService->isLogged());
     }
 
-    /**
-     * @depends testCreateTokenWithValidCredentials
-     */
     public function testIsLoggedWithValidForAnotherShopIdToken(): void
     {
         $this->expectException(InvalidToken::class);
-        $this->legacyService
+        $this->legacy
              ->method('getShopUrl')
              ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
              ->method('getShopId')
              ->willReturn(-1);
+        $this->legacy
+            ->method('login')
+            ->willReturn(new User($this->getUserModelStub('the_admin_oxid')));
 
-        $authenticationService = $this->getSut(self::$token);
+        $token = $this->tokenService->createToken('admin', 'admin');
+
+        $authenticationService = $this->getSut($token);
         $authenticationService->isLogged();
     }
 
     /**
-     * @depends testCreateTokenWithValidCredentials
-     *
      * can not use expectException due to needed cleanup in registry config
      */
     public function testGetUserNameWithValidForAnotherShopUrlToken(): void
     {
         $this->expectException(InvalidToken::class);
 
-        $this->legacyService
+        $this->legacy
+            ->method('login')
+            ->willReturn(new User($this->getUserModelStub('the_admin_oxid')));
+        $this->legacy
              ->method('getShopUrl')
              ->willReturn('https:/other.com');
-        $this->legacyService
+        $this->legacy
              ->method('getShopId')
              ->willReturn(1);
 
-        $authenticationService = $this->getSut(self::$token);
+        $token = $this->tokenService->createToken('admin', 'admin');
+
+        $authenticationService = $this->getSut($token);
         $authenticationService->isLogged();
     }
 
-    public function testCreateTokenWithValidCredentialsForBlockedUser(): void
-    {
-        $this->legacyService
-             ->method('login');
-        $this->legacyService
-             ->method('getShopUrl')
-             ->willReturn('https://whatever.com');
-        $this->legacyService
-             ->method('getShopId')
-             ->willReturn(1);
-        $this->legacyService
-             ->method('getUserGroupIds')
-             ->willReturn(['foo', 'oxidblocked', 'bar']);
-
-        $authenticationService = $this->getSut();
-
-        self::$token = $authenticationService->createToken('admin', 'admin');
-
-        $this->assertInstanceOf(
-            Token::class,
-            self::$token
-        );
-    }
-
-    /**
-     * @depends testCreateTokenWithValidCredentials
-     */
     public function testIsLoggedWithValidCredentialsForBlockedUser(): void
     {
-        $this->legacyService
-            ->method('login');
-        $this->legacyService
+        $this->legacy
+            ->method('login')
+            ->willReturn(new User($this->getUserModelStub('the_admin_oxid')));
+        $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
             ->method('getShopId')
             ->willReturn(1);
-        $this->legacyService
+        $this->legacy
             ->method('getUserGroupIds')
             ->willReturn(['foo', 'oxidblocked', 'bar']);
 
-        $authenticationService = $this->getSut(self::$token);
+        $token = $this->tokenService->createToken('admin', 'admin');
+        $authenticationService = $this->getSut($token);
 
         $this->expectException(InvalidToken::class);
         $authenticationService->isLogged();
@@ -231,42 +182,49 @@ class AuthenticationTest extends BaseTestCase
      */
     public function testGetUserName($username, $password): void
     {
-        $authenticationService = $this->getAuthenticationService();
-        $token                 = $authenticationService->createToken($username, $password);
+        $userModel = oxNew(UserModel::class);
+        $userId = $userModel->getIdByUserName($username);
+        $userModel->load($userId);
+        $user = new User($userModel);
 
+        $this->legacy
+            ->method('login')
+            ->willReturn($user);
+        $this->legacy
+            ->method('getUserModel')
+            ->willReturn($userModel);
+
+        $token                 = $this->tokenService->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
-        $this->assertSame($username, $authenticationService->getUserName());
+        $this->assertSame($username, $authenticationService->getUser()->getUserName());
     }
 
     public function testGetUserNameForNullToken(): void
     {
         $authenticationService = $this->getAuthenticationService();
 
-        $this->expectException(InvalidToken::class);
-        $authenticationService->getUserName();
+        $this->assertEmpty($authenticationService->getUser()->getUserName());
     }
 
     public function testGetUserId(): void
     {
         $userModel = $this->getUserModelStub('the_admin_oxid');
 
-        $this->legacyService->method('login')->willReturn(new User($userModel));
-        $this->legacyService->method('getUserModel')->with('the_admin_oxid')->willReturn($userModel);
+        $this->legacy->method('login')->willReturn(new User($userModel));
+        $this->legacy->method('getUserModel')->with('the_admin_oxid')->willReturn($userModel);
 
-        $authenticationService = $this->getAuthenticationService();
-        $token                 = $authenticationService->createToken('admin', 'admin');
-
+        $token                 = $this->tokenService->createToken('admin', 'admin');
         $authenticationService = $this->getSut($token);
 
         $this->assertSame('the_admin_oxid', $authenticationService->getUser()->getUserId());
-        $this->assertNotNull($authenticationService->getUserName());
+        $this->assertNotNull($authenticationService->getUser()->getUserName());
     }
 
     public function testGetUserIdForNullToken(): void
     {
         $userModel = $this->getUserModelStub();
-        $this->legacyService->method('getUserModel')->with('')->willReturn($userModel);
+        $this->legacy->method('getUserModel')->with('')->willReturn($userModel);
 
         $authenticationService = $this->getAuthenticationService();
 
@@ -279,100 +237,78 @@ class AuthenticationTest extends BaseTestCase
     {
         $someRandomModelStub = $this->getUserModelStub('someRandomId');
 
-        $this->legacyService->method('login')->willReturn(
+        $this->legacy->method('login')->willReturn(
             new User($someRandomModelStub, true)
         );
 
-        $this->legacyService->method('getUserModel')->willReturn($someRandomModelStub);
+        $this->legacy->method('getUserModel')->willReturn($someRandomModelStub);
 
-        $authenticationService = $this->getAuthenticationService();
-        $anonymousToken        = $authenticationService->createToken();
-
+        $anonymousToken        = $this->tokenService->createToken();
         $authenticationService = $this->getSut($anonymousToken);
 
         $this->assertNotEmpty($authenticationService->getUser()->getUserId());
     }
 
-    public function testCreateAnonymousToken(): void
-    {
-        $this->legacyService->method('login')->willReturn(
-            new User($this->getUserModelStub(), true)
-        );
-
-        $this->legacyService
-            ->method('getShopUrl')
-            ->willReturn('https://whatever.com');
-        $this->legacyService
-            ->method('getShopId')
-            ->willReturn(1);
-
-        $authenticationService = $this->getSut();
-
-        self::$anonymousToken = $authenticationService->createToken();
-
-        $this->assertInstanceOf(
-            Token::class,
-            self::$anonymousToken
-        );
-
-        $this->assertNull(
-            self::$anonymousToken->claims()->get(Authentication::CLAIM_USERNAME)
-        );
-    }
-
-    /**
-     * @depends testCreateAnonymousToken
-     */
     public function testIsLoggedWithAnonymousToken(): void
     {
-        $this->legacyService
+        $this->legacy
+            ->method('login')
+            ->willReturn(
+                new User($this->getUserModelStub(), true)
+            );
+        $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
             ->method('getShopId')
             ->willReturn(1);
-        $this->legacyService
+        $this->legacy
             ->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $authenticationService = $this->getSut(self::$anonymousToken);
+        $anonymousToken        = $this->tokenService->createToken();
+        $authenticationService = $this->getSut($anonymousToken);
 
         $this->assertFalse($authenticationService->isLogged());
     }
 
-    /**
-     * @depends testCreateAnonymousToken
-     */
     public function testIsUserAnonymous(): void
     {
-        $this->legacyService
+        $this->legacy
+            ->method('login')
+            ->willReturn(
+                new User($this->getUserModelStub(), true)
+            );
+        $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
             ->method('getShopId')
             ->willReturn(1);
-        $this->legacyService
+        $this->legacy
             ->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $authenticationService = $this->getSut(self::$anonymousToken);
+        $anonymousToken        = $this->tokenService->createToken();
+        $authenticationService = $this->getSut($anonymousToken);
 
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
     }
 
-    /**
-     * @depends testCreateTokenWithValidCredentials
-     */
     public function testLoggedUserIsNotAnonymous(): void
     {
-        $this->legacyService
+        $userModel = $this->getUserModelStub('the_admin_oxid');
+
+        $this->legacy->method('login')->willReturn(new User($userModel));
+        $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
             ->method('getShopId')
             ->willReturn(1);
 
-        $authenticationService = $this->getSut(self::$token);
+        $token                 = $this->tokenService->createToken('admin', 'admin');
+        $authenticationService = $this->getSut($token);
 
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
     }
@@ -384,39 +320,39 @@ class AuthenticationTest extends BaseTestCase
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
     }
 
-    /**
-     * @depends testCreateAnonymousToken
-     */
     public function testGetUserNameForAnonymousToken(): void
     {
-        $this->legacyService
+        $this->legacy
+            ->method('login')
+            ->willReturn(
+            new User($this->getUserModelStub(), true)
+        );
+        $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
             ->method('getShopId')
             ->willReturn(1);
-        $this->legacyService
+        $this->legacy
             ->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $authenticationService = $this->getSut(self::$anonymousToken);
+        $anonymousToken        = $this->tokenService->createToken();
+        $authenticationService = $this->getSut($anonymousToken);
 
-        $this->expectException(InvalidToken::class);
-
-        $authenticationService->getUserName();
+        $this->assertEmpty($authenticationService->getUser()->getUserName());
     }
 
     public function testLoggedUserInAnonymousGroup(): void
     {
-        $this->legacyService->method('login')->willReturn(
+        $this->legacy->method('login')->willReturn(
             new User($this->getUserModelStub(), true)
         );
 
-        $this->legacyService->method('getUserGroupIds')
+        $this->legacy->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $authenticationService = $this->getAuthenticationService();
-        $token                 = $authenticationService->createToken('admin', 'admin');
+        $token = $this->tokenService->createToken('admin', 'admin');
 
         $authenticationService = $this->getSut($token);
 
@@ -426,22 +362,22 @@ class AuthenticationTest extends BaseTestCase
     protected function getSut(?UnencryptedToken $token = null): Authentication
     {
         return new Authentication(
-            $this->legacyService,
+            $this->legacy,
             new TokenService(
                 $token,
                 $this->jwtConfigurationBuilder,
-                $this->legacyService
-            ),
-            new EventDispatcher()
+                $this->legacy,
+                new EventDispatcher()
+            )
         );
     }
 
     private function getAuthenticationService(): Authentication
     {
-        $this->legacyService
+        $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
-        $this->legacyService
+        $this->legacy
             ->method('getShopId')
             ->willReturn(1);
 

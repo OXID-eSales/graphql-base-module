@@ -7,11 +7,16 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Infrastructure;
+namespace OxidEsales\GraphQL\Base\DataType;
 
 use OxidEsales\Eshop\Core\Model\BaseModel;
 
-interface ShopModelAwareInterface
+interface DataTypeInterface
 {
     public function getEshopModel(): BaseModel;
+
+    /**
+     * @return class-string
+     */
+    public static function getModelClass(): string;
 }

@@ -32,11 +32,11 @@ class BeforeTokenCreationTest extends BaseTestCase
         );
         $this->assertInstanceOf(
             User::class,
-            $event->getUserData()
+            $event->getUser()
         );
         $this->assertSame(
             $userId,
-            $event->getUserData()->getUserId()
+            $event->getUser()->getUserId()
         );
     }
 }

@@ -14,8 +14,8 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\Token;
 
 use function apache_request_headers;
 use function array_change_key_case;
@@ -69,7 +69,7 @@ class RequestReader
             throw InvalidToken::unableToParse();
         }
 
-        $userId     = $token->claims()->get(Authentication::CLAIM_USERID);
+        $userId     = $token->claims()->get(Token::CLAIM_USERID);
         $userGroups = $this->legacyService->getUserGroupIds($userId);
 
         if (in_array('oxidblocked', $userGroups)) {

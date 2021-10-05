@@ -16,36 +16,30 @@ use OxidEsales\Eshop\Core\MailValidator as EhopMailValidator;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 
 /**
  * @codeCoverageIgnore - Remove when integration tests are added to the coverage report
  */
 class Legacy
 {
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
-
     /** @var ContextInterface */
     private $context;
 
-    public function __construct(QueryBuilderFactoryInterface $queryBuilderFactory, ContextInterface $context)
+    public function __construct(ContextInterface $context)
     {
-        $this->queryBuilderFactory = $queryBuilderFactory;
-        $this->context             = $context;
+        $this->context = $context;
     }
 
     /**
      * @throws InvalidLogin
      */
-    public function login(?string $username = null, ?string $password = null): UserDataInterface
+    public function login(?string $username = null, ?string $password = null): User
     {
         /** @var UserModel $user */
-        $user        = oxNew(UserModel::class);
+        $user        = $this->getUserModel();
         $isAnonymous = true;
 
         if ($username && $password) {
@@ -59,10 +53,10 @@ class Legacy
             $user->setId(self::createUniqueIdentifier());
         }
 
-        return new UserDataType($user, $isAnonymous);
+        return new User($user, $isAnonymous);
     }
 
-    public function getUserModel(?string $userId): UserModel
+    public function getUserModel(?string $userId = null): UserModel
     {
         $userModel = oxNew(UserModel::class);
 
@@ -128,9 +122,9 @@ class Legacy
         }
 
         /** @var UserModel $user */
-        $user = oxNew(UserModel::class);
+        $user = $this->getUserModel($userId);
 
-        if (!$user->load($userId)) {
+        if (!$user->isLoaded()) {
             return ['oxidanonymous'];
         }
 
