@@ -93,11 +93,16 @@ class AuthenticationTest extends BaseTestCase
             ->method('getShopId')
             ->willReturn(-1);
 
+        $jwtConfigurationBuilder = new JwtConfigurationBuilder(
+            $this->getKeyRegistryMock(),
+            $legacy
+        );
+
         $authenticationService = new Authentication(
             $legacy,
             new TokenService(
                 $token,
-                $this->jwtConfigurationBuilder,
+                $jwtConfigurationBuilder,
                 $legacy,
                 new EventDispatcher()
             )
@@ -424,7 +429,7 @@ class AuthenticationTest extends BaseTestCase
         return $this->getSut();
     }
 
-    private function createToken(string $username, string $password): Token
+    private function createToken(string $username, string $password): UnencryptedToken
     {
         $userModel = oxNew(UserModel::class);
         $userId = $userModel->getIdByUserName($username);
