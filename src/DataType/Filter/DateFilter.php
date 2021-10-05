@@ -20,9 +20,6 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function strtoupper;
 
-/**
- * moar moar moar
- */
 class DateFilter implements FilterInterface
 {
     public const SQL_DATETIME_FORMAT = 'Y-m-d H:i:s';
@@ -46,8 +43,8 @@ class DateFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type DateFilterInput must be provided');
         }
-        $this->equals      = $equals;
-        $this->between     = $between;
+        $this->equals  = $equals;
+        $this->between = $between;
     }
 
     public function equals(): ?DateTimeInterface

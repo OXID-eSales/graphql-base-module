@@ -75,7 +75,7 @@ class Authorization implements AuthorizationServiceInterface
             $this->tokenService->validateToken($this->tokenService->getToken());
         }
 
-        $userId = $this->tokenService->getTokenClaim(Authentication::CLAIM_USERID);
+        $userId = $this->tokenService->getTokenClaim(Token::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
 
         $isAllowed = false;

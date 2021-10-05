@@ -175,7 +175,8 @@ class AuthorizationTest extends BaseTestCase
         return new class(
             $token,
             $this->createPartialMock(JwtConfigurationBuilder::class, []),
-            $legacyService ?: $this->getLegacyMock()
+            $legacyService ?: $this->getLegacyMock(),
+            $this->createPartialMock(EventDispatcher::class, [])
         ) extends TokenService {
             protected function areConstraintsValid(UnencryptedToken $token): bool
             {
@@ -188,7 +189,7 @@ class AuthorizationTest extends BaseTestCase
     {
         $claims = new Token\DataSet(
             [
-                Authentication::CLAIM_USERNAME => 'testuser',
+                TokenService::CLAIM_USERNAME => 'testuser',
             ],
             ''
         );

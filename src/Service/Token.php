@@ -9,16 +9,28 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Token data access service
  */
 class Token
 {
+    public const CLAIM_SHOPID   = 'shopid';
+
+    public const CLAIM_USERNAME = 'username';
+
+    public const CLAIM_USERID   = 'userid';
+
+    public const CLAIM_USER_ANONYMOUS   = 'useranonymous';
+
     /** @var ?UnencryptedToken */
     private $token;
 
@@ -28,14 +40,19 @@ class Token
     /** @var Legacy */
     private $legacyInfrastructure;
 
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+
     public function __construct(
         ?UnencryptedToken $token,
         JwtConfigurationBuilder $jwtConfigurationBuilder,
-        Legacy $legacyInfrastructure
+        Legacy $legacyInfrastructure,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->token                   = $token;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
         $this->legacyInfrastructure    = $legacyInfrastructure;
+        $this->eventDispatcher         = $eventDispatcher;
     }
 
     public function getConfiguration(): Configuration
@@ -88,7 +105,7 @@ class Token
             throw InvalidToken::invalidToken();
         }
 
-        if ($this->isUserBlocked($this->getTokenClaim(Authentication::CLAIM_USERID))) {
+        if ($this->isUserBlocked($this->getTokenClaim(Token::CLAIM_USERID))) {
             throw InvalidToken::userBlocked();
         }
     }
@@ -110,5 +127,39 @@ class Token
         }
 
         return false;
+    }
+
+    /**
+     * @throws InvalidLogin
+     */
+    public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
+    {
+        $user   = $this->legacyInfrastructure->login($username, $password);
+        $time   = new DateTimeImmutable('now');
+        $expire = new DateTimeImmutable('+8 hours');
+        $config = $this->getConfiguration();
+
+        $builder = $config->builder()
+            ->issuedBy($this->legacyInfrastructure->getShopUrl())
+            ->withHeader('iss', $this->legacyInfrastructure->getShopUrl())
+            ->permittedFor($this->legacyInfrastructure->getShopUrl())
+            ->issuedAt($time)
+            ->canOnlyBeUsedAfter($time)
+            ->expiresAt($expire)
+            ->withClaim(self::CLAIM_SHOPID, $this->legacyInfrastructure->getShopId())
+            ->withClaim(self::CLAIM_USERNAME, $user->getUserName())
+            ->withClaim(self::CLAIM_USERID, $user->getUserId())
+            ->withClaim(self::CLAIM_USER_ANONYMOUS, $user->isAnonymous());
+
+        $event = new BeforeTokenCreation($builder, $user);
+        $this->eventDispatcher->dispatch(
+            BeforeTokenCreation::NAME,
+            $event
+        );
+
+        return $event->getBuilder()->getToken(
+            $config->signer(),
+            $config->signingKey()
+        );
     }
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
@@ -58,8 +59,10 @@ class InvalidSignatureTest extends BaseTestCase
 
     public function testCreateTokenWithValidCredentials(): void
     {
+        $userModel = $this->getUserModelStub('the_admin_oxid');
         $this->legacyService
-             ->method('login');
+            ->method('login')
+            ->willReturn(new User($userModel));
         $this->legacyService
              ->method('getShopUrl')
              ->willReturn('https://whatever.com');
@@ -67,17 +70,14 @@ class InvalidSignatureTest extends BaseTestCase
              ->method('getShopId')
              ->willReturn(1);
 
-        $authenticationService = new Authentication(
+        $tokenService = new TokenService(
+            null,
+            $this->jwtConfigurationBuilder,
             $this->legacyService,
-            new TokenService(
-                null,
-                $this->jwtConfigurationBuilder,
-                $this->legacyService
-            ),
             new EventDispatcher()
         );
 
-        self::$token = $authenticationService->createToken('admin', 'admin');
+        self::$token = $tokenService->createToken('admin', 'admin');
 
         $this->assertInstanceOf(
             Token::class,
@@ -107,9 +107,9 @@ class InvalidSignatureTest extends BaseTestCase
             new TokenService(
                 $token,
                 $this->jwtConfigurationBuilder,
-                $this->legacyService
-            ),
-            new EventDispatcher()
+                $this->legacyService,
+                new EventDispatcher()
+            )
         );
 
         $this->expectException(InvalidToken::class);

@@ -9,18 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Token;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
 {
-    /** @var Authentication */
-    protected $authentication;
+    /** @var Token */
+    protected $tokenService;
 
     public function __construct(
-        Authentication $authentication
+        Token $tokenService
     ) {
-        $this->authentication = $authentication;
+        $this->tokenService = $tokenService;
     }
 
     /**
@@ -30,7 +30,7 @@ class Login
      */
     public function token(?string $username = null, ?string $password = null): string
     {
-        return $this->authentication->createToken(
+        return $this->tokenService->createToken(
             $username,
             $password
         )->toString();
