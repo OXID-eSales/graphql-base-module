@@ -25,13 +25,6 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class AuthenticationTest extends BaseTestCase
 {
-    protected static $token;
-
-    protected static $anonymousToken;
-
-    // phpcs:disable
-    protected static $invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5';
-
     // phpcs:enable
 
     /** @var LegacyService|MockObject */
@@ -74,63 +67,80 @@ class AuthenticationTest extends BaseTestCase
         $this->assertFalse($authenticationService->isLogged());
     }
 
-    public function testIsLoggedWithValidToken(): void
+    /**
+     * @dataProvider providerValidCredentials
+     */
+    public function testIsLoggedWithValidToken(string $username, string $password): void
     {
-        $this->legacy
-             ->method('getShopUrl')
-             ->willReturn('https://whatever.com');
-        $this->legacy
-             ->method('getShopId')
-             ->willReturn(1);
-        $this->legacy
-            ->method('login')
-            ->willReturn(new User($this->getUserModelStub('the_admin_oxid')));
-
-        $token = $this->tokenService->createToken('admin', 'admin');
+        $token = $this->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
         $this->assertTrue($authenticationService->isLogged());
     }
 
-    public function testIsLoggedWithValidForAnotherShopIdToken(): void
+    /**
+     * @dataProvider providerValidCredentials
+     */
+    public function testIsLoggedWithValidForAnotherShopIdToken(string $username, string $password): void
     {
         $this->expectException(InvalidToken::class);
-        $this->legacy
-             ->method('getShopUrl')
-             ->willReturn('https://whatever.com');
-        $this->legacy
-             ->method('getShopId')
-             ->willReturn(-1);
-        $this->legacy
-            ->method('login')
-            ->willReturn(new User($this->getUserModelStub('the_admin_oxid')));
+        $token = $this->createToken($username, $password);
 
-        $token = $this->tokenService->createToken('admin', 'admin');
+        $legacy = $this->getMockBuilder(LegacyService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $legacy
+            ->method('getShopId')
+            ->willReturn(-1);
 
-        $authenticationService = $this->getSut($token);
+        $authenticationService = new Authentication(
+            $legacy,
+            new TokenService(
+                $token,
+                $this->jwtConfigurationBuilder,
+                $legacy,
+                new EventDispatcher()
+            )
+        );
+
         $authenticationService->isLogged();
     }
 
     /**
+     * @dataProvider providerValidCredentials
+     *
      * can not use expectException due to needed cleanup in registry config
      */
-    public function testGetUserNameWithValidForAnotherShopUrlToken(): void
+    public function testGetUserNameWithValidForAnotherShopUrlToken(string $username, string $password): void
     {
         $this->expectException(InvalidToken::class);
+        $token = $this->createToken($username, $password);
 
-        $this->legacy
-            ->method('login')
-            ->willReturn(new User($this->getUserModelStub('the_admin_oxid')));
-        $this->legacy
-             ->method('getShopUrl')
-             ->willReturn('https:/other.com');
-        $this->legacy
-             ->method('getShopId')
-             ->willReturn(1);
+        $legacy = $this->getMockBuilder(LegacyService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $legacy
+            ->method('getShopUrl')
+            ->willReturn('https:/other.com');
+        $legacy
+            ->method('getShopId')
+            ->willReturn(1);
 
-        $token = $this->tokenService->createToken('admin', 'admin');
+        $jwtConfigurationBuilder = new JwtConfigurationBuilder(
+            $this->getKeyRegistryMock(),
+            $legacy
+        );
 
-        $authenticationService = $this->getSut($token);
+        $authenticationService = new Authentication(
+            $legacy,
+            new TokenService(
+                $token,
+                $jwtConfigurationBuilder,
+                $legacy,
+                new EventDispatcher()
+            )
+        );
+
         $authenticationService->isLogged();
     }
 
@@ -156,13 +166,19 @@ class AuthenticationTest extends BaseTestCase
         $authenticationService->isLogged();
     }
 
-    public function providerGetUserName()
+    public function providerValidCredentials(): array
     {
         return [
             'admin' => [
                 'username' => 'admin',
                 'password' => 'admin',
             ],
+        ];
+    }
+
+    public function providerInvalidCredentials(): array
+    {
+        return [
             'user'  => [
                 'username' => 'user@oxid-esales.com',
                 'password' => 'useruser',
@@ -175,26 +191,44 @@ class AuthenticationTest extends BaseTestCase
     }
 
     /**
-     * @dataProvider providerGetUserName
+     * @dataProvider providerValidCredentials
      *
      * @param mixed $username
      * @param mixed $password
      */
-    public function testGetUserName($username, $password): void
+    public function testGetUser($username, $password): void
     {
-        $userModel = oxNew(UserModel::class);
-        $userId = $userModel->getIdByUserName($username);
-        $userModel->load($userId);
-        $user = new User($userModel);
+        $token                 = $this->createToken($username, $password);
+        $authenticationService = $this->getSut($token);
 
-        $this->legacy
-            ->method('login')
-            ->willReturn($user);
-        $this->legacy
-            ->method('getUserModel')
-            ->willReturn($userModel);
+        $this->assertInstanceOf(User::class, $authenticationService->getUser());
+    }
 
-        $token                 = $this->tokenService->createToken($username, $password);
+    /**
+     * @dataProvider providerInvalidCredentials
+     *
+     * @param mixed $username
+     * @param mixed $password
+     */
+    public function testGetUserNameWithInvalidCredentials($username, $password): void
+    {
+        $this->expectException(InvalidLogin::class);
+
+        $token                 = $this->createToken($username, $password);
+        $authenticationService = $this->getSut($token);
+
+        $this->assertEmpty($authenticationService->getUser()->getUserName());
+    }
+
+    /**
+     * @dataProvider providerValidCredentials
+     *
+     * @param mixed $username
+     * @param mixed $password
+     */
+    public function testGetUserNameWithValidCredentials($username, $password): void
+    {
+        $token                 = $this->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
         $this->assertSame($username, $authenticationService->getUser()->getUserName());
@@ -295,19 +329,12 @@ class AuthenticationTest extends BaseTestCase
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
     }
 
-    public function testLoggedUserIsNotAnonymous(): void
+    /**
+     * @dataProvider providerValidCredentials
+     */
+    public function testLoggedUserIsNotAnonymous(string $username, string $password): void
     {
-        $userModel = $this->getUserModelStub('the_admin_oxid');
-
-        $this->legacy->method('login')->willReturn(new User($userModel));
-        $this->legacy
-            ->method('getShopUrl')
-            ->willReturn('https://whatever.com');
-        $this->legacy
-            ->method('getShopId')
-            ->willReturn(1);
-
-        $token                 = $this->tokenService->createToken('admin', 'admin');
+        $token                 = $this->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
@@ -316,6 +343,19 @@ class AuthenticationTest extends BaseTestCase
     public function testIsAnonymousWithNullToken(): void
     {
         $authenticationService = $this->getSut();
+
+        $this->assertFalse($authenticationService->getUser()->isAnonymous());
+    }
+
+    /**
+     * @dataProvider providerInvalidCredentials
+     */
+    public function testIsAnonymousWithWrongCredentials(string $username, string $password): void
+    {
+        $this->expectException(InvalidLogin::class);
+
+        $token                 = $this->createToken($username, $password);
+        $authenticationService = $this->getSut($token);
 
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
     }
@@ -382,5 +422,35 @@ class AuthenticationTest extends BaseTestCase
             ->willReturn(1);
 
         return $this->getSut();
+    }
+
+    private function createToken(string $username, string $password): Token
+    {
+        $userModel = oxNew(UserModel::class);
+        $userId = $userModel->getIdByUserName($username);
+
+        if ($userId) {
+            $userModel->load($userId);
+            $user = new User($userModel);
+            $this->legacy
+                ->method('login')
+                ->willReturn($user);
+        } else {
+            $this->legacy
+                ->method('login')
+                ->willThrowException(new InvalidLogin('Username/password combination is invalid'));
+        }
+
+        $this->legacy
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacy
+            ->method('getShopId')
+            ->willReturn(1);
+        $this->legacy
+            ->method('getUserModel')
+            ->willReturn($userModel);
+
+        return $this->tokenService->createToken($username, $password);
     }
 }
