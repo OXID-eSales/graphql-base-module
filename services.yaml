@@ -35,6 +35,7 @@ services:
 
   OxidEsales\GraphQL\Base\Service\Authentication:
     class: OxidEsales\GraphQL\Base\Service\Authentication
+    public: true
 
   OxidEsales\GraphQL\Base\Service\Token:
       class: OxidEsales\GraphQL\Base\Service\Token
