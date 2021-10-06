@@ -9,12 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use Lcobucci\JWT\Token;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
@@ -338,7 +336,7 @@ class AuthenticationTest extends BaseTestCase
 
     private function createToken(string $username, string $password): UnencryptedToken
     {
-        $userModel = oxNew(UserModel::class);
+        $userModel = new UserModel();
         $userId = $userModel->getIdByUserName($username);
 
         if ($userId) {

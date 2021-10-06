@@ -163,7 +163,7 @@ class RequestReaderTest extends BaseTestCase
 
     // phpcs:enable
 
-    private function getLegacyMock(): Legacy
+    protected function getLegacyMock(): Legacy
     {
         $mock = $this->getMockBuilder(Legacy::class)
              ->disableOriginalConstructor()
@@ -176,7 +176,7 @@ class RequestReaderTest extends BaseTestCase
         return $mock;
     }
 
-    private function getJwtConfigurationBuilder(): JwtConfigurationBuilder
+    protected function getJwtConfigurationBuilder($legacy = null): JwtConfigurationBuilder
     {
         return new JwtConfigurationBuilder($this->getKeyRegistryMock(), $this->getLegacyMock());
     }

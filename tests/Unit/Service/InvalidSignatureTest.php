@@ -114,7 +114,7 @@ class InvalidSignatureTest extends BaseTestCase
         $requestReader->getAuthToken();
     }
 
-    protected function getJwtConfigurationBuilder(): JwtConfigurationBuilder
+    protected function getJwtConfigurationBuilder($legacy = null): JwtConfigurationBuilder
     {
         return new JwtConfigurationBuilder($this->getKeyRegistryMock(), $this->legacyService);
     }
