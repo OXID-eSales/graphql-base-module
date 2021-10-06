@@ -32,7 +32,7 @@ class BaseTestCase extends TestCase
         return $keyRegistry;
     }
 
-    protected function getUserModelStub(?string $id = null)
+    protected function getUserModelStub(?string $id = null): UserModel
     {
         $userModelStub = $this->createPartialMock(UserModel::class, []);
 
@@ -69,10 +69,10 @@ class BaseTestCase extends TestCase
         );
     }
 
-    protected function getUserDataStub(): UserDataType
+    protected function getUserDataStub(UserModel $model = null): UserDataType
     {
         return new UserDataType(
-            $this->createPartialMock(UserModel::class, [])
+            $model ?: $this->createPartialMock(UserModel::class, [])
         );
     }
 }
