@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Framework;
+namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
