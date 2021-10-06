@@ -74,7 +74,8 @@ class GraphQL extends WidgetController
         $userId = $this->getContainer()
             ->get(GraphQLAuthenticationService::class)
             ->getUser()
-            ->getUserId();
+            ->id()
+            ->val();
 
         if ($userId) {
             $session->setVariable('usr', $userId);

@@ -10,7 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataType;
 
 use OxidEsales\Eshop\Application\Model\User as EshopUserModel;
+use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * @Type()
@@ -33,12 +35,18 @@ final class User implements DataTypeInterface
         return $this->userModel;
     }
 
-    public function getUserId(): ?string
+    /**
+     * @Field()
+     */
+    public function id(): ID
     {
-        return $this->userModel->getId();
+        return new ID((string) $this->userModel->getId());
     }
 
-    public function getUserName(): string
+    /**
+     * @Field()
+     */
+    public function email(): string
     {
         return (string) $this->userModel->getFieldData('oxusername');
     }

@@ -222,7 +222,7 @@ class AuthenticationTest extends BaseTestCase
         $token                 = $this->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
-        $this->assertEmpty($authenticationService->getUser()->getUserName());
+        $this->assertEmpty($authenticationService->getUser()->email());
     }
 
     /**
@@ -236,14 +236,14 @@ class AuthenticationTest extends BaseTestCase
         $token                 = $this->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
-        $this->assertSame($username, $authenticationService->getUser()->getUserName());
+        $this->assertSame($username, $authenticationService->getUser()->email());
     }
 
     public function testGetUserNameForNullToken(): void
     {
         $authenticationService = $this->getAuthenticationService();
 
-        $this->assertEmpty($authenticationService->getUser()->getUserName());
+        $this->assertEmpty($authenticationService->getUser()->email());
     }
 
     public function testGetUserId(): void
@@ -256,8 +256,8 @@ class AuthenticationTest extends BaseTestCase
         $token                 = $this->tokenService->createToken('admin', 'admin');
         $authenticationService = $this->getSut($token);
 
-        $this->assertSame('the_admin_oxid', $authenticationService->getUser()->getUserId());
-        $this->assertNotNull($authenticationService->getUser()->getUserName());
+        $this->assertSame('the_admin_oxid', $authenticationService->getUser()->id()->val());
+        $this->assertNotNull($authenticationService->getUser()->email());
     }
 
     public function testGetUserIdForNullToken(): void
@@ -269,7 +269,7 @@ class AuthenticationTest extends BaseTestCase
 
         $user = $authenticationService->getUser();
 
-        $this->assertNull($user->getUserId());
+        $this->assertEmpty($user->id()->val());
     }
 
     public function testGetUserIdForAnonymousToken(): void
@@ -285,7 +285,7 @@ class AuthenticationTest extends BaseTestCase
         $anonymousToken        = $this->tokenService->createToken();
         $authenticationService = $this->getSut($anonymousToken);
 
-        $this->assertNotEmpty($authenticationService->getUser()->getUserId());
+        $this->assertNotEmpty($authenticationService->getUser()->id()->val());
     }
 
     public function testIsLoggedWithAnonymousToken(): void
@@ -385,7 +385,7 @@ class AuthenticationTest extends BaseTestCase
         $anonymousToken        = $this->tokenService->createToken();
         $authenticationService = $this->getSut($anonymousToken);
 
-        $this->assertEmpty($authenticationService->getUser()->getUserName());
+        $this->assertEmpty($authenticationService->getUser()->email());
     }
 
     public function testLoggedUserInAnonymousGroup(): void
