@@ -71,10 +71,6 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        if ($this->tokenService->getToken()) {
-            $this->tokenService->validateToken($this->tokenService->getToken());
-        }
-
         $userId = $this->tokenService->getTokenClaim(Token::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
 

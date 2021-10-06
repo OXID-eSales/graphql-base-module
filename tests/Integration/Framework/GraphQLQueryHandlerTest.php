@@ -122,36 +122,6 @@ class GraphQLQueryHandlerTest extends TestCase
         static::$container = null;
     }
 
-    public function testLoggedQueryWithInvalidSignature(): void
-    {
-        $result = $this->query('query { token (username: "admin", password: "admin") }');
-        $this->setAuthToken(
-            substr($result['body']['data']['token'], 0, -10)
-        );
-
-        static::$container = null;
-        $this->setUp();
-
-        $result = $this->query('query { testLoggedQuery(foo: "bar") }');
-        $this->assertNotEmpty($result['body']['errors']);
-        $this->assertEquals(
-            [
-                'body'   => [
-                    'errors' => [
-                        0 => [
-                            'message'    => 'The token is invalid',
-                            'extensions' => [
-                                'category' => 'permissionerror',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            $result
-        );
-        static::$container = null;
-    }
-
     public function testLoggedRightQuery(): void
     {
         $result = $this->query('query { token (username: "admin", password: "admin") }');

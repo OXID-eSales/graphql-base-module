@@ -44,21 +44,9 @@ class Authentication implements AuthenticationServiceInterface
 
     public function getUser(): User
     {
-        $this->validateNotEmptyToken();
-
         return new User(
             $this->legacyInfrastructure->getUserModel($this->tokenService->getTokenClaim(Token::CLAIM_USERID)),
             $this->tokenService->getTokenClaim(Token::CLAIM_USER_ANONYMOUS, false)
         );
-    }
-
-    /**
-     * @throws InvalidToken
-     */
-    protected function validateNotEmptyToken(): void
-    {
-        if ($token = $this->tokenService->getToken()) {
-            $this->tokenService->validateToken($token);
-        }
     }
 }

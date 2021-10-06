@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Base\Service;
 use DateTimeImmutable;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
@@ -86,47 +85,6 @@ class Token
     public function getToken(): ?UnencryptedToken
     {
         return $this->token;
-    }
-
-    /**
-     * Checks if given token is valid:
-     * - has valid signature
-     * - has valid issuer and audience
-     * - has valid shop claim
-     * - token user is not in blocked group
-     *
-     * @throws InvalidToken
-     *
-     * @internal
-     */
-    public function validateToken(UnencryptedToken $token): void
-    {
-        if (!$this->areConstraintsValid($token)) {
-            throw InvalidToken::invalidToken();
-        }
-
-        if ($this->isUserBlocked($this->getTokenClaim(Token::CLAIM_USERID))) {
-            throw InvalidToken::userBlocked();
-        }
-    }
-
-    protected function areConstraintsValid(UnencryptedToken $token): bool
-    {
-        $config = $this->jwtConfigurationBuilder->getConfiguration();
-        $validator = $config->validator();
-
-        return $validator->validate($token, ...$config->validationConstraints());
-    }
-
-    protected function isUserBlocked(?string $userId): bool
-    {
-        $groups = $this->legacyInfrastructure->getUserGroupIds($userId);
-
-        if (in_array('oxidblocked', $groups)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

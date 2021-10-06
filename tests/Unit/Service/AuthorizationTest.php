@@ -65,25 +65,6 @@ class AuthorizationTest extends BaseTestCase
         );
     }
 
-    public function testIsNotAllowedWithBlockedUserGroup(): void
-    {
-        $this->expectException(InvalidToken::class);
-
-        $legacyMock = $this->getLegacyMock();
-        $legacyMock
-            ->method('getUserGroupIds')
-            ->willReturn(['group', 'oxidblocked', 'anothergroup']);
-
-        $auth = new Authorization(
-            $this->getPermissionMocks(),
-            $this->getEventDispatcherMock(),
-            $this->prepareTokenService($this->getTokenMock(), $legacyMock),
-            $legacyMock
-        );
-
-        $auth->isAllowed('anything');
-    }
-
     public function testIsAllowedWithPermissionsAndWithToken(): void
     {
         $auth = new Authorization(

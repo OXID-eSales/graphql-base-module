@@ -21,6 +21,7 @@ use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Token;
+use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -72,7 +73,13 @@ abstract class TestCase extends PHPUnitTestCase
         $legacyService    = new LegacyStub();
         $jwtConfigBuilder = new JwtConfigurationBuilder($keyRegistry, $legacyService);
 
-        $requestReader = new RequestReaderStub($jwtConfigBuilder);
+        $requestReader = new RequestReaderStub(
+            new TokenValidator(
+                $jwtConfigBuilder,
+                $legacyService
+            ),
+            $jwtConfigBuilder
+        );
 
         static::$container->set(
             RequestReader::class,

@@ -15,6 +15,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
 class RequestReaderTest extends BaseTestCase
@@ -24,13 +25,19 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetAuthTokenWithoutToken(): void
     {
-        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder()
+        );
         $this->assertNull($requestReader->getAuthToken());
     }
 
     public function testGetAuthTokenWithWrongFormattedHeader(): void
     {
-        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder()
+        );
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -46,7 +53,10 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT(): void
     {
-        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder()
+        );
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -68,13 +78,20 @@ class RequestReaderTest extends BaseTestCase
         }
     }
 
-    public function testGetAuthTokenWithCorrectFormat(): void
+    public function testGetAuthTokenWithCorrectFormatCallsTokenValidation(): void
     {
-        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
         ];
+
+        $tokenValidator = $this->createPartialMock(TokenValidator::class, ['validateToken']);
+        $tokenValidator->expects($this->exactly(count($headers)))->method('validateToken');
+
+        $requestReader = new RequestReader(
+            $tokenValidator,
+            $this->getJwtConfigurationBuilder()
+        );
 
         foreach ($headers as $header) {
             // add also a whitespace to the beginning if the header
@@ -91,7 +108,10 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithEmptyRequest(): void
     {
-        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder()
+        );
         $this->assertEquals(
             [
                 'query'         => null,
@@ -104,7 +124,10 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequest(): void
     {
-        $requestReader           = new RequestReader($this->getJwtConfigurationBuilder());
+        $requestReader           = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder()
+        );
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
             [
@@ -119,7 +142,10 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
     {
-        $requestReader             = new RequestReader($this->getJwtConfigurationBuilder());
+        $requestReader             = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder()
+        );
         $_SERVER['CONTENT_TYPE']   = 'text/plain';
         $_REQUEST['query']         = 'query {token_}';
         $_REQUEST['variables']     = '{"foo":"bar"}';

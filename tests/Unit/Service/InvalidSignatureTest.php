@@ -18,6 +18,7 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -88,7 +89,7 @@ class InvalidSignatureTest extends BaseTestCase
     /**
      * @depends testCreateTokenWithValidCredentials
      */
-    public function testIsLoggedWithValidToken(): void
+    public function testGetBrokenToken(): void
     {
         $this->legacyService
              ->method('getShopUrl')
@@ -99,22 +100,18 @@ class InvalidSignatureTest extends BaseTestCase
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . substr(self::$token->toString(), 0, -10);
 
-        $requestReader = new RequestReader($this->getJwtConfigurationBuilder());
-        $token         = $requestReader->getAuthToken();
+        $tokenValidator = new TokenValidator(
+            $this->getJwtConfigurationBuilder(),
+            $this->legacyService
+        );
 
-        $authenticationService = new Authentication(
-            $this->legacyService,
-            new TokenService(
-                $token,
-                $this->jwtConfigurationBuilder,
-                $this->legacyService,
-                new EventDispatcher()
-            )
+        $requestReader = new RequestReader(
+            $tokenValidator,
+            $this->getJwtConfigurationBuilder()
         );
 
         $this->expectException(InvalidToken::class);
-
-        $authenticationService->isLogged();
+        $requestReader->getAuthToken();
     }
 
     protected function getJwtConfigurationBuilder(): JwtConfigurationBuilder

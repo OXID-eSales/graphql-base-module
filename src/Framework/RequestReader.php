@@ -14,7 +14,7 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
-
+use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use function apache_request_headers;
 use function array_change_key_case;
 use function file_get_contents;
@@ -25,12 +25,17 @@ use function trim;
 
 class RequestReader
 {
+    /** @var TokenValidator */
+    private $tokenValidatorService;
+
     /** @var JwtConfigurationBuilder */
     private $jwtConfigurationBuilder;
 
     public function __construct(
+        TokenValidator $tokenValidatorService,
         JwtConfigurationBuilder $jwtConfigurationBuilder
     ) {
+        $this->tokenValidatorService = $tokenValidatorService;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
@@ -61,6 +66,8 @@ class RequestReader
         } catch (Exception $e) {
             throw InvalidToken::unableToParse();
         }
+
+        $this->tokenValidatorService->validateToken($token);
 
         return $token;
     }
