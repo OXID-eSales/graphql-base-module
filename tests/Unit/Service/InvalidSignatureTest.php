@@ -24,7 +24,7 @@ class InvalidSignatureTest extends BaseTestCase
 
     public function testBrokenToken(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId']);
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
         $token = $this->getTokenService($legacy, null)->createToken('admin', 'admin');
 

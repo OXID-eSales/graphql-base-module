@@ -28,7 +28,7 @@ class TokenTest extends BaseTestCase
 
     public function testCreateTokenWithValidCredentials(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId']);
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
 
         $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
@@ -38,7 +38,7 @@ class TokenTest extends BaseTestCase
 
     public function testCreateTokenWithValidCredentialsForBlockedUser(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getUserGroupIds']);
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
         $legacy->method('getUserGroupIds')->willReturn(['foo', 'oxidblocked', 'bar']);
 
@@ -49,7 +49,7 @@ class TokenTest extends BaseTestCase
 
     public function testCreateAnonymousToken(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId']);
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub()));
 
         $anonymousToken = $this->getTokenService($legacy)->createToken();

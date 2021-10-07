@@ -17,7 +17,7 @@ class TokenValidatorTest extends BaseTestCase
 {
     public function testTokenShopIdValidation()
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId']);
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getShopId')->willReturn(1);
 
@@ -27,7 +27,7 @@ class TokenValidatorTest extends BaseTestCase
         $validator = $this->getTokenValidator($legacy);
         $validator->validateToken($token);
 
-        $legacy = $this->createPartialMock(LegacyService::class, ['getShopId']);
+        $legacy = $this->createPartialMock(LegacyService::class, ['getShopId', 'getShopUrl']);
         $legacy->method('getShopId')->willReturn(-1);
 
         // token is invalid
@@ -59,7 +59,7 @@ class TokenValidatorTest extends BaseTestCase
 
     public function testTokenUserInBlockedGroup()
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getUserGroupIds']);
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getUserGroupIds')->willReturn(['foo', 'oxidblocked', 'bar']);
 
