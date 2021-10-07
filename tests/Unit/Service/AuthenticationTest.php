@@ -124,7 +124,17 @@ class AuthenticationTest extends BaseTestCase
     {
         $this->expectException(InvalidLogin::class);
 
-        $token                 = $this->createToken($username, $password);
+        $this->legacy
+            ->method('login')
+            ->willThrowException(new InvalidLogin('Username/password combination is invalid'));
+        $this->legacy
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacy
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $token = $this->tokenService->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
         $this->assertEmpty($authenticationService->getUser()->email());
@@ -264,7 +274,17 @@ class AuthenticationTest extends BaseTestCase
     {
         $this->expectException(InvalidLogin::class);
 
-        $token                 = $this->createToken($username, $password);
+        $this->legacy
+            ->method('login')
+            ->willThrowException(new InvalidLogin('Username/password combination is invalid'));
+        $this->legacy
+            ->method('getShopUrl')
+            ->willReturn('https://whatever.com');
+        $this->legacy
+            ->method('getShopId')
+            ->willReturn(1);
+
+        $token                 = $this->tokenService->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
@@ -336,21 +356,13 @@ class AuthenticationTest extends BaseTestCase
 
     private function createToken(string $username, string $password): UnencryptedToken
     {
-        $userModel = new UserModel();
-        $userId = $userModel->getIdByUserName($username);
+        $userModel = $this->createPartialMock(UserModel::class, ['getFieldData']);
+        $userModel->method('getFieldData')->withAnyParameters()->willReturn($username);
+        $user = $this->getUserDataStub($userModel);
 
-        if ($userId) {
-            $userModel->load($userId);
-            $user = new User($userModel);
-            $this->legacy
-                ->method('login')
-                ->willReturn($user);
-        } else {
-            $this->legacy
-                ->method('login')
-                ->willThrowException(new InvalidLogin('Username/password combination is invalid'));
-        }
-
+        $this->legacy
+            ->method('login')
+            ->willReturn($user);
         $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');
