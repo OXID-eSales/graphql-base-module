@@ -70,7 +70,7 @@ class LegacyTest extends UnitTestCase
         $userDataType = $this->legacyInfrastructure->login($login, $password);
 
         $this->assertSame($expectedAnonymous, $userDataType->isAnonymous());
-        $this->assertSame($expectedUserIdNull, null === $userDataType->getUserId());
+        $this->assertSame($expectedUserIdNull, null === $userDataType->id());
     }
 
     public function loginResponseTestDataProvider(): array

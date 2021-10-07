@@ -70,8 +70,8 @@ class LoginTest extends BaseTestCase
         $validator = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
-        $this->assertEquals($user->getUserId(), $token->claims()->get(TokenService::CLAIM_USERID));
-        $this->assertEquals($user->getUserName(), $token->claims()->get(TokenService::CLAIM_USERNAME));
+        $this->assertEquals($user->id()->val(), $token->claims()->get(TokenService::CLAIM_USERID));
+        $this->assertEquals($user->email(), $token->claims()->get(TokenService::CLAIM_USERNAME));
         $this->assertEquals(1, $token->claims()->get(TokenService::CLAIM_SHOPID));
     }
 

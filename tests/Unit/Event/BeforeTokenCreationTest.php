@@ -36,7 +36,7 @@ class BeforeTokenCreationTest extends BaseTestCase
         );
         $this->assertSame(
             $userId,
-            $event->getUser()->getUserId()
+            $event->getUser()->id()->val()
         );
     }
 }

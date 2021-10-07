@@ -105,8 +105,8 @@ class Token
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($expire)
             ->withClaim(self::CLAIM_SHOPID, $this->legacyInfrastructure->getShopId())
-            ->withClaim(self::CLAIM_USERNAME, $user->getUserName())
-            ->withClaim(self::CLAIM_USERID, $user->getUserId())
+            ->withClaim(self::CLAIM_USERNAME, $user->email())
+            ->withClaim(self::CLAIM_USERID, $user->id()->val())
             ->withClaim(self::CLAIM_USER_ANONYMOUS, $user->isAnonymous());
 
         $event = new BeforeTokenCreation($builder, $user);
