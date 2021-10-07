@@ -27,7 +27,7 @@ class RequestReaderTest extends BaseTestCase
     {
         $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
-            $this->getJwtConfigurationBuilder()
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $this->assertNull($requestReader->getAuthToken());
     }
@@ -36,7 +36,7 @@ class RequestReaderTest extends BaseTestCase
     {
         $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
-            $this->getJwtConfigurationBuilder()
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $headers       = [
             'HTTP_AUTHORIZATION',
@@ -55,7 +55,7 @@ class RequestReaderTest extends BaseTestCase
     {
         $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
-            $this->getJwtConfigurationBuilder()
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $headers       = [
             'HTTP_AUTHORIZATION',
@@ -90,7 +90,7 @@ class RequestReaderTest extends BaseTestCase
 
         $requestReader = new RequestReader(
             $tokenValidator,
-            $this->getJwtConfigurationBuilder()
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
 
         foreach ($headers as $header) {
@@ -110,7 +110,7 @@ class RequestReaderTest extends BaseTestCase
     {
         $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
-            $this->getJwtConfigurationBuilder()
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $this->assertEquals(
             [
@@ -126,7 +126,7 @@ class RequestReaderTest extends BaseTestCase
     {
         $requestReader           = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
-            $this->getJwtConfigurationBuilder()
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
@@ -144,7 +144,7 @@ class RequestReaderTest extends BaseTestCase
     {
         $requestReader             = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
-            $this->getJwtConfigurationBuilder()
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $_SERVER['CONTENT_TYPE']   = 'text/plain';
         $_REQUEST['query']         = 'query {token_}';
@@ -174,10 +174,5 @@ class RequestReaderTest extends BaseTestCase
             ->willReturn('www.myoxidshop.com');
 
         return $mock;
-    }
-
-    protected function getJwtConfigurationBuilder($legacy = null): JwtConfigurationBuilder
-    {
-        return new JwtConfigurationBuilder($this->getKeyRegistryMock(), $this->getLegacyMock());
     }
 }
