@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit;
 
 use OxidEsales\Eshop\Application\Model\User as UserModel;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
-use PHPUnit\Framework\TestCase;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\KeyRegistry;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class BaseTestCase extends TestCase
@@ -69,7 +69,7 @@ class BaseTestCase extends TestCase
         );
     }
 
-    protected function getUserDataStub(UserModel $model = null): UserDataType
+    protected function getUserDataStub(?UserModel $model = null): UserDataType
     {
         return new UserDataType(
             $model ?: $this->createPartialMock(UserModel::class, ['getFieldData'])

@@ -35,7 +35,7 @@ class RequestReader
         TokenValidator $tokenValidatorService,
         JwtConfigurationBuilder $jwtConfigurationBuilder
     ) {
-        $this->tokenValidatorService = $tokenValidatorService;
+        $this->tokenValidatorService   = $tokenValidatorService;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 

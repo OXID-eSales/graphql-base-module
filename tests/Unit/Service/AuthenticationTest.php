@@ -70,7 +70,7 @@ class AuthenticationTest extends BaseTestCase
      */
     public function testIsLoggedWithValidToken(string $username, string $password): void
     {
-        $token = $this->createToken($username, $password);
+        $token                 = $this->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
         $this->assertTrue($authenticationService->isLogged());
@@ -134,7 +134,7 @@ class AuthenticationTest extends BaseTestCase
             ->method('getShopId')
             ->willReturn(1);
 
-        $token = $this->tokenService->createToken($username, $password);
+        $token                 = $this->tokenService->createToken($username, $password);
         $authenticationService = $this->getSut($token);
 
         $this->assertEmpty($authenticationService->getUser()->email());
@@ -295,8 +295,8 @@ class AuthenticationTest extends BaseTestCase
         $this->legacy
             ->method('login')
             ->willReturn(
-            new User($this->getUserModelStub(), true)
-        );
+                new User($this->getUserModelStub(), true)
+            );
         $this->legacy
             ->method('getShopUrl')
             ->willReturn('https://whatever.com');

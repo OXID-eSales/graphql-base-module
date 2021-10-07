@@ -56,7 +56,7 @@ class TokenValidator
 
     protected function areConstraintsValid(UnencryptedToken $token): bool
     {
-        $config = $this->jwtConfigurationBuilder->getConfiguration();
+        $config    = $this->jwtConfigurationBuilder->getConfiguration();
         $validator = $config->validator();
 
         return $validator->validate($token, ...$config->validationConstraints());

@@ -15,13 +15,13 @@ use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
 class TokenValidatorTest extends BaseTestCase
 {
-    public function testTokenShopIdValidation()
+    public function testTokenShopIdValidation(): void
     {
         $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getShopId')->willReturn(1);
 
-        $token = $this->getTokenService($legacy)->createToken("admin", "admin");
+        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
 
         // token is valid
         $validator = $this->getTokenValidator($legacy);
@@ -36,13 +36,13 @@ class TokenValidatorTest extends BaseTestCase
         $validator->validateToken($token);
     }
 
-    public function testTokenShopUrlValidation()
+    public function testTokenShopUrlValidation(): void
     {
         $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopUrl', 'getShopId']);
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getShopUrl')->willReturn('http://original.url');
 
-        $token = $this->getTokenService($legacy)->createToken("admin", "admin");
+        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
 
         // token is valid
         $validator = $this->getTokenValidator($legacy);
@@ -57,13 +57,13 @@ class TokenValidatorTest extends BaseTestCase
         $validator->validateToken($token);
     }
 
-    public function testTokenUserInBlockedGroup()
+    public function testTokenUserInBlockedGroup(): void
     {
         $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getUserGroupIds')->willReturn(['foo', 'oxidblocked', 'bar']);
 
-        $token = $this->getTokenService($legacy)->createToken("admin", "admin");
+        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
 
         $validator = $this->getTokenValidator($legacy);
         $this->expectException(InvalidToken::class);
