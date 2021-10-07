@@ -55,12 +55,12 @@ class LoginTest extends BaseTestCase
     {
         $username = $password = 'admin';
 
-        $userModel = oxNew(UserModel::class);
-        $userId = $userModel->getIdByUserName($username);
-        $userModel->load($userId);
-        $user = new User($userModel);
+        $userModelStub = $this->createPartialMock(UserModel::class, ['getFieldData']);
+        $userModelStub->setId('someTestAdminId');
+        $userModelStub->method('getFieldData')->with('oxusername')->willReturn('someTestUsername');
+        $user = new User($userModelStub);
 
-        $this->legacy->method('login')->willReturn($user);
+        $this->legacy->method('login')->with($username, $password)->willReturn($user);
 
         $loginController = new Login($this->tokenService);
 
