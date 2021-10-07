@@ -73,15 +73,6 @@ class Token
         return $this->token->claims()->get($claim, $default);
     }
 
-    public function checkTokenHasClaim(string $claim): bool
-    {
-        if (!$this->token instanceof UnencryptedToken) {
-            return false;
-        }
-
-        return $this->token->claims()->has($claim);
-    }
-
     public function getToken(): ?UnencryptedToken
     {
         return $this->token;
