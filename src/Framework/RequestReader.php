@@ -89,6 +89,10 @@ class RequestReader
             $uploadMiddleware = new UploadMiddleware();
             $request          = $uploadMiddleware->processRequest($request);
             $data             = $request->getParsedBody();
+
+            if (!isset($data['operationName'])){
+                $data['operationName'] = $data['operation'];
+            }
         } else {
             $data = $_REQUEST;
 
