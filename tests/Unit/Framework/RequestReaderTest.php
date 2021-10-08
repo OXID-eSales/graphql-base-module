@@ -10,8 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use Exception;
-use Lcobucci\JWT\Token;
 use GraphQL\Error\InvariantViolation;
+use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
@@ -184,20 +184,20 @@ class RequestReaderTest extends BaseTestCase
         );
 
         $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundarycp0uqGswsYjCH7rC';
-        $_POST['map'] = json_encode(["0" => ["variables.file"]]);
-        $_POST['operations'] = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
+        $_POST['map']            = json_encode(['0' => ['variables.file']]);
+        $_POST['operations']     = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
 
         $_FILES['0'] = [
-            "name" => "example.txt",
-            "type" => "text/plain",
-            "tmp_name" => "./fixtures/example.txt",
-            "error" => 0,
-            "size" => 18
+            'name'     => 'example.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => './fixtures/example.txt',
+            'error'    => 0,
+            'size'     => 18,
         ];
 
         $this->assertEquals(
             [
-                'query' => 'query anonymous {token}',
+                'query'     => 'query anonymous {token}',
                 'variables' => [
                     'file' => new \Laminas\Diactoros\UploadedFile(
                         './fixtures/example.txt',
@@ -205,7 +205,7 @@ class RequestReaderTest extends BaseTestCase
                         0,
                         'example.txt',
                         'text/plain'
-                    )
+                    ),
                 ],
                 'operationName' => 'anonymous',
             ],

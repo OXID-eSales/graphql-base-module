@@ -90,7 +90,7 @@ class RequestReader
             $request          = $uploadMiddleware->processRequest($request);
             $data             = $request->getParsedBody();
 
-            if (!isset($data['operationName'])){
+            if (is_array($data) && !isset($data['operationName']) && isset($data['operation'])) {
                 $data['operationName'] = $data['operation'];
             }
         } else {
