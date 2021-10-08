@@ -178,19 +178,35 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithFileInput(): void
     {
-        $requestReader             = new RequestReader(
+        $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
 
-        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
-        $_POST['map']            = '{}';
-        $_POST['operations']     = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundarycp0uqGswsYjCH7rC';
+        $_POST['map'] = json_encode(["0" => ["variables.file"]]);
+        $_POST['operations'] = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
 
-        $this->assertSame(
+        $_FILES['0'] = [
+            "name" => "example.txt",
+            "type" => "text/plain",
+            "tmp_name" => "./fixtures/example.txt",
+            "error" => 0,
+            "size" => 18
+        ];
+
+        $this->assertEquals(
             [
-                'query'         => 'query anonymous {token}',
-                'variables'     => ['file' => null],
+                'query' => 'query anonymous {token}',
+                'variables' => [
+                    'file' => new \Laminas\Diactoros\UploadedFile(
+                        './fixtures/example.txt',
+                        18,
+                        0,
+                        'example.txt',
+                        'text/plain'
+                    )
+                ],
                 'operationName' => 'anonymous',
             ],
             $requestReader->getGraphQLRequestData()
