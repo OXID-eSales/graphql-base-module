@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use Exception;
 use Lcobucci\JWT\Token;
+use GraphQL\Error\InvariantViolation;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
@@ -158,6 +159,43 @@ class RequestReaderTest extends BaseTestCase
             $requestReader->getGraphQLRequestData()
         );
         unset($_SERVER['CONTENT_TYPE'], $_REQUEST['query'], $_REQUEST['variables'], $_REQUEST['operationName']);
+    }
+
+    public function testGetGraphQLRequestDataWithInvalidFileInput(): void
+    {
+        $this->expectException(InvariantViolation::class);
+
+        $requestReader             = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
+
+        $requestReader->getGraphQLRequestData();
+
+        unset($_SERVER['CONTENT_TYPE']);
+    }
+
+    public function testGetGraphQLRequestDataWithFileInput(): void
+    {
+        $requestReader             = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
+
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
+        $_POST['map']            = '{}';
+        $_POST['operations']     = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
+
+        $this->assertSame(
+            [
+                'query'         => 'query anonymous {token}',
+                'variables'     => ['file' => null],
+                'operationName' => 'anonymous',
+            ],
+            $requestReader->getGraphQLRequestData()
+        );
+        unset($_SERVER['CONTENT_TYPE'], $_POST['map'], $_POST['operations']);
     }
 
     // phpcs:enable
