@@ -54,7 +54,7 @@ class TokenValidator
         }
     }
 
-    protected function areConstraintsValid(UnencryptedToken $token): bool
+    private function areConstraintsValid(UnencryptedToken $token): bool
     {
         $config    = $this->jwtConfigurationBuilder->getConfiguration();
         $validator = $config->validator();
@@ -62,7 +62,7 @@ class TokenValidator
         return $validator->validate($token, ...$config->validationConstraints());
     }
 
-    protected function isUserBlocked(?string $userId): bool
+    private function isUserBlocked(?string $userId): bool
     {
         $groups = $this->legacyInfrastructure->getUserGroupIds($userId);
 

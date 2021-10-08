@@ -97,7 +97,10 @@ class PaginationTest extends DataTypeTestCase
     public function addPaginationToQueryProvider(): array
     {
         return [
-            [0, null], [0, 100], [5, null], [100, 10],
+            [0, null],
+            [0, 100],
+            [5, null],
+            [100, 10],
         ];
     }
 }

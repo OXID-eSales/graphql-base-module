@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
-use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
@@ -54,11 +53,6 @@ class Token
         $this->eventDispatcher         = $eventDispatcher;
     }
 
-    public function getConfiguration(): Configuration
-    {
-        return $this->jwtConfigurationBuilder->getConfiguration();
-    }
-
     /**
      * @param null|mixed $default
      *
@@ -86,7 +80,7 @@ class Token
         $user   = $this->legacyInfrastructure->login($username, $password);
         $time   = new DateTimeImmutable('now');
         $expire = new DateTimeImmutable('+8 hours');
-        $config = $this->getConfiguration();
+        $config = $this->jwtConfigurationBuilder->getConfiguration();
 
         $builder = $config->builder()
             ->issuedBy($this->legacyInfrastructure->getShopUrl())

@@ -96,4 +96,11 @@ class SortingTest extends DataTypeTestCase
         $this->expectException(InvalidArgumentException::class);
         $sort->addToQuery($queryBuilder);
     }
+
+    public function testFailOnWrongSortingConfiguration(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('"foo" is only allowed to be one of ASC, DESC, was "x"');
+        new class(['foo' => 'x']) extends Sorting {};
+    }
 }

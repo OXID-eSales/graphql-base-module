@@ -55,7 +55,7 @@ final class Pagination
     {
         $builder->setFirstResult($this->offset);
 
-        if ($this->limit !== null && $this->limit > 0) {
+        if ($this->limit > 0) {
             $builder->setMaxResults($this->limit);
         }
     }
