@@ -22,8 +22,7 @@ extensions:
 
 coverage:
   enabled: true
-  remote: true
-  local: false
+  local: true
   c3_url: '%SHOP_URL%'
   remote_config: 'vendor/oxid-esales/graphql-base/tests/codeception.yml'
   include:
