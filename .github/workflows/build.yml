@@ -122,6 +122,12 @@ jobs:
                   sed -i 's/\/var\/www\/oxideshop\/graphql-base-module\///' covs/coverage.xml
                   cp covs/coverage.xml $GITHUB_WORKSPACE/artifact/
 
+            - name: Archive code coverage results
+              uses: actions/upload-artifact@v2
+              with:
+                  name: codeception-coverage-report
+                  path: /home/runner/work/graphql-base-module/graphql-base-module/artifact/
+
             - name: SonarCloud Scan
               if: ${{ matrix.php == '7.4' && env.DEPENDENCIES == '' }}
               uses: sonarsource/sonarcloud-github-action@master
