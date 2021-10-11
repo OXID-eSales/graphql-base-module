@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\Facts\Facts;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
@@ -191,6 +192,96 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected static function beforeContainerCompile(): void
     {
+    }
+
+    protected function uploadFile(
+        string  $fileName,
+        array   $mutationData,
+        ?string $token = null
+    ): array
+    {
+        $variables = $mutationData['variables'];
+        $mutation = $mutationData['mutation'];
+
+        $fields = [
+            'operation'     => $mutationData['name'],
+            'operations'    => [
+                'query'     => $mutation,
+                'variables' => $variables
+            ],
+        ];
+        $map = [
+            'map' => [
+                '0' => ['variables.file'],
+            ]
+        ];
+
+        $files = [
+            $fileName => $fileName
+        ];
+
+        $boundary = '-------------' . uniqid();
+        $postData = $this->buildFileUpload($boundary, $fields, $map, $files);
+
+        $facts = new Facts();
+        $ch = curl_init($facts->getShopUrl() . '/graphql?lang=0&shp=1');
+
+        $headers = [
+            'Connection: keep-alive',
+            'Pragma: no-cache',
+            'Cache-Control: no-cache',
+            'Content-Type: multipart/form-data; boundary=' . $boundary,
+        ];
+
+        if ($token !== null) {
+            $headers[] = 'Authorization: Bearer ' . $token;
+        }
+
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($response, true);
+    }
+
+    protected function buildFileUpload(string $delimiter, array $fields, array $map, array $files = []) : string
+    {
+        $data = '';
+        $eol = "\r\n";
+
+        foreach ($fields as $name => $content) {
+            $data .= "--" . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $name . "\"" . $eol . $eol
+                . json_encode($content) . $eol;
+        }
+
+        foreach ($map as $name => $content) {
+            $data .= "--" . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $name . "\"" . $eol . $eol
+                . json_encode($content) . $eol;
+        }
+
+        $index = 0;
+        foreach ($files as $name => $path) {
+            $data .= "--" . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $index. '"; filename="' . $name . '"' . $eol
+                . 'Content-Type: text/plain' . $eol
+                . 'Content-Transfer-Encoding: binary' . $eol;
+
+            $data .= $eol;
+            $data .= file_get_contents($path) . $eol;
+            $index++;
+        }
+        $data .= "--" . $delimiter . "--".$eol;
+
+        return $data;
     }
 }
 

@@ -18,7 +18,9 @@ use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilter;
 use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestSorting;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Right;
+use Psr\Http\Message\UploadedFileInterface;
 
 class TestController
 {
@@ -120,5 +122,13 @@ class TestController
         );
 
         return true;
+    }
+
+    /**
+     * @Mutation
+     */
+    public function uploadedFileContent(UploadedFileInterface $file): string
+    {
+        return file_get_contents($file->getStream()->getMetadata("uri"));
     }
 }
