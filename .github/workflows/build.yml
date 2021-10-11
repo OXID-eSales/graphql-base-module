@@ -119,12 +119,22 @@ jobs:
                   wget https://phar.phpunit.de/phpcov-7.0.2.phar
                   ls -alh covs/
                   docker-compose exec -T --user oxid php php phpcov-7.0.2.phar merge --clover covs/coverage.xml covs
-                  sed -i 's/\/var\/www\/oxideshop\/graphql-storefront-module\///' covs/coverage.xml
+                  sed -i 's/\/var\/www\/oxideshop\/graphql-base-module\///' covs/coverage.xml
                   cp covs/coverage.xml $GITHUB_WORKSPACE/artifact/
 
             - name: SonarCloud Scan
               if: ${{ matrix.php == '7.4' && env.DEPENDENCIES == '' }}
               uses: sonarsource/sonarcloud-github-action@master
               env:
-                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                 SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              with:
+                  args: >
+                      -Dsonar.organization=oxid-esales
+                      -Dsonar.projectKey=OXID-eSales_graphql-base-module
+                      -Dsonar.sources=src
+                      -Dsonar.tests=tests
+                      -Dsonar.sourceEncoding=UTF-8
+                      -Dsonar.php.coverage.reportPaths=artifact/coverage.xml
+                      -Dsonar.cpd.php.minimumTokens=10
+                      -Dsonar.cpd.php.minimumLines=5
