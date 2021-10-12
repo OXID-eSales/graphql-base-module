@@ -17,7 +17,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class User implements DataTypeInterface
+final class User implements ShopModelAwareInterface
 {
     /** @var EshopUserModel */
     private $userModel;

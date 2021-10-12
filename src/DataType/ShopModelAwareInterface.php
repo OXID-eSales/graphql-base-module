@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType;
 
 use OxidEsales\Eshop\Core\Model\BaseModel;
 
-interface DataTypeInterface
+interface ShopModelAwareInterface
 {
     public function getEshopModel(): BaseModel;
 
