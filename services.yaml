@@ -22,8 +22,8 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\TimerHandler
     public: true
 
-  OxidEsales\GraphQL\Base\Service\KeyRegistry:
-    class: OxidEsales\GraphQL\Base\Service\KeyRegistry
+  OxidEsales\GraphQL\Base\Service\ModuleConfiguration:
+    class: OxidEsales\GraphQL\Base\Service\ModuleConfiguration
     public: true
 
   OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder:

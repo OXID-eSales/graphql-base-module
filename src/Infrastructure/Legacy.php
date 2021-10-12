@@ -67,14 +67,6 @@ class Legacy
         return $userModel;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getConfigParam(string $param)
-    {
-        return Registry::getConfig()->getConfigParam($param);
-    }
-
     public function getShopUrl(): string
     {
         return Registry::getConfig()->getShopUrl();

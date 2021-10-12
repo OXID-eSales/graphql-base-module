@@ -39,7 +39,7 @@ class LoginTest extends BaseTestCase
         $this->legacy->method('getShopId')->willReturn(1);
 
         $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
-            $this->getKeyRegistryMock(),
+            $this->getModuleConfigurationMock(),
             $this->legacy
         );
 
@@ -47,7 +47,8 @@ class LoginTest extends BaseTestCase
             null,
             $this->jwtConfigurationBuilder,
             $this->legacy,
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->getModuleConfigurationMock()
         );
     }
 

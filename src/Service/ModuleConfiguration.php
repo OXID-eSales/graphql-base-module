@@ -18,14 +18,16 @@ use function random_bytes;
 use function strlen;
 
 /**
- * Class KeyRegistry
+ * Class ModuleConfiguration
  *
  * The current implementation stores the signature key in
  * the config table. This should be changed eventually.
  */
-class KeyRegistry
+class ModuleConfiguration
 {
     public const SIGNATUREKEYNAME = 'sJsonWebTokenSignature';
+
+    public const LIFETIMENAME = 'sJsonWebTokenLifetime';
 
     /** @var ModuleSettingBridgeInterface */
     private $moduleSettingBridge;
@@ -57,5 +59,10 @@ class KeyRegistry
         }
 
         return $signature;
+    }
+
+    public function getTokenLifeTime(): string
+    {
+        return (string) $this->moduleSettingBridge->get(static::LIFETIMENAME, 'oe_graphql_base');
     }
 }

@@ -41,7 +41,7 @@ class AuthenticationTest extends BaseTestCase
                             ->getMock();
 
         $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
-            $this->getKeyRegistryMock(),
+            $this->getModuleConfigurationMock(),
             $this->legacy
         );
 
@@ -49,7 +49,8 @@ class AuthenticationTest extends BaseTestCase
             null,
             $this->jwtConfigurationBuilder,
             $this->legacy,
-            new EventDispatcher()
+            new EventDispatcher(),
+            $this->getModuleConfigurationMock()
         );
     }
 
@@ -329,7 +330,7 @@ class AuthenticationTest extends BaseTestCase
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
     }
 
-    protected function getSut(?UnencryptedToken $token = null): Authentication
+    protected function getSut(?UnencryptedToken $token = null, ?string $lifetime = null): Authentication
     {
         return new Authentication(
             $this->legacy,
@@ -337,7 +338,8 @@ class AuthenticationTest extends BaseTestCase
                 $token,
                 $this->jwtConfigurationBuilder,
                 $this->legacy,
-                new EventDispatcher()
+                new EventDispatcher(),
+                $this->getModuleConfigurationMock()
             )
         );
     }

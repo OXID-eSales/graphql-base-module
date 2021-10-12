@@ -11,15 +11,15 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 
 /**
  * @codeCoverageIgnore
  */
 class ModuleSetup
 {
-    /** @var KeyRegistry */
-    private $keyRegistry;
+    /** @var ModuleConfiguration */
+    private $moduleConfiguration;
 
     /** @var ModuleSettingBridgeInterface */
     private $moduleSettings;
@@ -28,18 +28,18 @@ class ModuleSetup
      * ModuleSetup constructor.
      */
     public function __construct(
-        KeyRegistry $keyRegistry,
+        ModuleConfiguration          $moduleConfiguration,
         ModuleSettingBridgeInterface $moduleSettings
     ) {
-        $this->keyRegistry    = $keyRegistry;
-        $this->moduleSettings = $moduleSettings;
+        $this->moduleConfiguration    = $moduleConfiguration;
+        $this->moduleSettings         = $moduleSettings;
     }
 
     public function runSetup(): void
     {
         $this->moduleSettings->save(
-            KeyRegistry::SIGNATUREKEYNAME,
-            $this->keyRegistry->generateSignatureKey(),
+            ModuleConfiguration::SIGNATUREKEYNAME,
+            $this->moduleConfiguration->generateSignatureKey(),
             'oe_graphql_base'
         );
     }

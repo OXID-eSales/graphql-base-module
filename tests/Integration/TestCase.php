@@ -20,7 +20,7 @@ use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
@@ -60,19 +60,19 @@ abstract class TestCase extends PHPUnitTestCase
             ResponseWriter::class
         );
 
-        $keyRegistry = new KeyRegistryStub();
+        $moduleConfiguration = new ModuleConfigurationStub();
 
         static::$container->set(
-            KeyRegistry::class,
-            $keyRegistry
+            ModuleConfiguration::class,
+            $moduleConfiguration
         );
         static::$container->autowire(
-            KeyRegistry::class,
-            KeyRegistry::class,
+            ModuleConfiguration::class,
+            ModuleConfiguration::class,
         );
 
         $legacyService    = new LegacyStub();
-        $jwtConfigBuilder = new JwtConfigurationBuilder($keyRegistry, $legacyService);
+        $jwtConfigBuilder = new JwtConfigurationBuilder($moduleConfiguration, $legacyService);
 
         $requestReader = new RequestReaderStub(
             new TokenValidator(
@@ -169,62 +169,36 @@ abstract class TestCase extends PHPUnitTestCase
         $_GET[$name] = $value;
     }
 
-    public static function responseCallback($body): void
-    {
-        static::$queryResult = [
-            'body'   => $body,
-        ];
-    }
-
-    public static function loggerCallback(string $message): void
-    {
-        static::$logResult .= $message;
-    }
-
-    public static function getGraphQLRequestData(): array
-    {
-        if (static::$query === null) {
-            return [];
-        }
-
-        return static::$query;
-    }
-
-    protected static function beforeContainerCompile(): void
-    {
-    }
-
     protected function uploadFile(
         string  $fileName,
         array   $mutationData,
         ?string $token = null
-    ): array
-    {
+    ): array {
         $variables = $mutationData['variables'];
-        $mutation = $mutationData['mutation'];
+        $mutation  = $mutationData['mutation'];
 
         $fields = [
             'operation'     => $mutationData['name'],
             'operations'    => [
                 'query'     => $mutation,
-                'variables' => $variables
+                'variables' => $variables,
             ],
         ];
         $map = [
             'map' => [
                 '0' => ['variables.file'],
-            ]
+            ],
         ];
 
         $files = [
-            $fileName => $fileName
+            $fileName => $fileName,
         ];
 
         $boundary = '-------------' . uniqid();
         $postData = $this->buildFileUpload($boundary, $fields, $map, $files);
 
         $facts = new Facts();
-        $ch = curl_init($facts->getShopUrl() . '/graphql?lang=0&shp=1');
+        $ch    = curl_init($facts->getShopUrl() . '/graphql?lang=0&shp=1');
 
         $headers = [
             'Connection: keep-alive',
@@ -251,27 +225,28 @@ abstract class TestCase extends PHPUnitTestCase
         return json_decode($response, true);
     }
 
-    protected function buildFileUpload(string $delimiter, array $fields, array $map, array $files = []) : string
+    protected function buildFileUpload(string $delimiter, array $fields, array $map, array $files = []): string
     {
         $data = '';
-        $eol = "\r\n";
+        $eol  = "\r\n";
 
         foreach ($fields as $name => $content) {
-            $data .= "--" . $delimiter . $eol
-                . 'Content-Disposition: form-data; name="' . $name . "\"" . $eol . $eol
+            $data .= '--' . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $name . '"' . $eol . $eol
                 . json_encode($content) . $eol;
         }
 
         foreach ($map as $name => $content) {
-            $data .= "--" . $delimiter . $eol
-                . 'Content-Disposition: form-data; name="' . $name . "\"" . $eol . $eol
+            $data .= '--' . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $name . '"' . $eol . $eol
                 . json_encode($content) . $eol;
         }
 
         $index = 0;
+
         foreach ($files as $name => $path) {
-            $data .= "--" . $delimiter . $eol
-                . 'Content-Disposition: form-data; name="' . $index. '"; filename="' . $name . '"' . $eol
+            $data .= '--' . $delimiter . $eol
+                . 'Content-Disposition: form-data; name="' . $index . '"; filename="' . $name . '"' . $eol
                 . 'Content-Type: text/plain' . $eol
                 . 'Content-Transfer-Encoding: binary' . $eol;
 
@@ -279,9 +254,34 @@ abstract class TestCase extends PHPUnitTestCase
             $data .= file_get_contents($path) . $eol;
             $index++;
         }
-        $data .= "--" . $delimiter . "--".$eol;
+        $data .= '--' . $delimiter . '--' . $eol;
 
         return $data;
+    }
+
+    public static function responseCallback($body): void
+    {
+        static::$queryResult = [
+            'body'   => $body,
+        ];
+    }
+
+    public static function loggerCallback(string $message): void
+    {
+        static::$logResult .= $message;
+    }
+
+    public static function getGraphQLRequestData(): array
+    {
+        if (static::$query === null) {
+            return [];
+        }
+
+        return static::$query;
+    }
+
+    protected static function beforeContainerCompile(): void
+    {
     }
 }
 
@@ -328,7 +328,7 @@ class LoggerStub extends \Psr\Log\AbstractLogger
     }
 }
 
-class KeyRegistryStub extends \OxidEsales\GraphQL\Base\Service\KeyRegistry
+class ModuleConfigurationStub extends \OxidEsales\GraphQL\Base\Service\ModuleConfiguration
 {
     public function __construct()
     {
@@ -340,5 +340,10 @@ class KeyRegistryStub extends \OxidEsales\GraphQL\Base\Service\KeyRegistry
     public function getSignatureKey(): string
     {
         return '5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==';
+    }
+
+    public function getTokenLifeTime(): string
+    {
+        return '+8 hours';
     }
 }

@@ -41,16 +41,21 @@ class Token
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
+    /** @var ModuleConfiguration */
+    private $moduleConfiguration;
+
     public function __construct(
         ?UnencryptedToken $token,
         JwtConfigurationBuilder $jwtConfigurationBuilder,
         Legacy $legacyInfrastructure,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        ModuleConfiguration $moduleConfiguration
     ) {
         $this->token                   = $token;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
         $this->legacyInfrastructure    = $legacyInfrastructure;
         $this->eventDispatcher         = $eventDispatcher;
+        $this->moduleConfiguration     = $moduleConfiguration;
     }
 
     /**
@@ -79,7 +84,7 @@ class Token
     {
         $user   = $this->legacyInfrastructure->login($username, $password);
         $time   = new DateTimeImmutable('now');
-        $expire = new DateTimeImmutable('+8 hours');
+        $expire = new DateTimeImmutable($this->moduleConfiguration->getTokenLifeTime());
         $config = $this->jwtConfigurationBuilder->getConfiguration();
 
         $builder = $config->builder()

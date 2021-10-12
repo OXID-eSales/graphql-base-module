@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit;
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use PHPUnit\Framework\TestCase;
@@ -20,16 +20,19 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class BaseTestCase extends TestCase
 {
-    protected function getKeyRegistryMock(): KeyRegistry
+    protected function getModuleConfigurationMock(string $lifetime = '+8 hours'): ModuleConfiguration
     {
-        $keyRegistry = $this->getMockBuilder(KeyRegistry::class)
+        $moduleConfiguration = $this->getMockBuilder(ModuleConfiguration::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $keyRegistry->method('getSignatureKey')
+        $moduleConfiguration->method('getSignatureKey')
             ->willReturn('5wi3e0INwNhKe3kqvlH0m4FHYMo6hKef3SzweEjZ8EiPV7I2AC6ASZMpkCaVDTVRg2jbb52aUUXafxXI9/7Cgg==');
 
-        return $keyRegistry;
+        $moduleConfiguration->method('getTokenLifeTime')
+            ->willReturn($lifetime);
+
+        return $moduleConfiguration;
     }
 
     protected function getUserModelStub(?string $id = null): UserModel
@@ -51,20 +54,21 @@ class BaseTestCase extends TestCase
         );
     }
 
-    protected function getTokenService($legacy, $token = null): TokenService
+    protected function getTokenService($legacy, $token = null, string $lifetime = '+8 hours'): TokenService
     {
         return new TokenService(
             $token,
             $this->getJwtConfigurationBuilder($legacy),
             $legacy,
-            $this->createPartialMock(EventDispatcherInterface::class, [])
+            $this->createPartialMock(EventDispatcherInterface::class, []),
+            $this->getModuleConfigurationMock($lifetime)
         );
     }
 
     protected function getJwtConfigurationBuilder($legacy = null): JwtConfigurationBuilder
     {
         return new JwtConfigurationBuilder(
-            $this->getKeyRegistryMock(),
+            $this->getModuleConfigurationMock(),
             $legacy
         );
     }

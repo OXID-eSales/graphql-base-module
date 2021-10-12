@@ -69,4 +69,19 @@ class TokenValidatorTest extends BaseTestCase
         $this->expectException(InvalidToken::class);
         $validator->validateToken($token);
     }
+
+    public function testExpiredToken(): void
+    {
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
+        $legacy->method('login')->willReturn($this->getUserDataStub());
+        $legacy->method('getUserGroupIds')->willReturn(['foo', 'bar']);
+        $validator = $this->getTokenValidator($legacy);
+
+        $token = $this->getTokenService($legacy, null, '+1 hours')->createToken('admin', 'admin');
+        $validator->validateToken($token);
+
+        $token = $this->getTokenService($legacy, null, '-1 hours')->createToken('admin', 'admin');
+        $this->expectException(InvalidToken::class);
+        $validator->validateToken($token);
+    }
 }

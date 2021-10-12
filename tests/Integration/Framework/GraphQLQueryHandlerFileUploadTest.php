@@ -9,17 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework;
 
-use OxidEsales\B2BModule\Offers\Tests\Codeception\AcceptanceTester;
 use OxidEsales\EshopCommunity\Internal\Container\BootstrapContainerFactory;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\DIContainer\Dao\ProjectYamlDao;
 use OxidEsales\EshopCommunity\Internal\Framework\DIContainer\Service\ProjectYamlImportService;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use OxidEsales\Facts\Facts;
-use OxidEsales\EshopCommunity\Internal\Framework\DIContainer\Service\ProjectYamlImportServiceInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 class GraphQLQueryHandlerFileUploadTest extends TestCase
@@ -38,10 +32,10 @@ class GraphQLQueryHandlerFileUploadTest extends TestCase
         self::getYamlImportService()->removeImport(self::ADDITIONAL_SERVICES_YAML_PATH);
     }
 
-    public function testFileUpload()
+    public function testFileUpload(): void
     {
         $expected = file_get_contents(self::UPLOAD_FILE);
-        $result = $this->uploadFile(self::UPLOAD_FILE, $this->getMutationData());
+        $result   = $this->uploadFile(self::UPLOAD_FILE, $this->getMutationData());
 
         $this->assertSame($expected, $result['data']['uploadedFileContent']);
     }
@@ -52,16 +46,16 @@ class GraphQLQueryHandlerFileUploadTest extends TestCase
             'mutation' => 'mutation upload ($file: Upload!){
                   uploadedFileContent(file: $file)
                }',
-            'name' => 'uploadedFileContent',
+            'name'      => 'uploadedFileContent',
             'variables' => [
                 'file' => null,
-            ]
+            ],
         ];
     }
 
     private static function getYamlImportService(): ProjectYamlImportService
     {
-        $basicContext = BootstrapContainerFactory::getBootstrapContainer()->get(BasicContextInterface::class);
+        $basicContext   = BootstrapContainerFactory::getBootstrapContainer()->get(BasicContextInterface::class);
         $projectYamlDao = new ProjectYamlDao($basicContext, new Filesystem());
 
         return new ProjectYamlImportService($projectYamlDao, $basicContext);

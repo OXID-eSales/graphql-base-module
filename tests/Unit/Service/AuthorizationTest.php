@@ -151,7 +151,7 @@ class AuthorizationTest extends BaseTestCase
         ?UnencryptedToken $token = null,
         ?Legacy $legacyService = null
     ): TokenService {
-        return new class($token, $this->createPartialMock(JwtConfigurationBuilder::class, []), $legacyService ?: $this->getLegacyMock(), $this->createPartialMock(EventDispatcher::class, [])) extends TokenService {
+        return new class($token, $this->createPartialMock(JwtConfigurationBuilder::class, []), $legacyService ?: $this->getLegacyMock(), $this->createPartialMock(EventDispatcher::class, []), $this->getModuleConfigurationMock()) extends TokenService {
             protected function areConstraintsValid(UnencryptedToken $token): bool
             {
                 return true;
