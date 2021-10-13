@@ -230,13 +230,7 @@ abstract class TestCase extends PHPUnitTestCase
         $data = '';
         $eol  = "\r\n";
 
-        foreach ($fields as $name => $content) {
-            $data .= '--' . $delimiter . $eol
-                . 'Content-Disposition: form-data; name="' . $name . '"' . $eol . $eol
-                . json_encode($content) . $eol;
-        }
-
-        foreach ($map as $name => $content) {
+        foreach (array_merge($fields, $map) as $name => $content) {
             $data .= '--' . $delimiter . $eol
                 . 'Content-Disposition: form-data; name="' . $name . '"' . $eol . $eol
                 . json_encode($content) . $eol;
