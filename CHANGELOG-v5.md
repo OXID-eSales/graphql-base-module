@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.2.1] - Unreleased
+
+### Fixed
+- Check if token is not expired [PR-20](https://github.com/OXID-eSales/graphql-base-module/pull/20)
+
 ## [5.2.0] 2021-05-17
 
 no changes compared to RC2
@@ -79,6 +84,7 @@ no changes compared to RC2
 - Preflight CORS handling
 - Fixed module activation/deactivation event pointers
 
+[5.2.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.2.0-rc2...v5.2.0
 [5.2.0-rc2]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.2.0-rc1...v5.2.0-rc2
 [5.2.0-rc1]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.1.1...v5.2.0-rc1

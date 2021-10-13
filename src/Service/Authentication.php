@@ -196,6 +196,10 @@ class Authentication implements AuthenticationServiceInterface
             return false;
         }
 
+        if ($token->claims()->get('exp') < new DateTimeImmutable('now')) {
+            return false;
+        }
+
         return true;
     }
 }
