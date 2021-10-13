@@ -41,7 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `OxidEsales\GraphQL\Base\Framework\UserData`
   - `OxidEsales\GraphQL\Base\Framework\AnonymousUserData`
   - `OxidEsales\GraphQL\Base\Framework\NullToken`
-- Removed unused method `OxidEsales\GraphQL\Base\Infrastructure\Legacy::getConfigParam()`
 - Removed deprecated `OxidEsales\GraphQL\Base\Service\Legacy`
 
 [6.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.2.0...b-6.4.x
