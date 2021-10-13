@@ -12,30 +12,27 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use PHPUnit\Framework\TestCase;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class AuthorizationTest extends TestCase
+class AuthorizationTest extends BaseTestCase
 {
     public function testIsNotAllowedWithoutPermissionsAndWithoutToken(): void
     {
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            new NullToken(),
+            $this->prepareTokenService(),
             $this->getLegacyMock()
         );
 
-        $this->assertFalse(
-            $auth->isAllowed('')
-        );
+        $this->assertFalse($auth->isAllowed(''));
     }
 
     public function testIsNotAllowedWithoutPermissionsButWithToken(): void
@@ -43,7 +40,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             [],
             $this->getEventDispatcherMock(),
-            $this->getTokenMock(),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 
@@ -57,7 +54,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            new NullToken(),
+            $this->prepareTokenService(null, $this->getLegacyMock()),
             $this->getLegacyMock()
         );
 
@@ -66,31 +63,12 @@ class AuthorizationTest extends TestCase
         );
     }
 
-    public function testIsNotAllowedWithBlockedUserGroup(): void
-    {
-        $this->expectException(InvalidToken::class);
-
-        $legacyMock = $this->getLegacyMock();
-        $legacyMock
-            ->method('getUserGroupIds')
-            ->willReturn(['group', 'oxidblocked', 'anothergroup']);
-
-        $auth = new Authorization(
-            $this->getPermissionMocks(),
-            $this->getEventDispatcherMock(),
-            new NullToken(),
-            $legacyMock
-        );
-
-        $auth->isAllowed('anything');
-    }
-
     public function testIsAllowedWithPermissionsAndWithToken(): void
     {
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $this->getEventDispatcherMock(),
-            $this->getTokenMock(),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 
@@ -117,10 +95,11 @@ class AuthorizationTest extends TestCase
                 $event->setAuthorized(true);
             }
         );
+
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            $this->getTokenMock(),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 
@@ -150,7 +129,7 @@ class AuthorizationTest extends TestCase
         $auth = new Authorization(
             $this->getPermissionMocks(),
             $eventDispatcher,
-            $this->getTokenMock(),
+            $this->prepareTokenService($this->getTokenMock(), $this->getUserGroupsMock()),
             $this->getUserGroupsMock()
         );
 
@@ -168,11 +147,23 @@ class AuthorizationTest extends TestCase
         );
     }
 
+    protected function prepareTokenService(
+        ?UnencryptedToken $token = null,
+        ?Legacy $legacyService = null
+    ): TokenService {
+        return new class($token, $this->createPartialMock(JwtConfigurationBuilder::class, []), $legacyService ?: $this->getLegacyMock(), $this->createPartialMock(EventDispatcher::class, []), $this->getModuleConfigurationMock()) extends TokenService {
+            protected function areConstraintsValid(UnencryptedToken $token): bool
+            {
+                return true;
+            }
+        };
+    }
+
     private function getTokenMock(): UnencryptedToken
     {
         $claims = new Token\DataSet(
             [
-                Authentication::CLAIM_USERNAME => 'testuser',
+                TokenService::CLAIM_USERNAME => 'testuser',
             ],
             ''
         );

@@ -10,12 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use Exception;
+use GraphQL\Error\InvariantViolation;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
 class RequestReaderTest extends BaseTestCase
@@ -25,16 +25,19 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetAuthTokenWithoutToken(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
-        $this->assertInstanceOf(
-            NullToken::class,
-            $requestReader->getAuthToken()
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
+        $this->assertNull($requestReader->getAuthToken());
     }
 
     public function testGetAuthTokenWithWrongFormattedHeader(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -42,17 +45,18 @@ class RequestReaderTest extends BaseTestCase
 
         foreach ($headers as $header) {
             $_SERVER[$header] = 'authtoken';
-            $this->assertInstanceOf(
-                NullToken::class,
-                $requestReader->getAuthToken()
-            );
+            $this->assertNull($requestReader->getAuthToken());
+
             unset($_SERVER[$header]);
         }
     }
 
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
@@ -74,13 +78,20 @@ class RequestReaderTest extends BaseTestCase
         }
     }
 
-    public function testGetAuthTokenWithCorrectFormat(): void
+    public function testGetAuthTokenWithCorrectFormatCallsTokenValidation(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
         $headers       = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
         ];
+
+        $tokenValidator = $this->createPartialMock(TokenValidator::class, ['validateToken']);
+        $tokenValidator->expects($this->exactly(count($headers)))->method('validateToken');
+
+        $requestReader = new RequestReader(
+            $tokenValidator,
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
 
         foreach ($headers as $header) {
             // add also a whitespace to the beginning if the header
@@ -91,39 +102,16 @@ class RequestReaderTest extends BaseTestCase
                 Token::class,
                 $token
             );
-            $this->assertNotInstanceOf(
-                NullToken::class,
-                $token
-            );
             unset($_SERVER[$header]);
         }
     }
 
-    public function testGetAuthTokenWithCorrectFormatButBlockedUser(): void
-    {
-        $legacy = $this->getMockBuilder(Legacy::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $legacy->method('getUserGroupIds')
-               ->willReturn(['group', 'oxidblocked', 'anothergroup']);
-
-        $requestReader = new RequestReader($legacy, $this->getJwtConfigurationBuilder());
-
-        $_SERVER['HTTP_AUTHORIZATION'] = ' Bearer ' . self::$token;
-        $e                             = null;
-
-        try {
-            $token            = $requestReader->getAuthToken();
-        } catch (Exception $e) {
-        }
-        unset($_SERVER['HTTP_AUTHORIZATION']);
-        $this->assertInstanceOf(InvalidToken::class, $e);
-        $this->assertNotNull($e);
-    }
-
     public function testGetGraphQLRequestDataWithEmptyRequest(): void
     {
-        $requestReader = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
         $this->assertEquals(
             [
                 'query'         => null,
@@ -136,7 +124,10 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequest(): void
     {
-        $requestReader           = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader           = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
             [
@@ -151,7 +142,10 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
     {
-        $requestReader             = new RequestReader($this->getLegacyMock(), $this->getJwtConfigurationBuilder());
+        $requestReader             = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
         $_SERVER['CONTENT_TYPE']   = 'text/plain';
         $_REQUEST['query']         = 'query {token_}';
         $_REQUEST['variables']     = '{"foo":"bar"}';
@@ -167,9 +161,62 @@ class RequestReaderTest extends BaseTestCase
         unset($_SERVER['CONTENT_TYPE'], $_REQUEST['query'], $_REQUEST['variables'], $_REQUEST['operationName']);
     }
 
+    public function testGetGraphQLRequestDataWithInvalidFileInput(): void
+    {
+        $this->expectException(InvariantViolation::class);
+
+        $requestReader             = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
+
+        $requestReader->getGraphQLRequestData();
+
+        unset($_SERVER['CONTENT_TYPE']);
+    }
+
+    public function testGetGraphQLRequestDataWithFileInput(): void
+    {
+        $requestReader = new RequestReader(
+            $this->createPartialMock(TokenValidator::class, []),
+            $this->getJwtConfigurationBuilder($this->getLegacyMock())
+        );
+
+        $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundarycp0uqGswsYjCH7rC';
+        $_POST['map']            = json_encode(['0' => ['variables.file']]);
+        $_POST['operations']     = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
+
+        $_FILES['0'] = [
+            'name'     => 'example.txt',
+            'type'     => 'text/plain',
+            'tmp_name' => './fixtures/example.txt',
+            'error'    => 0,
+            'size'     => 18,
+        ];
+
+        $this->assertEquals(
+            [
+                'query'     => 'query anonymous {token}',
+                'variables' => [
+                    'file' => new \Laminas\Diactoros\UploadedFile(
+                        './fixtures/example.txt',
+                        18,
+                        0,
+                        'example.txt',
+                        'text/plain'
+                    ),
+                ],
+                'operationName' => 'anonymous',
+            ],
+            $requestReader->getGraphQLRequestData()
+        );
+        unset($_SERVER['CONTENT_TYPE'], $_POST['map'], $_POST['operations']);
+    }
+
     // phpcs:enable
 
-    private function getLegacyMock(): Legacy
+    protected function getLegacyMock(): Legacy
     {
         $mock = $this->getMockBuilder(Legacy::class)
              ->disableOriginalConstructor()
@@ -180,10 +227,5 @@ class RequestReaderTest extends BaseTestCase
             ->willReturn('www.myoxidshop.com');
 
         return $mock;
-    }
-
-    private function getJwtConfigurationBuilder(): JwtConfigurationBuilder
-    {
-        return new JwtConfigurationBuilder($this->getKeyRegistryMock(), $this->getLegacyMock());
     }
 }

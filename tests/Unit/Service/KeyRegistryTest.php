@@ -11,21 +11,21 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-class KeyRegistryTest extends TestCase
+class ModuleConfigurationTest extends TestCase
 {
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
     {
-        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
-        $keyRegistry              = new KeyRegistry($moduleSettingBridgeMock);
-        $iterations               = 5;
-        $keys                     = [];
+        $moduleSettingBridgeMock          = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleConfiguration              = new ModuleConfiguration($moduleSettingBridgeMock);
+        $iterations                       = 5;
+        $keys                             = [];
 
         for ($i = 0; $i < $iterations; $i++) {
-            $key = $keyRegistry->generateSignatureKey();
+            $key = $moduleConfiguration->generateSignatureKey();
             $this->assertGreaterThanOrEqual(
                 64,
                 strlen($key),
@@ -66,12 +66,12 @@ class KeyRegistryTest extends TestCase
         $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
         $moduleSettingBridgeMock->method('get')->willReturn($signature);
 
-        $keyRegistry = new KeyRegistry($moduleSettingBridgeMock);
-        $e           = null;
-        $sig         = null;
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
+        $e                   = null;
+        $sig                 = null;
 
         try {
-            $sig = $keyRegistry->getSignatureKey();
+            $sig = $moduleConfiguration->getSignatureKey();
         } catch (MissingSignatureKey $e) {
         }
 

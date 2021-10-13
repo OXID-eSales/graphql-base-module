@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType;
 
-use OxidEsales\GraphQL\Base\DataType\Sorting;
+use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 class TestSorting extends Sorting

@@ -10,7 +10,13 @@ declare(strict_types=1);
 // RESOURCE IDENTIFIER = STRING
 // -------------------------------
 $aLang = [
-    'charset'                            => 'UTF-8',
-    'SHOP_MODULE_GROUP_graphql_base'     => 'GraphQL Settings',
-    'SHOP_MODULE_sJsonWebTokenSignature' => 'JsonWebToken Signature (at least 64 chars)',
+    'charset'                                 => 'UTF-8',
+    'SHOP_MODULE_GROUP_graphql_base'          => 'GraphQL Settings',
+    'SHOP_MODULE_sJsonWebTokenSignature'      => 'JsonWebToken Signature (at least 64 chars)',
+    'SHOP_MODULE_sJsonWebTokenLifetime'       => 'JsonWebToken lifetime',
+    'SHOP_MODULE_sJsonWebTokenLifetime_15min' => '+15 minutes',
+    'SHOP_MODULE_sJsonWebTokenLifetime_1hrs'  => '+1 hours',
+    'SHOP_MODULE_sJsonWebTokenLifetime_3hrs'  => '+3 hours',
+    'SHOP_MODULE_sJsonWebTokenLifetime_8hrs'  => '+8 hours',
+    'SHOP_MODULE_sJsonWebTokenLifetime_24hrs' => '+24 hours',
 ];

@@ -25,6 +25,9 @@
             <directory suffix=".php">Integration/Framework/Controller/</directory>
             <directory suffix=".php">Integration/Framework/DataType/</directory>
             <directory suffix=".php">Integration/Framework/Service/</directory>
+            <exclude>
+                <directory suffix=".php">../tests</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

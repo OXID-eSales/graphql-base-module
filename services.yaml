@@ -4,8 +4,8 @@ services:
     public: false
     autowire: true
 
-  OxidEsales\GraphQL\Base\Framework\ModuleSetup:
-    class: OxidEsales\GraphQL\Base\Framework\ModuleSetup
+  OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup:
+    class: OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup
     public: true
 
   OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler:
@@ -22,8 +22,8 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\TimerHandler
     public: true
 
-  OxidEsales\GraphQL\Base\Service\KeyRegistry:
-    class: OxidEsales\GraphQL\Base\Service\KeyRegistry
+  OxidEsales\GraphQL\Base\Service\ModuleConfiguration:
+    class: OxidEsales\GraphQL\Base\Service\ModuleConfiguration
     public: true
 
   OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder:
@@ -35,6 +35,10 @@ services:
 
   OxidEsales\GraphQL\Base\Service\Authentication:
     class: OxidEsales\GraphQL\Base\Service\Authentication
+    public: true
+
+  OxidEsales\GraphQL\Base\Service\Token:
+      class: OxidEsales\GraphQL\Base\Service\Token
 
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy

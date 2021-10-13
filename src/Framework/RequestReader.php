@@ -10,13 +10,13 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use Exception;
+use GraphQL\Upload\UploadMiddleware;
+use Laminas\Diactoros\ServerRequestFactory;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
-
+use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use function apache_request_headers;
 use function array_change_key_case;
 use function file_get_contents;
@@ -27,17 +27,17 @@ use function trim;
 
 class RequestReader
 {
-    /** @var LegacyService */
-    private $legacyService;
+    /** @var TokenValidator */
+    private $tokenValidatorService;
 
     /** @var JwtConfigurationBuilder */
     private $jwtConfigurationBuilder;
 
     public function __construct(
-        LegacyService $legacyService,
+        TokenValidator $tokenValidatorService,
         JwtConfigurationBuilder $jwtConfigurationBuilder
     ) {
-        $this->legacyService           = $legacyService;
+        $this->tokenValidatorService   = $tokenValidatorService;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
@@ -46,18 +46,17 @@ class RequestReader
      *
      * @throws InvalidToken
      */
-    public function getAuthToken(): UnencryptedToken
+    public function getAuthToken(): ?UnencryptedToken
     {
-        $token      = new NullToken();
         $authHeader = $this->getAuthorizationHeader();
 
         if ($authHeader === null) {
-            return $token;
+            return null;
         }
         [$jwt] = sscanf($authHeader, 'Bearer %s');
 
         if (!$jwt) {
-            return $token;
+            return null;
         }
 
         /** @var Configuration $jwtConfiguration */
@@ -70,17 +69,7 @@ class RequestReader
             throw InvalidToken::unableToParse();
         }
 
-        $userId = $token->claims()
-                        ->get(Authentication::CLAIM_USERID);
-
-        $groups = $this->legacyService
-                       ->getUserGroupIds(
-                           $userId
-                       );
-
-        if (in_array('oxidblocked', $groups)) {
-            throw InvalidToken::userBlocked();
-        }
+        $this->tokenValidatorService->validateToken($token);
 
         return $token;
     }
@@ -95,6 +84,15 @@ class RequestReader
         if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
             $raw  = file_get_contents($inputFile) ?: '';
             $data = json_decode($raw, true) ?: [];
+        } elseif (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
+            $request          = ServerRequestFactory::fromGlobals();
+            $uploadMiddleware = new UploadMiddleware();
+            $request          = $uploadMiddleware->processRequest($request);
+            $data             = $request->getParsedBody();
+
+            if (is_array($data) && !isset($data['operationName']) && isset($data['operation'])) {
+                $data['operationName'] = $data['operation'];
+            }
         } else {
             $data = $_REQUEST;
 

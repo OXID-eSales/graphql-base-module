@@ -16,7 +16,9 @@ use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilter;
 use OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestSorting;
+use Psr\Http\Message\UploadedFileInterface;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
+use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Right;
 
@@ -55,6 +57,15 @@ class TestController
      * @Right("BARFOO")
      */
     public function testLoggedButNoRightQuery(string $foo): string
+    {
+        return $foo;
+    }
+
+    /**
+     * @Query
+     * @Right("FOOBARBAZ")
+     */
+    public function testOnlyRightQuery(string $foo): string
     {
         return $foo;
     }
@@ -111,5 +122,13 @@ class TestController
         );
 
         return true;
+    }
+
+    /**
+     * @Mutation
+     */
+    public function uploadedFileContent(UploadedFileInterface $file): string
+    {
+        return file_get_contents($file->getStream()->getMetadata('uri'));
     }
 }
