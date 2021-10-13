@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
+use OxidEsales\Facts\Facts;
+
 abstract class EnterpriseTestCase extends TokenTestCase
 {
-    use OxidEsales\Facts\Facts;
-
     protected function setUp(): void
     {
         $facts = new Facts();
