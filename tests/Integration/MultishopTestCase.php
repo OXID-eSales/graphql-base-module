@@ -19,6 +19,9 @@ abstract class MultishopTestCase extends EnterpriseTestCase
 {
     protected function setUp(): void
     {
+        $this->setGETRequestParameter('shp', '1');
+        static::$container = null;
+
         parent::setUp();
 
         $this->ensureShop(2);

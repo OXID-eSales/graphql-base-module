@@ -130,7 +130,13 @@ abstract class TestCase extends PHPUnitTestCase
     protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $tokenService                  = static::$container->get(Token::class);
+        $authToken                     = static::$container->get(RequestReader::class)->getAuthToken();
+
+        $tokenService   = static::$container->get(Token::class);
+        $refClass       = new ReflectionClass(Token::class);
+        $prop           = $refClass->getProperty('token');
+        $prop->setAccessible(true);
+        $prop->setValue($tokenService, $authToken);
 
         $authentication = static::$container->get(Authentication::class);
         $refClass       = new ReflectionClass(Authentication::class);
@@ -142,7 +148,7 @@ abstract class TestCase extends PHPUnitTestCase
         $refClass      = new ReflectionClass(Authorization::class);
         $prop          = $refClass->getProperty('tokenService');
         $prop->setAccessible(true);
-        $prop->setValue($authorization, static::$container->get(RequestReader::class)->getAuthToken());
+        $prop->setValue($authorization, $tokenService);
 
         $schema        = static::$container->get(SchemaFactory::class);
         $refClass      = new ReflectionClass(SchemaFactory::class);
