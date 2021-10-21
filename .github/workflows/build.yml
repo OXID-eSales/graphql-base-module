@@ -142,5 +142,3 @@ jobs:
                       -Dsonar.tests=tests
                       -Dsonar.sourceEncoding=UTF-8
                       -Dsonar.php.coverage.reportPaths=artifact/coverage.xml
-                      -Dsonar.cpd.php.minimumTokens=10
-                      -Dsonar.cpd.php.minimumLines=5
