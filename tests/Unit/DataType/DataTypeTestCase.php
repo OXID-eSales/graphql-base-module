@@ -13,7 +13,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use PHPUnit\Framework\TestCase;
 
-class DataTypeTestCase extends TestCase
+abstract class DataTypeTestCase extends TestCase
 {
     protected function createQueryBuilderMock(): QueryBuilder
     {

@@ -18,7 +18,7 @@ use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class BaseTestCase extends TestCase
+abstract class BaseTestCase extends TestCase
 {
     protected function getModuleConfigurationMock(string $lifetime = '+8 hours'): ModuleConfiguration
     {
