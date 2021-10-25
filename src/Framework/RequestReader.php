@@ -118,12 +118,8 @@ class RequestReader
      */
     private function getAuthorizationHeader(): ?string
     {
-        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-            return trim($_SERVER['HTTP_AUTHORIZATION']);
-        }
-
-        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
-            return trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+        if ($value = $this->getRegularHeaderValue()) {
+            return $value;
         }
 
         if (function_exists('apache_request_headers')) {
@@ -136,6 +132,19 @@ class RequestReader
                     return trim($headers['authorization']);
                 }
             }
+        }
+
+        return null;
+    }
+
+    private function getRegularHeaderValue(): ?string
+    {
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            return trim($_SERVER['HTTP_AUTHORIZATION']);
+        }
+
+        if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            return trim($_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
         }
 
         return null;
