@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
-use Exception;
 use GraphQL\Error\InvariantViolation;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -53,6 +52,8 @@ class RequestReaderTest extends BaseTestCase
 
     /**
      * @dataProvider headerNamesDataProvider
+     *
+     * @param mixed $headerName
      */
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT($headerName): void
     {
@@ -64,19 +65,20 @@ class RequestReaderTest extends BaseTestCase
 
         $_SERVER[$headerName] = 'Bearer invalidjwt';
         $requestReader->getAuthToken();
-
     }
 
     public function headerNamesDataProvider(): array
     {
         return [
             ['HTTP_AUTHORIZATION'],
-            ['REDIRECT_HTTP_AUTHORIZATION']
+            ['REDIRECT_HTTP_AUTHORIZATION'],
         ];
     }
 
     /**
      * @dataProvider headerNamesDataProvider
+     *
+     * @param mixed $headerName
      */
     public function testGetAuthTokenWithCorrectFormatCallsTokenValidation($headerName): void
     {
@@ -91,7 +93,7 @@ class RequestReaderTest extends BaseTestCase
         // add also a whitespace to the beginning if the header
         // to test the trim() call
         $_SERVER[$headerName] = ' Bearer ' . self::$token;
-        $token            = $requestReader->getAuthToken();
+        $token                = $requestReader->getAuthToken();
         $this->assertInstanceOf(Token::class, $token);
         unset($_SERVER[$headerName]);
     }
