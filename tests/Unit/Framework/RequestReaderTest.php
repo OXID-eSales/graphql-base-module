@@ -51,59 +51,49 @@ class RequestReaderTest extends BaseTestCase
         }
     }
 
-    public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT(): void
+    /**
+     * @dataProvider headerNamesDataProvider
+     */
+    public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT($headerName): void
     {
         $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
-        $headers       = [
-            'HTTP_AUTHORIZATION',
-            'REDIRECT_HTTP_AUTHORIZATION',
-        ];
+        $this->expectException(InvalidToken::class);
 
-        foreach ($headers as $header) {
-            $e                = null;
-            $_SERVER[$header] = 'Bearer invalidjwt';
+        $_SERVER[$headerName] = 'Bearer invalidjwt';
+        $requestReader->getAuthToken();
 
-            try {
-                $requestReader->getAuthToken();
-            } catch (Exception $e) {
-            }
-            $this->assertInstanceOf(
-                InvalidToken::class,
-                $e
-            );
-            unset($_SERVER[$header]);
-        }
     }
 
-    public function testGetAuthTokenWithCorrectFormatCallsTokenValidation(): void
+    public function headerNamesDataProvider(): array
     {
-        $headers       = [
-            'HTTP_AUTHORIZATION',
-            'REDIRECT_HTTP_AUTHORIZATION',
+        return [
+            ['HTTP_AUTHORIZATION'],
+            ['REDIRECT_HTTP_AUTHORIZATION']
         ];
+    }
 
+    /**
+     * @dataProvider headerNamesDataProvider
+     */
+    public function testGetAuthTokenWithCorrectFormatCallsTokenValidation($headerName): void
+    {
         $tokenValidator = $this->createPartialMock(TokenValidator::class, ['validateToken']);
-        $tokenValidator->expects($this->exactly(count($headers)))->method('validateToken');
+        $tokenValidator->expects($this->once())->method('validateToken');
 
         $requestReader = new RequestReader(
             $tokenValidator,
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
 
-        foreach ($headers as $header) {
-            // add also a whitespace to the beginning if the header
-            // to test the trim() call
-            $_SERVER[$header] = ' Bearer ' . self::$token;
-            $token            = $requestReader->getAuthToken();
-            $this->assertInstanceOf(
-                Token::class,
-                $token
-            );
-            unset($_SERVER[$header]);
-        }
+        // add also a whitespace to the beginning if the header
+        // to test the trim() call
+        $_SERVER[$headerName] = ' Bearer ' . self::$token;
+        $token            = $requestReader->getAuthToken();
+        $this->assertInstanceOf(Token::class, $token);
+        unset($_SERVER[$headerName]);
     }
 
     public function testGetGraphQLRequestDataWithEmptyRequest(): void

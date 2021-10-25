@@ -67,28 +67,16 @@ class ModuleConfigurationTest extends TestCase
         $moduleSettingBridgeMock->method('get')->willReturn($signature);
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
-        $e                   = null;
-        $sig                 = null;
 
-        try {
-            $sig = $moduleConfiguration->getSignatureKey();
-        } catch (MissingSignatureKey $e) {
+        if (!$valid) {
+            $this->expectException(MissingSignatureKey::class);
         }
 
-        if ($valid) {
-            $this->assertEquals(
-                null,
-                $e
-            );
-            $this->assertTrue(
-                is_string($sig),
-                'Signature key needs to be a string'
-            );
-        } else {
-            $this->assertInstanceOf(
-                MissingSignatureKey::class,
-                $e
-            );
-        }
+        $sig = $moduleConfiguration->getSignatureKey();
+
+        $this->assertTrue(
+            is_string($sig),
+            'Signature key needs to be a string'
+        );
     }
 }
