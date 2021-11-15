@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Base\Component\Widget;
 use GraphQL\Error\FormattedError;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Exception\Error;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
@@ -40,16 +39,12 @@ class GraphQL extends WidgetController
     public function init(): void
     {
         /** @var TimerHandler */
-        $timerHandler = ContainerFactory::getInstance()->getContainer()->get(TimerHandler::class);
+        $timerHandler = $this->getContainer()->get(TimerHandler::class);
         $timerHandler->create('bootstrap')->startAt($_SERVER['REQUEST_TIME_FLOAT'])->stop();
 
         try {
             $this->handleShopSession();
-
-            ContainerFactory::getInstance()
-                ->getContainer()
-                ->get(GraphQLQueryHandler::class)
-                ->executeGraphQLQuery();
+            $this->getContainer()->get(GraphQLQueryHandler::class)->executeGraphQLQuery();
         } catch (Error $e) {
             $isAuthenticated = !($e instanceof InvalidLogin || $e instanceof InvalidToken);
             self::sendErrorResponse(FormattedError::createFromException($e), 200, $isAuthenticated);
@@ -76,17 +71,14 @@ class GraphQL extends WidgetController
         $session->setBasket(null);
         $session->setVariable('usr', null);
 
-        try {
-            $userId = ContainerFactory::getInstance()
-                ->getContainer()
-                ->get(GraphQLAuthenticationService::class)
-                ->getUserId();
+        $userId = $this->getContainer()
+            ->get(GraphQLAuthenticationService::class)
+            ->getUser()
+            ->id()
+            ->val();
 
-            if ($userId) {
-                $session->setVariable('usr', $userId);
-            }
-        } catch (InvalidToken $exception) {
-            //all is well so far
+        if ($userId) {
+            $session->setVariable('usr', $userId);
         }
     }
 

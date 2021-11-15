@@ -14,7 +14,8 @@ use Codeception\Module;
 use Codeception\Module\REST;
 use Exception;
 use InvalidArgumentException;
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Token\Parser;
 use OxidEsales\Facts\Facts;
 use PHPUnit\Framework\AssertionFailedError;
 
@@ -115,11 +116,10 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function seeResponseContainsValidJWTToken(): void
     {
-        $parser = new Parser();
         $token  = $this->grabTokenFromResponse();
 
         try {
-            $parser->parse($token);
+            (new Parser(new JoseEncoder()))->parse($token);
         } catch (InvalidArgumentException $e) {
             throw new AssertionFailedError(sprintf('Not a valid JWT token: %s', $token));
         }

@@ -14,8 +14,8 @@ class DeveloperBeforeTokenCreationEventSubscriber extends AbstractShopAwareEvent
         //get the token builder from event
         $tokenBuilder = $event->getBuilder();
 
-        //get the user data from event
-        $userData = $event->getUserData();
+        //get the user from event
+        $user = $event->getUser();
 
         //do something
 

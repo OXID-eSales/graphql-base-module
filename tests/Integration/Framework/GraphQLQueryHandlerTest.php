@@ -122,36 +122,6 @@ class GraphQLQueryHandlerTest extends TestCase
         static::$container = null;
     }
 
-    public function testLoggedQueryWithInvalidSignature(): void
-    {
-        $result = $this->query('query { token (username: "admin", password: "admin") }');
-        $this->setAuthToken(
-            substr($result['body']['data']['token'], 0, -10)
-        );
-
-        static::$container = null;
-        $this->setUp();
-
-        $result = $this->query('query { testLoggedQuery(foo: "bar") }');
-        $this->assertNotEmpty($result['body']['errors']);
-        $this->assertEquals(
-            [
-                'body'   => [
-                    'errors' => [
-                        0 => [
-                            'message'    => 'The token is invalid',
-                            'extensions' => [
-                                'category' => 'permissionerror',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            $result
-        );
-        static::$container = null;
-    }
-
     public function testLoggedRightQuery(): void
     {
         $result = $this->query('query { token (username: "admin", password: "admin") }');
@@ -184,6 +154,52 @@ class GraphQLQueryHandlerTest extends TestCase
 
         $result = $this->query('query { testLoggedButNoRightQuery(foo: "bar") }');
         $this->assertNotEmpty($result['body']['errors']);
+        static::$container = null;
+    }
+
+    public function testRightOnlyQueryWithoutToken(): void
+    {
+        static::$container = null;
+        $this->setUp();
+
+        $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
+        $this->assertNotEmpty($result['body']['errors']);
+        static::$container = null;
+    }
+
+    public function testRightOnlyQueryWithUserToken(): void
+    {
+        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $this->setAuthToken($result['body']['data']['token']);
+
+        static::$container = null;
+        $this->setUp();
+
+        $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
+        $this->assertNotEmpty($result['body']['errors']);
+        static::$container = null;
+    }
+
+    public function testRightOnlyQueryWithAnonymousToken(): void
+    {
+        $result = $this->query('query { token }');
+        $this->setAuthToken($result['body']['data']['token']);
+
+        static::$container = null;
+        $this->setUp();
+
+        $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
+
+        $this->assertEquals(
+            [
+                'body'   => [
+                    'data' => [
+                        'testOnlyRightQuery' => 'bar',
+                    ],
+                ],
+            ],
+            $result
+        );
         static::$container = null;
     }
 
@@ -255,7 +271,7 @@ class GraphQLQueryHandlerTest extends TestCase
     protected static function beforeContainerCompile(): void
     {
         $loader      = new YamlFileLoader(static::$container, new FileLocator());
-        $serviceFile = __DIR__ . DIRECTORY_SEPARATOR . 'services.yml';
+        $serviceFile = __DIR__ . DIRECTORY_SEPARATOR . 'services.yaml';
         $loader->load($serviceFile);
     }
 }

@@ -25,6 +25,9 @@ class PermissionProvider implements PermissionProviderInterface
                 'GAGA',
                 'FOOBAR',
             ],
+            'oxidanonymous' => [
+                'FOOBARBAZ',
+            ],
         ];
     }
 }

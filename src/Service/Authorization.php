@@ -9,9 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -29,7 +27,7 @@ class Authorization implements AuthorizationServiceInterface
     private $eventDispatcher;
 
     /** @var Token */
-    private $token;
+    private $tokenService;
 
     /** @var LegacyService */
     private $legacyService;
@@ -40,7 +38,7 @@ class Authorization implements AuthorizationServiceInterface
     public function __construct(
         iterable $permissionProviders,
         EventDispatcherInterface $eventDispatcher,
-        Token $token,
+        Token $tokenService,
         LegacyService $legacyService
     ) {
         foreach ($permissionProviders as $permissionProvider) {
@@ -50,7 +48,7 @@ class Authorization implements AuthorizationServiceInterface
             );
         }
         $this->eventDispatcher = $eventDispatcher;
-        $this->token           = $token;
+        $this->tokenService    = $tokenService;
         $this->legacyService   = $legacyService;
     }
 
@@ -61,7 +59,7 @@ class Authorization implements AuthorizationServiceInterface
     {
         // TODO: Make usage of $subject argument
         $event = new BeforeAuthorization(
-            $this->token,
+            $this->tokenService->getToken(),
             $right
         );
 
@@ -76,18 +74,13 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        $userId = $this->token->claims()->get(Authentication::CLAIM_USERID);
+        $userId = $this->tokenService->getTokenClaim(Token::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
-
-        if (in_array('oxidblocked', $groups)) {
-            throw InvalidToken::userBlocked();
-        }
 
         $isAllowed = false;
 
         foreach ($groups as $id) {
-            if (isset($this->permissions[$id]) &&
-                array_search($right, $this->permissions[$id], true) !== false) {
+            if (isset($this->permissions[$id]) && array_search($right, $this->permissions[$id], true) !== false) {
                 $isAllowed = true;
             }
         }

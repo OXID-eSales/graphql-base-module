@@ -9,53 +9,25 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use DateTimeImmutable;
-use Exception;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Hmac\Sha512;
-use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Token;
-use Lcobucci\JWT\Validation\Constraint\IssuedBy;
-use Lcobucci\JWT\Validation\Constraint\PermittedFor;
-use Lcobucci\JWT\Validation\Constraint\SignedWith;
-use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\NullToken;
-use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyInfrastructure;
 use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
 class Authentication implements AuthenticationServiceInterface
 {
-    public const CLAIM_SHOPID   = 'shopid';
-
-    public const CLAIM_USERNAME = 'username';
-
-    public const CLAIM_USERID   = 'userid';
-
-    /** @var KeyRegistry */
-    private $keyRegistry;
-
-    /** @var LegacyService */
-    private $legacyService;
+    /** @var LegacyInfrastructure */
+    private $legacyInfrastructure;
 
     /** @var Token */
-    private $token;
-
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
+    private $tokenService;
 
     public function __construct(
-        KeyRegistry $keyRegistry,
-        LegacyService $legacyService,
-        Token $token,
-        EventDispatcherInterface $eventDispatcher
+        LegacyInfrastructure $legacyService,
+        Token                $tokenService
     ) {
-        $this->keyRegistry     = $keyRegistry;
-        $this->legacyService   = $legacyService;
-        $this->token           = $token;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->legacyInfrastructure = $legacyService;
+        $this->tokenService         = $tokenService;
     }
 
     /**
@@ -63,159 +35,18 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function isLogged(): bool
     {
-        if ($this->token instanceof NullToken) {
-            return false;
-        }
-
-        if ($this->isUserAnonymous()) {
-            return false;
-        }
-
-        $userId = $this->token->claims()->get(self::CLAIM_USERID);
-        $groups = $this->legacyService->getUserGroupIds($userId);
-
-        if (in_array('oxidblocked', $groups)) {
-            throw InvalidToken::userBlocked();
-        }
-
-        if ($this->isValidToken($this->token)) {
-            return true;
-        }
-
-        throw InvalidToken::invalidToken();
-    }
-
-    /**
-     * @throws InvalidLogin
-     */
-    public function createToken(?string $username = null, ?string $password = null): Token
-    {
-        $userData  = $this->legacyService->login($username, $password);
-        $time      = new DateTimeImmutable('now');
-        $expire    = new DateTimeImmutable('+8 hours');
-        $config    = $this->getConfig();
-
-        $builder = $config->builder()
-            ->issuedBy($this->legacyService->getShopUrl())
-            ->withHeader('iss', $this->legacyService->getShopUrl())
-            ->permittedFor($this->legacyService->getShopUrl())
-            ->issuedAt($time)
-            ->canOnlyBeUsedAfter($time)
-            ->expiresAt($expire)
-            ->withClaim(self::CLAIM_SHOPID, $this->legacyService->getShopId())
-            ->withClaim(self::CLAIM_USERNAME, $username)
-            ->withClaim(self::CLAIM_USERID, $userData->getUserId());
-
-        $event = new BeforeTokenCreation($builder, $userData);
-        $this->eventDispatcher->dispatch(
-            $event,
-            BeforeTokenCreation::NAME
-        );
-
-        return $event->getBuilder()->getToken(
-            $config->signer(),
-            $config->signingKey()
-        );
-    }
-
-    /**
-     * @throws InvalidToken
-     */
-    public function getUserName(): string
-    {
-        if (!$this->isLogged()) {
-            throw InvalidToken::invalidToken();
-        }
-
-        return (string) $this->token->claims()->get(self::CLAIM_USERNAME);
-    }
-
-    /**
-     * @throws InvalidToken
-     */
-    public function getUserId(): string
-    {
-        if ($this->token instanceof NullToken) {
-            throw InvalidToken::invalidToken();
-        }
-
-        return (string) $this->token->claims()->get(self::CLAIM_USERID);
-    }
-
-    /**
-     * @throws InvalidToken
-     */
-    public function isUserAnonymous(): bool
-    {
-        if ($this->token instanceof NullToken) {
-            throw InvalidToken::invalidToken();
-        }
-
-        $userId = $this->token->claims()->get(self::CLAIM_USERID);
-        $groups = $this->legacyService->getUserGroupIds($userId);
-
-        return is_array($groups) && in_array('oxidanonymous', $groups);
-    }
-
-    public function getConfig(): Configuration
-    {
-        $config = Configuration::forSymmetricSigner(
-            new Sha512(),
-            InMemory::plainText($this->keyRegistry->getSignatureKey())
-        );
-
-        $issuedBy     = new IssuedBy($this->legacyService->getShopUrl());
-        $permittedFor = new PermittedFor($this->legacyService->getShopUrl());
-        $signedWith   = new SignedWith($config->signer(), $config->verificationKey());
-        $config->setValidationConstraints($issuedBy, $permittedFor, $signedWith);
-
-        return $config;
-    }
-
-    /**
-     * @return Token
-     */
-    public function getUser(): ?object
-    {
-        $logged = false;
-
-        try {
-            $logged = $this->isLogged();
-        } catch (Exception $e) {
-        }
-
-        if ($logged || $this->token instanceof NullToken) {
-            return $this->token;
-        }
-
-        return new NullToken();
-    }
-
-    /**
-     * Checks if given token is valid:
-     * - has valid signature
-     * - has valid issuer and audience
-     * - has valid shop claim
-     *
-     * @internal
-     */
-    private function isValidToken(Token $token): bool
-    {
-        $config    = $this->getConfig();
-        $validator = $config->validator();
-
-        if (!$validator->validate($token, ...$config->validationConstraints())) {
-            return false;
-        }
-
-        if (!$token->claims()->has(self::CLAIM_SHOPID)) {
-            return false;
-        }
-
-        if ($token->claims()->get(self::CLAIM_SHOPID) !== $this->legacyService->getShopId()) {
+        if (!$this->tokenService->getToken() || $this->getUser()->isAnonymous()) {
             return false;
         }
 
         return true;
+    }
+
+    public function getUser(): User
+    {
+        return new User(
+            $this->legacyInfrastructure->getUserModel($this->tokenService->getTokenClaim(Token::CLAIM_USERID)),
+            $this->tokenService->getTokenClaim(Token::CLAIM_USER_ANONYMOUS, false)
+        );
     }
 }

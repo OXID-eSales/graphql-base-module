@@ -28,7 +28,7 @@ final class ProductTitleInput
     }
 
     /**
-     * @Factory(name="ProductInput")
+     * @Factory
      */
     public function fromUserInput(string $productId, string $title): ProductDataType
     {

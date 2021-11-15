@@ -9,16 +9,16 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType;
 
-use OxidEsales\GraphQL\Base\DataType\BoolFilter;
-use OxidEsales\GraphQL\Base\DataType\FloatFilter;
-use OxidEsales\GraphQL\Base\DataType\IntegerFilter;
-use OxidEsales\GraphQL\Base\DataType\StringFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\BoolFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\FloatFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\IntegerFilter;
+use OxidEsales\GraphQL\Base\DataType\Filter\StringFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 class TestFilterFactory
 {
     /**
-     * @Factory()
+     * @Factory
      */
     public static function createTestFilter(
         ?BoolFilter $active = null,

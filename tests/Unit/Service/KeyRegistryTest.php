@@ -9,25 +9,23 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
-use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use OxidEsales\GraphQL\Base\Service\KeyRegistry;
+use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-class KeyRegistryTest extends TestCase
+class ModuleConfigurationTest extends TestCase
 {
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
     {
-        $legacyMock  = $this->getMockBuilder(LegacyService::class)
-                            ->disableOriginalConstructor()
-                            ->getMock();
-        $keyRegistry = new KeyRegistry($legacyMock);
-        $iterations  = 5;
-        $keys        = [];
+        $moduleSettingBridgeMock          = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleConfiguration              = new ModuleConfiguration($moduleSettingBridgeMock);
+        $iterations                       = 5;
+        $keys                             = [];
 
         for ($i = 0; $i < $iterations; $i++) {
-            $key = $keyRegistry->generateSignatureKey();
+            $key = $moduleConfiguration->generateSignatureKey();
             $this->assertGreaterThanOrEqual(
                 64,
                 strlen($key),
@@ -65,35 +63,20 @@ class KeyRegistryTest extends TestCase
      */
     public function testGetSignatureKeyWithInvalidOrNoSignature($signature, bool $valid): void
     {
-        $legacyMock = $this->getMockBuilder(LegacyService::class)
-                           ->disableOriginalConstructor()
-                           ->getMock();
-        $legacyMock->method('getConfigParam')
-               ->with(KeyRegistry::SIGNATUREKEYNAME)
-               ->willReturn($signature);
-        $keyRegistry = new KeyRegistry($legacyMock);
-        $e           = null;
-        $sig         = null;
+        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('get')->willReturn($signature);
 
-        try {
-            $sig = $keyRegistry->getSignatureKey();
-        } catch (MissingSignatureKey $e) {
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
+
+        if (!$valid) {
+            $this->expectException(MissingSignatureKey::class);
         }
 
-        if ($valid) {
-            $this->assertEquals(
-                null,
-                $e
-            );
-            $this->assertTrue(
-                is_string($sig),
-                'Signature key needs to be a string'
-            );
-        } else {
-            $this->assertInstanceOf(
-                MissingSignatureKey::class,
-                $e
-            );
-        }
+        $sig = $moduleConfiguration->getSignatureKey();
+
+        $this->assertTrue(
+            is_string($sig),
+            'Signature key needs to be a string'
+        );
     }
 }

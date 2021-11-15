@@ -14,21 +14,23 @@
         }
     },
     "require": {
-        "php": "^7.3",
+        "php": "^7.4|^8.0",
         "ext-json": "*",
-        "thecodingmachine/graphqlite": "^4.1.2",
-        "lcobucci/jwt": "^3.4.1",
-        "ecodev/graphql-upload": "^5.0.0",
+        "thecodingmachine/graphqlite": "^4.0",
+        "lcobucci/jwt": "^4.0",
+        "symfony/cache": "^4.3.0",
+        "hkreuter/graphql-upload": "dev-4.1.0-php8",
         "laminas/laminas-diactoros": "^2.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.5.20|^8.5|^9",
+        "phpunit/phpunit": "^8.5|^9",
         "php-parallel-lint/php-parallel-lint": "^1.1",
         "phpstan/phpstan": "^0.12.26",
         "oxid-esales/oxideshop-ce": "dev-b-7.0",
         "friendsofphp/php-cs-fixer": "^2.18.2",
+        "infection/infection": "*",
+        "oxid-esales/oxideshop-ce": "dev-b-6.4.x",
         "oxid-esales/oxideshop-unified-namespace-generator": "^v3.0.0",
-        "infection/infection": "^0.13.0|^0.14.0|^0.15.0|^0.18|^0.19|^0.20|^0.21|^0.22|^0.23"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +50,8 @@
         "test:syntax": "parallel-lint src/ tests/ metadata.php",
         "test:static": "phpstan --memory-limit=-1 analyse src/",
         "test:unit": "phpunit -c tests/phpunit.xml tests/Unit/",
-        "test:infection": "infection --min-msi=78 --min-covered-msi=97",
+        "test:unit-new": "phpunit -c tests/phpunit_new.xml tests/Unit/",
+        "test:infection": "XDEBUG_MODE=coverage infection --min-msi=75 --min-covered-msi=90",
         "test": [
             "@test:syntax",
             "@test:lint",

@@ -163,7 +163,7 @@ this reason, we could wrap several filters in some filter list DataType:
         }
 
         /**
-         * @Factory(name="CountryFilterList")
+         * @Factory()
          */
         public static function createCountryFilterList(
             ?StringFilter $title = null,

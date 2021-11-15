@@ -10,14 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use Exception;
-use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\Eshop\Core\Email;
 use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\EshopCommunity\Internal\Utility\Email\EmailValidatorServiceInterface as EhopEmailValidator;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
@@ -29,9 +29,6 @@ use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
  */
 class Legacy
 {
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
-
     /** @var ContextInterface */
     private $context;
 
@@ -39,11 +36,9 @@ class Legacy
     private $emailValidatorService;
 
     public function __construct(
-        QueryBuilderFactoryInterface $queryBuilderFactory,
         ContextInterface $context,
         EhopEmailValidator $emailValidatorService
     ) {
-        $this->queryBuilderFactory   = $queryBuilderFactory;
         $this->context               = $context;
         $this->emailValidatorService = $emailValidatorService;
     }
@@ -51,25 +46,35 @@ class Legacy
     /**
      * @throws InvalidLogin
      */
-    public function login(?string $username = null, ?string $password = null): UserDataInterface
+    public function login(?string $username = null, ?string $password = null): User
     {
-        if ($username === null || $password === null) {
-            return new AnonymousUserData();
+        /** @var UserModel $user */
+        $user        = $this->getUserModel();
+        $isAnonymous = true;
+
+        if ($username && $password) {
+            try {
+                $isAnonymous = false;
+                $user->login($username, $password, false);
+            } catch (Exception $e) {
+                throw new InvalidLogin('Username/password combination is invalid');
+            }
+        } else {
+            $user->setId(self::createUniqueIdentifier());
         }
 
-        try {
-            /** @var User */
-            $user = oxNew(User::class);
-            $user->login($username, $password, false);
-        } catch (SystemComponentException $e) {
-            throw $e;
-        } catch (Exception $e) {
-            throw new InvalidLogin('Username/password combination is invalid');
+        return new User($user, $isAnonymous);
+    }
+
+    public function getUserModel(?string $userId = null): UserModel
+    {
+        $userModel = oxNew(UserModel::class);
+
+        if ($userId) {
+            $userModel->load($userId);
         }
 
-        return new UserData(
-            $user->getId()
-        );
+        return $userModel;
     }
 
     /**
@@ -123,10 +128,10 @@ class Legacy
             return [];
         }
 
-        /** @var User $user */
-        $user = oxNew(User::class);
+        /** @var UserModel $user */
+        $user = $this->getUserModel($userId);
 
-        if (!$user->load($userId)) {
+        if (!$user->isLoaded()) {
             return ['oxidanonymous'];
         }
 
