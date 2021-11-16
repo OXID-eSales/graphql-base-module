@@ -16,7 +16,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
-        "thecodingmachine/graphqlite": "^4.0",
+        "thecodingmachine/graphqlite": "^4.1.2",
         "lcobucci/jwt": "^4.0",
         "symfony/cache": "^4.3.0",
         "hkreuter/graphql-upload": "dev-4.1.0-php8",
