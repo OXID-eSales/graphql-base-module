@@ -37,7 +37,7 @@ abstract class BaseTestCase extends TestCase
 
     protected function getUserModelStub(?string $id = null): UserModel
     {
-        $userModelStub = $this->createPartialMock(UserModel::class, ['getFieldData']);
+        $userModelStub = $this->createPartialMock(UserModel::class, ['getRawFieldData']);
 
         if ($id) {
             $userModelStub->setId($id);
@@ -76,7 +76,7 @@ abstract class BaseTestCase extends TestCase
     protected function getUserDataStub(?UserModel $model = null): UserDataType
     {
         return new UserDataType(
-            $model ?: $this->createPartialMock(UserModel::class, ['getFieldData'])
+            $model ?: $this->createPartialMock(UserModel::class, ['getRawFieldData'])
         );
     }
 }

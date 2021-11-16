@@ -48,7 +48,7 @@ final class User implements ShopModelAwareInterface
      */
     public function email(): string
     {
-        return (string) $this->userModel->getFieldData('oxusername');
+        return (string) $this->userModel->getRawFieldData('oxusername');
     }
 
     public function isAnonymous(): bool
