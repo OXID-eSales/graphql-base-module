@@ -12,7 +12,8 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Dao\ShopConfigurationDaoInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ShopConfigurationDaoBridgeInterface;
+use OxidEsales\TestingLibrary\ModuleLoader;
 use OxidEsales\TestingLibrary\Services\ModuleInstaller\ModuleInstaller;
 
 abstract class MultishopTestCase extends EnterpriseTestCase
@@ -65,11 +66,9 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         ");
 
         $container         = ContainerFactory::getInstance()->getContainer();
-        $shopConfiguration = $container->get(ShopConfigurationDaoInterface::class)->get(1);
-        $container->get(ShopConfigurationDaoInterface::class)->save(
-            $shopConfiguration,
-            $shopId
-        );
+        $shopConfiguration = $container->get(ShopConfigurationDaoBridgeInterface::class)->get();
+        Registry::getConfig()->setShopId($shopId);
+        $container->get(ShopConfigurationDaoBridgeInterface::class)->save($shopConfiguration);
 
         $metaData = oxNew(\OxidEsales\Eshop\Core\DbMetaDataHandler::class);
         $metaData->updateViews();
@@ -80,15 +79,14 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         $testConfig      = $this->getTestConfig();
         $aInstallModules = $testConfig->getModulesToActivate();
 
-        foreach ($aInstallModules as $modulePath) {
-            $moduleInstaller->installModule($modulePath);
-        }
+        $moduleLoader = new ModuleLoader();
+        $moduleLoader->activateModules($aInstallModules);
     }
 
     protected function cleanupCachedRegistry(): void
     {
-        Registry::getConfig()->setConfig(null);
-        $utilsObject = new \OxidEsales\Eshop\Core\UtilsObject();
+        Registry::getConfig()->reinitialize();
+        $utilsObject = \OxidEsales\Eshop\Core\UtilsObject::getInstance();
         $utilsObject->resetInstanceCache();
 
         $keepThese = [
