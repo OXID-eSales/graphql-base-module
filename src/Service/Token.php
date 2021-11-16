@@ -101,8 +101,8 @@ class Token
 
         $event = new BeforeTokenCreation($builder, $user);
         $this->eventDispatcher->dispatch(
-            BeforeTokenCreation::NAME,
-            $event
+            $event,
+            BeforeTokenCreation::NAME
         );
 
         return $event->getBuilder()->getToken(

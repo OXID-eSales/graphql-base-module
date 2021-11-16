@@ -15,14 +15,11 @@ use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
-use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token;
-use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -57,6 +54,9 @@ abstract class TestCase extends PHPUnitTestCase
 
         $legacyServiceDefinition = static::$container->getDefinition(Legacy::class);
         $legacyServiceDefinition->setClass(LegacyStub::class);
+
+        $legacyServiceDefinition = static::$container->getDefinition(ModuleConfiguration::class);
+        $legacyServiceDefinition->setClass(ModuleConfigurationStub::class);
 
         $logger = new LoggerStub();
 
@@ -274,7 +274,7 @@ class LegacyStub extends Legacy
             return ['oxidadmin'];
         }
 
-        return [];
+        return parent::getUserGroupIds($userId);
     }
 
     public function getShopId(): int

@@ -12,17 +12,13 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 use Exception;
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\Eshop\Core\Email;
-use OxidEsales\Eshop\Core\Exception\SystemComponentException;
 use OxidEsales\Eshop\Core\Model\ListModel as EshopListModel;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\Eshop\Core\UtilsObject;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
-use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\EshopCommunity\Internal\Utility\Email\EmailValidatorServiceInterface as EhopEmailValidator;
+use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Framework\AnonymousUserData;
-use OxidEsales\GraphQL\Base\Framework\UserData;
-use OxidEsales\GraphQL\Base\Framework\UserDataInterface;
 
 /**
  * @codeCoverageIgnore - Remove when integration tests are added to the coverage report
