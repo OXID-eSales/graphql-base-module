@@ -38,7 +38,8 @@ services:
     public: true
 
   OxidEsales\GraphQL\Base\Service\Token:
-      class: OxidEsales\GraphQL\Base\Service\Token
+    class: OxidEsales\GraphQL\Base\Service\Token
+    public: true
 
   OxidEsales\GraphQL\Base\Service\TokenValidator:
       class: OxidEsales\GraphQL\Base\Service\TokenValidator
