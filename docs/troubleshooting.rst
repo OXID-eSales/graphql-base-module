@@ -59,6 +59,17 @@ is to extend the shop's ``.htaccess`` file with the following lines
 Otherwise in newer GraphQL versions you will be presented with an error when
 sending GraphQL requests with a session id.
 
+Maximum function nesting level is reached
+-----------------------------------------
+
+When XDebug is active, request call will take a while and eventually Xdebug will detect a possible infinite loop.
+That is caused because GraphQL library tends to use a very deep stack.
+Simply increase the maximum allowed nesting level in XDebug config
+
+.. code-block:: bash
+
+    xdebug.max_nesting_level=512
+
 Graphql schema appears incomplete
 ---------------------------------
 
