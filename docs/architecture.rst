@@ -84,7 +84,7 @@ for wrapping OXID eShop models
 
 We wanted to have the GraphQL API behave consistent to the (well known) existing system. The OXID eShop models are the central point which standard system and the GraphQL modules can share.
 
-One of the main advantages to use OXID eShop models through the ``oxNew()`` call is that the GraphQL API then also reflects the changes your modules introduce. This is also the reason, why we use the specific getters and only fall back to using ``getFieldData()`` if no specific getter is available.
+One of the main advantages to use OXID eShop models through the ``oxNew()`` call is that the GraphQL API then also reflects the changes your modules introduce. This is also the reason, why we use the specific getters and only fall back to using ``getRawFieldData()`` if no specific getter is available.
 
 .. _final-classes:
 

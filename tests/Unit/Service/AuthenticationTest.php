@@ -358,8 +358,8 @@ class AuthenticationTest extends BaseTestCase
 
     private function createToken(string $username, string $password): UnencryptedToken
     {
-        $userModel = $this->createPartialMock(UserModel::class, ['getFieldData']);
-        $userModel->method('getFieldData')->withAnyParameters()->willReturn($username);
+        $userModel = $this->createPartialMock(UserModel::class, ['getRawFieldData']);
+        $userModel->method('getRawFieldData')->withAnyParameters()->willReturn($username);
         $user = $this->getUserDataStub($userModel);
 
         $this->legacy

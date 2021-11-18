@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
 use OxidEsales\Eshop\Application\Model\Category as CategoryModel;
-use OxidEsales\GraphQL\Storefront\Shared\DataType\DataType;
+use OxidEsales\GraphQL\Base\DataType\ShopModelAwareInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -16,7 +16,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class Category implements DataType
+final class Category implements ShopModelAwareInterface
 {
     /** @var CategoryModel */
     private $category;
@@ -46,17 +46,17 @@ final class Category implements DataType
      */
     public function isActive(?DateTimeInterface $now = null): bool
     {
-        $active = (bool) $this->category->getFieldData('oxactive');
+        $active = (bool) $this->category->getRawFieldData('oxactive');
 
         if ($active) {
             return true;
         }
 
         $from = new DateTimeImmutable(
-            (string) $this->category->getFieldData('oxactivefrom')
+            (string) $this->category->getRawFieldData('oxactivefrom')
         );
         $to = new DateTimeImmutable(
-            (string) $this->category->getFieldData('oxactiveto')
+            (string) $this->category->getRawFieldData('oxactiveto')
         );
         $now = $now ?? new DateTimeImmutable('now');
 
@@ -65,5 +65,13 @@ final class Category implements DataType
         }
 
         return false;
+    }
+
+    /**
+     * @return class-string
+     */
+    public static function getModelClass(): string
+    {
+        return CategoryModel::class;
     }
 }

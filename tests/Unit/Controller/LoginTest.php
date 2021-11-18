@@ -56,9 +56,9 @@ class LoginTest extends BaseTestCase
     {
         $username = $password = 'admin';
 
-        $userModelStub = $this->createPartialMock(UserModel::class, ['getFieldData']);
+        $userModelStub = $this->createPartialMock(UserModel::class, ['getRawFieldData']);
         $userModelStub->setId('someTestAdminId');
-        $userModelStub->method('getFieldData')->with('oxusername')->willReturn('someTestUsername');
+        $userModelStub->method('getRawFieldData')->with('oxusername')->willReturn('someTestUsername');
         $user = new User($userModelStub);
 
         $this->legacy->method('login')->with($username, $password)->willReturn($user);
