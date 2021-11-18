@@ -73,7 +73,7 @@ jobs:
                   cd docker-eshop-sdk
                   make .env
                   sed "s/PHP_VERSION=.*/PHP_VERSION=${{ matrix.php }}/" -i .env
-                  git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch master --single-branch data/oxideshop
+                  git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-7.0.x --single-branch data/oxideshop
                   mkdir data/oxideshop/debug
                   make permissions
                   make data/oxideshop/vendor/
