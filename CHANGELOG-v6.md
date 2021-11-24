@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] - undecided
+
+### Added
+- Logic to track tokens of not anonymous users in database
+- New table `oegraphqltoken`
+- Module setting `sJsonWebTokenUserQuota` to limit the number of valid JWT for a single user.
+- Classes
+  - `OxidEsales\GraphQL\Base\DataType\User`
+  - `OxidEsales\GraphQL\Base\Infrastructure\Model\Token`
+  - `OxidEsales\GraphQL\Base\Infrastructure\Token`
+  - `OxidEsales\GraphQL\Base\Exception\TokenQuota`
+- Public Methods
+  - `OxidEsales\GraphQL\Base\Exception\InvalidToken::unknownToken()`
+  - `OxidEsales\GraphQL\Base\Service\ModuleConfiguration::getUserTokenQuota()`
+
+
 ## [6.0.0] - 2021-11-03
 
 ### Added

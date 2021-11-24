@@ -43,6 +43,9 @@ services:
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy
 
+  OxidEsales\GraphQL\Base\Infrastructure\Token:
+      class: OxidEsales\GraphQL\Base\Infrastructure\Token
+
   OxidEsales\GraphQL\Base\Service\Authorization:
     class: OxidEsales\GraphQL\Base\Service\Authorization
     arguments:

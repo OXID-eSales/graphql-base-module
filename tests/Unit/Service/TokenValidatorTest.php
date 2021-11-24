@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
 class TokenValidatorTest extends BaseTestCase
@@ -21,17 +22,21 @@ class TokenValidatorTest extends BaseTestCase
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getShopId')->willReturn(1);
 
-        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
+        $tokenInfrastructure->method('canIssueToken')->willReturn(true);
+
+        $token = $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
 
         // token is valid
-        $validator = $this->getTokenValidator($legacy);
+        $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
         $validator->validateToken($token);
 
         $legacy = $this->createPartialMock(LegacyService::class, ['getShopId', 'getShopUrl']);
         $legacy->method('getShopId')->willReturn(-1);
 
         // token is invalid
-        $validator = $this->getTokenValidator($legacy);
+        $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
         $this->expectException(InvalidToken::class);
         $validator->validateToken($token);
     }
@@ -42,17 +47,21 @@ class TokenValidatorTest extends BaseTestCase
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getShopUrl')->willReturn('http://original.url');
 
-        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
+        $tokenInfrastructure->method('canIssueToken')->willReturn(true);
+
+        $token = $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
 
         // token is valid
-        $validator = $this->getTokenValidator($legacy);
+        $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
         $validator->validateToken($token);
 
         $legacy = $this->createPartialMock(LegacyService::class, ['getShopUrl', 'getShopId']);
         $legacy->method('getShopUrl')->willReturn('http://other.url');
 
         // token is invalid
-        $validator = $this->getTokenValidator($legacy);
+        $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
         $this->expectException(InvalidToken::class);
         $validator->validateToken($token);
     }
@@ -63,9 +72,13 @@ class TokenValidatorTest extends BaseTestCase
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getUserGroupIds')->willReturn(['foo', 'oxidblocked', 'bar']);
 
-        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
+        $tokenInfrastructure->method('canIssueToken')->willReturn(true);
 
-        $validator = $this->getTokenValidator($legacy);
+        $token = $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
+
+        $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
         $this->expectException(InvalidToken::class);
         $validator->validateToken($token);
     }
@@ -75,13 +88,50 @@ class TokenValidatorTest extends BaseTestCase
         $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
         $legacy->method('login')->willReturn($this->getUserDataStub());
         $legacy->method('getUserGroupIds')->willReturn(['foo', 'bar']);
-        $validator = $this->getTokenValidator($legacy);
 
-        $token = $this->getTokenService($legacy, null, '+1 hours')->createToken('admin', 'admin');
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
+        $tokenInfrastructure->method('canIssueToken')->willReturn(true);
+
+        $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
+
+        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken('admin', 'admin');
         $validator->validateToken($token);
 
-        $token = $this->getTokenService($legacy, null, '-1 hours')->createToken('admin', 'admin');
+        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '-1 hours')->createToken('admin', 'admin');
         $this->expectException(InvalidToken::class);
+        $validator->validateToken($token);
+    }
+
+    public function testDeletedToken(): void
+    {
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
+        $legacy->method('login')->willReturn($this->getUserDataStub());
+        $legacy->method('getUserGroupIds')->willReturn(['foo', 'bar']);
+
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $tokenInfrastructure->method('isTokenRegistered')->willReturn(false);
+        $tokenInfrastructure->method('canIssueToken')->willReturn(true);
+
+        $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
+
+        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken('admin', 'admin');
+        $this->expectException(InvalidToken::class);
+        $validator->validateToken($token);
+    }
+
+    public function testAnonymousToken(): void
+    {
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
+        $legacy->method('login')->willReturn($this->getUserDataStub(null, true));
+        $legacy->method('getUserGroupIds')->willReturn(['oxidanonymous']);
+
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $tokenInfrastructure->method('canIssueToken')->willReturn(true);
+        $validator           = $this->getTokenValidator($legacy, $tokenInfrastructure);
+
+        // token is valid
+        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken();
         $validator->validateToken($token);
     }
 }

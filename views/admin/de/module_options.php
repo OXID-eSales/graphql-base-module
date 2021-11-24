@@ -19,4 +19,5 @@ $aLang = [
     'SHOP_MODULE_sJsonWebTokenLifetime_3hrs'  => '+3 Stunden',
     'SHOP_MODULE_sJsonWebTokenLifetime_8hrs'  => '+8 Stunden',
     'SHOP_MODULE_sJsonWebTokenLifetime_24hrs' => '+24 Stunden',
+    'SHOP_MODULE_sJsonWebTokenUserQuota'      => 'Maximal zulässige Anzahl aktiver JsonWebToken per user',
 ];

@@ -13,6 +13,8 @@ class InvalidToken extends Error
 {
     protected const INVALID_TOKEN_MESSAGE = 'The token is invalid';
 
+    protected const UNKNOWN_TOKEN_MESSAGE = 'The token is not registered';
+
     protected const UNABLE_TO_PARSE_MESSAGE = 'Unable to parse token';
 
     protected const USER_BLOCKED_MESSAGE = 'User is blocked';
@@ -20,6 +22,11 @@ class InvalidToken extends Error
     public function getCategory(): string
     {
         return ErrorCategories::PERMISSIONERRORS;
+    }
+
+    public static function unknownToken(): self
+    {
+        return new self(self::UNKNOWN_TOKEN_MESSAGE);
     }
 
     public static function invalidToken(): self

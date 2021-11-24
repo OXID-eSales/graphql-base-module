@@ -11,9 +11,12 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
 use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -28,6 +31,8 @@ class Token
     public const CLAIM_USERID   = 'userid';
 
     public const CLAIM_USER_ANONYMOUS   = 'useranonymous';
+
+    public const CLAIM_TOKENID   = 'tokenid';
 
     /** @var ?UnencryptedToken */
     private $token;
@@ -44,18 +49,23 @@ class Token
     /** @var ModuleConfiguration */
     private $moduleConfiguration;
 
+    /** @var TokenInfrastructure */
+    private $tokenInfrastructure;
+
     public function __construct(
         ?UnencryptedToken $token,
         JwtConfigurationBuilder $jwtConfigurationBuilder,
         Legacy $legacyInfrastructure,
         EventDispatcherInterface $eventDispatcher,
-        ModuleConfiguration $moduleConfiguration
+        ModuleConfiguration $moduleConfiguration,
+        TokenInfrastructure $tokenInfrastructure
     ) {
         $this->token                   = $token;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
         $this->legacyInfrastructure    = $legacyInfrastructure;
         $this->eventDispatcher         = $eventDispatcher;
         $this->moduleConfiguration     = $moduleConfiguration;
+        $this->tokenInfrastructure     = $tokenInfrastructure;
     }
 
     /**
@@ -79,10 +89,15 @@ class Token
 
     /**
      * @throws InvalidLogin
+     * @throws TokenQuota
      */
     public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
     {
+        /** @var UserDataType $user */
         $user   = $this->legacyInfrastructure->login($username, $password);
+        $this->removeExpiredTokens($user);
+        $this->canIssueToken($user);
+
         $time   = new DateTimeImmutable('now');
         $expire = new DateTimeImmutable($this->moduleConfiguration->getTokenLifeTime());
         $config = $this->jwtConfigurationBuilder->getConfiguration();
@@ -97,7 +112,8 @@ class Token
             ->withClaim(self::CLAIM_SHOPID, $this->legacyInfrastructure->getShopId())
             ->withClaim(self::CLAIM_USERNAME, $user->email())
             ->withClaim(self::CLAIM_USERID, $user->id()->val())
-            ->withClaim(self::CLAIM_USER_ANONYMOUS, $user->isAnonymous());
+            ->withClaim(self::CLAIM_USER_ANONYMOUS, $user->isAnonymous())
+            ->withClaim(self::CLAIM_TOKENID, Legacy::createUniqueIdentifier());
 
         $event = new BeforeTokenCreation($builder, $user);
         $this->eventDispatcher->dispatch(
@@ -105,9 +121,33 @@ class Token
             $event
         );
 
-        return $event->getBuilder()->getToken(
+        $token = $event->getBuilder()->getToken(
             $config->signer(),
             $config->signingKey()
         );
+
+        $this->registerToken($token, $time, $expire);
+
+        return $token;
+    }
+
+    private function registerToken(UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void
+    {
+        $this->tokenInfrastructure->registerToken($token, $time, $expire);
+    }
+
+    private function canIssueToken(UserDataType $user): void
+    {
+        if (!$user->isAnonymous() &&
+            !$this->tokenInfrastructure->canIssueToken($user, $this->moduleConfiguration->getUserTokenQuota())) {
+            throw TokenQuota::quotaExceeded();
+        }
+    }
+
+    private function removeExpiredTokens(UserDataType $user): void
+    {
+        if (!$user->isAnonymous()) {
+            $this->tokenInfrastructure->removeExpiredTokens($user);
+        }
     }
 }

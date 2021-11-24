@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
@@ -28,6 +29,9 @@ class AuthenticationTest extends BaseTestCase
     /** @var LegacyService|MockObject */
     private $legacy;
 
+    /** @var MockObject|TokenInfrastructure */
+    private $tokenInfrastructure;
+
     /** @var JwtConfigurationBuilder */
     private $jwtConfigurationBuilder;
 
@@ -40,6 +44,8 @@ class AuthenticationTest extends BaseTestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
+        $this->tokenInfrastructure = $this->getTokenInfrastructureMock();
+
         $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
             $this->getModuleConfigurationMock(),
             $this->legacy
@@ -50,7 +56,8 @@ class AuthenticationTest extends BaseTestCase
             $this->jwtConfigurationBuilder,
             $this->legacy,
             new EventDispatcher(),
-            $this->getModuleConfigurationMock()
+            $this->getModuleConfigurationMock(),
+            $this->tokenInfrastructure
         );
     }
 
@@ -339,7 +346,8 @@ class AuthenticationTest extends BaseTestCase
                 $this->jwtConfigurationBuilder,
                 $this->legacy,
                 new EventDispatcher(),
-                $this->getModuleConfigurationMock()
+                $this->getModuleConfigurationMock(),
+                $this->tokenInfrastructure
             )
         );
     }
