@@ -24,6 +24,7 @@ jobs:
               uses: actions/checkout@v2
 
             - name: Setup PHP
+              if: ${{ matrix.php == '8.0'}}
               uses: shivammathur/setup-php@v2
               with:
                   php-version: ${{ matrix.php }}
@@ -31,9 +32,11 @@ jobs:
                   extensions: gd, zip
 
             - name: Install dependencies
+              if: ${{ matrix.php == '8.0'}}
               run: composer update $DEFAULT_COMPOSER_FLAGS $DEPENDENCIES
 
             - name: Generated Unified Namespace
+              if: ${{ matrix.php == '8.0'}}
               run: ./vendor/bin/oe-eshop-unified_namespace_generator
 
             - name: Test syntax
@@ -56,14 +59,6 @@ jobs:
             - name: Static analysis
               if: ${{ matrix.php == '8.0' && env.DEPENDENCIES == '' }}
               run: composer test:static
-
-            - uses: satackey/action-docker-layer-caching@v0.0.11
-              if: ${{ env.DEPENDENCIES == '' }}
-              continue-on-error: true
-              with:
-                  key: docker-layer-caching-${{ github.workflow }}-${{ matrix.php }}-{hash}
-                  restore-keys: |
-                      docker-layer-caching-${{ github.workflow }}-${{ matrix.php }}-
 
             - name: Build docker
               if: ${{ env.DEPENDENCIES == '' }}
