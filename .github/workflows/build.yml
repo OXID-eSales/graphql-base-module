@@ -84,6 +84,7 @@ jobs:
                   cd /home/runner/work/docker-eshop-sdk/data/oxideshop/
                   mkdir covs
                   cp -r $GITHUB_WORKSPACE graphql-base-module
+                  chmod -R 0777 graphql-base-module
                   sed -i "1s/^/php_flag display_errors off\nphp_value xdebug.max_nesting_level 1000\n\n/" source/.htaccess
                   docker-compose exec -T --user oxid php php vendor/bin/oe-eshop-unified_namespace_generator
                   docker-compose exec -T --user oxid php composer config repositories.grapqhl-base path ./graphql-base-module/
@@ -114,9 +115,9 @@ jobs:
                   cd /home/runner/work/docker-eshop-sdk/data/oxideshop/
                   ls -alh graphql-base-module/tests/Codeception/_output/
                   cp graphql-base-module/tests/Codeception/_output/coverage.serialized covs/codeception.cov
-                  wget https://phar.phpunit.de/phpcov-7.0.2.phar
+                  wget https://phar.phpunit.de/phpcov-8.2.0.phar
                   ls -alh covs/
-                  docker-compose exec -T --user oxid php php phpcov-7.0.2.phar merge --clover covs/coverage.xml covs
+                  docker-compose exec -T --user oxid php php phpcov-8.2.0.phar merge --clover covs/coverage.xml covs
                   sed -i 's/\/var\/www\/oxideshop\/graphql-base-module\///' covs/coverage.xml
                   cp covs/coverage.xml $GITHUB_WORKSPACE/artifact/
 
