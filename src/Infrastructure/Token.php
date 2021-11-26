@@ -84,4 +84,33 @@ class Token
 
         return  $return;
     }
+
+    public function tokenDelete(?UserDataType $user = null, ?string $tokenId = null, ?int $shopId = null): void
+    {
+        $parameters = [];
+        $condition  = 'where';
+
+        $queryBuilder = $this->queryBuilderFactory->create()
+            ->delete('oegraphqltoken');
+
+        if ($tokenId) {
+            $queryBuilder->$condition('OXID = :tokenId');
+            $parameters['tokenId'] = $tokenId;
+            $condition             = 'andWhere';
+        }
+
+        if ($user) {
+            $queryBuilder->$condition('OXUSERID = :userId');
+            $parameters['userId'] = (string) $user->id();
+        }
+
+        if ($shopId) {
+            $queryBuilder->$condition('OXSHOPID = :shopId');
+            $parameters['shopId'] = $shopId;
+        }
+
+        $queryBuilder->setParameters($parameters);
+
+        $queryBuilder->execute();
+    }
 }

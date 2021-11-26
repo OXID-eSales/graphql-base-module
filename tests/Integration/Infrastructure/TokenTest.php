@@ -100,6 +100,39 @@ class TokenTest extends UnitTestCase
         $this->assertFalse($this->tokenInfrastructure->canIssueToken($user, 2));
     }
 
+    public function testTokenDelete(): void
+    {
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_second'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_third'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_other', '_otheruser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_else', '_elseuser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+
+        $userModel = oxNew(User::class);
+        $userModel->setId(self::TEST_USER_ID);
+        $user = new UserDataType($userModel);
+
+        $this->tokenInfrastructure->tokenDelete($user, '_first');
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_first'));
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_second'));
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_third'));
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_other'));
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_else'));
+
+        $this->tokenInfrastructure->tokenDelete($user);
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_second'));
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_third'));
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_other'));
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_else'));
+
+        $this->tokenInfrastructure->tokenDelete(null, '_other');
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_other'));
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_else'));
+
+        $this->tokenInfrastructure->tokenDelete();
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_else'));
+    }
+
     private function getTokenMock(string $tokenId = self::TEST_TOKEN_ID, string $userId = self::TEST_USER_ID): UnencryptedToken
     {
         $claims = new DataSet(
