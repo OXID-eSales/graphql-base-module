@@ -79,4 +79,24 @@ class ModuleConfigurationTest extends TestCase
             'Signature key needs to be a string'
         );
     }
+
+    public function testGetTokenLifetimeDefault(): void
+    {
+        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('get')->willReturn('asdf');
+
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
+
+        $this->assertSame('+8 hours', $moduleConfiguration->getTokenLifeTime());
+    }
+
+    public function testGetTokenLifetime(): void
+    {
+        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('get')->willReturn('24hrs');
+
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
+
+        $this->assertSame('+24 hours', $moduleConfiguration->getTokenLifeTime());
+    }
 }
