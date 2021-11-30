@@ -38,7 +38,7 @@ class GraphQL extends WidgetController
      */
     public function init(): void
     {
-        /** @var TimerHandler */
+        /** @var TimerHandler $timerHandler */
         $timerHandler = $this->getContainer()->get(TimerHandler::class);
         $timerHandler->create('bootstrap')->startAt($_SERVER['REQUEST_TIME_FLOAT'])->stop();
 
