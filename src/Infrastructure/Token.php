@@ -79,7 +79,7 @@ class Token
             ->execute();
 
         if (is_object($result)) {
-            $return = (int) $result->fetch(PDO::FETCH_ASSOC)['counted'] <= $quota;
+            $return = (int) $result->fetch(PDO::FETCH_ASSOC)['counted'] < $quota;
         }
 
         return  $return;

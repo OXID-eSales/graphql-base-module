@@ -97,6 +97,8 @@ class TokenTest extends UnitTestCase
         $this->tokenInfrastructure->registerToken($this->getTokenMock('_third'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
 
         $this->assertTrue($this->tokenInfrastructure->canIssueToken($user, 5));
+        $this->assertTrue($this->tokenInfrastructure->canIssueToken($user, 4));  //three are stored, quota is 4, we can issue another token
+        $this->assertFalse($this->tokenInfrastructure->canIssueToken($user, 3)); //three are stored, quota is 3, we cannot issue another token right now
         $this->assertFalse($this->tokenInfrastructure->canIssueToken($user, 2));
     }
 
