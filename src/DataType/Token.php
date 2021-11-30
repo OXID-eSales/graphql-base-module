@@ -82,6 +82,11 @@ final class Token implements ShopModelAwareInterface
         return new ID((string) $this->tokenModel->getRawFieldData('oxuserid'));
     }
 
+    public function shopId(): ID
+    {
+        return new ID((string) $this->tokenModel->getRawFieldData('oxshopid'));
+    }
+
     public static function getModelClass(): string
     {
         return GraphQLTokenModel::class;
