@@ -54,6 +54,12 @@ $aModule = [
             'constraints' => '15min|1hrs|3hrs|8hrs|24hrs',
             'value' => '8hrs'
         ],
+        [
+            'group' => 'graphql_base',
+            'name'  => 'sJsonWebTokenUserQuota',
+            'type'  => 'str',
+            'value' => '10000',
+        ],
     ],
     'events'      => [
         'onActivate'   => '\OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup::onActivate',

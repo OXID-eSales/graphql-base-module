@@ -1,0 +1,4 @@
+name: GraphQL Base module migration
+migrations_namespace: OxidEsales\GraphQL\Base\Migrations
+table_name: oxmigrations_graphql_base
+migrations_directory: data

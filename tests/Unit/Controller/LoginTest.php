@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
@@ -30,6 +31,9 @@ class LoginTest extends BaseTestCase
     /** @var TokenService */
     private $tokenService;
 
+    /** @var MockObject|TokenInfrastructure */
+    private $tokenInfrastructure;
+
     public function setUp(): void
     {
         $this->legacy = $this->getMockBuilder(Legacy::class)
@@ -37,6 +41,8 @@ class LoginTest extends BaseTestCase
                             ->getMock();
         $this->legacy->method('getShopUrl')->willReturn('https://whatever.com');
         $this->legacy->method('getShopId')->willReturn(1);
+
+        $this->tokenInfrastructure = $this->getTokenInfrastructureMock();
 
         $this->jwtConfigurationBuilder = new JwtConfigurationBuilder(
             $this->getModuleConfigurationMock(),
@@ -48,7 +54,8 @@ class LoginTest extends BaseTestCase
             $this->jwtConfigurationBuilder,
             $this->legacy,
             new EventDispatcher(),
-            $this->getModuleConfigurationMock()
+            $this->getModuleConfigurationMock(),
+            $this->tokenInfrastructure
         );
     }
 
@@ -56,9 +63,10 @@ class LoginTest extends BaseTestCase
     {
         $username = $password = 'admin';
 
-        $userModelStub = $this->createPartialMock(UserModel::class, ['getRawFieldData']);
+        $userModelStub = $this->createPartialMock(UserModel::class, ['getRawFieldData', 'isLoaded']);
         $userModelStub->setId('someTestAdminId');
         $userModelStub->method('getRawFieldData')->with('oxusername')->willReturn('someTestUsername');
+        $userModelStub->method('isLoaded')->willReturn(true);
         $user = new User($userModelStub);
 
         $this->legacy->method('login')->with($username, $password)->willReturn($user);
@@ -74,6 +82,7 @@ class LoginTest extends BaseTestCase
         $this->assertEquals($user->id()->val(), $token->claims()->get(TokenService::CLAIM_USERID));
         $this->assertEquals($user->email(), $token->claims()->get(TokenService::CLAIM_USERNAME));
         $this->assertEquals(1, $token->claims()->get(TokenService::CLAIM_SHOPID));
+        $this->assertNotEmpty($token->claims()->get(TokenService::CLAIM_TOKENID));
     }
 
     public function testCreateTokenWithMissingPassword(): void
