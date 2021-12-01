@@ -80,3 +80,7 @@ services:
     class: Symfony\Component\Cache\Psr16Cache
     arguments:
       $pool: '@oxidesales.graphqlbase.cacheadapter'
+
+  OxidEsales\GraphQL\Base\Service\PermissionProvider:
+      class: OxidEsales\GraphQL\Base\Service\PermissionProvider
+      tags: [ 'graphql_permission_provider' ]
