@@ -126,14 +126,16 @@ class Token
             $config->signingKey()
         );
 
-        $this->registerToken($token, $time, $expire);
+        $this->registerToken($user, $token, $time, $expire);
 
         return $token;
     }
 
-    private function registerToken(UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void
+    private function registerToken(UserDataType $user, UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void
     {
-        $this->tokenInfrastructure->registerToken($token, $time, $expire);
+        if (!$user->isAnonymous()) {
+            $this->tokenInfrastructure->registerToken($token, $time, $expire);
+        }
     }
 
     private function canIssueToken(UserDataType $user): void

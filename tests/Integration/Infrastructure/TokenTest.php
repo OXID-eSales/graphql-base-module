@@ -14,6 +14,7 @@ use Lcobucci\JWT\Token\DataSet;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
@@ -131,8 +132,56 @@ class TokenTest extends UnitTestCase
         $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_other'));
         $this->assertTrue($this->tokenInfrastructure->isTokenRegistered('_else'));
 
-        $this->tokenInfrastructure->tokenDelete();
+        $this->tokenInfrastructure->tokenDelete(null, null, 1);
         $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_else'));
+    }
+
+    public function testTokenDeleteAll(): void
+    {
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_second'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_third'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_other', '_otheruser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_else', '_elseuser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+
+        $this->tokenInfrastructure->tokenDelete();
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_first'));
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_second'));
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_third'));
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_other'));
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_else'));
+    }
+
+    public function testTokenDataType(): void
+    {
+        $tokenModel = oxNew(TokenModel::class);
+
+        $tokenModel->setId('_testId');
+        $tokenModel->assign(
+            [
+                'OXID'       => '_tokenId',
+                'OXSHOPID'   => '66',
+                'OXUSERID'   => '_userId',
+                'ISSUED_AT'  => '2021-12-01 12:12:12',
+                'EXPIRES_AT' => '2021-12-02 12:12:12',
+                'USERAGENT'  => 'the user agent',
+                'TOKEN'      => 'very_large_string',
+            ]
+        );
+        $tokenModel->save();
+        $tokenModel->load('_testId');
+
+        $tokenDataType = new TokenDataType($tokenModel);
+
+        $this->assertSame($tokenModel, $tokenDataType->getEshopModel());
+        $this->assertSame(TokenModel::class, TokenDataType::getModelClass());
+        $this->assertSame($tokenModel->getRawFieldData('oxid'), $tokenDataType->id()->val());
+        $this->assertSame($tokenModel->getRawFieldData('token'), $tokenDataType->token());
+        $this->assertSame($tokenModel->getRawFieldData('issued_at'), $tokenDataType->createdAt()->format('Y-m-d H:i:s'));
+        $this->assertSame($tokenModel->getRawFieldData('expires_at'), $tokenDataType->expiresAt()->format('Y-m-d H:i:s'));
+        $this->assertSame($tokenModel->getRawFieldData('useragent'), $tokenDataType->userAgent());
+        $this->assertSame($tokenModel->getRawFieldData('oxshopid'), $tokenDataType->shopId()->val());
+        $this->assertSame($tokenModel->getRawFieldData('oxuserid'), $tokenDataType->customerId()->val());
     }
 
     private function getTokenMock(string $tokenId = self::TEST_TOKEN_ID, string $userId = self::TEST_USER_ID): UnencryptedToken

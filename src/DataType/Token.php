@@ -77,11 +77,17 @@ final class Token implements ShopModelAwareInterface
         return $this->tokenModel->getRawFieldData('useragent');
     }
 
+    /**
+     * @Field()
+     */
     public function customerId(): ID
     {
         return new ID((string) $this->tokenModel->getRawFieldData('oxuserid'));
     }
 
+    /**
+     * @Field()
+     */
     public function shopId(): ID
     {
         return new ID((string) $this->tokenModel->getRawFieldData('oxshopid'));

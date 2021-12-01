@@ -11,7 +11,9 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
@@ -56,5 +58,17 @@ class TokenTest extends BaseTestCase
 
         $this->assertInstanceOf(Token::class, $anonymousToken);
         $this->assertEmpty($anonymousToken->claims()->get(TokenService::CLAIM_USERNAME));
+    }
+
+    public function testTokenQuotaExceeded(): void
+    {
+        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
+        $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub()));
+
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['canIssueToken', 'removeExpiredTokens']);
+        $tokenInfrastructure->method('canIssueToken')->willReturn(false);
+
+        $this->expectException(TokenQuota::class);
+        $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
     }
 }
