@@ -27,7 +27,7 @@ class TokenTest extends UnitTestCase
 
     private const TEST_USER_ID = '_testuser';
 
-    /** @var Token */
+    /** @var TokenInfrastructure */
     private $tokenInfrastructure;
 
     public function setUp(): void
@@ -182,6 +182,24 @@ class TokenTest extends UnitTestCase
         $this->assertSame($tokenModel->getRawFieldData('useragent'), $tokenDataType->userAgent());
         $this->assertSame($tokenModel->getRawFieldData('oxshopid'), $tokenDataType->shopId()->val());
         $this->assertSame($tokenModel->getRawFieldData('oxuserid'), $tokenDataType->customerId()->val());
+    }
+
+    public function testUserHasToken(): void
+    {
+        $userModel = oxNew(User::class);
+        $userModel->setId(self::TEST_USER_ID);
+        $user = new UserDataType($userModel);
+
+        $otherUserModel = oxNew(User::class);
+        $otherUserModel->setId('_other_id');
+        $otherUser = new UserDataType($otherUserModel);
+
+        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+
+        $this->assertTrue($this->tokenInfrastructure->userHasToken($user, '_first'));
+        $this->assertFalse($this->tokenInfrastructure->userHasToken($user, '_second'));
+        $this->assertFalse($this->tokenInfrastructure->userHasToken($otherUser, '_first'));
+        $this->assertFalse($this->tokenInfrastructure->userHasToken($otherUser, '_second'));
     }
 
     private function getTokenMock(string $tokenId = self::TEST_TOKEN_ID, string $userId = self::TEST_USER_ID): UnencryptedToken

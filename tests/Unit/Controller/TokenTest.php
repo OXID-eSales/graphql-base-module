@@ -17,6 +17,8 @@ use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration as TokenAdministration;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -38,7 +40,7 @@ class TokenTest extends BaseTestCase
             )
             ->willReturn([]);
 
-        $tokenController = new TokenController($tokenAdministration, $authentication);
+        $tokenController = $this->getTokenController($tokenAdministration, $authentication);
         $tokenController->tokens();
     }
 
@@ -65,7 +67,32 @@ class TokenTest extends BaseTestCase
             )
             ->willReturn([]);
 
-        $tokenController = new TokenController($tokenAdministration, $authentication);
+        $tokenController = $this->getTokenController($tokenAdministration, $authentication);
         $tokenController->tokens($filterList, $pagination, $sort);
+    }
+
+    private function getTokenController(
+        ?TokenAdministration $tokenAdministration = null,
+        ?Authentication $authentication = null,
+        ?Authorization $authorization = null,
+        ?TokenService $tokenService = null
+    ): TokenController {
+        if (null === $tokenAdministration) {
+            $tokenAdministration = $this->createMock(TokenAdministration::class);
+        }
+
+        if (null === $authentication) {
+            $authentication = $this->createMock(Authentication::class);
+        }
+
+        if (null === $authorization) {
+            $authorization = $this->createMock(Authorization::class);
+        }
+
+        if (null === $tokenService) {
+            $tokenService = $this->createMock(TokenService::class);
+        }
+
+        return new TokenController($tokenAdministration, $authentication, $authorization, $tokenService);
     }
 }

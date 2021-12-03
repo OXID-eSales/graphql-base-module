@@ -14,10 +14,12 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * Token data access service
@@ -129,6 +131,26 @@ class Token
         $this->registerToken($user, $token, $time, $expire);
 
         return $token;
+    }
+
+    public function deleteToken(ID $tokenId): void
+    {
+        $tokenId = (string) $tokenId;
+
+        if ($this->tokenInfrastructure->isTokenRegistered($tokenId)) {
+            $this->tokenInfrastructure->tokenDelete(null, $tokenId);
+        } else {
+            throw InvalidToken::unknownToken();
+        }
+    }
+
+    public function deleteUserToken(UserDataType $user, ID $tokenId): void
+    {
+        if ($this->tokenInfrastructure->userHasToken($user, (string) $tokenId)) {
+            $this->tokenInfrastructure->tokenDelete($user, (string) $tokenId);
+        } else {
+            throw InvalidToken::unknownToken();
+        }
     }
 
     private function registerToken(UserDataType $user, UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void

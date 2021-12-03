@@ -113,4 +113,27 @@ class Token
 
         $queryBuilder->execute();
     }
+
+    public function userHasToken(UserDataType $user, string $tokenId): bool
+    {
+        $queryBuilder = $this->queryBuilderFactory->create();
+
+        $queryBuilder
+            ->select('count(OXID)')
+            ->from('oegraphqltoken')
+            ->where('OXID = :tokenId')
+            ->andWhere('OXUSERID = :userId')
+            ->setParameters([
+                'tokenId' => $tokenId,
+                'userId'  => (string) $user->id(),
+            ]);
+
+        $result = $queryBuilder->execute();
+
+        if (is_object($result)) {
+            return $result->fetch(PDO::FETCH_COLUMN) > 0;
+        }
+
+        return false;
+    }
 }
