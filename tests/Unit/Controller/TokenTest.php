@@ -68,4 +68,15 @@ class TokenTest extends BaseTestCase
         $tokenController = new TokenController($tokenAdministration, $authentication);
         $tokenController->tokens($filterList, $pagination, $sort);
     }
+
+    public function testCustomerTokensDelete(): void
+    {
+        $authentication      = $this->createPartialMock(Authentication::class, []);
+        $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['customerTokensDelete']);
+        $tokenAdministration->method('customerTokensDelete')
+            ->willReturn(5);
+
+        $tokenController = new TokenController($tokenAdministration, $authentication);
+        $tokenController->customerTokensDelete(new ID('someUserId'));
+    }
 }

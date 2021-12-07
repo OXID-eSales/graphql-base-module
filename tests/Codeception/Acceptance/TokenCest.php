@@ -23,8 +23,10 @@ class TokenCest
 
     public function _after(AcceptanceTester $I): void
     {
+        $this->adminDeletesAllUserTokens($I, self::TEST_USER_ID);
+        $this->adminDeletesAllUserTokens($I);
+
         $I->logout();
-        //TODO: clean up oegraphqltoken table via query
     }
 
     public function testCannotQueryTokensWithoutToken(AcceptanceTester $I): void
@@ -183,6 +185,7 @@ class TokenCest
     {
         $I->wantToTest('tokens query with sorting');
 
+        $this->generateUserTokens($I, false, true);
         $token = $this->generateUserTokens($I, false, true);
         $I->amBearerAuthenticated($token);
 
@@ -240,6 +243,100 @@ class TokenCest
         $I->assertNotEmpty($result['data']['tokens']);
     }
 
+    public function testCustomerTokensDeleteWithoutToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete without token');
+
+        $result = $this->sendTokenDeleteMutation($I);
+
+        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testCustomerTokensDeleteWithAnonymousToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete with anonymous token');
+
+        $I->sendGQLQuery('query { token }');
+        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendTokenDeleteMutation($I);
+
+        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testCustomerTokensDeleteDefault(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete as normal user without customer id');
+
+        $token = $this->generateUserTokens($I, false);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendTokenDeleteMutation($I);
+
+        $I->assertEquals(3, $result['data']['customerTokensDelete']);
+    }
+
+    public function testCustomerTokensDeleteOwnId(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete as normal user with own id');
+
+        $token = $this->generateUserTokens($I, false);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendTokenDeleteMutation($I, self::TEST_USER_ID);
+
+        $I->assertEquals(3, $result['data']['customerTokensDelete']);
+    }
+
+    public function testCustomerTokensDeleteOtherUserFails(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete as normal user with other customer id');
+
+        $token = $this->generateUserTokens($I, false);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendTokenDeleteMutation($I, '_other_user');
+
+        $I->assertStringStartsWith('Unauthorized', $result['errors'][0]['message']);
+    }
+
+    public function testCustomerTokensDeleteOtherUserAdmin(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete as special rights user with other customer id');
+
+        $token = $this->generateUserTokens($I);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendTokenDeleteMutation($I, self::TEST_USER_ID);
+
+        $I->assertEquals(3, $result['data']['customerTokensDelete']);
+    }
+
+    public function testCustomerTokensDeleteAdminDeletesOwnTokens(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete as special rights user without customer id');
+
+        $token = $this->generateUserTokens($I);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendTokenDeleteMutation($I);
+
+        $I->assertEquals(2, $result['data']['customerTokensDelete']);
+    }
+
+    public function testCustomerTokensDeleteNotExistingOtherUserAdmin(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling customerTokenDelete as special rights user for not existing customer');
+
+        $token = $this->generateUserTokens($I);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendTokenDeleteMutation($I, 'unknown_user');
+
+        $I->assertStringStartsWith('User was not found by id:', $result['errors'][0]['message']);
+    }
+
     private function sendTokenQuery(AcceptanceTester $I, string $filterPart = ''): array
     {
         $query = ' query {
@@ -253,6 +350,31 @@ class TokenCest
         ';
 
         $I->sendGQLQuery($query);
+
+        return $I->grabJsonResponseAsArray();
+    }
+
+    private function sendTokenDeleteMutation(AcceptanceTester $I, ?string $userId = null): array
+    {
+        $query = ' mutation {
+               customerTokensDelete ';
+        !$userId ?: $query .= '(customerId: "' . $userId . '")';
+        $query .= '}';
+
+        $I->sendGQLQuery($query);
+
+        return $I->grabJsonResponseAsArray();
+    }
+
+    private function adminDeletesAllUserTokens(AcceptanceTester $I, ?string $userId = null): array
+    {
+        $I->logout();
+
+        $I->sendGQLQuery('query { token (username: "admin", password: "admin") }');
+        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->amBearerAuthenticated($token);
+
+        $this->sendTokenDeleteMutation($I, $userId);
 
         return $I->grabJsonResponseAsArray();
     }

@@ -17,7 +17,9 @@ use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
+use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 class Token
 {
@@ -58,5 +60,19 @@ class Token
             $pagination ?? new Pagination(),
             $sort ?? TokenSorting::fromUserInput(TokenSorting::SORTING_ASC)
         );
+    }
+
+    /**
+     * Invalidate all tokens per customer.
+     *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate tokens for any customer Id.
+     *  - Customer without special rights can invalidate only own tokens.
+     * If no customerId is supplied, own Id is taken.
+     *
+     * @Mutation
+     * @Logged
+     */
+    public function customerTokensDelete(?ID $customerId): int
+    {
+        return $this->tokenAdministration->customerTokensDelete($customerId);
     }
 }

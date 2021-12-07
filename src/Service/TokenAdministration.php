@@ -13,8 +13,13 @@ use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\NotFound;
+use OxidEsales\GraphQL\Base\Exception\UserNotFound;
 use OxidEsales\GraphQL\Base\Infrastructure\Repository as BaseRepository;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * Token data access service
@@ -30,14 +35,19 @@ class TokenAdministration
     /** @var Authentication */
     private $authenticationService;
 
+    /** @var TokenInfrastructure */
+    private $tokenInfrastructure;
+
     public function __construct(
         BaseRepository $repository,
         Authorization $authorizationService,
-        Authentication $authenticationService
+        Authentication $authenticationService,
+        TokenInfrastructure $tokenInfrastructure
     ) {
         $this->repository            = $repository;
         $this->authorizationService  = $authorizationService;
         $this->authenticationService = $authenticationService;
+        $this->tokenInfrastructure   = $tokenInfrastructure;
     }
 
     /**
@@ -63,5 +73,32 @@ class TokenAdministration
             $pagination,
             $sort
         );
+    }
+
+    /**
+     * @throws \OxidEsales\GraphQL\Base\Exception\NotFound
+     */
+    public function customerTokensDelete(?ID $customerId): int
+    {
+        if (!$this->authorizationService->isAllowed('INVALIDATE_ANY_TOKEN') &&
+            $customerId &&
+            $this->authenticationService->getUser()->id()->val() !== $customerId->val()
+        ) {
+            throw new InvalidLogin('Unauthorized');
+        }
+
+        $id = $customerId ? (string) $customerId->val() : (string) $this->authenticationService->getUser()->id()->val();
+
+        try {
+            /** @var UserDataType $user */
+            $user = $this->repository->getById(
+                $id,
+                UserDataType::class
+            );
+        } catch (NotFound $e) {
+            throw UserNotFound::byId($id);
+        }
+
+        return $this->tokenInfrastructure->tokenDelete($user);
     }
 }

@@ -85,7 +85,7 @@ class Token
         return  $return;
     }
 
-    public function tokenDelete(?UserDataType $user = null, ?string $tokenId = null, ?int $shopId = null): void
+    public function tokenDelete(?UserDataType $user = null, ?string $tokenId = null, ?int $shopId = null): int
     {
         $parameters = [];
         $condition  = 'where';
@@ -111,6 +111,8 @@ class Token
 
         $queryBuilder->setParameters($parameters);
 
-        $queryBuilder->execute();
+        $result = $queryBuilder->execute();
+
+        return is_object($result) ? $result->columnCount() : (int) $result;
     }
 }

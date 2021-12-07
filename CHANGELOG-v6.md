@@ -8,13 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Logic to track tokens of not anonymous users in database
+- Logic to invalidate tokens
 - New table `oegraphqltoken`
 - Module setting `sJsonWebTokenUserQuota` to limit the number of valid JWT for a single user.
 - Classes
+  - `OxidEsales\GraphQL\Base\Controller\Token`
   - `OxidEsales\GraphQL\Base\DataType\User`
   - `OxidEsales\GraphQL\Base\Infrastructure\Model\Token`
   - `OxidEsales\GraphQL\Base\Infrastructure\Token`
+  - `OxidEsales\GraphQL\Base\Infrastructure\Repository`
   - `OxidEsales\GraphQL\Base\Exception\TokenQuota`
+  - `OxidEsales\GraphQL\Base\Exception\UserNotFound`
+  - `OxidEsales\GraphQL\Base\Service\TokenAdministration`
 - Public Methods
   - `OxidEsales\GraphQL\Base\Exception\InvalidToken::unknownToken()`
   - `OxidEsales\GraphQL\Base\Service\ModuleConfiguration::getUserTokenQuota()`
