@@ -19,6 +19,7 @@ use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
+use TheCodingMachine\GraphQLite\Annotations\Right;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 class Token
@@ -74,5 +75,17 @@ class Token
     public function customerTokensDelete(?ID $customerId): int
     {
         return $this->tokenAdministration->customerTokensDelete($customerId);
+    }
+
+    /**
+     * Invalidate all tokens for current shop.
+     *
+     * @Mutation
+     * @Logged
+     * @Right("INVALIDATE_ANY_TOKEN")
+     */
+    public function shopTokensDelete(): int
+    {
+        return $this->tokenAdministration->shopTokensDelete();
     }
 }

@@ -337,6 +337,52 @@ class TokenCest
         $I->assertStringStartsWith('User was not found by id:', $result['errors'][0]['message']);
     }
 
+    public function testShopTokensDeleteWithoutToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling shopTokenDelete without token');
+
+        $result = $this->sendShopTokensDeleteMutation($I);
+
+        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testShopTokensDeleteWithAnonymousToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling shopTokenDelete with anonymous token');
+
+        $I->sendGQLQuery('query { token }');
+        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendShopTokensDeleteMutation($I);
+
+        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testShopTokensDeleteWithUserToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling shopTokenDelete with user token');
+
+        $token = $this->generateUserTokens($I, false);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendShopTokensDeleteMutation($I);
+
+        $I->assertStringStartsWith('You do not have sufficient rights to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testShopTokensDeleteWithAdminToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling shopTokenDelete with special rights token');
+
+        $token = $this->generateUserTokens($I, );
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendShopTokensDeleteMutation($I);
+
+        $I->assertEquals(5, $result['data']['shopTokensDelete']);
+    }
+
     private function sendTokenQuery(AcceptanceTester $I, string $filterPart = ''): array
     {
         $query = ' query {
@@ -360,6 +406,17 @@ class TokenCest
                customerTokensDelete ';
         !$userId ?: $query .= '(customerId: "' . $userId . '")';
         $query .= '}';
+
+        $I->sendGQLQuery($query);
+
+        return $I->grabJsonResponseAsArray();
+    }
+
+    private function sendShopTokensDeleteMutation(AcceptanceTester $I): array
+    {
+        $query = ' mutation {
+                       shopTokensDelete
+                   }';
 
         $I->sendGQLQuery($query);
 
