@@ -32,6 +32,15 @@ class ModuleConfiguration
     /** @var ModuleSettingBridgeInterface */
     private $moduleSettingBridge;
 
+    /** @var string[] */
+    private $lifetimeMap = [
+        '15min' => '+15 minutes',
+        '1hrs'  => '+1 hour',
+        '3hrs'  => '+3 hours',
+        '8hrs'  => '+8 hours',
+        '24hrs' => '+24 hours',
+    ];
+
     public function __construct(
         ModuleSettingBridgeInterface $moduleSettingBridge
     ) {
@@ -63,6 +72,8 @@ class ModuleConfiguration
 
     public function getTokenLifeTime(): string
     {
-        return (string) $this->moduleSettingBridge->get(static::LIFETIMENAME, 'oe_graphql_base');
+        $key = (string) $this->moduleSettingBridge->get(static::LIFETIMENAME, 'oe_graphql_base');
+
+        return $this->lifetimeMap[$key] ?? $this->lifetimeMap['8hrs'];
     }
 }

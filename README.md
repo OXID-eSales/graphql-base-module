@@ -25,15 +25,16 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` co
 
 ## Branch Compatibility
 
-* master branch for b-7.0 shop compilation branches
-* b-6.4.x branch for b-6.4.x shop compilation branches
-* b-6.3.x branch for b-6.3.x shop compilation branches (NOTE: no support for PHP 8 yet)
-* b-6.2.x branch for b-6.2.x shop compilation branches
+* master branch is compatible with latest shop compilations: 7.0.x and master
+* 6.x versions (or b-6.4.x branch) are compatible with latest shop compilations: 6.4.x resp. b-6.4.x shop compilation branches
+* 5.x versions (or b-6.3.x branch) are compatible with latest shop compilations: 6.2.x and 6.3.x resp. b-6.2.x and b-6.3.x shop compilation branches (NOTE: no support for PHP 8 yet)
+* 4.x versions and below are for b-6.2.x shop compilation branches
 
 ### Install
 
 ```bash
-$ composer require oxid-esales/graphql-base
+# Install desired version of oxid-esales/graphql-base module, in this case - latest released 6.x version
+$ composer require oxid-esales/graphql-base ^6.0.0
 ```
 
 After requiring the module, you need to activate it, either via OXID eShop admin or CLI.

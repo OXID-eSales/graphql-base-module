@@ -26,7 +26,7 @@ $aModule = [
         'en'      => '<span>OXID GraphQL API Framework</span>',
     ],
     'thumbnail'   => 'out/pictures/logo.png',
-    'version'     => '6.0.0',
+    'version'     => '6.0.1',
     'author'      => 'OXID eSales',
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
@@ -52,7 +52,7 @@ $aModule = [
             'name'  => 'sJsonWebTokenLifetime',
             'type'        => 'select',
             'constraints' => '15min|1hrs|3hrs|8hrs|24hrs',
-            'value' => '+8 hours'
+            'value' => '8hrs'
         ],
     ],
     'events'      => [
