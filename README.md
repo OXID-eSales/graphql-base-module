@@ -21,14 +21,13 @@ This module provides:
 
 ## Usage
 
-This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.5.0` component, which is part of the `6.2.0` compilation) up and running.
+This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.8.0` component, which is part of the `6.3.0` compilation) up and running.
 
 ## Branch Compatibility
 
 * master branch is compatible with latest shop compilations: 7.0.x and master
 * 6.x versions (or b-6.4.x branch) are compatible with latest shop compilations: 6.4.x resp. b-6.4.x shop compilation branches
-* 5.x versions (or b-6.3.x branch) are compatible with latest shop compilations: 6.2.x and 6.3.x resp. b-6.2.x and b-6.3.x shop compilation branches (NOTE: no support for PHP 8 yet)
-* 4.x versions and below are for b-6.2.x shop compilation branches
+* 5.x versions (or b-6.3.x branch) are compatible with latest shop compilations: 6.3.x resp. b-6.3.x shop compilation branches (NOTE: no support for PHP 8 yet)
 
 ### Install
 
@@ -91,7 +90,7 @@ Authorization: Bearer a-very-long-jwt
 
 The information on extending any module can be found in the [OXID eSales documentation](https://docs.oxid-esales.com).
 
-How to extend GraphQL module types and implement your new mutations and queries is shown in [OXID GraphQL API documentation](https://docs.oxid-esales.com/interfaces/graphql/en/5.2/tutorials/index.html).
+How to extend GraphQL module types and implement your new mutations and queries is shown in [OXID GraphQL API documentation](https://docs.oxid-esales.com/interfaces/graphql/en/6.0/tutorials/index.html).
 
 ## Testing
 
