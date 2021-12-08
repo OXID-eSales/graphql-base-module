@@ -21,12 +21,14 @@ class TokenCest
 {
     private const TEST_USER_ID = 'e7af1c3b786fd02906ccd75698f4e6b9';
 
+    public function _before(AcceptanceTester $I): void
+    {
+        $this->adminDeletesAllUserTokens($I);
+    }
+
     public function _after(AcceptanceTester $I): void
     {
-        $this->adminDeletesAllUserTokens($I, self::TEST_USER_ID);
         $this->adminDeletesAllUserTokens($I);
-
-        $I->logout();
     }
 
     public function testCannotQueryTokensWithoutToken(AcceptanceTester $I): void
@@ -375,12 +377,63 @@ class TokenCest
     {
         $I->wantToTest('calling shopTokenDelete with special rights token');
 
-        $token = $this->generateUserTokens($I, );
+        $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendShopTokensDeleteMutation($I);
 
         $I->assertEquals(5, $result['data']['shopTokensDelete']);
+    }
+
+    public function testRegenerateSignatureKeyWithoutToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling regenerateSignatureKey without token');
+
+        $result = $this->sendRegenerateSignatureKeyMutation($I);
+
+        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testRegenerateSignatureKeyWithAnonymousToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling regenerateSignatureKey with anonymous token');
+
+        $I->sendGQLQuery('query { token }');
+        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendRegenerateSignatureKeyMutation($I);
+
+        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testRegenerateSignatureKeyWithUserToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling regenerateSignatureKey with normal user token');
+
+        $token = $this->generateUserTokens($I, false);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendRegenerateSignatureKeyMutation($I);
+
+        $I->assertStringStartsWith('You do not have sufficient rights to access this field', $result['errors'][0]['message']);
+    }
+
+    public function testRegenerateSignatureKeyWithAdminToken(AcceptanceTester $I): void
+    {
+        $I->wantToTest('calling regenerateSignatureKey with special rights token');
+
+        $token = $this->generateUserTokens($I);
+        $I->amBearerAuthenticated($token);
+
+        $result = $this->sendRegenerateSignatureKeyMutation($I);
+
+        $I->assertTrue($result['data']['regenerateSignatureKey']);
+
+        //fails on second call because the token is no longer valid for new signature
+        $result = $this->sendRegenerateSignatureKeyMutation($I);
+
+        $I->assertStringStartsWith('The token is invalid', $result['errors'][0]['message']);
     }
 
     private function sendTokenQuery(AcceptanceTester $I, string $filterPart = ''): array
@@ -423,6 +476,17 @@ class TokenCest
         return $I->grabJsonResponseAsArray();
     }
 
+    private function sendRegenerateSignatureKeyMutation(AcceptanceTester $I): array
+    {
+        $query = ' mutation {
+                       regenerateSignatureKey
+                   }';
+
+        $I->sendGQLQuery($query);
+
+        return $I->grabJsonResponseAsArray();
+    }
+
     private function adminDeletesAllUserTokens(AcceptanceTester $I, ?string $userId = null): array
     {
         $I->logout();
@@ -431,7 +495,12 @@ class TokenCest
         $token = $I->grabJsonResponseAsArray()['data']['token'];
         $I->amBearerAuthenticated($token);
 
-        $this->sendTokenDeleteMutation($I, $userId);
+        if ($userId) {
+            $this->sendTokenDeleteMutation($I, $userId);
+        } else {
+            $this->sendShopTokensDeleteMutation($I);
+        }
+        $I->logout();
 
         return $I->grabJsonResponseAsArray();
     }

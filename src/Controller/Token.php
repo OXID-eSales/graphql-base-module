@@ -88,4 +88,18 @@ class Token
     {
         return $this->tokenAdministration->shopTokensDelete();
     }
+
+    /**
+     * Regenerates the JWT signature key.
+     * This will invalidate all issued tokens for the current shop.
+     * Only use if no other option is left.
+     *
+     * @Mutation
+     * @Logged
+     * @Right("REGENERATE_SIGNATURE_KEY")
+     */
+    public function regenerateSignatureKey(): bool
+    {
+        return $this->tokenAdministration->regenerateSignatureKey();
+    }
 }
