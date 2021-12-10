@@ -21,6 +21,12 @@ class TokenCest
 {
     private const TEST_USER_ID = 'e7af1c3b786fd02906ccd75698f4e6b9';
 
+    private const ADMIN_LOGIN = 'admin';
+
+    private const ADMIN_PASSWORD = 'admin';
+
+    private const USER_LOGIN = 'user@oxid-esales.com';
+
     public function _after(AcceptanceTester $I): void
     {
         $this->adminDeletesAllUserTokens($I, self::TEST_USER_ID);
@@ -247,7 +253,7 @@ class TokenCest
     {
         $I->wantToTest('calling customerTokenDelete without token');
 
-        $result = $this->sendTokenDeleteMutation($I);
+        $result = $this->sendCustomerTokenDeleteMutation($I);
 
         $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
     }
@@ -260,7 +266,7 @@ class TokenCest
         $token = $I->grabJsonResponseAsArray()['data']['token'];
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenDeleteMutation($I);
+        $result = $this->sendCustomerTokenDeleteMutation($I);
 
         $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
     }
@@ -272,7 +278,7 @@ class TokenCest
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenDeleteMutation($I);
+        $result = $this->sendCustomerTokenDeleteMutation($I);
 
         $I->assertEquals(3, $result['data']['customerTokensDelete']);
     }
@@ -284,7 +290,7 @@ class TokenCest
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenDeleteMutation($I, self::TEST_USER_ID);
+        $result = $this->sendCustomerTokenDeleteMutation($I, self::TEST_USER_ID);
 
         $I->assertEquals(3, $result['data']['customerTokensDelete']);
     }
@@ -296,7 +302,7 @@ class TokenCest
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenDeleteMutation($I, '_other_user');
+        $result = $this->sendCustomerTokenDeleteMutation($I, '_other_user');
 
         $I->assertStringStartsWith('Unauthorized', $result['errors'][0]['message']);
     }
@@ -308,7 +314,7 @@ class TokenCest
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenDeleteMutation($I, self::TEST_USER_ID);
+        $result = $this->sendCustomerTokenDeleteMutation($I, self::TEST_USER_ID);
 
         $I->assertEquals(3, $result['data']['customerTokensDelete']);
     }
@@ -320,7 +326,7 @@ class TokenCest
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenDeleteMutation($I);
+        $result = $this->sendCustomerTokenDeleteMutation($I);
 
         $I->assertEquals(2, $result['data']['customerTokensDelete']);
     }
@@ -332,9 +338,92 @@ class TokenCest
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenDeleteMutation($I, 'unknown_user');
+        $result = $this->sendCustomerTokenDeleteMutation($I, 'unknown_user');
 
         $I->assertStringStartsWith('User was not found by id:', $result['errors'][0]['message']);
+    }
+
+    public function testNotLoggedUserCannotDeleteToken(AcceptanceTester $I): void
+    {
+        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
+        $I->assertEquals('You need to be logged to access this field', $response['errors'][0]['message']);
+    }
+
+    public function testAnonymousUserCannotDeleteToken(AcceptanceTester $I): void
+    {
+        $I->login();
+        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
+        $I->assertEquals('You need to be logged to access this field', $response['errors'][0]['message']);
+    }
+
+    public function testShopAdminCannotDeleteNotExistingToken(AcceptanceTester $I): void
+    {
+        $I->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
+        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
+        $I->assertEquals('The token is not registered', $response['errors'][0]['message']);
+    }
+
+    public function testAdminCanDeleteToken(AcceptanceTester $I): void
+    {
+        $token = $this->generateUserTokens($I);
+        $I->amBearerAuthenticated($token);
+
+        $filterPart = '( filter: {
+                           customerId: {
+                               equals: "' . self::TEST_USER_ID . '"
+                          }
+                        })';
+
+        // Get one of user tokens
+        $response = $this->sendTokenQuery($I, $filterPart);
+        $tokenId  = $response['data']['tokens'][0]['id'];
+
+        // Delete it
+        $response = $this->sendTokenDeleteMutation($I, $tokenId);
+        $I->assertTrue($response['data']['tokenDelete']);
+
+        // It's not there anymore
+        $response = $this->sendTokenQuery($I, $filterPart);
+        $ids      = array_map(function ($tokenRow) {
+            return $tokenRow['id'];
+        }, $response['data']['tokens']);
+        $I->assertNotContains($tokenId, $ids);
+    }
+
+    public function testUserCannotDeleteNotExistingToken(AcceptanceTester $I): void
+    {
+        $I->login(self::USER_LOGIN, $this->getUserPassword());
+        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
+        $I->assertEquals('The token is not registered', $response['errors'][0]['message']);
+    }
+
+    public function testUserCanDeleteHisToken(AcceptanceTester $I): void
+    {
+        // Generate two tokens
+        $I->login(self::USER_LOGIN, $this->getUserPassword());
+        sleep(1);
+        $I->login(self::USER_LOGIN, $this->getUserPassword());
+
+        $response = $this->sendTokenQuery($I, '(sort:{expiresAt: "ASC"})');
+        $tokenId  = $response['data']['tokens'][0]['id'];
+
+        // Delete the older one
+        $response = $this->sendTokenDeleteMutation($I, $tokenId);
+        $I->assertTrue($response['data']['tokenDelete']);
+
+        $response = $this->sendTokenQuery($I);
+        $I->assertNotEquals($tokenId, $response['data']['tokens'][0]['id']);
+    }
+
+    public function testUserCannotDeleteNotHisToken(AcceptanceTester $I): void
+    {
+        $I->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
+        $response = $this->sendTokenQuery($I);
+        $tokenId  = $response['data']['tokens'][0]['id'];
+
+        $I->login(self::USER_LOGIN, $this->getUserPassword());
+        $response = $this->sendTokenDeleteMutation($I, $tokenId);
+        $I->assertEquals('The token is not registered', $response['errors'][0]['message']);
     }
 
     private function sendTokenQuery(AcceptanceTester $I, string $filterPart = ''): array
@@ -354,7 +443,7 @@ class TokenCest
         return $I->grabJsonResponseAsArray();
     }
 
-    private function sendTokenDeleteMutation(AcceptanceTester $I, ?string $userId = null): array
+    private function sendCustomerTokenDeleteMutation(AcceptanceTester $I, ?string $userId = null): array
     {
         $query = ' mutation {
                customerTokensDelete ';
@@ -374,7 +463,7 @@ class TokenCest
         $token = $I->grabJsonResponseAsArray()['data']['token'];
         $I->amBearerAuthenticated($token);
 
-        $this->sendTokenDeleteMutation($I, $userId);
+        $this->sendCustomerTokenDeleteMutation($I, $userId);
 
         return $I->grabJsonResponseAsArray();
     }
@@ -384,30 +473,54 @@ class TokenCest
         $I->logout();
 
         //four anonymous
-        $I->sendGQLQuery('query { token }');
-        $I->sendGQLQuery('query { token }');
-        $I->sendGQLQuery('query { token }');
-        $I->sendGQLQuery('query { token }');
+        $this->generateToken($I);
+        $this->generateToken($I);
+        $this->generateToken($I);
+        $this->generateToken($I);
 
         //two for admin
-        $I->sendGQLQuery('query { token (username: "admin", password: "admin") }');
-        $I->sendGQLQuery('query { token (username: "admin", password: "admin") }');
-
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $this->generateToken($I, self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
+        $token = $this->generateToken($I, self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
 
         //three for demo user
-        $password = 'user';
-        $facts    = new Facts();
-
-        if ($facts->isEnterprise()) {
-            $password = 'useruser';
-        }
-        $I->sendGQLQuery('query { token (username: "user@oxid-esales.com", password: "' . $password . '") }');
-        $I->sendGQLQuery('query { token (username: "user@oxid-esales.com", password: "' . $password . '") }');
+        $this->generateToken($I, self::USER_LOGIN, $this->getUserPassword());
+        $this->generateToken($I, self::USER_LOGIN, $this->getUserPassword());
         !$delay ?? $I->wait(1);
-        $I->sendGQLQuery('query { token (username: "user@oxid-esales.com", password: "' . $password . '") }');
+        $userToken = $this->generateToken($I, self::USER_LOGIN, $this->getUserPassword());
         $I->logout();
 
-        return $adminToken ? $token : $I->grabJsonResponseAsArray()['data']['token'];
+        return $adminToken ? $token : $userToken;
+    }
+
+    private function sendTokenDeleteMutation(AcceptanceTester $I, string $tokenId): array
+    {
+        $mutation = 'mutation ($tokenId: ID!) {
+            tokenDelete(tokenId: $tokenId)
+        }';
+
+        $I->sendGQLQuery($mutation, ['tokenId' => $tokenId]);
+
+        return $I->grabJsonResponseAsArray();
+    }
+
+    private function generateToken(AcceptanceTester $I, $username = null, $password = null): string
+    {
+        $query = 'query ($username: String, $password: String) {
+            token (username: $username, password: $password)
+        }';
+
+        $I->sendGQLQuery($query, [
+            'username' => $username,
+            'password' => $password,
+        ]);
+
+        return $I->grabJsonResponseAsArray()['data']['token'];
+    }
+
+    private function getUserPassword(): string
+    {
+        $facts = new Facts();
+
+        return $facts->isEnterprise() ? 'useruser' : 'user';
     }
 }

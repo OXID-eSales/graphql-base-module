@@ -15,6 +15,8 @@ use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\Service\Authentication;
+use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
@@ -29,12 +31,22 @@ class Token
     /** @var Authentication */
     private $authentication;
 
+    /** @var Authorization */
+    private $authorization;
+
+    /** @var TokenService */
+    private $tokenService;
+
     public function __construct(
         TokenAdministration $tokenAdministration,
-        Authentication $authentication
+        Authentication $authentication,
+        Authorization $authorization,
+        TokenService $tokenService
     ) {
         $this->tokenAdministration = $tokenAdministration;
         $this->authentication      = $authentication;
+        $this->authorization       = $authorization;
+        $this->tokenService        = $tokenService;
     }
 
     /**
@@ -74,5 +86,20 @@ class Token
     public function customerTokensDelete(?ID $customerId): int
     {
         return $this->tokenAdministration->customerTokensDelete($customerId);
+    }
+
+    /**
+     * @Mutation
+     * @Logged
+     */
+    public function tokenDelete(ID $tokenId): bool
+    {
+        if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
+            $this->tokenService->deleteToken($tokenId);
+        } else {
+            $this->tokenService->deleteUserToken($this->authentication->getUser(), $tokenId);
+        }
+
+        return true;
     }
 }

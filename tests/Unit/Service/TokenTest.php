@@ -11,11 +11,13 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 class TokenTest extends BaseTestCase
 {
@@ -70,5 +72,60 @@ class TokenTest extends BaseTestCase
 
         $this->expectException(TokenQuota::class);
         $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
+    }
+
+    public function testDeleteToken(): void
+    {
+        $tokenId = 'not_existing';
+
+        $legacy = $this->createMock(LegacyService::class);
+
+        $tokenInfrastructure = $this->createPartialMock(
+            TokenInfrastructure::class,
+            ['isTokenRegistered', 'tokenDelete']
+        );
+        $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
+        $tokenInfrastructure->expects($this->once())->method('tokenDelete')->with(null, $tokenId);
+
+        $this->getTokenService($legacy, $tokenInfrastructure)->deleteToken(new ID($tokenId));
+    }
+
+    public function testDeleteNotExistingToken(): void
+    {
+        $legacy = $this->createMock(LegacyService::class);
+
+        $this->expectException(InvalidToken::class);
+        $this->expectExceptionMessage('The token is not registered');
+
+        $this->getTokenService($legacy)->deleteToken(new ID('not_existing'));
+    }
+
+    public function testDeleteUserToken(): void
+    {
+        $tokenId = 'not_existing';
+        $user    = $this->getUserDataStub($this->getUserModelStub('_testuser'));
+        $legacy  = $this->createMock(LegacyService::class);
+
+        $tokenInfrastructure = $this->createPartialMock(
+            TokenInfrastructure::class,
+            ['userHasToken', 'tokenDelete']
+        );
+        $tokenInfrastructure->method('userHasToken')->willReturn(true);
+        $tokenInfrastructure->expects($this->once())->method('tokenDelete')->with($user, $tokenId);
+
+        $this->getTokenService($legacy, $tokenInfrastructure)->deleteUserToken($user, new ID($tokenId));
+    }
+
+    public function testDeleteNotExistingUserToken(): void
+    {
+        $user                = $this->getUserDataStub($this->getUserModelStub('_testuser'));
+        $legacy              = $this->createMock(LegacyService::class);
+        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['userHasToken']);
+        $tokenInfrastructure->method('userHasToken')->willReturn(false);
+
+        $this->expectException(InvalidToken::class);
+        $this->expectExceptionMessage('The token is not registered');
+
+        $this->getTokenService($legacy, $tokenInfrastructure)->deleteUserToken($user, new ID('not_existing'));
     }
 }
