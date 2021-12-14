@@ -103,6 +103,7 @@ class Token
 
         return true;
     }
+
     /**
      * Invalidate all tokens for current shop.
      *

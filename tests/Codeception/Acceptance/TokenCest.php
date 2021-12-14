@@ -425,7 +425,7 @@ class TokenCest
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
         $I->assertEquals('The token is not registered', $response['errors'][0]['message']);
     }
-    
+
     public function testShopTokensDeleteWithoutToken(AcceptanceTester $I): void
     {
         $I->wantToTest('calling shopTokenDelete without token');
