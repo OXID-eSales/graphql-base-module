@@ -18,6 +18,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
 use OxidEsales\GraphQL\Base\Exception\UserNotFound;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup;
 use OxidEsales\GraphQL\Base\Infrastructure\Repository as BaseRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -42,18 +43,23 @@ class TokenAdministration
     /** @var LegacyInfrastructure */
     private $legacyInfrastructure;
 
+    /** @var ModuleSetup */
+    private $moduleSetup;
+
     public function __construct(
         BaseRepository $repository,
         Authorization $authorizationService,
         Authentication $authenticationService,
         TokenInfrastructure $tokenInfrastructure,
-        LegacyInfrastructure $legacyInfrastructure
+        LegacyInfrastructure $legacyInfrastructure,
+        ModuleSetup $moduleSetup
     ) {
         $this->repository            = $repository;
         $this->authorizationService  = $authorizationService;
         $this->authenticationService = $authenticationService;
         $this->tokenInfrastructure   = $tokenInfrastructure;
         $this->legacyInfrastructure  = $legacyInfrastructure;
+        $this->moduleSetup           = $moduleSetup;
     }
 
     /**
@@ -111,5 +117,12 @@ class TokenAdministration
     public function shopTokensDelete(): int
     {
         return $this->tokenInfrastructure->tokenDelete(null, null, $this->legacyInfrastructure->getShopId());
+    }
+
+    public function regenerateSignatureKey(): bool
+    {
+        $this->moduleSetup->runSetup();
+
+        return true;
     }
 }
