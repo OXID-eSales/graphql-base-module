@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit;
 
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
@@ -32,6 +33,9 @@ abstract class BaseTestCase extends TestCase
         $moduleConfiguration->method('getTokenLifeTime')
             ->willReturn($lifetime);
 
+        $moduleConfiguration->method('getUserTokenQuota')
+            ->willReturn(100);
+
         return $moduleConfiguration;
     }
 
@@ -46,23 +50,33 @@ abstract class BaseTestCase extends TestCase
         return $userModelStub;
     }
 
-    protected function getTokenValidator($legacy): TokenValidator
+    protected function getTokenValidator($legacy, $tokenInfrastructure = null): TokenValidator
     {
         return new TokenValidator(
             $this->getJwtConfigurationBuilder($legacy),
-            $legacy
+            $legacy,
+            $tokenInfrastructure ?: $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered'])
         );
     }
 
-    protected function getTokenService($legacy, $token = null, string $lifetime = '+8 hours'): TokenService
+    protected function getTokenService($legacy, $tokenInfrastructure = null, $token = null, string $lifetime = '+8 hours'): TokenService
     {
         return new TokenService(
             $token,
             $this->getJwtConfigurationBuilder($legacy),
             $legacy,
             $this->createPartialMock(EventDispatcherInterface::class, []),
-            $this->getModuleConfigurationMock($lifetime)
+            $this->getModuleConfigurationMock($lifetime),
+            $tokenInfrastructure ?: $this->getTokenInfrastructureMock()
         );
+    }
+
+    protected function getTokenInfrastructureMock(): TokenInfrastructure
+    {
+        $mock = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $mock->method('canIssueToken')->willReturn(true);
+
+        return $mock;
     }
 
     protected function getJwtConfigurationBuilder($legacy = null): JwtConfigurationBuilder
@@ -73,10 +87,11 @@ abstract class BaseTestCase extends TestCase
         );
     }
 
-    protected function getUserDataStub(?UserModel $model = null): UserDataType
+    protected function getUserDataStub(?UserModel $model = null, bool $isAnonymous = false): UserDataType
     {
         return new UserDataType(
-            $model ?: $this->createPartialMock(UserModel::class, ['getRawFieldData'])
+            $model ?: $this->createPartialMock(UserModel::class, ['getRawFieldData']),
+            $isAnonymous
         );
     }
 }

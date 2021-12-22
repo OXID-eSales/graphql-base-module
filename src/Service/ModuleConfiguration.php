@@ -29,6 +29,8 @@ class ModuleConfiguration
 
     public const LIFETIMENAME = 'sJsonWebTokenLifetime';
 
+    public const QUOTANAME = 'sJsonWebTokenUserQuota';
+
     /** @var ModuleSettingBridgeInterface */
     private $moduleSettingBridge;
 
@@ -75,5 +77,10 @@ class ModuleConfiguration
         $key = (string) $this->moduleSettingBridge->get(static::LIFETIMENAME, 'oe_graphql_base');
 
         return $this->lifetimeMap[$key] ?? $this->lifetimeMap['8hrs'];
+    }
+
+    public function getUserTokenQuota(): int
+    {
+        return (int) $this->moduleSettingBridge->get(static::QUOTANAME, 'oe_graphql_base');
     }
 }

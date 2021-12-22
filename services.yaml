@@ -43,6 +43,12 @@ services:
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy
 
+  OxidEsales\GraphQL\Base\Infrastructure\Token:
+      class: OxidEsales\GraphQL\Base\Infrastructure\Token
+
+  OxidEsales\GraphQL\Base\Infrastructure\Repository:
+      class: OxidEsales\GraphQL\Base\Infrastructure\Repository
+
   OxidEsales\GraphQL\Base\Service\Authorization:
     class: OxidEsales\GraphQL\Base\Service\Authorization
     arguments:
@@ -77,3 +83,7 @@ services:
     class: Symfony\Component\Cache\Psr16Cache
     arguments:
       $pool: '@oxidesales.graphqlbase.cacheadapter'
+
+  OxidEsales\GraphQL\Base\Service\PermissionProvider:
+      class: OxidEsales\GraphQL\Base\Service\PermissionProvider
+      tags: [ 'graphql_permission_provider' ]
