@@ -9,6 +9,8 @@
             "Service/NamespaceMapper.php",
             "Infrastructure/Legacy.php",
             "Event/Subscriber/ModuleChangeSubscriber.php"
+            "Infrastructure/Repository.php",
+            "Infrastructure/Token.php"
         ]
     },
     "phpUnit": {

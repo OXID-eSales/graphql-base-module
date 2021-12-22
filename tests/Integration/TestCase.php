@@ -9,17 +9,24 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
+use DateTimeImmutable;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
 use OxidEsales\Facts\Facts;
+use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
+use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token;
+use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -46,17 +53,51 @@ abstract class TestCase extends PHPUnitTestCase
         $containerFactory  = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriterDefinition = static::$container->getDefinition(ResponseWriter::class);
-        $responseWriterDefinition->setClass(ResponseWriterStub::class);
+        $responseWriter = new ResponseWriterStub(
+            new TimerHandler()
+        );
 
-        $requestReaderDefinition = static::$container->getDefinition(RequestReader::class);
-        $requestReaderDefinition->setClass(RequestReaderStub::class);
+        static::$container->set(
+            ResponseWriter::class,
+            $responseWriter
+        );
+        static::$container->autowire(
+            ResponseWriter::class,
+            ResponseWriter::class
+        );
 
-        $legacyServiceDefinition = static::$container->getDefinition(Legacy::class);
-        $legacyServiceDefinition->setClass(LegacyStub::class);
+        $moduleConfiguration = new ModuleConfigurationStub();
 
-        $legacyServiceDefinition = static::$container->getDefinition(ModuleConfiguration::class);
-        $legacyServiceDefinition->setClass(ModuleConfigurationStub::class);
+        static::$container->set(
+            ModuleConfiguration::class,
+            $moduleConfiguration
+        );
+        static::$container->autowire(
+            ModuleConfiguration::class,
+            ModuleConfiguration::class,
+        );
+
+        $legacyService          = new LegacyStub();
+        $tokenInfrastructure    = new TokenInfrastructureStub();
+        $jwtConfigBuilder       = new JwtConfigurationBuilder($moduleConfiguration, $legacyService);
+
+        $requestReader = new RequestReaderStub(
+            new TokenValidator(
+                $jwtConfigBuilder,
+                $legacyService,
+                $tokenInfrastructure
+            ),
+            $jwtConfigBuilder
+        );
+
+        static::$container->set(
+            RequestReader::class,
+            $requestReader
+        );
+        static::$container->autowire(
+            RequestReader::class,
+            RequestReader::class
+        );
 
         $logger = new LoggerStub();
 
@@ -79,6 +120,7 @@ abstract class TestCase extends PHPUnitTestCase
 
         static::$container->compile();
     }
+
 
     protected function tearDown(): void
     {
@@ -283,6 +325,26 @@ class LegacyStub extends Legacy
     }
 }
 
+class TokenInfrastructureStub extends TokenInfrastructure
+{
+    public function __construct()
+    {
+    }
+
+    public function isTokenRegistered(string $tokenId): bool
+    {
+        return true;
+    }
+
+    public function registerToken(UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void
+    {
+    }
+
+    public function removeExpiredTokens(UserDataType $user): void
+    {
+    }
+}
+
 class RequestReaderStub extends RequestReader
 {
     public function getGraphQLRequestData(string $inputFile = 'php://input'): array
@@ -316,5 +378,10 @@ class ModuleConfigurationStub extends \OxidEsales\GraphQL\Base\Service\ModuleCon
     public function getTokenLifeTime(): string
     {
         return '+8 hours';
+    }
+
+    public function getUserTokenQuota(): int
+    {
+        return 1000;
     }
 }

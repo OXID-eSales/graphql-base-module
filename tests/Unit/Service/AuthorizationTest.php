@@ -14,6 +14,7 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
 use OxidEsales\GraphQL\Base\Framework\PermissionProviderInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
@@ -149,9 +150,10 @@ class AuthorizationTest extends BaseTestCase
 
     protected function prepareTokenService(
         ?UnencryptedToken $token = null,
-        ?Legacy $legacyService = null
+        ?Legacy $legacyService = null,
+        ?TokenInfrastructure $tokenInfrastructure = null
     ): TokenService {
-        return new class($token, $this->createPartialMock(JwtConfigurationBuilder::class, []), $legacyService ?: $this->getLegacyMock(), $this->createPartialMock(EventDispatcher::class, []), $this->getModuleConfigurationMock()) extends TokenService {
+        return new class($token, $this->createPartialMock(JwtConfigurationBuilder::class, []), $legacyService ?: $this->getLegacyMock(), $this->createPartialMock(EventDispatcher::class, []), $this->getModuleConfigurationMock(), $tokenInfrastructure ?: $this->getTokenInfrastructureMock()) extends TokenService {
             protected function areConstraintsValid(UnencryptedToken $token): bool
             {
                 return true;

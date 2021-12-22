@@ -99,4 +99,14 @@ class ModuleConfigurationTest extends TestCase
 
         $this->assertSame('+24 hours', $moduleConfiguration->getTokenLifeTime());
     }
+
+    public function testGetUserTokenQuota(): void
+    {
+        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('get')->willReturn('666');
+
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
+
+        $this->assertSame(666, $moduleConfiguration->getUserTokenQuota());
+    }
 }
