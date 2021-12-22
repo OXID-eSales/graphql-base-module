@@ -91,3 +91,6 @@ services:
   OxidEsales\GraphQL\Base\Service\PermissionProvider:
       class: OxidEsales\GraphQL\Base\Service\PermissionProvider
       tags: [ 'graphql_permission_provider' ]
+
+  OxidEsales\GraphQL\Base\Service\TokenAdministration:
+      class: OxidEsales\GraphQL\Base\Service\TokenAdministration

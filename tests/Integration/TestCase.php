@@ -121,7 +121,6 @@ abstract class TestCase extends PHPUnitTestCase
         static::$container->compile();
     }
 
-
     protected function tearDown(): void
     {
         static::$queryResult = null;
