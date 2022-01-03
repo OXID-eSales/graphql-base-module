@@ -18,15 +18,12 @@ use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
-use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token;
-use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -53,51 +50,20 @@ abstract class TestCase extends PHPUnitTestCase
         $containerFactory  = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriter = new ResponseWriterStub(
-            new TimerHandler()
-        );
+        $responseWriterDefinition = static::$container->getDefinition(ResponseWriter::class);
+        $responseWriterDefinition->setClass(ResponseWriterStub::class);
 
-        static::$container->set(
-            ResponseWriter::class,
-            $responseWriter
-        );
-        static::$container->autowire(
-            ResponseWriter::class,
-            ResponseWriter::class
-        );
+        $requestReaderDefinition = static::$container->getDefinition(RequestReader::class);
+        $requestReaderDefinition->setClass(RequestReaderStub::class);
 
-        $moduleConfiguration = new ModuleConfigurationStub();
+        $legacyServiceDefinition = static::$container->getDefinition(Legacy::class);
+        $legacyServiceDefinition->setClass(LegacyStub::class);
 
-        static::$container->set(
-            ModuleConfiguration::class,
-            $moduleConfiguration
-        );
-        static::$container->autowire(
-            ModuleConfiguration::class,
-            ModuleConfiguration::class,
-        );
+        $legacyServiceDefinition = static::$container->getDefinition(ModuleConfiguration::class);
+        $legacyServiceDefinition->setClass(ModuleConfigurationStub::class);
 
-        $legacyService          = new LegacyStub();
-        $tokenInfrastructure    = new TokenInfrastructureStub();
-        $jwtConfigBuilder       = new JwtConfigurationBuilder($moduleConfiguration, $legacyService);
-
-        $requestReader = new RequestReaderStub(
-            new TokenValidator(
-                $jwtConfigBuilder,
-                $legacyService,
-                $tokenInfrastructure
-            ),
-            $jwtConfigBuilder
-        );
-
-        static::$container->set(
-            RequestReader::class,
-            $requestReader
-        );
-        static::$container->autowire(
-            RequestReader::class,
-            RequestReader::class
-        );
+        $tokenInfrastructureDefinition = static::$container->getDefinition(TokenInfrastructure::class);
+        $tokenInfrastructureDefinition->setClass(TokenInfrastructureStub::class);
 
         $logger = new LoggerStub();
 
@@ -328,6 +294,11 @@ class TokenInfrastructureStub extends TokenInfrastructure
 {
     public function __construct()
     {
+    }
+
+    public function canIssueToken(UserDataType $user, int $quota): bool
+    {
+        return true;
     }
 
     public function isTokenRegistered(string $tokenId): bool

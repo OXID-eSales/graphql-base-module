@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Acceptance;
 
 use DateTimeImmutable;
-use OxidEsales\Facts\Facts;
 use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
 /**
@@ -645,8 +644,6 @@ class TokenCest
 
     private function getUserPassword(): string
     {
-        $facts = new Facts();
-
-        return $facts->isEnterprise() ? 'useruser' : 'user';
+        return 'useruser';
     }
 }
