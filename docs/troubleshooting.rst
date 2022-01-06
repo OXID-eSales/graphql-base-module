@@ -111,6 +111,12 @@ In case your front-end code is served on ``sitea.intranet`` and the access to th
     Define APACHE_CORS_ALLOWED_METHODS "POST, GET, OPTIONS"
     Define APACHE_CORS_ALLOWED_HEADERS "Content-Type, Authorization"
 
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{REQUEST_METHOD} OPTIONS
+        RewriteRule ^(.*)$ $1 [R=200,L]
+    </IfModule>
+
     <IfModule mod_headers.c>
         SetEnvIf Origin "http(s)?://(www\.)?(${APACHE_CORS_ALLOWED_DOMAINS})$" AccessControlAllowOrigin=$0
         Header always set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
@@ -119,17 +125,34 @@ In case your front-end code is served on ``sitea.intranet`` and the access to th
         Header merge Vary Origin
     </IfModule>
 
-    RewriteEngine On
-    RewriteCond %{REQUEST_METHOD} OPTIONS
-    RewriteRule ^(.*)$ $1 [R=200,L]
+.. note::
+    The above will only work in an apache configuration file, not in an .htaccess file.
+
+For development purposes, you can also use the following, simplified, configuration in your shop ``.htaccess`` file:
+
+.. code-block:: apache
+
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteCond %{REQUEST_METHOD} OPTIONS
+        RewriteRule ^(.*)$ $1 [R=200,L]
+    </IfModule>
+
+    <IfModule mod_headers>
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+        Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+    </IfModule>
 
 .. important::
     Keep in mind that the ``mod_headers`` and ``mod_rewrite`` must be enabled on the apache server.
 
 .. code-block:: sh
 
-    # On Debian/Ubuntu, you can enable mod_headers & mod_rewrite, by running:
+    # On Debian/Ubuntu, to check which modules are enabled, you can use:
+    apachectl -M
+    # You can enable mod_headers & mod_rewrite, by running:
     a2enmod headers
     a2enmod rewrite
-    # Restart the apache server
+    # And then restart the apache server
     apachectl -k graceful
