@@ -24,6 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `OxidEsales\GraphQL\Base\Exception\InvalidToken::unknownToken()`
   - `OxidEsales\GraphQL\Base\Service\ModuleConfiguration::getUserTokenQuota()`
 
+### Fixed
+- Fixed a link to documentation in troubleshooting section [PR-22](https://github.com/OXID-eSales/graphql-base-module/pull/22)
+
 ## [6.0.1] - 2021-12-08
 
 ### Fixed

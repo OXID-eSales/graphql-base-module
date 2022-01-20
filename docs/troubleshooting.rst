@@ -84,7 +84,7 @@ If you're having trouble finding admin panel requests, this could also be caused
 Installation issues for dev environment
 ---------------------------------------
 
-In case you'd like to contribute, installing the modules as described in the `Oxid documentation <https://docs.oxid-esales.com/developer/en/6.0/modules/good_practices/module_setup.html>`_ might lead to your changes not being reflected or errors when activating the modules.
+In case you'd like to contribute, installing the modules as described in the `developer documentation <https://docs.oxid-esales.com/developer/en/latest/development/modules_components_themes/module/tutorials/module_setup.html>`_ might lead to your changes not being reflected or errors when activating the modules.
 
 A more reliable first step in setting things up would be to clone the desired repository in the ``oxideshop`` directory, for example, and symlink it into its respective place in ``source\modules`` like this:
 
