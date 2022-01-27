@@ -90,6 +90,10 @@ class Token
     }
 
     /**
+     * Invalidate specific token.
+     *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate any token.
+     *  - Customer without special rights can invalidate only own token.
+     *
      * @Mutation
      * @Logged
      */
