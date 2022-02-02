@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+use GraphQL\Error\DebugFlag;
 use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Executor\ExecutionResult;
@@ -64,7 +65,7 @@ class GraphQLQueryHandler
         );
         $result->setErrorFormatter($this->loggingErrorFormatter);
         $this->responseWriter->renderJsonResponse(
-            $result->toArray(true)
+            $result->toArray(DebugFlag::INCLUDE_DEBUG_MESSAGE)
         );
     }
 
