@@ -110,6 +110,7 @@ class Token
 
     /**
      * Invalidate all tokens for current shop.
+     * INVALIDATE_ANY_TOKEN right is required.
      *
      * @Mutation
      * @Logged
@@ -124,6 +125,7 @@ class Token
      * Regenerates the JWT signature key.
      * This will invalidate all issued tokens for the current shop.
      * Only use if no other option is left.
+     * REGENERATE_SIGNATURE_KEY right is required.
      *
      * @Mutation
      * @Logged
