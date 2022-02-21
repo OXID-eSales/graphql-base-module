@@ -29,7 +29,7 @@ abstract class Error extends GraphQLError
             $message,
             null,
             null,
-            null,
+            [],
             null,
             $previous,
             $extensions
