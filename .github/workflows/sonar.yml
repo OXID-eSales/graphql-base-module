@@ -9,9 +9,6 @@ on:
 
 jobs:
     install_shop_with_module:
-        strategy:
-            matrix:
-                php: [ '7.4' ]
         runs-on: ubuntu-latest
         steps:
             - name: Clone testing environment v3.0.0
@@ -25,7 +22,7 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                  key: shopInstallation-${{ env.PHP }}-${{ github.sha }}
 
             - name: Prepare container configuration
               run: |
@@ -91,9 +88,6 @@ jobs:
                   sleep 2
 
     unit_tests:
-        strategy:
-            matrix:
-                php: [ '7.4' ]
         needs: [ install_shop_with_module ]
         runs-on: ubuntu-latest
         steps:
@@ -102,9 +96,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                  key: shopInstallation-${{ env.PHP }}-${{ github.sha }}
                   restore-keys: |
-                      shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                      shopInstallation-${{ env.PHP }}-${{ github.sha }}
 
             - name: Start containers
               run: |
@@ -130,9 +124,6 @@ jobs:
                   path: source/unit.cov
 
     codeception_tests:
-        strategy:
-            matrix:
-                php: [ '7.4' ]
         needs: [ install_shop_with_module ]
         runs-on: ubuntu-latest
         steps:
@@ -141,9 +132,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                  key: shopInstallation-${{ env.PHP }}-${{ github.sha }}
                   restore-keys: |
-                      shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                      shopInstallation-${{ env.PHP }}-${{ github.sha }}
 
             - name: Start containers
               run: |
@@ -180,9 +171,6 @@ jobs:
                   path: codeception.cov
 
     prepare_coverage_results:
-        strategy:
-            matrix:
-                php: [ '7.4' ]
         needs: [ unit_tests, codeception_tests ]
         runs-on: ubuntu-latest
         steps:
@@ -191,9 +179,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                  key: shopInstallation-${{ env.PHP }}-${{ github.sha }}
                   restore-keys: |
-                      shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                      shopInstallation-${{ env.PHP }}-${{ github.sha }}
 
             - name: Download unit artifacts
               uses: actions/download-artifact@v2
