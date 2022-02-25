@@ -5,6 +5,7 @@
     "keywords": ["oxid", "modules", "eShop", "GraphQL"],
     "homepage": "https://www.oxid-esales.com",
     "license": ["GPL-3.0"],
+    "minimum-stability": "dev",
     "extra": {
         "oxideshop": {
             "target-directory": "oe/graphql-base",
