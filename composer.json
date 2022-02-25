@@ -30,8 +30,7 @@
         "phpstan/phpstan": "^0.12.26",
         "oxid-esales/oxideshop-ce": "dev-b-7.0.x",
         "friendsofphp/php-cs-fixer": "^2.18.2",
-        "infection/infection": "*",
-        "oxid-esales/oxideshop-unified-namespace-generator": "^v3.0.0"
+        "infection/infection": "*"
     },
     "autoload": {
         "psr-4": {
