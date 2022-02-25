@@ -104,29 +104,50 @@ jobs:
                   extensions: gd, zip
 
             - name: Install module dependencies
+              id: dependencies
               run: |
                   cd source/test-module
                   composer install
 
             - name: Syntax Test
+              id: syntax
+              if: steps.dependencies.outcome == 'success'
+              continue-on-error: true
               run: |
                 cd source/test-module
                 composer test:syntax
 
             - name: Lint Test
+              id: lint
+              if: steps.dependencies.outcome == 'success'
+              continue-on-error: true
               run: |
                   cd source/test-module
                   composer test:lint
 
             - name: Infection
+              id: infection
+              if: steps.dependencies.outcome == 'success'
+              continue-on-error: true
               run: |
                   cd source/test-module
                   composer test:infection
 
             - name: Static Analyzer
+              id: static
+              if: steps.dependencies.outcome == 'success'
+              continue-on-error: true
               run: |
                   cd source/test-module
                   composer test:static
+
+            - name: Fail if any of styles status is not fine
+              if: |
+                  steps.syntax.outcome != 'success' ||
+                  steps.lint.outcome != 'success' ||
+                  steps.infection.outcome != 'success' ||
+                  steps.infection.outcome != 'success'
+              run: exit 1
 
     unit_tests:
         strategy:
