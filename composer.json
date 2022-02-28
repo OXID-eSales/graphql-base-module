@@ -5,6 +5,7 @@
     "keywords": ["oxid", "modules", "eShop", "GraphQL"],
     "homepage": "https://www.oxid-esales.com",
     "license": ["GPL-3.0"],
+    "minimum-stability": "dev",
     "extra": {
         "oxideshop": {
             "target-directory": "oe/graphql-base",
@@ -18,7 +19,7 @@
         "ext-json": "*",
         "thecodingmachine/graphqlite": "^5.0.2",
         "lcobucci/jwt": "^4.0",
-        "symfony/cache": "^5.3.0",
+        "symfony/cache": "^5.3.0|^6",
         "ecodev/graphql-upload": "^6.1",
         "laminas/laminas-diactoros": "^2.5",
         "myclabs/php-enum": "^1.8"
@@ -29,8 +30,7 @@
         "phpstan/phpstan": "^0.12.26",
         "oxid-esales/oxideshop-ce": "dev-b-7.0.x",
         "friendsofphp/php-cs-fixer": "^2.18.2",
-        "infection/infection": "*",
-        "oxid-esales/oxideshop-unified-namespace-generator": "^v3.0.0"
+        "infection/infection": "*"
     },
     "autoload": {
         "psr-4": {
