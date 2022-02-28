@@ -146,7 +146,7 @@ jobs:
                   steps.syntax.outcome != 'success' ||
                   steps.lint.outcome != 'success' ||
                   steps.infection.outcome != 'success' ||
-                  steps.infection.outcome != 'success'
+                  steps.static.outcome != 'success'
               run: exit 1
 
     unit_tests:
