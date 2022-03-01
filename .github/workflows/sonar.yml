@@ -238,4 +238,3 @@ jobs:
                       -Dsonar.php.coverage.reportPaths=logs/coverage.xml
                       -Dsonar.cpd.php.minimumTokens=30
                       -Dsonar.cpd.php.minimumLines=6
-                      -Dsonar.php.tests.reportPath=logs/phpunit.xml
