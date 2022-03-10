@@ -19,7 +19,7 @@ OutOfBounds   requesterror     Thrown when values are out of bounds
 Exception to GraphQL Error
 --------------------------
 
-The GraphQL modules are build using `GraphQLite <https://graphqlite.thecodingmachine.io/docs/3.0/features.html>`_, which requires `graphql-php <https://webonyx.github.io/graphql-php/>`_. `Here <https://webonyx.github.io/graphql-php/error-handling/>`_ you can see how graphql-php handles errors.
+The GraphQL modules are build using `GraphQLite <https://graphqlite.thecodingmachine.io/docs#features>`_, which requires `graphql-php <https://webonyx.github.io/graphql-php/>`_. `Here <https://webonyx.github.io/graphql-php/error-handling/>`_ you can see how graphql-php handles errors.
 
 In short: If you want the consumer to see the message of your exception, it needs to implement the ``GraphQL\Error\ClientAware`` interface.
 

@@ -50,7 +50,7 @@ Protect your queries/mutations/types
 ------------------------------------
 
 In order to protect your own queries, mutations or types you may use GraphQLite's
-build in `authentication and authorization <https://graphqlite.thecodingmachine.io/docs/3.0/authentication_authorization>`_
+build in `authentication and authorization <https://graphqlite.thecodingmachine.io/docs/authentication-authorization>`_
 features.
 
 The `graphql-base` module brings an authentication- and authorization service
