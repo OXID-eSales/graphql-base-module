@@ -4,7 +4,7 @@ Caching
 .. important::
     As of this writing resolvers are not cached!
 
-As stated in other occurrences already, we are heavily relying on GraphQLite for our modules. GraphQLite creates the GraphQL schema by using PHP's reflection to scan and find controllers and data types. The result of this step can be `cached by GraphQLite itself <https://graphqlite.thecodingmachine.io/docs/3.0/other-frameworks#requirements>`_.
+As stated in other occurrences already, we are heavily relying on GraphQLite for our modules. GraphQLite creates the GraphQL schema by using PHP's reflection to scan and find controllers and data types. The result of this step can be `cached by GraphQLite itself <https://graphqlite.thecodingmachine.io/docs/other-frameworks#requirements>`_.
 
 The ``TheCodingMachine\GraphQLite\SchemaFactory`` needs the DI container and a PSR-16 cache. By default we pass it a null cache.
 

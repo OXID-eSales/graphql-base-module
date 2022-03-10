@@ -30,7 +30,7 @@ The folders in the ``src`` directory are the contexts in which we are working. A
 Controller
 ----------
 
-The sole purpose of the controller is to be a slim layer which translates from the incoming HTTP request to our business logic. As we are using `GraphQLite <https://graphqlite.thecodingmachine.io/docs/3.0/features.html>`_ and `graphql-php <https://webonyx.github.io/graphql-php/>`_ our controllers don't need any kind of validation, as all this is done in those libraries. This on the other hand is relying on the controller methods to use the correct type hints.
+The sole purpose of the controller is to be a slim layer which translates from the incoming HTTP request to our business logic. As we are using `GraphQLite <https://graphqlite.thecodingmachine.io/docs#features>`_ and `graphql-php <https://webonyx.github.io/graphql-php/>`_ our controllers don't need any kind of validation, as all this is done in those libraries. This on the other hand is relying on the controller methods to use the correct type hints.
 
 So most controllers look like this example
 
