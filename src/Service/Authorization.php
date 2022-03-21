@@ -60,7 +60,6 @@ class Authorization implements AuthorizationServiceInterface
         );
 
         $this->eventDispatcher->dispatch(
-            BeforeAuthorization::NAME,
             $event
         );
 

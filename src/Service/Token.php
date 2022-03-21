@@ -119,7 +119,6 @@ class Token
 
         $event = new BeforeTokenCreation($builder, $user);
         $this->eventDispatcher->dispatch(
-            BeforeTokenCreation::NAME,
             $event
         );
 
