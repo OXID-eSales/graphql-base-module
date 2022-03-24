@@ -64,8 +64,7 @@ class Authorization implements AuthorizationServiceInterface
         );
 
         $this->eventDispatcher->dispatch(
-            $event,
-            BeforeAuthorization::NAME
+            $event
         );
 
         $authByEvent = $event->getAuthorized();

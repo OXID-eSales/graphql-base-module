@@ -39,7 +39,6 @@
         }
     },
     "prefer-stable": true,
-    "prefer-dist": true,
     "scripts": {
         "fix:fixer": "php-cs-fixer fix",
         "fix": [
