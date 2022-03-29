@@ -1,0 +1,9 @@
+services:
+
+    _defaults:
+        public: false
+        autowire: true
+
+    Full\Qualified\Namespace\DeveloperSchemaFactoryEventSubscriber:
+        class: Full\Qualified\Namespace\DeveloperSchemaFactoryEventSubscriber
+        tags: ['kernel.event_subscriber']

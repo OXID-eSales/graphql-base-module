@@ -18,3 +18,4 @@ Events
         BeforeBasketRemove
         BeforeBasketModify
         BeforeBasketRemoveOnPlaceOrder
+        SchemaFactory

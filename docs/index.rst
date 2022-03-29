@@ -17,6 +17,7 @@ Interface Documentation
         caching
         exceptions/index
         extending
+        schema
         modules
         tutorials/index
         architecture

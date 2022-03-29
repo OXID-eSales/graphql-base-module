@@ -10,12 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use Mouf\Composer\ClassNameMapper;
+use OxidEsales\GraphQL\Base\Event\SchemaFactory as SchemaFactoryEvent;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Adapter\NullAdapter;
 use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
@@ -45,6 +47,9 @@ class SchemaFactory
     /** @var TimerHandler */
     private $timerHandler;
 
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+
     /**
      * @param NamespaceMapperInterface[] $namespaceMappers
      */
@@ -54,6 +59,7 @@ class SchemaFactory
         Authorization $authorization,
         ContainerInterface $container,
         TimerHandler $timerHandler,
+        EventDispatcherInterface $eventDispatcher,
         ?CacheInterface $cache = null
     ) {
         foreach ($namespaceMappers as $namespaceMapper) {
@@ -66,6 +72,8 @@ class SchemaFactory
             new NullAdapter()
         );
         $this->timerHandler      = $timerHandler;
+
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function getSchema(): Schema
@@ -107,6 +115,11 @@ class SchemaFactory
 
         $factory->setAuthenticationService($this->authentication)
                 ->setAuthorizationService($this->authorization);
+
+        $this->eventDispatcher->dispatch(
+            new SchemaFactoryEvent($factory),
+            SchemaFactoryEvent::NAME
+        );
 
         $this->schema = $factory->createSchema();
         $queryTimer->stop();
