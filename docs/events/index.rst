@@ -15,6 +15,7 @@ Events
         BeforeAddItem
         AfterAddItem
         BeforeRemoveItem
+        AfterRemoveItem
         BeforeBasketRemove
         BeforeBasketModify
         BeforeBasketRemoveOnPlaceOrder
