@@ -70,6 +70,7 @@ services:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper
+      $container: '@service_container'
       $cache: '@oxidesales.graphqlbase.cache'
 
   OxidEsales\GraphQL\Base\Event\Subscriber\ModuleChangeSubscriber:
