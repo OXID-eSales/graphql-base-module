@@ -15,8 +15,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeTokenCreation extends Event
 {
-    public const NAME = self::class;
-
     /** @var Builder */
     private $builder;
 

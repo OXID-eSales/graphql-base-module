@@ -21,7 +21,7 @@ class AuthorizationEventSubscriber extends AbstractShopAwareEventSubscriber
     public static function getSubscribedEvents()
     {
         return [
-            BeforeAuthorization::NAME => 'handleAuth'
+            BeforeAuthorization::class => 'handleAuth'
         ];
     }
 }

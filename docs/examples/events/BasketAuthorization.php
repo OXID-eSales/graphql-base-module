@@ -21,7 +21,7 @@ class BasketAuthorizationEventSubscriber extends AbstractShopAwareEventSubscribe
     public static function getSubscribedEvents(): array
     {
         return [
-            BasketAuthorization::NAME => 'handleAuth'
+            BasketAuthorization::class => 'handleAuth'
         ];
     }
 }

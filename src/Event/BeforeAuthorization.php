@@ -14,8 +14,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeAuthorization extends Event
 {
-    public const NAME = self::class;
-
     /** @var ?Token */
     private $token;
 
