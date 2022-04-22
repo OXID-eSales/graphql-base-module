@@ -91,7 +91,7 @@ class AuthorizationTest extends BaseTestCase
     {
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addListener(
-            BeforeAuthorization::NAME,
+            BeforeAuthorization::class,
             function (BeforeAuthorization $event): void {
                 $event->setAuthorized(true);
             }
@@ -122,7 +122,7 @@ class AuthorizationTest extends BaseTestCase
     {
         $eventDispatcher = new EventDispatcher();
         $eventDispatcher->addListener(
-            BeforeAuthorization::NAME,
+            BeforeAuthorization::class,
             function (BeforeAuthorization $event): void {
                 $event->setAuthorized(false);
             }
