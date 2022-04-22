@@ -57,5 +57,12 @@
             "@test:unit",
             "@test:infection"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "infection/extension-installer": true,
+            "oxid-esales/oxideshop-unified-namespace-generator": true,
+            "oxid-esales/oxideshop-composer-plugin": true
+        }
     }
 }
