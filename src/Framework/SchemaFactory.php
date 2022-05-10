@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use Mouf\Composer\ClassNameMapper;
+use OxidEsales\GraphQL\Base\Mappers\Parameters\InjectVariablesParameterHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use Psr\SimpleCache\CacheInterface;
@@ -107,6 +108,8 @@ class SchemaFactory
 
         $factory->setAuthenticationService($this->authentication)
                 ->setAuthorizationService($this->authorization);
+
+        $factory->addParameterMiddleware(new InjectVariablesParameterHandler($this->container));
 
         $this->schema = $factory->createSchema();
         $queryTimer->stop();
