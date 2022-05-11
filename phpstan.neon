@@ -1,9 +1,0 @@
-parameters:
-    checkMissingIterableValueType: false
-    level: max
-    inferPrivatePropertyTypeFromConstructor: true
-    scanFiles:
-        - vendor/oxid-esales/oxideshop-ce/source/oxfunctions.php
-        - vendor/oxid-esales/oxideshop-ce/source/overridablefunctions.php
-    excludes_analyse:
-        - *Component/Widget/GraphQL.php
