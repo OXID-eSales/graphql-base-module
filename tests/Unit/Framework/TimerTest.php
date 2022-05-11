@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Framework\Timer;
 use PHPUnit\Framework\TestCase;
+
 use function usleep;
 
 class TimerTest extends TestCase

@@ -182,8 +182,8 @@ abstract class TestCase extends PHPUnitTestCase
     }
 
     protected function uploadFile(
-        string  $fileName,
-        array   $mutationData,
+        string $fileName,
+        array $mutationData,
         ?string $token = null
     ): array {
         $variables = $mutationData['variables'];

@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update GraphQLite version to v5
+- Code quality tools list simplified and reconfigured to fit our quality requirements
 
 ## [6.0.2] - 2022-03-31
 

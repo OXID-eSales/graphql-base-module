@@ -26,15 +26,15 @@ use TheCodingMachine\GraphQLite\Types\ID;
  */
 class Token
 {
-    public const CLAIM_SHOPID   = 'shopid';
+    public const CLAIM_SHOPID = 'shopid';
 
     public const CLAIM_USERNAME = 'username';
 
-    public const CLAIM_USERID   = 'userid';
+    public const CLAIM_USERID = 'userid';
 
-    public const CLAIM_USER_ANONYMOUS   = 'useranonymous';
+    public const CLAIM_USER_ANONYMOUS = 'useranonymous';
 
-    public const CLAIM_TOKENID   = 'tokenid';
+    public const CLAIM_TOKENID = 'tokenid';
 
     /** @var ?UnencryptedToken */
     private $token;
@@ -62,12 +62,12 @@ class Token
         ModuleConfiguration $moduleConfiguration,
         TokenInfrastructure $tokenInfrastructure
     ) {
-        $this->token                   = $token;
+        $this->token = $token;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
-        $this->legacyInfrastructure    = $legacyInfrastructure;
-        $this->eventDispatcher         = $eventDispatcher;
-        $this->moduleConfiguration     = $moduleConfiguration;
-        $this->tokenInfrastructure     = $tokenInfrastructure;
+        $this->legacyInfrastructure = $legacyInfrastructure;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->moduleConfiguration = $moduleConfiguration;
+        $this->tokenInfrastructure = $tokenInfrastructure;
     }
 
     /**
@@ -96,11 +96,11 @@ class Token
     public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
     {
         /** @var UserDataType $user */
-        $user   = $this->legacyInfrastructure->login($username, $password);
+        $user = $this->legacyInfrastructure->login($username, $password);
         $this->removeExpiredTokens($user);
         $this->canIssueToken($user);
 
-        $time   = new DateTimeImmutable('now');
+        $time = new DateTimeImmutable('now');
         $expire = new DateTimeImmutable($this->moduleConfiguration->getTokenLifeTime());
         $config = $this->jwtConfigurationBuilder->getConfiguration();
 
@@ -134,7 +134,7 @@ class Token
 
     public function deleteToken(ID $tokenId): void
     {
-        $tokenId = (string) $tokenId;
+        $tokenId = (string)$tokenId;
 
         if ($this->tokenInfrastructure->isTokenRegistered($tokenId)) {
             $this->tokenInfrastructure->tokenDelete(null, $tokenId);
@@ -145,15 +145,19 @@ class Token
 
     public function deleteUserToken(UserDataType $user, ID $tokenId): void
     {
-        if ($this->tokenInfrastructure->userHasToken($user, (string) $tokenId)) {
-            $this->tokenInfrastructure->tokenDelete($user, (string) $tokenId);
+        if ($this->tokenInfrastructure->userHasToken($user, (string)$tokenId)) {
+            $this->tokenInfrastructure->tokenDelete($user, (string)$tokenId);
         } else {
             throw InvalidToken::unknownToken();
         }
     }
 
-    private function registerToken(UserDataType $user, UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void
-    {
+    private function registerToken(
+        UserDataType $user,
+        UnencryptedToken $token,
+        DateTimeImmutable $time,
+        DateTimeImmutable $expire
+    ): void {
         if (!$user->isAnonymous()) {
             $this->tokenInfrastructure->registerToken($token, $time, $expire);
         }
@@ -161,8 +165,10 @@ class Token
 
     private function canIssueToken(UserDataType $user): void
     {
-        if (!$user->isAnonymous() &&
-            !$this->tokenInfrastructure->canIssueToken($user, $this->moduleConfiguration->getUserTokenQuota())) {
+        if (
+            !$user->isAnonymous() &&
+            !$this->tokenInfrastructure->canIssueToken($user, $this->moduleConfiguration->getUserTokenQuota())
+        ) {
             throw TokenQuota::quotaExceeded();
         }
     }
