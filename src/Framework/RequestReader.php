@@ -17,6 +17,7 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
+
 use function apache_request_headers;
 use function array_change_key_case;
 use function file_get_contents;
@@ -37,7 +38,7 @@ class RequestReader
         TokenValidator $tokenValidatorService,
         JwtConfigurationBuilder $jwtConfigurationBuilder
     ) {
-        $this->tokenValidatorService   = $tokenValidatorService;
+        $this->tokenValidatorService = $tokenValidatorService;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
@@ -82,13 +83,19 @@ class RequestReader
     public function getGraphQLRequestData(string $inputFile = 'php://input'): array
     {
         if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-            $raw  = file_get_contents($inputFile) ?: '';
+            $raw = file_get_contents($inputFile) ?: '';
             $data = json_decode($raw, true) ?: [];
-        } elseif (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
-            $request          = ServerRequestFactory::fromGlobals();
+        } elseif (
+            isset($_SERVER['CONTENT_TYPE'])
+            && strpos(
+                $_SERVER['CONTENT_TYPE'],
+                'multipart/form-data'
+            ) !== false
+        ) {
+            $request = ServerRequestFactory::fromGlobals();
             $uploadMiddleware = new UploadMiddleware();
-            $request          = $uploadMiddleware->processRequest($request);
-            $data             = $request->getParsedBody();
+            $request = $uploadMiddleware->processRequest($request);
+            $data = $request->getParsedBody();
 
             if (is_array($data) && !isset($data['operationName']) && isset($data['operation'])) {
                 $data['operationName'] = $data['operation'];
@@ -102,8 +109,8 @@ class RequestReader
         }
 
         return [
-            'query'         => $data['query'] ?? null,
-            'variables'     => $data['variables'] ?? null,
+            'query' => $data['query'] ?? null,
+            'variables' => $data['variables'] ?? null,
             'operationName' => $data['operationName'] ?? null,
         ];
     }

@@ -43,7 +43,10 @@ class TokenCest
 
         $result = $this->sendTokenQuery($I);
 
-        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You need to be logged to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testCannotQueryTokensWithAnonymousToken(AcceptanceTester $I): void
@@ -56,7 +59,10 @@ class TokenCest
 
         $result = $this->sendTokenQuery($I);
 
-        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You need to be logged to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testQueryTokensWithUserToken(AcceptanceTester $I): void
@@ -66,13 +72,13 @@ class TokenCest
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
-        $result           = $this->sendTokenQuery($I);
+        $result = $this->sendTokenQuery($I);
         $tokenCountBefore = count($result['data']['tokens']);
 
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
-        $result          = $this->sendTokenQuery($I);
+        $result = $this->sendTokenQuery($I);
         $tokenCountAfter = count($result['data']['tokens']);
 
         //we see three more user tokens
@@ -86,13 +92,13 @@ class TokenCest
         $token = $this->generateUserTokens($I, true);
         $I->amBearerAuthenticated($token);
 
-        $result           = $this->sendTokenQuery($I);
+        $result = $this->sendTokenQuery($I);
         $tokenCountBefore = count($result['data']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $result          = $this->sendTokenQuery($I);
+        $result = $this->sendTokenQuery($I);
         $tokenCountAfter = count($result['data']['tokens']);
 
         //we see two more user tokens because without explicit filter userid filter will be added by default
@@ -148,13 +154,13 @@ class TokenCest
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
-        $result           = $this->sendTokenQuery($I, $filterPart);
+        $result = $this->sendTokenQuery($I, $filterPart);
         $tokenCountBefore = count($result['data']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $result          = $this->sendTokenQuery($I, $filterPart);
+        $result = $this->sendTokenQuery($I, $filterPart);
         $tokenCountAfter = count($result['data']['tokens']);
 
         //we see three more user tokens for this customer
@@ -175,13 +181,13 @@ class TokenCest
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $result           = $this->sendTokenQuery($I, $filterPart);
+        $result = $this->sendTokenQuery($I, $filterPart);
         $tokenCountBefore = count($result['data']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $result          = $this->sendTokenQuery($I, $filterPart);
+        $result = $this->sendTokenQuery($I, $filterPart);
         $tokenCountAfter = count($result['data']['tokens']);
 
         //we see three more user tokens because of userid filter
@@ -198,11 +204,14 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $resultDESC = $this->sendTokenQuery($I, '(sort:{expiresAt: "DESC"})');
-        $resultASC  = $this->sendTokenQuery($I, '(sort:{expiresAt: "ASC"})');
+        $resultASC = $this->sendTokenQuery($I, '(sort:{expiresAt: "ASC"})');
 
         $I->assertEquals(count($resultASC['data']['tokens']), count($resultDESC['data']['tokens']));
         $I->assertNotEquals($resultDESC['data']['tokens'], $resultASC['data']['tokens']);
-        $I->assertLessThan($resultDESC['data']['tokens'][0]['expiresAt'], $resultASC['data']['tokens'][0]['expiresAt']);
+        $I->assertLessThan(
+            $resultDESC['data']['tokens'][0]['expiresAt'],
+            $resultASC['data']['tokens'][0]['expiresAt']
+        );
     }
 
     public function testQueryTokensWithPagination(AcceptanceTester $I): void
@@ -213,8 +222,8 @@ class TokenCest
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
-        $resultFirst   = $this->sendTokenQuery($I, "(pagination:{offset: 0 \n limit: 3})");
-        $resultSecond  = $this->sendTokenQuery($I, "(pagination:{offset: 1 \n limit: 3})");
+        $resultFirst = $this->sendTokenQuery($I, "(pagination:{offset: 0 \n limit: 3})");
+        $resultSecond = $this->sendTokenQuery($I, "(pagination:{offset: 1 \n limit: 3})");
 
         $I->assertEquals(count($resultFirst['data']['tokens']), count($resultSecond['data']['tokens']));
         $I->assertNotEquals($resultFirst['data']['tokens'], $resultSecond['data']['tokens']);
@@ -242,7 +251,10 @@ class TokenCest
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
-        $result = $this->sendTokenQuery($I, '(filter:{expiresAt:{between: ["2020-12-01 12:12:12", "2021-12-01 12:12:12"]}})');
+        $result = $this->sendTokenQuery(
+            $I,
+            '(filter:{expiresAt:{between: ["2020-12-01 12:12:12", "2021-12-01 12:12:12"]}})'
+        );
         $I->assertEmpty($result['data']['tokens']);
 
         $filterPart = '(filter:{expiresAt:{between: ["2020-12-01 12:12:12", "' .
@@ -270,7 +282,10 @@ class TokenCest
 
         $result = $this->sendCustomerTokenDeleteMutation($I);
 
-        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You need to be logged to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testCustomerTokensDeleteDefault(AcceptanceTester $I): void
@@ -378,7 +393,7 @@ class TokenCest
 
         // Get one of user tokens
         $response = $this->sendTokenQuery($I, $filterPart);
-        $tokenId  = $response['data']['tokens'][0]['id'];
+        $tokenId = $response['data']['tokens'][0]['id'];
 
         // Delete it
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
@@ -386,7 +401,7 @@ class TokenCest
 
         // It's not there anymore
         $response = $this->sendTokenQuery($I, $filterPart);
-        $ids      = array_map(function ($tokenRow) {
+        $ids = array_map(function ($tokenRow) {
             return $tokenRow['id'];
         }, $response['data']['tokens']);
         $I->assertNotContains($tokenId, $ids);
@@ -407,7 +422,7 @@ class TokenCest
         $I->login(self::USER_LOGIN, $this->getUserPassword());
 
         $response = $this->sendTokenQuery($I, '(sort:{expiresAt: "ASC"})');
-        $tokenId  = $response['data']['tokens'][0]['id'];
+        $tokenId = $response['data']['tokens'][0]['id'];
 
         // Delete the older one
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
@@ -421,7 +436,7 @@ class TokenCest
     {
         $I->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
         $response = $this->sendTokenQuery($I);
-        $tokenId  = $response['data']['tokens'][0]['id'];
+        $tokenId = $response['data']['tokens'][0]['id'];
 
         $I->login(self::USER_LOGIN, $this->getUserPassword());
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
@@ -434,7 +449,10 @@ class TokenCest
 
         $result = $this->sendShopTokensDeleteMutation($I);
 
-        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You need to be logged to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testShopTokensDeleteWithAnonymousToken(AcceptanceTester $I): void
@@ -447,7 +465,10 @@ class TokenCest
 
         $result = $this->sendShopTokensDeleteMutation($I);
 
-        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You need to be logged to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testShopTokensDeleteWithUserToken(AcceptanceTester $I): void
@@ -459,7 +480,10 @@ class TokenCest
 
         $result = $this->sendShopTokensDeleteMutation($I);
 
-        $I->assertStringStartsWith('You do not have sufficient rights to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You do not have sufficient rights to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testShopTokensDeleteWithAdminToken(AcceptanceTester $I): void
@@ -480,7 +504,10 @@ class TokenCest
 
         $result = $this->sendRegenerateSignatureKeyMutation($I);
 
-        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You need to be logged to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testRegenerateSignatureKeyWithAnonymousToken(AcceptanceTester $I): void
@@ -493,7 +520,10 @@ class TokenCest
 
         $result = $this->sendRegenerateSignatureKeyMutation($I);
 
-        $I->assertStringStartsWith('You need to be logged to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You need to be logged to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testRegenerateSignatureKeyWithUserToken(AcceptanceTester $I): void
@@ -505,7 +535,10 @@ class TokenCest
 
         $result = $this->sendRegenerateSignatureKeyMutation($I);
 
-        $I->assertStringStartsWith('You do not have sufficient rights to access this field', $result['errors'][0]['message']);
+        $I->assertStringStartsWith(
+            'You do not have sufficient rights to access this field',
+            $result['errors'][0]['message']
+        );
     }
 
     public function testRegenerateSignatureKeyWithAdminToken(AcceptanceTester $I): void
@@ -594,8 +627,11 @@ class TokenCest
         return $I->grabJsonResponseAsArray();
     }
 
-    private function generateUserTokens(AcceptanceTester $I, bool $adminToken = true, bool $delay = false): string
-    {
+    private function generateUserTokens(
+        AcceptanceTester $I,
+        bool $adminToken = true,
+        bool $delay = false
+    ): string {
         $I->logout();
 
         //four anonymous

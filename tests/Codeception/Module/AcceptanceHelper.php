@@ -43,7 +43,10 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function _beforeSuite($settings = []): void // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
-        exec((new Facts())->getShopRootPath() . '/bin/oe-console oe:module:activate oe_graphql_base');
+        exec(
+            (new Facts())->getShopRootPath()
+            . '/bin/oe-console oe:module:activate oe_graphql_base'
+        );
     }
 
     public function sendGQLQuery(
@@ -61,7 +64,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
         $this->rest->haveHTTPHeader('Content-Type', 'application/json');
         $this->rest->sendPOST($uri, [
-            'query'     => $query,
+            'query' => $query,
             'variables' => $variables,
         ]);
     }
@@ -70,7 +73,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
     {
         $this->logout();
 
-        $query     = 'query ($username: String, $password: String) { token (username: $username, password: $password) }';
+        $query = 'query ($username: String, $password: String) { token (username: $username, password: $password) }';
         $variables = [
             'username' => $username,
             'password' => $password,
@@ -101,7 +104,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function seeResponseContainsValidJWTToken(): void
     {
-        $token  = $this->grabTokenFromResponse();
+        $token = $this->grabTokenFromResponse();
 
         try {
             (new Parser(new JoseEncoder()))->parse($token);

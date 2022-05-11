@@ -44,7 +44,7 @@ final class Token implements ShopModelAwareInterface
     /**
      * @Field()
      */
-    public function token(): String
+    public function token(): string
     {
         return (string) $this->tokenModel->getRawFieldData('token');
     }
@@ -72,7 +72,7 @@ final class Token implements ShopModelAwareInterface
     /**
      * @Field()
      */
-    public function userAgent(): String
+    public function userAgent(): string
     {
         return $this->tokenModel->getRawFieldData('useragent');
     }

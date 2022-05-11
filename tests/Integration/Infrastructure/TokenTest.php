@@ -34,7 +34,7 @@ class TokenTest extends UnitTestCase
     {
         parent::setUp();
         $containerFactory = new TestContainerFactory();
-        $container        = $containerFactory->create();
+        $container = $containerFactory->create();
         $container->compile();
         $this->tokenInfrastructure = $container->get(TokenInfrastructure::class);
     }
@@ -48,7 +48,11 @@ class TokenTest extends UnitTestCase
 
     public function testRegisterToken(): void
     {
-        $this->tokenInfrastructure->registerToken($this->getTokenMock(), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock(),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
 
         $tokenModel = oxNew(TokenModel::class);
         $tokenModel->load(self::TEST_TOKEN_ID);
@@ -58,7 +62,11 @@ class TokenTest extends UnitTestCase
 
     public function testIsTokenRegistered(): void
     {
-        $this->tokenInfrastructure->registerToken($this->getTokenMock(), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock(),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
 
         $this->assertTrue($this->tokenInfrastructure->isTokenRegistered(self::TEST_TOKEN_ID));
     }
@@ -70,10 +78,26 @@ class TokenTest extends UnitTestCase
 
     public function testRemoveExpiredTokens(): void
     {
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('-8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_second'), new DateTimeImmutable('now'), new DateTimeImmutable('-8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_third'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_other', '_otheruser'), new DateTimeImmutable('now'), new DateTimeImmutable('-8 hours'));
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_first'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('-8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_second'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('-8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_third'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_other', '_otheruser'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('-8 hours')
+        );
 
         $userModel = oxNew(User::class);
         $userModel->setId(self::TEST_USER_ID);
@@ -93,23 +117,59 @@ class TokenTest extends UnitTestCase
         $userModel->setId(self::TEST_USER_ID);
         $user = new UserDataType($userModel);
 
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_second'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_third'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_first'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_second'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_third'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
 
         $this->assertTrue($this->tokenInfrastructure->canIssueToken($user, 5));
-        $this->assertTrue($this->tokenInfrastructure->canIssueToken($user, 4));  //three are stored, quota is 4, we can issue another token
-        $this->assertFalse($this->tokenInfrastructure->canIssueToken($user, 3)); //three are stored, quota is 3, we cannot issue another token right now
+        $this->assertTrue(
+            $this->tokenInfrastructure->canIssueToken($user, 4)
+        );  //three are stored, quota is 4, we can issue another token
+        $this->assertFalse(
+            $this->tokenInfrastructure->canIssueToken($user, 3)
+        ); //three are stored, quota is 3, we cannot issue another token right now
         $this->assertFalse($this->tokenInfrastructure->canIssueToken($user, 2));
     }
 
     public function testTokenDelete(): void
     {
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_second'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_third'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_other', '_otheruser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_else', '_elseuser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_first'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_second'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_third'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_other', '_otheruser'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_else', '_elseuser'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
 
         $userModel = oxNew(User::class);
         $userModel->setId(self::TEST_USER_ID);
@@ -138,11 +198,31 @@ class TokenTest extends UnitTestCase
 
     public function testTokenDeleteAll(): void
     {
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_second'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_third'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_other', '_otheruser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_else', '_elseuser'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_first'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_second'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_third'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_other', '_otheruser'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_else', '_elseuser'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
 
         $this->tokenInfrastructure->tokenDelete();
         $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_first'));
@@ -159,13 +239,13 @@ class TokenTest extends UnitTestCase
         $tokenModel->setId('_testId');
         $tokenModel->assign(
             [
-                'OXID'       => '_tokenId',
-                'OXSHOPID'   => '66',
-                'OXUSERID'   => '_userId',
-                'ISSUED_AT'  => '2021-12-01 12:12:12',
+                'OXID' => '_tokenId',
+                'OXSHOPID' => '66',
+                'OXUSERID' => '_userId',
+                'ISSUED_AT' => '2021-12-01 12:12:12',
                 'EXPIRES_AT' => '2021-12-02 12:12:12',
-                'USERAGENT'  => 'the user agent',
-                'TOKEN'      => 'very_large_string',
+                'USERAGENT' => 'the user agent',
+                'TOKEN' => 'very_large_string',
             ]
         );
         $tokenModel->save();
@@ -177,8 +257,14 @@ class TokenTest extends UnitTestCase
         $this->assertSame(TokenModel::class, TokenDataType::getModelClass());
         $this->assertSame($tokenModel->getRawFieldData('oxid'), $tokenDataType->id()->val());
         $this->assertSame($tokenModel->getRawFieldData('token'), $tokenDataType->token());
-        $this->assertSame($tokenModel->getRawFieldData('issued_at'), $tokenDataType->createdAt()->format('Y-m-d H:i:s'));
-        $this->assertSame($tokenModel->getRawFieldData('expires_at'), $tokenDataType->expiresAt()->format('Y-m-d H:i:s'));
+        $this->assertSame(
+            $tokenModel->getRawFieldData('issued_at'),
+            $tokenDataType->createdAt()->format('Y-m-d H:i:s')
+        );
+        $this->assertSame(
+            $tokenModel->getRawFieldData('expires_at'),
+            $tokenDataType->expiresAt()->format('Y-m-d H:i:s')
+        );
         $this->assertSame($tokenModel->getRawFieldData('useragent'), $tokenDataType->userAgent());
         $this->assertSame($tokenModel->getRawFieldData('oxshopid'), $tokenDataType->shopId()->val());
         $this->assertSame($tokenModel->getRawFieldData('oxuserid'), $tokenDataType->customerId()->val());
@@ -194,7 +280,11 @@ class TokenTest extends UnitTestCase
         $otherUserModel->setId('_other_id');
         $otherUser = new UserDataType($otherUserModel);
 
-        $this->tokenInfrastructure->registerToken($this->getTokenMock('_first'), new DateTimeImmutable('now'), new DateTimeImmutable('+8 hours'));
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock('_first'),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
 
         $this->assertTrue($this->tokenInfrastructure->userHasToken($user, '_first'));
         $this->assertFalse($this->tokenInfrastructure->userHasToken($user, '_second'));
@@ -202,13 +292,15 @@ class TokenTest extends UnitTestCase
         $this->assertFalse($this->tokenInfrastructure->userHasToken($otherUser, '_second'));
     }
 
-    private function getTokenMock(string $tokenId = self::TEST_TOKEN_ID, string $userId = self::TEST_USER_ID): UnencryptedToken
-    {
+    private function getTokenMock(
+        string $tokenId = self::TEST_TOKEN_ID,
+        string $userId = self::TEST_USER_ID
+    ): UnencryptedToken {
         $claims = new DataSet(
             [
-                TokenService::CLAIM_TOKENID        => $tokenId,
-                TokenService::CLAIM_SHOPID         => 1,
-                TokenService::CLAIM_USERID         => $userId,
+                TokenService::CLAIM_TOKENID => $tokenId,
+                TokenService::CLAIM_SHOPID => 1,
+                TokenService::CLAIM_USERID => $userId,
             ],
             ''
         );
