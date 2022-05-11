@@ -27,9 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed a link to documentation in troubleshooting section [PR-22](https://github.com/OXID-eSales/graphql-base-module/pull/22)
 - Improved modules installation instructions [PR-23](https://github.com/OXID-eSales/graphql-base-module/pull/23)
+- Missmatch in checkout documentation [PR-24](https://github.com/OXID-eSales/graphql-base-module/pull/24)
 
 ### Changed
 - Update GraphQLite version to v5
+- Code quality tools list simplified and reconfigured to fit our quality requirements
 
 ## [6.0.2] - 2022-03-31
 

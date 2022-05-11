@@ -72,7 +72,8 @@ class TokenAdministration
     ): array {
 
         //without right to view any token user can only add filter on own id or no filter on id
-        if (!$this->authorizationService->isAllowed('VIEW_ANY_TOKEN') &&
+        if (
+            !$this->authorizationService->isAllowed('VIEW_ANY_TOKEN') &&
             ($userFilter = $filterList->getUserFilter()) &&
             $this->authenticationService->getUser()->id()->val() !== $userFilter->equals()->val()
         ) {
@@ -92,7 +93,8 @@ class TokenAdministration
      */
     public function customerTokensDelete(?ID $customerId): int
     {
-        if (!$this->authorizationService->isAllowed('INVALIDATE_ANY_TOKEN') &&
+        if (
+            !$this->authorizationService->isAllowed('INVALIDATE_ANY_TOKEN') &&
             $customerId &&
             $this->authenticationService->getUser()->id()->val() !== $customerId->val()
         ) {

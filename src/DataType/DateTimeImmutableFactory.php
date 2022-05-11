@@ -16,7 +16,8 @@ final class DateTimeImmutableFactory
 {
     public static function fromString(string $time = 'now', ?DateTimeZone $timezone = null): ?DateTimeImmutable
     {
-        if (strlen($time) == 0
+        if (
+            strlen($time) == 0
             || strpos($time, '0000-00-00') !== false
             || $time === '-'
         ) {

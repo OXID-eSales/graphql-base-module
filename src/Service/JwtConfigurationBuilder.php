@@ -30,7 +30,7 @@ class JwtConfigurationBuilder
 
     public function __construct(
         ModuleConfiguration $moduleConfiguration,
-        LegacyService       $legacyService
+        LegacyService $legacyService
     ) {
         $this->moduleConfiguration = $moduleConfiguration;
         $this->legacyService       = $legacyService;

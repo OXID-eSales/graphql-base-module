@@ -28,7 +28,7 @@ JWT in Authorization header for any of the following queries or mutations.
 
    "Client (PWA)" -> "GraphQL API": basketCreate mutation
    "Client (PWA)" <- "GraphQL API": Basket datatype or error
-   "Client (PWA)" -> "GraphQL API": basketAddProduct mutation
+   "Client (PWA)" -> "GraphQL API": basketAddItem mutation
    "Client (PWA)" <- "GraphQL API": Basket datatype or error
    "Client (PWA)" -> "GraphQL API": basketDeliveryMethods query
    "Client (PWA)" <- "GraphQL API": array of DeliveryMethod data types
@@ -83,10 +83,10 @@ via the ``baskets`` field in the ``customer`` query.
 This newly created basket is empty, so let's add a product to it.
 
 .. code-block:: graphql
-   :caption: call to ``basketAddProduct`` mutation
+   :caption: call to ``basketAddItem`` mutation
 
    mutation {
-        basketAddProduct(
+        basketAddItem(
             basketId: "310e50a2b1be309b255d70462cd75507",
             productId:"05848170643ab0deb9914566391c0c63",
             amount: 1
@@ -102,11 +102,11 @@ This newly created basket is empty, so let's add a product to it.
     }
 
 .. code-block:: json
-   :caption: ``basketAddProduct`` mutation response
+   :caption: ``basketAddItem`` mutation response
 
     {
         "data": {
-            "basketAddProduct": {
+            "basketAddItem": {
                 "items": [
                     {
                         "amount": 1,

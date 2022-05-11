@@ -23,8 +23,13 @@ abstract class Error extends GraphQLError
     /**
      * @param array<string, mixed> $extensions
      */
-    public function __construct(string $message, int $code = 0, ?Throwable $previous = null, string $category = 'Exception', array $extensions = [])
-    {
+    public function __construct(
+        string $message,
+        int $code = 0,
+        ?Throwable $previous = null,
+        string $category = 'Exception',
+        array $extensions = []
+    ) {
         parent::__construct(
             $message,
             null,

@@ -24,7 +24,9 @@ class TokenTest extends BaseTestCase
     public function testCreateTokenWithInvalidCredentials(): void
     {
         $legacy = $this->createPartialMock(LegacyService::class, ['login']);
-        $legacy->method('login')->willThrowException(new InvalidLogin('Username/password combination is invalid'));
+        $legacy->method('login')->willThrowException(
+            new InvalidLogin('Username/password combination is invalid')
+        );
 
         $this->expectException(InvalidLogin::class);
         $this->getTokenService($legacy)->createToken('foo', 'bar');
@@ -32,7 +34,10 @@ class TokenTest extends BaseTestCase
 
     public function testCreateTokenWithValidCredentials(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
+        $legacy = $this->createPartialMock(
+            LegacyService::class,
+            ['login', 'getShopId', 'getShopUrl']
+        );
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
 
         $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
@@ -42,7 +47,10 @@ class TokenTest extends BaseTestCase
 
     public function testCreateTokenWithValidCredentialsForBlockedUser(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']);
+        $legacy = $this->createPartialMock(
+            LegacyService::class,
+            ['login', 'getShopId', 'getShopUrl', 'getUserGroupIds']
+        );
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
         $legacy->method('getUserGroupIds')->willReturn(['foo', 'oxidblocked', 'bar']);
 
@@ -53,7 +61,10 @@ class TokenTest extends BaseTestCase
 
     public function testCreateAnonymousToken(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
+        $legacy = $this->createPartialMock(
+            LegacyService::class,
+            ['login', 'getShopId', 'getShopUrl']
+        );
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub()));
 
         $anonymousToken = $this->getTokenService($legacy)->createToken();
@@ -64,10 +75,16 @@ class TokenTest extends BaseTestCase
 
     public function testTokenQuotaExceeded(): void
     {
-        $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
+        $legacy = $this->createPartialMock(
+            LegacyService::class,
+            ['login', 'getShopId', 'getShopUrl']
+        );
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub()));
 
-        $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['canIssueToken', 'removeExpiredTokens']);
+        $tokenInfrastructure = $this->createPartialMock(
+            TokenInfrastructure::class,
+            ['canIssueToken', 'removeExpiredTokens']
+        );
         $tokenInfrastructure->method('canIssueToken')->willReturn(false);
 
         $this->expectException(TokenQuota::class);
@@ -103,8 +120,8 @@ class TokenTest extends BaseTestCase
     public function testDeleteUserToken(): void
     {
         $tokenId = 'not_existing';
-        $user    = $this->getUserDataStub($this->getUserModelStub('_testuser'));
-        $legacy  = $this->createMock(LegacyService::class);
+        $user = $this->getUserDataStub($this->getUserModelStub('_testuser'));
+        $legacy = $this->createMock(LegacyService::class);
 
         $tokenInfrastructure = $this->createPartialMock(
             TokenInfrastructure::class,
@@ -118,8 +135,8 @@ class TokenTest extends BaseTestCase
 
     public function testDeleteNotExistingUserToken(): void
     {
-        $user                = $this->getUserDataStub($this->getUserModelStub('_testuser'));
-        $legacy              = $this->createMock(LegacyService::class);
+        $user = $this->getUserDataStub($this->getUserModelStub('_testuser'));
+        $legacy = $this->createMock(LegacyService::class);
         $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['userHasToken']);
         $tokenInfrastructure->method('userHasToken')->willReturn(false);
 

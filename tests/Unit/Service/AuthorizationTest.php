@@ -153,7 +153,14 @@ class AuthorizationTest extends BaseTestCase
         ?Legacy $legacyService = null,
         ?TokenInfrastructure $tokenInfrastructure = null
     ): TokenService {
-        return new class($token, $this->createPartialMock(JwtConfigurationBuilder::class, []), $legacyService ?: $this->getLegacyMock(), $this->createPartialMock(EventDispatcher::class, []), $this->getModuleConfigurationMock(), $tokenInfrastructure ?: $this->getTokenInfrastructureMock()) extends TokenService {
+        return new class (
+            $token,
+            $this->createPartialMock(JwtConfigurationBuilder::class, []),
+            $legacyService ?: $this->getLegacyMock(),
+            $this->createPartialMock(EventDispatcher::class, []),
+            $this->getModuleConfigurationMock(),
+            $tokenInfrastructure ?: $this->getTokenInfrastructureMock()
+        ) extends TokenService {
             protected function areConstraintsValid(UnencryptedToken $token): bool
             {
                 return true;
@@ -179,20 +186,20 @@ class AuthorizationTest extends BaseTestCase
     private function getPermissionMocks(): iterable
     {
         $a = $this->getMockBuilder(PermissionProviderInterface::class)
-                  ->getMock();
+            ->getMock();
         $a->method('getPermissions')
-          ->willReturn([
-              'group'  => ['permission'],
-              'group1' => ['permission1'],
-          ]);
+            ->willReturn([
+                'group' => ['permission'],
+                'group1' => ['permission1'],
+            ]);
         $b = $this->getMockBuilder(PermissionProviderInterface::class)
-                  ->getMock();
+            ->getMock();
         $b->method('getPermissions')
-          ->willReturn([
-              'group'     => ['permission2'],
-              'group2'    => ['permission2'],
-              'developer' => ['all'],
-          ]);
+            ->willReturn([
+                'group' => ['permission2'],
+                'group2' => ['permission2'],
+                'developer' => ['all'],
+            ]);
 
         return [
             $a,
@@ -203,7 +210,7 @@ class AuthorizationTest extends BaseTestCase
     private function getEventDispatcherMock(): EventDispatcherInterface
     {
         return $this->getMockBuilder(EventDispatcherInterface::class)
-                    ->getMock();
+            ->getMock();
     }
 
     private function getLegacyMock(): Legacy

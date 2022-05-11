@@ -24,7 +24,7 @@ class Authentication implements AuthenticationServiceInterface
 
     public function __construct(
         LegacyInfrastructure $legacyService,
-        Token                $tokenService
+        Token $tokenService
     ) {
         $this->legacyInfrastructure = $legacyService;
         $this->tokenService         = $tokenService;

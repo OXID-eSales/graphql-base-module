@@ -55,12 +55,19 @@ abstract class BaseTestCase extends TestCase
         return new TokenValidator(
             $this->getJwtConfigurationBuilder($legacy),
             $legacy,
-            $tokenInfrastructure ?: $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered'])
+            $tokenInfrastructure ?: $this->createPartialMock(
+                TokenInfrastructure::class,
+                ['registerToken', 'isTokenRegistered']
+            )
         );
     }
 
-    protected function getTokenService($legacy, $tokenInfrastructure = null, $token = null, string $lifetime = '+8 hours'): TokenService
-    {
+    protected function getTokenService(
+        $legacy,
+        $tokenInfrastructure = null,
+        $token = null,
+        string $lifetime = '+8 hours'
+    ): TokenService {
         return new TokenService(
             $token,
             $this->getJwtConfigurationBuilder($legacy),
@@ -73,7 +80,10 @@ abstract class BaseTestCase extends TestCase
 
     protected function getTokenInfrastructureMock(): TokenInfrastructure
     {
-        $mock = $this->createPartialMock(TokenInfrastructure::class, ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']);
+        $mock = $this->createPartialMock(
+            TokenInfrastructure::class,
+            ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']
+        );
         $mock->method('canIssueToken')->willReturn(true);
 
         return $mock;

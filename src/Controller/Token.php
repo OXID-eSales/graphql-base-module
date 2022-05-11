@@ -61,8 +61,8 @@ class Token
      */
     public function tokens(
         ?TokenFilterList $filter = null,
-        ?Pagination      $pagination = null,
-        ?TokenSorting    $sort = null
+        ?Pagination $pagination = null,
+        ?TokenSorting $sort = null
     ): array {
         return $this->tokenAdministration->tokens(
             $filter ?? TokenFilterList::fromUserInput(

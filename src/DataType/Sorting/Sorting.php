@@ -16,7 +16,7 @@ abstract class Sorting
 {
     public const SORTING_DESC = 'DESC';
 
-    public const SORTING_ASC  = 'ASC';
+    public const SORTING_ASC = 'ASC';
 
     /** @var array<string, null|string> */
     private $sorting;
@@ -34,7 +34,9 @@ abstract class Sorting
                 $val !== self::SORTING_DESC &&
                 $val !== self::SORTING_ASC
             ) {
-                throw new InvalidArgumentException('"' . $field . '" is only allowed to be one of ASC, DESC, was "' . $val . '"');
+                throw new InvalidArgumentException(
+                    '"' . $field . '" is only allowed to be one of ASC, DESC, was "' . $val . '"'
+                );
             }
         }
         $this->sorting = $sorting;

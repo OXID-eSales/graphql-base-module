@@ -76,7 +76,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
         $this->rest->haveHTTPHeader('Content-Type', 'application/json');
         $this->rest->sendPOST($uri, [
-            'query'     => $query,
+            'query' => $query,
             'variables' => $variables,
         ]);
     }
@@ -85,7 +85,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
     {
         $this->logout();
 
-        $query     = 'query ($username: String, $password: String) { token (username: $username, password: $password) }';
+        $query = 'query ($username: String, $password: String) { token (username: $username, password: $password) }';
         $variables = [
             'username' => $username,
             'password' => $password,
@@ -116,7 +116,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function seeResponseContainsValidJWTToken(): void
     {
-        $token  = $this->grabTokenFromResponse();
+        $token = $this->grabTokenFromResponse();
 
         try {
             (new Parser(new JoseEncoder()))->parse($token);

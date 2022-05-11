@@ -28,7 +28,7 @@ class ModuleSetup
      * ModuleSetup constructor.
      */
     public function __construct(
-        ModuleConfiguration          $moduleConfiguration,
+        ModuleConfiguration $moduleConfiguration,
         ModuleSettingBridgeInterface $moduleSettings
     ) {
         $this->moduleConfiguration    = $moduleConfiguration;
