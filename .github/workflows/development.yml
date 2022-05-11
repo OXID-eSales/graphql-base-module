@@ -122,6 +122,7 @@ jobs:
 
             - name: Run phpmd
               id: phpmd
+              continue-on-error: true
               if: always()
               working-directory: source/test-module
               run: composer phpmd-report || composer phpmd
