@@ -38,7 +38,7 @@ final class Token implements ShopModelAwareInterface
      */
     public function id(): ID
     {
-        return new ID((string) $this->tokenModel->getId());
+        return new ID((string)$this->tokenModel->getId());
     }
 
     /**
@@ -46,7 +46,7 @@ final class Token implements ShopModelAwareInterface
      */
     public function token(): string
     {
-        return (string) $this->tokenModel->getRawFieldData('token');
+        return (string)$this->tokenModel->getRawFieldData('token');
     }
 
     /**
@@ -55,7 +55,7 @@ final class Token implements ShopModelAwareInterface
     public function createdAt(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
-            (string) $this->tokenModel->getRawFieldData('issued_at')
+            (string)$this->tokenModel->getRawFieldData('issued_at')
         );
     }
 
@@ -65,7 +65,7 @@ final class Token implements ShopModelAwareInterface
     public function expiresAt(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
-            (string) $this->tokenModel->getRawFieldData('expires_at')
+            (string)$this->tokenModel->getRawFieldData('expires_at')
         );
     }
 
@@ -82,7 +82,7 @@ final class Token implements ShopModelAwareInterface
      */
     public function customerId(): ID
     {
-        return new ID((string) $this->tokenModel->getRawFieldData('oxuserid'));
+        return new ID((string)$this->tokenModel->getRawFieldData('oxuserid'));
     }
 
     /**
@@ -90,7 +90,7 @@ final class Token implements ShopModelAwareInterface
      */
     public function shopId(): ID
     {
-        return new ID((string) $this->tokenModel->getRawFieldData('oxshopid'));
+        return new ID((string)$this->tokenModel->getRawFieldData('oxshopid'));
     }
 
     public static function getModelClass(): string

@@ -45,14 +45,14 @@ class GraphQLQueryHandler
         ResponseWriter $responseWriter,
         TimerHandler $timerHandler
     ) {
-        $this->logger            = $logger;
-        $this->schemaFactory     = $schemaFactory;
-        $this->requestReader     = $requestReader;
-        $this->responseWriter    = $responseWriter;
-        $this->timerHandler      = $timerHandler;
+        $this->logger = $logger;
+        $this->schemaFactory = $schemaFactory;
+        $this->requestReader = $requestReader;
+        $this->responseWriter = $responseWriter;
+        $this->timerHandler = $timerHandler;
 
         $this->loggingErrorFormatter = function (Error $error) {
-            $this->logger->error((string) $error);
+            $this->logger->error((string)$error);
 
             return FormattedError::createFromException($error);
         };
@@ -78,8 +78,8 @@ class GraphQLQueryHandler
      */
     private function executeQuery(array $queryData): ExecutionResult
     {
-        $graphQL       = new \GraphQL\GraphQL();
-        $variables     = null;
+        $graphQL = new \GraphQL\GraphQL();
+        $variables = null;
         $operationName = null;
 
         if (isset($queryData['variables'])) {

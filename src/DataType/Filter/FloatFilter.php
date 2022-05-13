@@ -49,10 +49,10 @@ class FloatFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type FloatFilter must be provided');
         }
-        $this->equals      = $equals;
-        $this->lessThan    = $lessThan;
+        $this->equals = $equals;
+        $this->lessThan = $lessThan;
         $this->greaterThan = $greaterThan;
-        $this->between     = $between;
+        $this->between = $between;
     }
 
     public function equals(): ?float
@@ -89,26 +89,26 @@ class FloatFilter implements FilterInterface
 
         if ($this->equals) {
             $builder->andWhere(sprintf('%s.%s = :%s_eq', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_eq', $this->equals);
+                ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->lessThan) {
             $builder->andWhere(sprintf('%s.%s < :%s_lt', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_lt', $this->lessThan);
+                ->setParameter(':' . $field . '_lt', $this->lessThan);
         }
 
         if ($this->greaterThan) {
             $builder->andWhere(sprintf('%s.%s > :%s_gt', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_gt', $this->greaterThan);
+                ->setParameter(':' . $field . '_gt', $this->greaterThan);
         }
 
         if ($this->between) {
             $where = sprintf('%s.%s BETWEEN :%s_less AND :%s_upper', $table, strtoupper($field), $field, $field);
             $builder->andWhere($where)
-                    ->setParameter(':' . $field . '_less', $this->between[0])
-                    ->setParameter(':' . $field . '_upper', $this->between[1]);
+                ->setParameter(':' . $field . '_less', $this->between[0])
+                ->setParameter(':' . $field . '_upper', $this->between[1]);
         }
     }
 
@@ -124,10 +124,11 @@ class FloatFilter implements FilterInterface
         ?array $between = null
     ): self {
         if (
-            $between !== null && (
-                count($between) !== 2 ||
-            !is_float($between[0]) ||
-            !is_float($between[1])
+            $between !== null
+            && (
+                count($between) !== 2
+                || !is_float($between[0])
+                || !is_float($between[1])
             )
         ) {
             throw new OutOfBoundsException();

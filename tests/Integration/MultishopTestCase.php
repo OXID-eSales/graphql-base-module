@@ -47,9 +47,9 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         }
 
         $shop->assign([
-            'OXID'     => $shopId,
+            'OXID' => $shopId,
             'OXACTIVE' => 1,
-            'OXNAME'   => 'Second shop',
+            'OXNAME' => 'Second shop',
         ]);
         $shop->save();
 
@@ -58,12 +58,12 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         ];
 
         // copy language settings from shop 1
-        $database->execute("
-            INSERT INTO oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
+        $database->execute(
+            "INSERT INTO oxconfig (oxid, oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule)
             SELECT MD5(RAND()), {$shopId} AS oxshopid, oxvarname, oxvartype, oxvarvalue, oxmodule FROM oxconfig
             WHERE oxshopid = '1'
-              AND oxvarname IN ( '" . implode("', '", $copyVars) . "')
-        ");
+              AND oxvarname IN ( '" . implode("', '", $copyVars) . "')"
+        );
 
         $container         = ContainerFactory::getInstance()->getContainer();
         $shopConfiguration = $container->get(ShopConfigurationDaoBridgeInterface::class)->get();
@@ -76,7 +76,7 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         $moduleInstaller = new ModuleInstaller(Registry::getConfig());
         $moduleInstaller->switchToShop($shopId);
 
-        $testConfig      = $this->getTestConfig();
+        $testConfig = $this->getTestConfig();
         $aInstallModules = $testConfig->getModulesToActivate();
 
         $moduleLoader = new ModuleLoader();

@@ -44,7 +44,7 @@ class GraphQLCest
         $I->seeResponseMatchesJsonType([
             'errors' => [
                 [
-                    'message'    => 'string:=Unable to parse token',
+                    'message' => 'string:=Unable to parse token',
                     'extensions' => [
                         'category' => 'string:=permissionerror',
                     ],
@@ -61,7 +61,7 @@ class GraphQLCest
 
         $I->getRest()->haveHTTPHeader('Content-Type', 'application/json');
         $I->getRest()->sendPOST($uri, [
-            'query'     => 'query {token(username:"admin", password:"admin")}',
+            'query' => 'query {token(username:"admin", password:"admin")}',
             'variables' => [],
         ]);
 
@@ -70,7 +70,7 @@ class GraphQLCest
         $I->seeResponseMatchesJsonType([
             'errors' => [
                 [
-                    'message'    => 'string:=' . GraphQL::SESSION_ERROR_MESSAGE,
+                    'message' => 'string:=' . GraphQL::SESSION_ERROR_MESSAGE,
                     'extensions' => [
                         'category' => 'string:=requesterror',
                     ],

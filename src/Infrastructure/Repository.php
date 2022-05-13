@@ -66,9 +66,9 @@ class Repository
      *
      * @param class-string<T> $type
      *
-     * @throws InvalidArgumentException if model in $type is not instance of BaseModel
-     *
      * @return T[]
+     *
+     * @throws InvalidArgumentException if model in $type is not instance of BaseModel
      */
     public function getList(
         string $type,
@@ -84,7 +84,7 @@ class Repository
         );
         $queryBuilder = $this->queryBuilderFactory->create();
         $queryBuilder->select($model->getViewName() . '.*')
-                     ->from($model->getViewName());
+            ->from($model->getViewName());
 
         if (
             $filter->getActive() !== null &&
@@ -123,9 +123,8 @@ class Repository
     }
 
     /**
-     * @throws NotFound
-     *
      * @return true
+     * @throws NotFound
      */
     public function delete(BaseModel $item): bool
     {

@@ -86,7 +86,7 @@ class PaginationTest extends DataTypeTestCase
     public function testAddPaginationToQuery(int $offset, ?int $limit): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $filter       = Pagination::fromUserInput($offset, $limit);
+        $filter = Pagination::fromUserInput($offset, $limit);
 
         $filter->addPaginationToQuery($queryBuilder);
 

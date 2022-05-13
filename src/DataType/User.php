@@ -26,7 +26,7 @@ final class User implements ShopModelAwareInterface
 
     public function __construct(EshopUserModel $userModel, bool $isAnonymous = false)
     {
-        $this->userModel   = $userModel;
+        $this->userModel = $userModel;
         $this->isAnonymous = $isAnonymous;
     }
 
@@ -40,7 +40,7 @@ final class User implements ShopModelAwareInterface
      */
     public function id(): ID
     {
-        return new ID((string) $this->userModel->getId());
+        return new ID((string)$this->userModel->getId());
     }
 
     /**
@@ -48,7 +48,7 @@ final class User implements ShopModelAwareInterface
      */
     public function email(): string
     {
-        return (string) $this->userModel->getRawFieldData('oxusername');
+        return (string)$this->userModel->getRawFieldData('oxusername');
     }
 
     public function isAnonymous(): bool

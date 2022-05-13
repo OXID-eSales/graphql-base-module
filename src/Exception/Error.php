@@ -40,7 +40,7 @@ abstract class Error extends GraphQLError
             $extensions
         );
         $this->category = $category;
-        $this->code     = $code;
+        $this->code = $code;
     }
 
     /**

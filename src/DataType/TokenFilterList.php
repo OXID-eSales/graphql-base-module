@@ -32,8 +32,8 @@ final class TokenFilterList implements FilterListInterface
         ?DateFilter $expiresAt = null
     ) {
         $this->customerId = $customerId;
-        $this->shopId     = $shopId;
-        $this->expiresAt  = $expiresAt;
+        $this->shopId = $shopId;
+        $this->expiresAt = $expiresAt;
     }
 
     public function withActiveFilter(?BoolFilter $active): self
@@ -53,7 +53,7 @@ final class TokenFilterList implements FilterListInterface
 
     public function withUserFilter(IDFilter $user): self
     {
-        $filter             = clone $this;
+        $filter = clone $this;
         $filter->customerId = $user;
 
         return $filter;
@@ -69,8 +69,8 @@ final class TokenFilterList implements FilterListInterface
     public function getFilters(): array
     {
         return [
-            'oxuserid'   => $this->customerId,
-            'oxshopid'   => $this->shopId,
+            'oxuserid' => $this->customerId,
+            'oxshopid' => $this->shopId,
             'expires_at' => $this->expiresAt,
         ];
     }

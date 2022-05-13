@@ -33,7 +33,7 @@ class JwtConfigurationBuilder
         LegacyService $legacyService
     ) {
         $this->moduleConfiguration = $moduleConfiguration;
-        $this->legacyService       = $legacyService;
+        $this->legacyService = $legacyService;
     }
 
     public function getConfiguration(): Configuration
@@ -44,9 +44,9 @@ class JwtConfigurationBuilder
         );
 
         $strictValidAt = new StrictValidAt(SystemClock::fromSystemTimezone());
-        $issuedBy      = new IssuedBy($this->legacyService->getShopUrl());
-        $permittedFor  = new PermittedFor($this->legacyService->getShopUrl());
-        $signedWith    = new SignedWith($config->signer(), $config->verificationKey());
+        $issuedBy = new IssuedBy($this->legacyService->getShopUrl());
+        $permittedFor = new PermittedFor($this->legacyService->getShopUrl());
+        $signedWith = new SignedWith($config->signer(), $config->verificationKey());
         $belongsToShop = new BelongsToShop($this->legacyService->getShopId());
 
         $config->setValidationConstraints($issuedBy, $permittedFor, $signedWith, $belongsToShop, $strictValidAt);

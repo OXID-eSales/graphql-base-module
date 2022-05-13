@@ -30,8 +30,8 @@ use Throwable;
 class GraphQL extends WidgetController
 {
     public const SESSION_ERROR_MESSAGE = 'OXID eShop PHP session spotted. Ensure you have skipSession=1 '
-        . 'parameter sent to the widget.php. For more information about the problem, check '
-        . 'Troubleshooting section in documentation.';
+    . 'parameter sent to the widget.php. For more information about the problem, check '
+    . 'Troubleshooting section in documentation.';
 
     /**
      * Init function

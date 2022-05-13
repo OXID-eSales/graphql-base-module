@@ -55,7 +55,7 @@ class TokenTest extends BaseTestCase
             new IDFilter(new ID(1)),
             new DateFilter(null, ['2021-01-12 12:12:12', '2021-12-31 12:12:12'])
         );
-        $sort       = TokenSorting::fromUserInput(TokenSorting::SORTING_DESC);
+        $sort = TokenSorting::fromUserInput(TokenSorting::SORTING_DESC);
         $pagination = Pagination::fromUserInput(10, 20);
 
         $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['tokens']);
@@ -73,7 +73,7 @@ class TokenTest extends BaseTestCase
 
     public function testCustomerTokensDelete(): void
     {
-        $authentication      = $this->createPartialMock(Authentication::class, []);
+        $authentication = $this->createPartialMock(Authentication::class, []);
         $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['customerTokensDelete']);
         $tokenAdministration->method('customerTokensDelete')
             ->willReturn(5);

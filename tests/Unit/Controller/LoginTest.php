@@ -37,8 +37,8 @@ class LoginTest extends BaseTestCase
     public function setUp(): void
     {
         $this->legacy = $this->getMockBuilder(Legacy::class)
-                            ->disableOriginalConstructor()
-                            ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->legacy->method('getShopUrl')->willReturn('https://whatever.com');
         $this->legacy->method('getShopId')->willReturn(1);
 
@@ -73,9 +73,9 @@ class LoginTest extends BaseTestCase
 
         $loginController = new Login($this->tokenService);
 
-        $jwt       = $loginController->token($username, $password);
-        $config    = $this->jwtConfigurationBuilder->getConfiguration();
-        $token     = $config->parser()->parse($jwt);
+        $jwt = $loginController->token($username, $password);
+        $config = $this->jwtConfigurationBuilder->getConfiguration();
+        $token = $config->parser()->parse($jwt);
         $validator = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
@@ -93,9 +93,9 @@ class LoginTest extends BaseTestCase
 
         $loginController = new Login($this->tokenService);
 
-        $jwt       = $loginController->token('none');
-        $config    = $this->jwtConfigurationBuilder->getConfiguration();
-        $token     = $config->parser()->parse($jwt);
+        $jwt = $loginController->token('none');
+        $config = $this->jwtConfigurationBuilder->getConfiguration();
+        $token = $config->parser()->parse($jwt);
         $validator = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
@@ -107,7 +107,7 @@ class LoginTest extends BaseTestCase
     {
         $shop = [
             'url' => 'https://whatever.com',
-            'id'  => 1,
+            'id' => 1,
         ];
 
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
@@ -118,9 +118,9 @@ class LoginTest extends BaseTestCase
 
         $loginController = new Login($this->tokenService);
 
-        $jwt       = $loginController->token(null, 'none');
-        $config    = $this->jwtConfigurationBuilder->getConfiguration();
-        $token     = $config->parser()->parse($jwt);
+        $jwt = $loginController->token(null, 'none');
+        $config = $this->jwtConfigurationBuilder->getConfiguration();
+        $token = $config->parser()->parse($jwt);
         $validator = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
@@ -132,7 +132,7 @@ class LoginTest extends BaseTestCase
     {
         $shop = [
             'url' => 'https://whatever.com',
-            'id'  => 1,
+            'id' => 1,
         ];
 
         $this->legacy->method('getShopUrl')->willReturn($shop['url']);
@@ -143,9 +143,9 @@ class LoginTest extends BaseTestCase
 
         $loginController = new Login($this->tokenService);
 
-        $jwt       = $loginController->token();
-        $config    = $this->jwtConfigurationBuilder->getConfiguration();
-        $token     = $config->parser()->parse($jwt);
+        $jwt = $loginController->token();
+        $config = $this->jwtConfigurationBuilder->getConfiguration();
+        $token = $config->parser()->parse($jwt);
         $validator = $config->validator();
 
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));

@@ -45,9 +45,9 @@ class Token
         TokenService $tokenService
     ) {
         $this->tokenAdministration = $tokenAdministration;
-        $this->authentication      = $authentication;
-        $this->authorization       = $authorization;
-        $this->tokenService        = $tokenService;
+        $this->authentication = $authentication;
+        $this->authorization = $authorization;
+        $this->tokenService = $tokenService;
     }
 
     /**

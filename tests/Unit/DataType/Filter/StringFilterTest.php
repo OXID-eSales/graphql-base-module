@@ -65,7 +65,7 @@ class StringFilterTest extends DataTypeTestCase
     public function testAddQueryPartWithNoFrom(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $filter       = StringFilter::fromUserInput('no_from');
+        $filter = StringFilter::fromUserInput('no_from');
 
         $this->expectException(InvalidArgumentException::class);
         $filter->addToQuery($queryBuilder, 'db_field');
@@ -85,7 +85,7 @@ class StringFilterTest extends DataTypeTestCase
         $where = $queryBuilder->getQueryPart('where');
 
         $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string) $where);
+        $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string)$where);
         $this->assertEquals($string, $queryBuilder->getParameter(':db_field_eq'));
     }
 
@@ -105,7 +105,7 @@ class StringFilterTest extends DataTypeTestCase
         $this->assertEquals($where::TYPE_AND, $where->getType());
         $this->assertEquals(
             'db_table.DB_FIELD LIKE :db_field_contain',
-            (string) $where
+            (string)$where
         );
         $this->assertEquals('%' . $string . '%', $queryBuilder->getParameter(':db_field_contain'));
     }
@@ -126,7 +126,7 @@ class StringFilterTest extends DataTypeTestCase
         $this->assertEquals($where::TYPE_AND, $where->getType());
         $this->assertEquals(
             'db_table.DB_FIELD LIKE :db_field_begins',
-            (string) $where
+            (string)$where
         );
         $this->assertEquals($string . '%', $queryBuilder->getParameter(':db_field_begins'));
     }
@@ -134,7 +134,7 @@ class StringFilterTest extends DataTypeTestCase
     public function testAddQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $filter       = StringFilter::fromUserInput('with_alias');
+        $filter = StringFilter::fromUserInput('with_alias');
 
         $queryBuilder->select()->from('db_table', 'db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
@@ -142,6 +142,6 @@ class StringFilterTest extends DataTypeTestCase
         /** @var CompositeExpression $where */
         $where = $queryBuilder->getQueryPart('where');
 
-        $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string) $where);
+        $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
     }
 }

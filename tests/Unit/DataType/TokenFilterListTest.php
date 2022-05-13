@@ -22,8 +22,8 @@ class TokenFilterListTest extends DataTypeTestCase
         $filterList = new TokenFilterList();
 
         $expected = [
-            'oxuserid'   => null,
-            'oxshopid'   => null,
+            'oxuserid' => null,
+            'oxshopid' => null,
             'expires_at' => null,
         ];
 
@@ -33,8 +33,8 @@ class TokenFilterListTest extends DataTypeTestCase
     public function testFactory(): void
     {
         $expected = [
-            'oxuserid'   => new IDFilter(new ID('_userId')),
-            'oxshopid'   => new IDFilter(new ID(66)),
+            'oxuserid' => new IDFilter(new ID('_userId')),
+            'oxshopid' => new IDFilter(new ID(66)),
             'expires_at' => new DateFilter(null, ['2021-01-12 12:12:12', '2021-12-31 12:12:12']),
         ];
 

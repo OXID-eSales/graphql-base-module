@@ -47,7 +47,7 @@ abstract class TestCase extends PHPUnitTestCase
         if (static::$container !== null) {
             return;
         }
-        $containerFactory  = new TestContainerFactory();
+        $containerFactory = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
         $responseWriterDefinition = static::$container->getDefinition(ResponseWriter::class);
@@ -90,8 +90,8 @@ abstract class TestCase extends PHPUnitTestCase
     protected function tearDown(): void
     {
         static::$queryResult = null;
-        static::$logResult   = null;
-        static::$query       = null;
+        static::$logResult = null;
+        static::$query = null;
 
         if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             if (static::$container) {
@@ -104,29 +104,29 @@ abstract class TestCase extends PHPUnitTestCase
     protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $authToken                     = static::$container->get(RequestReader::class)->getAuthToken();
+        $authToken = static::$container->get(RequestReader::class)->getAuthToken();
 
-        $tokenService   = static::$container->get(Token::class);
-        $refClass       = new ReflectionClass(Token::class);
-        $prop           = $refClass->getProperty('token');
+        $tokenService = static::$container->get(Token::class);
+        $refClass = new ReflectionClass(Token::class);
+        $prop = $refClass->getProperty('token');
         $prop->setAccessible(true);
         $prop->setValue($tokenService, $authToken);
 
         $authentication = static::$container->get(Authentication::class);
-        $refClass       = new ReflectionClass(Authentication::class);
-        $prop           = $refClass->getProperty('tokenService');
+        $refClass = new ReflectionClass(Authentication::class);
+        $prop = $refClass->getProperty('tokenService');
         $prop->setAccessible(true);
         $prop->setValue($authentication, $tokenService);
 
         $authorization = static::$container->get(Authorization::class);
-        $refClass      = new ReflectionClass(Authorization::class);
-        $prop          = $refClass->getProperty('tokenService');
+        $refClass = new ReflectionClass(Authorization::class);
+        $prop = $refClass->getProperty('tokenService');
         $prop->setAccessible(true);
         $prop->setValue($authorization, $tokenService);
 
-        $schema        = static::$container->get(SchemaFactory::class);
-        $refClass      = new ReflectionClass(SchemaFactory::class);
-        $prop          = $refClass->getProperty('schema');
+        $schema = static::$container->get(SchemaFactory::class);
+        $refClass = new ReflectionClass(SchemaFactory::class);
+        $prop = $refClass->getProperty('schema');
         $prop->setAccessible(true);
         $prop->setValue($schema, null);
     }
@@ -134,12 +134,12 @@ abstract class TestCase extends PHPUnitTestCase
     protected function query(string $query, ?array $variables = null, ?string $operationName = null): array
     {
         static::$query = [
-            'query'         => $query,
-            'variables'     => $variables,
+            'query' => $query,
+            'variables' => $variables,
             'operationName' => $operationName,
         ];
         static::$container->get(GraphQLQueryHandler::class)
-                          ->executeGraphQLQuery();
+            ->executeGraphQLQuery();
 
         return static::$queryResult;
     }
@@ -155,12 +155,12 @@ abstract class TestCase extends PHPUnitTestCase
         ?string $token = null
     ): array {
         $variables = $mutationData['variables'];
-        $mutation  = $mutationData['mutation'];
+        $mutation = $mutationData['mutation'];
 
         $fields = [
-            'operation'     => $mutationData['name'],
-            'operations'    => [
-                'query'     => $mutation,
+            'operation' => $mutationData['name'],
+            'operations' => [
+                'query' => $mutation,
                 'variables' => $variables,
             ],
         ];
@@ -178,7 +178,7 @@ abstract class TestCase extends PHPUnitTestCase
         $postData = $this->buildFileUpload($boundary, $fields, $map, $files);
 
         $facts = new Facts();
-        $ch    = curl_init($facts->getShopUrl() . '/graphql?lang=0&shp=1');
+        $ch = curl_init($facts->getShopUrl() . '/graphql?lang=0&shp=1');
 
         $headers = [
             'Connection: keep-alive',
@@ -208,7 +208,7 @@ abstract class TestCase extends PHPUnitTestCase
     protected function buildFileUpload(string $delimiter, array $fields, array $map, array $files = []): string
     {
         $data = '';
-        $eol  = "\r\n";
+        $eol = "\r\n";
 
         foreach (array_merge($fields, $map) as $name => $content) {
             $data .= '--' . $delimiter . $eol
@@ -236,7 +236,7 @@ abstract class TestCase extends PHPUnitTestCase
     public static function responseCallback($body): void
     {
         static::$queryResult = [
-            'body'   => $body,
+            'body' => $body,
         ];
     }
 

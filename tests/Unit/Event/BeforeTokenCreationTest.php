@@ -21,7 +21,7 @@ class BeforeTokenCreationTest extends BaseTestCase
         $userId = 'user-id';
 
         $builderMock = $this->getMockBuilder(Builder::class)->getMock();
-        $event       = new BeforeTokenCreation(
+        $event = new BeforeTokenCreation(
             $builderMock,
             new User($this->getUserModelStub($userId))
         );
