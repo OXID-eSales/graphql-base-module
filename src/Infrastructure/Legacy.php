@@ -39,7 +39,7 @@ class Legacy
     public function login(?string $username = null, ?string $password = null): User
     {
         /** @var UserModel $user */
-        $user        = $this->getUserModel();
+        $user = $this->getUserModel();
         $isAnonymous = true;
 
         if ($username && $password) {
@@ -90,10 +90,10 @@ class Legacy
         $requestParameter = $_GET['lang'];
 
         if ($requestParameter === null) {
-            return (int) Registry::getLang()->getBaseLanguage();
+            return (int)Registry::getLang()->getBaseLanguage();
         }
 
-        return (int) $requestParameter;
+        return (int)$requestParameter;
     }
 
     public function isValidEmail(string $email): bool
@@ -134,7 +134,7 @@ class Legacy
         $userGroupIds = [];
 
         foreach ($userGroupList->getArray() as $group) {
-            $userGroupIds[] = (string) $group->getId();
+            $userGroupIds[] = (string)$group->getId();
         }
 
         return $userGroupIds;

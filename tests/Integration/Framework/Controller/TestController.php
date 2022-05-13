@@ -99,7 +99,7 @@ class TestController
      */
     public function basicInputFilterQuery(TestFilter $filter): string
     {
-        return (string) $filter;
+        return (string)$filter;
     }
 
     /**

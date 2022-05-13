@@ -19,10 +19,10 @@ class ModuleConfigurationTest extends TestCase
 {
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
     {
-        $moduleSettingBridgeMock          = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
-        $moduleConfiguration              = new ModuleConfiguration($moduleSettingBridgeMock);
-        $iterations                       = 5;
-        $keys                             = [];
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
+        $iterations = 5;
+        $keys = [];
 
         for ($i = 0; $i < $iterations; $i++) {
             $key = $moduleConfiguration->generateSignatureKey();
@@ -63,7 +63,7 @@ class ModuleConfigurationTest extends TestCase
      */
     public function testGetSignatureKeyWithInvalidOrNoSignature($signature, bool $valid): void
     {
-        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
         $moduleSettingBridgeMock->method('get')->willReturn($signature);
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
@@ -82,7 +82,7 @@ class ModuleConfigurationTest extends TestCase
 
     public function testGetTokenLifetimeDefault(): void
     {
-        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
         $moduleSettingBridgeMock->method('get')->willReturn('asdf');
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
@@ -92,7 +92,7 @@ class ModuleConfigurationTest extends TestCase
 
     public function testGetTokenLifetime(): void
     {
-        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
         $moduleSettingBridgeMock->method('get')->willReturn('24hrs');
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
@@ -102,7 +102,7 @@ class ModuleConfigurationTest extends TestCase
 
     public function testGetUserTokenQuota(): void
     {
-        $moduleSettingBridgeMock  = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
         $moduleSettingBridgeMock->method('get')->willReturn('666');
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);

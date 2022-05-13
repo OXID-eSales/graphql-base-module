@@ -65,7 +65,7 @@ class GraphQLQueryHandlerTest extends TestCase
 
         $this->assertEquals(
             [
-                'body'   => [
+                'body' => [
                     'data' => [
                         'testQuery' => 'bar',
                     ],
@@ -111,7 +111,7 @@ class GraphQLQueryHandlerTest extends TestCase
         $result = $this->query('query { testLoggedQuery(foo: "bar") }');
         $this->assertEquals(
             [
-                'body'   => [
+                'body' => [
                     'data' => [
                         'testLoggedQuery' => 'bar',
                     ],
@@ -133,7 +133,7 @@ class GraphQLQueryHandlerTest extends TestCase
         $result = $this->query('query { testLoggedRightQuery(foo: "bar") }');
         $this->assertEquals(
             [
-                'body'   => [
+                'body' => [
                     'data' => [
                         'testLoggedRightQuery' => 'bar',
                     ],
@@ -192,7 +192,7 @@ class GraphQLQueryHandlerTest extends TestCase
 
         $this->assertEquals(
             [
-                'body'   => [
+                'body' => [
                     'data' => [
                         'testOnlyRightQuery' => 'bar',
                     ],
@@ -205,8 +205,8 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testBasicInputFilterQuery(): void
     {
-        $result = $this->query('
-            query {
+        $result = $this->query(
+            'query {
                 basicInputFilterQuery(filter: {
                     active: {
                         equals: true
@@ -221,42 +221,42 @@ class GraphQLQueryHandlerTest extends TestCase
                         contains: "foo"
                     }
                 })
-            }
-        ');
+            }'
+        );
 
         $this->assertNotEmpty($result['body']['data']['basicInputFilterQuery']);
     }
 
     public function testBasicSortingQuery(): void
     {
-        $result = $this->query('
-            query {
+        $result = $this->query(
+            'query {
                 basicSortingQuery (sort: {
                     title: "ASC"
                     price: "ASC"
                 })
-            }
-        ');
+            }'
+        );
 
         $this->assertNotEmpty($result['body']['data']['basicSortingQuery']);
     }
 
     public function testResultWithError(): void
     {
-        $result = $this->query('
-            query {
+        $result = $this->query(
+            'query {
                 resultWithError
-            }
-        ');
+            }'
+        );
         $this->assertEquals(
             [
-                'body'   => [
+                'body' => [
                     'data' => [
                         'resultWithError' => true,
                     ],
                     'errors' => [
                         [
-                            'message'    => 'error message',
+                            'message' => 'error message',
                             'extensions' => [
                                 'category' => 'graphql',
                             ],
@@ -270,7 +270,7 @@ class GraphQLQueryHandlerTest extends TestCase
 
     protected static function beforeContainerCompile(): void
     {
-        $loader      = new YamlFileLoader(static::$container, new FileLocator());
+        $loader = new YamlFileLoader(static::$container, new FileLocator());
         $serviceFile = __DIR__ . DIRECTORY_SEPARATOR . 'services.yaml';
         $loader->load($serviceFile);
     }

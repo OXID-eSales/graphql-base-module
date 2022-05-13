@@ -16,7 +16,7 @@ class Acceptance extends \Codeception\Module
 {
     public function _beforeSuite($settings = []): void // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
     {
-        $rootPath      = (new Facts())->getShopRootPath();
+        $rootPath = (new Facts())->getShopRootPath();
         $possiblePaths = [
             '/bin/oe-console',
             '/vendor/bin/oe-console',

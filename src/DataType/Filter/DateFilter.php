@@ -43,7 +43,7 @@ class DateFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type DateFilterInput must be provided');
         }
-        $this->equals  = $equals;
+        $this->equals = $equals;
         $this->between = $between;
     }
 
@@ -71,7 +71,7 @@ class DateFilter implements FilterInterface
 
         if ($this->equals) {
             $builder->andWhere($table . '.' . strtoupper($field) . ' = :' . $field . '_eq')
-                    ->setParameter(':' . $field . '_eq', $this->equals->format(self::SQL_DATETIME_FORMAT));
+                ->setParameter(':' . $field . '_eq', $this->equals->format(self::SQL_DATETIME_FORMAT));
             // if equals is set, then no other conditions may apply
             return;
         }
@@ -79,8 +79,8 @@ class DateFilter implements FilterInterface
         if ($this->between) {
             $where = sprintf('%s.%s BETWEEN :%s_lower AND :%s_upper', $table, strtoupper($field), $field, $field);
             $builder->andWhere($where)
-                    ->setParameter(':' . $field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
-                    ->setParameter(':' . $field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));
+                ->setParameter(':' . $field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
+                ->setParameter(':' . $field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));
         }
     }
 

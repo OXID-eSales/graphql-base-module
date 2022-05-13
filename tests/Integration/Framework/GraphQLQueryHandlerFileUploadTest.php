@@ -35,7 +35,7 @@ class GraphQLQueryHandlerFileUploadTest extends TestCase
     public function testFileUpload(): void
     {
         $expected = file_get_contents(self::UPLOAD_FILE);
-        $result   = $this->uploadFile(self::UPLOAD_FILE, $this->getMutationData());
+        $result = $this->uploadFile(self::UPLOAD_FILE, $this->getMutationData());
 
         $this->assertSame($expected, $result['data']['uploadedFileContent']);
     }
@@ -46,7 +46,7 @@ class GraphQLQueryHandlerFileUploadTest extends TestCase
             'mutation' => 'mutation upload ($file: Upload!){
                   uploadedFileContent(file: $file)
                }',
-            'name'      => 'uploadedFileContent',
+            'name' => 'uploadedFileContent',
             'variables' => [
                 'file' => null,
             ],
@@ -55,7 +55,7 @@ class GraphQLQueryHandlerFileUploadTest extends TestCase
 
     private static function getYamlImportService(): ProjectYamlImportService
     {
-        $basicContext   = BootstrapContainerFactory::getBootstrapContainer()->get(BasicContextInterface::class);
+        $basicContext = BootstrapContainerFactory::getBootstrapContainer()->get(BasicContextInterface::class);
         $projectYamlDao = new ProjectYamlDao($basicContext, new Filesystem());
 
         return new ProjectYamlImportService($projectYamlDao, $basicContext);

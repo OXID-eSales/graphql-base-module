@@ -31,14 +31,14 @@ class TestFilter
         ?StringFilter $title = null
     ) {
         $this->active = $active;
-        $this->price  = $price;
-        $this->stock  = $stock;
-        $this->title  = $title;
+        $this->price = $price;
+        $this->stock = $stock;
+        $this->title = $title;
     }
 
     public function __toString(): string
     {
-        $s  = 'active: ' . ($this->active->equals() ? 'true' : 'false') . PHP_EOL;
+        $s = 'active: ' . ($this->active->equals() ? 'true' : 'false') . PHP_EOL;
         $s .= 'price-eq: ' . $this->price->equals() . PHP_EOL;
         $s .= 'price-lt: ' . $this->price->lessThan() . PHP_EOL;
         $s .= 'price-gt: ' . $this->price->greaterThan() . PHP_EOL;

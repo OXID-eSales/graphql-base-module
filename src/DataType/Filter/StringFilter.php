@@ -39,8 +39,8 @@ class StringFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type StringFilter must be provided');
         }
-        $this->equals     = $equals;
-        $this->contains   = $contains;
+        $this->equals = $equals;
+        $this->contains = $contains;
         $this->beginsWith = $beginsWith;
     }
 
@@ -70,19 +70,19 @@ class StringFilter implements FilterInterface
 
         if ($this->equals) {
             $builder->andWhere(sprintf('%s.%s = :%s_eq', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_eq', $this->equals);
+                ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->contains) {
             $builder->andWhere(sprintf('%s.%s LIKE :%s_contain', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_contain', '%' . $this->contains . '%');
+                ->setParameter(':' . $field . '_contain', '%' . $this->contains . '%');
         }
 
         if ($this->beginsWith) {
             $builder->andWhere(sprintf('%s.%s LIKE :%s_begins', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_begins', $this->beginsWith . '%');
+                ->setParameter(':' . $field . '_begins', $this->beginsWith . '%');
         }
     }
 

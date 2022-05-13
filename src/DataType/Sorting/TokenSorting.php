@@ -22,7 +22,7 @@ final class TokenSorting extends Sorting
         string $expiresAt = self::SORTING_ASC
     ): self {
         return new self([
-            'expires_at'    => $expiresAt,
+            'expires_at' => $expiresAt,
         ]);
     }
 }

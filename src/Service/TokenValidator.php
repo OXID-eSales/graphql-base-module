@@ -34,8 +34,8 @@ class TokenValidator
         TokenInfrastructure $tokenInfrastructure
     ) {
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
-        $this->legacyInfrastructure    = $legacyInfrastructure;
-        $this->tokenInfrastructure     = $tokenInfrastructure;
+        $this->legacyInfrastructure = $legacyInfrastructure;
+        $this->tokenInfrastructure = $tokenInfrastructure;
     }
 
     /**
@@ -66,7 +66,7 @@ class TokenValidator
 
     private function areConstraintsValid(UnencryptedToken $token): bool
     {
-        $config    = $this->jwtConfigurationBuilder->getConfiguration();
+        $config = $this->jwtConfigurationBuilder->getConfiguration();
         $validator = $config->validator();
 
         return $validator->validate($token, ...$config->validationConstraints());

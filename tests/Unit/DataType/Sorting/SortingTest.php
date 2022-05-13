@@ -27,7 +27,7 @@ class SortingTest extends DataTypeTestCase
     public function testAddQueryPartWithoutAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort         = new class (['foo' => 'ASC']) extends Sorting {
+        $sort = new class (['foo' => 'ASC']) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table');
@@ -45,7 +45,7 @@ class SortingTest extends DataTypeTestCase
     public function testAddQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort         = new class (['foo' => 'ASC']) extends Sorting {
+        $sort = new class (['foo' => 'ASC']) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table', 'db_table_alias');
@@ -63,7 +63,7 @@ class SortingTest extends DataTypeTestCase
     public function testAddQueryWithMultipleSearchFields(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort         = new class (['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
+        $sort = new class (['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table');

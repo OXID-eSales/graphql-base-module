@@ -17,16 +17,16 @@ settings:
     shuffle: true
 
 extensions:
-  enabled:
-    - Codeception\Extension\RunFailed
+    enabled:
+        - Codeception\Extension\RunFailed
 
 coverage:
-  enabled: true
-  local: true
-  c3_url: '%SHOP_URL%'
-  remote_config: 'vendor/oxid-esales/graphql-base/tests/codeception.yml'
-  whitelist:
-    include:
-      - ../src/Component/*
-      - ../src/Controller/*
-      - ../src/Framework/*
+    enabled: true
+    local: true
+    c3_url: '%SHOP_URL%'
+    remote_config: 'vendor/oxid-esales/graphql-base/tests/codeception.yml'
+    whitelist:
+        include:
+            - ../src/Component/*
+            - ../src/Controller/*
+            - ../src/Framework/*

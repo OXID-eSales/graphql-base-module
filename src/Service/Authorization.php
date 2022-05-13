@@ -48,8 +48,8 @@ class Authorization implements AuthorizationServiceInterface
             );
         }
         $this->eventDispatcher = $eventDispatcher;
-        $this->tokenService    = $tokenService;
-        $this->legacyService   = $legacyService;
+        $this->tokenService = $tokenService;
+        $this->legacyService = $legacyService;
     }
 
     public function isAllowed(string $right, $subject = null): bool

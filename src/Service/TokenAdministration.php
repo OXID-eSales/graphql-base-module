@@ -54,12 +54,12 @@ class TokenAdministration
         LegacyInfrastructure $legacyInfrastructure,
         ModuleSetup $moduleSetup
     ) {
-        $this->repository            = $repository;
-        $this->authorizationService  = $authorizationService;
+        $this->repository = $repository;
+        $this->authorizationService = $authorizationService;
         $this->authenticationService = $authenticationService;
-        $this->tokenInfrastructure   = $tokenInfrastructure;
-        $this->legacyInfrastructure  = $legacyInfrastructure;
-        $this->moduleSetup           = $moduleSetup;
+        $this->tokenInfrastructure = $tokenInfrastructure;
+        $this->legacyInfrastructure = $legacyInfrastructure;
+        $this->moduleSetup = $moduleSetup;
     }
 
     /**
@@ -70,7 +70,6 @@ class TokenAdministration
         Pagination $pagination,
         TokenSorting $sort
     ): array {
-
         //without right to view any token user can only add filter on own id or no filter on id
         if (
             !$this->authorizationService->isAllowed('VIEW_ANY_TOKEN') &&
@@ -101,7 +100,7 @@ class TokenAdministration
             throw new InvalidLogin('Unauthorized');
         }
 
-        $id = $customerId ? (string) $customerId->val() : (string) $this->authenticationService->getUser()->id()->val();
+        $id = $customerId ? (string)$customerId->val() : (string)$this->authenticationService->getUser()->id()->val();
 
         try {
             /** @var UserDataType $user */

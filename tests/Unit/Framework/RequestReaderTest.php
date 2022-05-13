@@ -37,7 +37,7 @@ class RequestReaderTest extends BaseTestCase
             $this->createPartialMock(TokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
-        $headers       = [
+        $headers = [
             'HTTP_AUTHORIZATION',
             'REDIRECT_HTTP_AUTHORIZATION',
         ];
@@ -93,7 +93,7 @@ class RequestReaderTest extends BaseTestCase
         // add also a whitespace to the beginning if the header
         // to test the trim() call
         $_SERVER[$headerName] = ' Bearer ' . self::$token;
-        $token                = $requestReader->getAuthToken();
+        $token = $requestReader->getAuthToken();
         $this->assertInstanceOf(Token::class, $token);
         unset($_SERVER[$headerName]);
     }
@@ -106,8 +106,8 @@ class RequestReaderTest extends BaseTestCase
         );
         $this->assertEquals(
             [
-                'query'         => null,
-                'variables'     => null,
+                'query' => null,
+                'variables' => null,
                 'operationName' => null,
             ],
             $requestReader->getGraphQLRequestData()
@@ -116,15 +116,15 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequest(): void
     {
-        $requestReader           = new RequestReader(
+        $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $_SERVER['CONTENT_TYPE'] = 'application/json';
         $this->assertEquals(
             [
-                'query'         => 'query {token}',
-                'variables'     => null,
+                'query' => 'query {token}',
+                'variables' => null,
                 'operationName' => null,
             ],
             $requestReader->getGraphQLRequestData(__DIR__ . '/fixtures/simpleRequest.json')
@@ -134,18 +134,18 @@ class RequestReaderTest extends BaseTestCase
 
     public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
     {
-        $requestReader             = new RequestReader(
+        $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
-        $_SERVER['CONTENT_TYPE']   = 'text/plain';
-        $_REQUEST['query']         = 'query {token_}';
-        $_REQUEST['variables']     = '{"foo":"bar"}';
+        $_SERVER['CONTENT_TYPE'] = 'text/plain';
+        $_REQUEST['query'] = 'query {token_}';
+        $_REQUEST['variables'] = '{"foo":"bar"}';
         $_REQUEST['operationName'] = 'operation_name';
         $this->assertSame(
             [
-                'query'         => 'query {token_}',
-                'variables'     => ['foo' => 'bar'],
+                'query' => 'query {token_}',
+                'variables' => ['foo' => 'bar'],
                 'operationName' => 'operation_name',
             ],
             $requestReader->getGraphQLRequestData()
@@ -157,7 +157,7 @@ class RequestReaderTest extends BaseTestCase
     {
         $this->expectException(InvariantViolation::class);
 
-        $requestReader             = new RequestReader(
+        $requestReader = new RequestReader(
             $this->createPartialMock(TokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
@@ -176,20 +176,20 @@ class RequestReaderTest extends BaseTestCase
         );
 
         $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundarycp0uqGswsYjCH7rC';
-        $_POST['map']            = json_encode(['0' => ['variables.file']]);
-        $_POST['operations']     = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
+        $_POST['map'] = json_encode(['0' => ['variables.file']]);
+        $_POST['operations'] = '{"query":"query anonymous {token}", "variables":{"file":null}, "operationName":"anonymous"}';
 
         $_FILES['0'] = [
-            'name'     => 'example.txt',
-            'type'     => 'text/plain',
+            'name' => 'example.txt',
+            'type' => 'text/plain',
             'tmp_name' => './fixtures/example.txt',
-            'error'    => 0,
-            'size'     => 18,
+            'error' => 0,
+            'size' => 18,
         ];
 
         $this->assertEquals(
             [
-                'query'     => 'query anonymous {token}',
+                'query' => 'query anonymous {token}',
                 'variables' => [
                     'file' => new \Laminas\Diactoros\UploadedFile(
                         './fixtures/example.txt',
@@ -211,8 +211,8 @@ class RequestReaderTest extends BaseTestCase
     protected function getLegacyMock(): Legacy
     {
         $mock = $this->getMockBuilder(Legacy::class)
-             ->disableOriginalConstructor()
-             ->getMock();
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $mock->expects($this->any())
             ->method('getShopUrl')

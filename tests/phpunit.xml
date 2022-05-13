@@ -13,11 +13,11 @@
          stopOnSkipped="false"
          beStrictAboutTestsThatDoNotTestAnything="false"
          verbose="false">
-         <testsuites>
-             <testsuite name="UnitTests">
-                 <directory>Unit/</directory>
-             </testsuite>
-         </testsuites>
+    <testsuites>
+        <testsuite name="UnitTests">
+            <directory>Unit/</directory>
+        </testsuite>
+    </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true"
                    processUncoveredFilesFromWhitelist="true">

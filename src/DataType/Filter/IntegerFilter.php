@@ -48,10 +48,10 @@ class IntegerFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type IntegerFilter must be provided');
         }
-        $this->equals      = $equals;
-        $this->lessThan    = $lessThan;
+        $this->equals = $equals;
+        $this->lessThan = $lessThan;
         $this->greaterThan = $greaterThan;
-        $this->between     = $between;
+        $this->between = $between;
     }
 
     public function equals(): ?int
@@ -88,26 +88,26 @@ class IntegerFilter implements FilterInterface
 
         if ($this->equals) {
             $builder->andWhere(sprintf('%s.%s = :%s_eq', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_eq', $this->equals);
+                ->setParameter(':' . $field . '_eq', $this->equals);
             // if equals is set, then no other conditions may apply
             return;
         }
 
         if ($this->lessThan) {
             $builder->andWhere(sprintf('%s.%s < :%s_lt', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_lt', $this->lessThan);
+                ->setParameter(':' . $field . '_lt', $this->lessThan);
         }
 
         if ($this->greaterThan) {
             $builder->andWhere(sprintf('%s.%s > :%s_gt', $table, strtoupper($field), $field))
-                    ->setParameter(':' . $field . '_gt', $this->greaterThan);
+                ->setParameter(':' . $field . '_gt', $this->greaterThan);
         }
 
         if ($this->between) {
             $where = sprintf('%s.%s BETWEEN :%s_less AND :%s_upper', $table, strtoupper($field), $field, $field);
             $builder->andWhere($where)
-                    ->setParameter(':' . $field . '_less', $this->between[0])
-                    ->setParameter(':' . $field . '_upper', $this->between[1]);
+                ->setParameter(':' . $field . '_less', $this->between[0])
+                ->setParameter(':' . $field . '_upper', $this->between[1]);
         }
     }
 

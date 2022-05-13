@@ -25,7 +25,7 @@ class LegacyTest extends UnitTestCase
     {
         parent::setUp();
         $containerFactory = new TestContainerFactory();
-        $container        = $containerFactory->create();
+        $container = $containerFactory->create();
         $container->compile();
         $this->legacyInfrastructure = $container->get(Legacy::class);
     }
@@ -77,39 +77,39 @@ class LegacyTest extends UnitTestCase
     {
         return [
             'no login' => [
-                'login'              => null,
-                'password'           => 'any',
-                'expectedAnonymous'  => true,
+                'login' => null,
+                'password' => 'any',
+                'expectedAnonymous' => true,
                 'expectedUserIdNull' => false,
-                'expectedException'  => false,
+                'expectedException' => false,
             ],
             'no password' => [
-                'login'              => 'any',
-                'password'           => null,
-                'expectedAnonymous'  => true,
+                'login' => 'any',
+                'password' => null,
+                'expectedAnonymous' => true,
                 'expectedUserIdNull' => false,
-                'expectedException'  => false,
+                'expectedException' => false,
             ],
             'no values' => [
-                'login'              => null,
-                'password'           => null,
-                'expectedAnonymous'  => true,
+                'login' => null,
+                'password' => null,
+                'expectedAnonymous' => true,
                 'expectedUserIdNull' => false,
-                'expectedException'  => false,
+                'expectedException' => false,
             ],
             'wrong login' => [
-                'login'              => 'xxx',
-                'password'           => 'yyy',
-                'expectedAnonymous'  => null,
+                'login' => 'xxx',
+                'password' => 'yyy',
+                'expectedAnonymous' => null,
                 'expectedUserIdNull' => null,
-                'expectedException'  => true,
+                'expectedException' => true,
             ],
             'correct login' => [
-                'login'              => 'admin',
-                'password'           => 'admin',
-                'expectedAnonymous'  => false,
+                'login' => 'admin',
+                'password' => 'admin',
+                'expectedAnonymous' => false,
                 'expectedUserIdNull' => false,
-                'expectedException'  => false,
+                'expectedException' => false,
             ],
         ];
     }
@@ -136,7 +136,7 @@ class LegacyTest extends UnitTestCase
         $otherGroups = ['_newGroup', '_hiddenGroup', '_wrongGroup'];
         $this->addToGroups($oUser, $otherGroups);
 
-        $allGroups     = array_merge($groups, $otherGroups);
+        $allGroups = array_merge($groups, $otherGroups);
         $allUserGroups = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
         $this->assertCount(5, $allUserGroups);
         $this->assertEmpty(array_diff($groups, array_values($allGroups)));
@@ -147,7 +147,7 @@ class LegacyTest extends UnitTestCase
         foreach ($groups as $group) {
             $oGroup = oxNew('oxGroups');
             $oGroup->setId($group);
-            $oGroup->oxgroups__oxtitle  = new oxField($group, oxField::T_RAW);
+            $oGroup->oxgroups__oxtitle = new oxField($group, oxField::T_RAW);
             $oGroup->oxgroups__oxactive = new oxField(1, oxField::T_RAW);
             $oGroup->save();
 

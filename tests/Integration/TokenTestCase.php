@@ -22,12 +22,14 @@ abstract class TokenTestCase extends TestCase
         $username = $username ?: self::ADMIN_USER;
         $password = $password ?: self::ADMIN_PASS;
 
-        $token = $this->query('query {
+        $token = $this->query(
+            'query {
             token (
                 username: "' . $username . '",
                 password: "' . $password . '"
             )
-        }')['body']['data']['token'];
+        }'
+        )['body']['data']['token'];
 
         $this->setAuthToken($token);
     }

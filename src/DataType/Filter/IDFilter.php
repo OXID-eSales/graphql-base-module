@@ -42,7 +42,7 @@ class IDFilter implements FilterInterface
         $table = $from[0]['alias'] ?? $from[0]['table'];
 
         $builder->andWhere(sprintf('%s.%s = :%s', $table, strtoupper($field), $field))
-                ->setParameter(':' . $field, $this->equals);
+            ->setParameter(':' . $field, $this->equals);
     }
 
     /**

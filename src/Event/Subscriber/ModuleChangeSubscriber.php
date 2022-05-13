@@ -62,9 +62,9 @@ class ModuleChangeSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            FinalizingModuleActivationEvent::NAME    => 'handle',
-            FinalizingModuleDeactivationEvent::NAME  => 'handle',
-            SettingChangedEvent::NAME                => 'handle',
+            FinalizingModuleActivationEvent::NAME => 'handle',
+            FinalizingModuleDeactivationEvent::NAME => 'handle',
+            SettingChangedEvent::NAME => 'handle',
         ];
     }
 }

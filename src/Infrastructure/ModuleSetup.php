@@ -31,8 +31,8 @@ class ModuleSetup
         ModuleConfiguration $moduleConfiguration,
         ModuleSettingBridgeInterface $moduleSettings
     ) {
-        $this->moduleConfiguration    = $moduleConfiguration;
-        $this->moduleSettings         = $moduleSettings;
+        $this->moduleConfiguration = $moduleConfiguration;
+        $this->moduleSettings = $moduleSettings;
     }
 
     public function runSetup(): void

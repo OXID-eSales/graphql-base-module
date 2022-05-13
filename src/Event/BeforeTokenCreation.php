@@ -28,7 +28,7 @@ class BeforeTokenCreation extends Event
         User $userData
     ) {
         $this->builder = $builder;
-        $this->user    = $userData;
+        $this->user = $userData;
     }
 
     public function getBuilder(): Builder

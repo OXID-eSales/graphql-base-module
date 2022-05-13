@@ -32,13 +32,13 @@ class Token
         $storage = oxNew(Model\Token::class);
         $storage->assign(
             [
-                'OXID'       => $token->claims()->get(TokenService::CLAIM_TOKENID),
-                'OXSHOPID'   => $token->claims()->get(TokenService::CLAIM_SHOPID),
-                'OXUSERID'   => $token->claims()->get(TokenService::CLAIM_USERID),
-                'ISSUED_AT'  => $time->format('Y-m-d H:i:s'),
+                'OXID' => $token->claims()->get(TokenService::CLAIM_TOKENID),
+                'OXSHOPID' => $token->claims()->get(TokenService::CLAIM_SHOPID),
+                'OXUSERID' => $token->claims()->get(TokenService::CLAIM_USERID),
+                'ISSUED_AT' => $time->format('Y-m-d H:i:s'),
                 'EXPIRES_AT' => $expire->format('Y-m-d H:i:s'),
-                'USERAGENT'  => $_SERVER['HTTP_USER_AGENT'] ?? '',
-                'TOKEN'      => $token->toString(),
+                'USERAGENT' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'TOKEN' => $token->toString(),
             ]
         );
         $storage->save();
@@ -59,7 +59,7 @@ class Token
             ->where('OXUSERID = :userId')
             ->andWhere('EXPIRES_AT <= NOW()')
             ->setParameters([
-                'userId'    => (string) $user->id(),
+                'userId' => (string)$user->id(),
             ]);
 
         $queryBuilder->execute();
@@ -74,21 +74,21 @@ class Token
             ->from('oegraphqltoken')
             ->where('OXUSERID = :userId')
             ->setParameters([
-                'userId'    => (string) $user->id(),
+                'userId' => (string)$user->id(),
             ])
             ->execute();
 
         if (is_object($result)) {
-            $return = (int) $result->fetch(PDO::FETCH_ASSOC)['counted'] < $quota;
+            $return = (int)$result->fetch(PDO::FETCH_ASSOC)['counted'] < $quota;
         }
 
-        return  $return;
+        return $return;
     }
 
     public function tokenDelete(?UserDataType $user = null, ?string $tokenId = null, ?int $shopId = null): int
     {
         $parameters = [];
-        $condition  = 'where';
+        $condition = 'where';
 
         $queryBuilder = $this->queryBuilderFactory->create()
             ->delete('oegraphqltoken');
@@ -96,12 +96,12 @@ class Token
         if ($tokenId) {
             $queryBuilder->$condition('OXID = :tokenId');
             $parameters['tokenId'] = $tokenId;
-            $condition             = 'andWhere';
+            $condition = 'andWhere';
         }
 
         if ($user) {
             $queryBuilder->$condition('OXUSERID = :userId');
-            $parameters['userId'] = (string) $user->id();
+            $parameters['userId'] = (string)$user->id();
         }
 
         if ($shopId) {
@@ -113,7 +113,7 @@ class Token
 
         $result = $queryBuilder->execute();
 
-        return is_object($result) ? $result->columnCount() : (int) $result;
+        return is_object($result) ? $result->columnCount() : (int)$result;
     }
 
     public function userHasToken(UserDataType $user, string $tokenId): bool
@@ -127,7 +127,7 @@ class Token
             ->andWhere('OXUSERID = :userId')
             ->setParameters([
                 'tokenId' => $tokenId,
-                'userId'  => (string) $user->id(),
+                'userId' => (string)$user->id(),
             ]);
 
         $result = $queryBuilder->execute();

@@ -27,7 +27,7 @@ class Authentication implements AuthenticationServiceInterface
         Token $tokenService
     ) {
         $this->legacyInfrastructure = $legacyService;
-        $this->tokenService         = $tokenService;
+        $this->tokenService = $tokenService;
     }
 
     /**

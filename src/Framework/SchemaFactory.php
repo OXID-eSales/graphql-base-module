@@ -60,12 +60,10 @@ class SchemaFactory
             $this->namespaceMappers[] = $namespaceMapper;
         }
         $this->authentication = $authentication;
-        $this->authorization  = $authorization;
-        $this->container      = $container;
-        $this->cache          = $cache ?? new Psr16Cache(
-            new NullAdapter()
-        );
-        $this->timerHandler      = $timerHandler;
+        $this->authorization = $authorization;
+        $this->container = $container;
+        $this->cache = $cache ?? new Psr16Cache(new NullAdapter());
+        $this->timerHandler = $timerHandler;
     }
 
     public function getSchema(): Schema
@@ -75,8 +73,8 @@ class SchemaFactory
         }
 
         $queryTimer = $this->timerHandler
-                           ->create('schema-gen')
-                           ->start();
+            ->create('schema-gen')
+            ->start();
 
         $factory = new GraphQLiteSchemaFactory(
             $this->cache,
@@ -106,7 +104,7 @@ class SchemaFactory
         $factory->setClassNameMapper($classNameMapper);
 
         $factory->setAuthenticationService($this->authentication)
-                ->setAuthorizationService($this->authorization);
+            ->setAuthorizationService($this->authorization);
 
         $this->schema = $factory->createSchema();
         $queryTimer->stop();

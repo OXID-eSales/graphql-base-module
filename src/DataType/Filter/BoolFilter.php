@@ -41,7 +41,7 @@ class BoolFilter implements FilterInterface
         $table = $from[0]['alias'] ?? $from[0]['table'];
 
         $builder->andWhere(sprintf('%s.%s = :%s', $table, strtoupper($field), $field))
-                ->setParameter(':' . $field, $this->equals ? '1' : '0');
+            ->setParameter(':' . $field, $this->equals ? '1' : '0');
         // if equals is set, then no other conditions may apply
     }
 

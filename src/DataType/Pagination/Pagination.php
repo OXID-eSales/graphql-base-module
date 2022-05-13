@@ -38,7 +38,7 @@ final class Pagination
         }
 
         $this->offset = $offset;
-        $this->limit  = $limit;
+        $this->limit = $limit;
     }
 
     public function offset(): ?int
