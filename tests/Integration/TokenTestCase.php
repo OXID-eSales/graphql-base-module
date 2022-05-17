@@ -24,11 +24,11 @@ abstract class TokenTestCase extends TestCase
 
         $token = $this->query(
             'query {
-            token (
-                username: "' . $username . '",
-                password: "' . $password . '"
-            )
-        }'
+                token (
+                    username: "' . $username . '",
+                    password: "' . $password . '"
+                )
+            }'
         )['body']['data']['token'];
 
         $this->setAuthToken($token);
