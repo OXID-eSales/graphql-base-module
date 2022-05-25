@@ -7,4 +7,5 @@ Consuming the API
         :glob:
 
         BrowseStorefront
+        AdministrateCustomer
         PlaceOrder
