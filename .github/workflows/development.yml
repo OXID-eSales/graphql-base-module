@@ -199,7 +199,6 @@ jobs:
                   sed -i 's/<?php/<?php\n\nrequire(__DIR__ . "\/..\/c3.php");/' source/source/bootstrap.php
 
             - name: Run tests
-              continue-on-error: true
               run: |
                   docker-compose exec -T \
                     -e MODULE_IDS=oe_graphql_base \
