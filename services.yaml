@@ -44,6 +44,12 @@ services:
   OxidEsales\GraphQL\Base\Service\TokenValidator:
       class: OxidEsales\GraphQL\Base\Service\TokenValidator
 
+  OxidEsales\GraphQL\Base\Service\TokenAdministration:
+      class: OxidEsales\GraphQL\Base\Service\TokenAdministration
+
+  OxidEsales\GraphQL\Base\Service\TokenValidator:
+      class: OxidEsales\GraphQL\Base\Service\TokenValidator
+
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy
 
