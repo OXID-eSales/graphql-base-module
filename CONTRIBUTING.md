@@ -4,7 +4,7 @@ First off: Thank you for taking the time to contribute! 🥳👍
 
 ## Contributor License Agreement
 
-When contributing code for the first time, you must sign our [Contributor License Agreement](https://gist.github.com/OXID-Admin/6df6ed126d074a54507d). No need to do something now, CLA Assistant will contact you after opening your first pull request. You can find more information about it on the [OXID Contribution and Contributor Agreement FAQ](https://oxidforge.org/en/oxid-contribution-contributor-agreement-faq).
+When contributing code for the first time, you must sign our [Contributor License Agreement](https://gist.github.com/OXID-Admin/6df6ed126d074a54507d). No need to do something now, CLA Assistant will contact you after opening your first pull request. You can find more information about it on the [OXID Contribution and Contributor Agreement FAQ](https://docs.oxid-esales.com/developer/en/latest/development/modules_components_themes/contribution.html).
 
 ## How Can I Contribute?
 
