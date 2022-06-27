@@ -12,12 +12,13 @@ The OXID GraphQL Storefront Module covers the whole shop frontend functionality,
 from browsing the product catalogue to creating/maintaining a customer account and
 doing a checkout.
 
-Still all GraphQL interacts with the OXID eShop core, so it won't be necessary
-to fully convert from the standard shop as you know it to some headless shop
+The GraphQL module is an addon to your OXID eShop core, so it won't be necessary
+to fully convert the standard shop as you know it, to some headless shop
 you need to rig up a frontend for from scratch.
 
-Just pick the best of two worlds, for example browse the shop on a mobile device
-via graphQL or have visitors sign up for a newsletter.
+Just pick the best of two worlds - use available queries and mutations to access your
+shop's data and functionality where you need it, while the shop can still be available
+and working as before.
 
 We'd like to quickly run you through the possibilities of our Storefront module.
 We won't show every query and mutation there is in action but we'll
@@ -29,7 +30,7 @@ Browse the Shop
 First thing we start with is the product catalogue/category tree.
 You need to show off to potential customers right on the front page what
 your shop has to offer. What we see here is the possibility to only fetch
-selected data via graphQL. You only get what is asked for.
+selected data via graphQL. You only get what you are asking for.
 
 .. code-block:: graphql
    :caption: call to ``categories`` query
@@ -89,7 +90,7 @@ selected data via graphQL. You only get what is asked for.
     }
 
 
-We have the possibility built in to filter for specific categories e.g. by title:
+We have the built in possibility to filter for specific categories, e.g. by title:
 
 .. code-block:: graphql
    :caption: call to ``categories`` query with filter and sorting and category products sorted by title

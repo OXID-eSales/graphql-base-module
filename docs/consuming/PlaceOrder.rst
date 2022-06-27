@@ -9,24 +9,24 @@ The big picture
 ---------------
 
 Please keep in mind that other than what you know from shop with frontend, the
-headless OXID eShop does not use a session. Means we have no session cookies
-around and no session to come back to between requests.
+GraphQL part of the OXID eShop does not use a session. Means - we have no session cookies
+around and no session to come back to, between requests.
 
-What we do have is the possibility to 'log in' a user once to receive a JsonWebToken (JWT)
-which can then be sent in each request requiring a 'known user'.
+What we do have is the possibility to 'log in' a user once for receiving a JsonWebToken (JWT)
+which can then be used (sent in each request) for identifying a user.
 
-In Frontend for example usually a user start browsing then shop anonymously, he will at first
+In Frontend part, usually, user starts browsing then shop anonymously - he/she will at first
 not receive a session (cookie). But as soon as the first item for a not logged in customer
-ends up in the cart, we need a way to identify this user. He gets a session (id) and a cookie
-and on the shopping goes.
+ends up in the cart, we need a way to identify this user - user gets a session id in a cookie (usually)
+and shopping process continues.
 
-With our Storefront module, only a user with existing shop account will be able to
-create a basket (which because of a lack of session will be saved into database oxuserbaskets table).
+By using the Storefront module, only a user with a shop account will be able to
+create a basket, as there is no standard session, as we know it, possible.
 
 Of course the GraphQL Storefront also offers the possibility to fully create and manage a customer account.
-For now let's just assume we have an account to give you a run through of the checkout process.
+For now let's just assume we have an account to give you a run through the checkout process.
 
-In order to successfully place an order via the GraphQL API you need to first
+In order to successfully place an order via the GraphQL API, you need to:
 
 - create a basket and fill with products
 - set a delivery address (in case it is different from invoice address)
@@ -83,8 +83,8 @@ You need to 'log in' the customer to graphLQ APi once to get a JWT with a predef
             }
         }
 
-This token needs to be sent in an Authorization header, header key needs to be ``"Authorization"``
-header value needs to be prefixed with ``"Bearer"`` followd by your token, in ou example ``"Bearer eyJ0eXAiOiJKV1QiLCJhbGc..."``.
+This token needs to be sent in an Authorization header, header key needs to be ``"Authorization"``;
+Header value needs to be prefixed with ``"Bearer"`` followed by your token, in our example: ``Bearer eyJ0eXAiOiJKV1QiLCJhbGc...``.
 
 Setup the basket
 ----------------
@@ -126,8 +126,8 @@ via the ``baskets`` field in the ``customer`` query.
 
 
 .. important:: Currently the GraphQL Stroefront module requires the userid-basketname to be unique, so one user cannot have two
-     baskets with the same name at a time. Other than in frontend, with GraphQL a customer can have multiple prepared
-     baskets.
+     baskets with the same name at a time. But other than in frontend, with GraphQL, a customer can have multiple prepared
+     baskets at the same time.
 
 
 
@@ -176,7 +176,7 @@ This newly created basket is empty, so let's add a product to it.
     }
 
 What you now see in the basket is not the product but what we call a ``basket item`` which
-contains the information of the product plus additional information like the amount.
+contains the information of the product, plus additional information, like the amount.
 
 A given amount of products can be removed from the basket item. If the amount of zero
 is reached, the item itself will be removed. Please note that we need the basket item
@@ -228,9 +228,9 @@ id for this mutation, not the product id.
 Set the desired delivery option
 -------------------------------
 
-We do offer als kinds of possibilities to create and set a delivery address
+We do offer all kinds of possibilities to create and set a delivery address
 as well as query for the available shipping and payment methods for the current basket state.
-For a quick demonstration, we can just set delivery and payment method. The customer's invoice
+For a quick demonstration, we can set delivery and payment method. The customer's invoice
 address will be used for delivery in that case.
 
 In order to set your desired delivery option, you need to know the available
@@ -426,11 +426,11 @@ You successfully placed your first order!
     }
 
 
-Small note about Third party payments, for example PayPal Express checkout.
-Which means a not logged in customer browses the shop, adds items to cart and then proceeds
-to checkout via a third party never bothering to supply the shop with information where
-and how to deliver beforehand. That customer acount may not even exist in the shop at this time.
-Still with GraphQL, this unknown user needs to be identified with a JWT. So we added the
+Small note about Third party payments - for example, PayPal Express checkout:
+In this payment case, the "not logged in" customer browses the shop, adds items to cart and then proceeds
+to checkout via a third party, never bothering of supplying the shop with information where
+and how to deliver beforehand. That customer account may not even exist in the shop at this time.
+Still, to be used via GraphQL, this "unknown" user needs to be identified with a JWT. So we added the
 possiblity to identify an anonymous user by JWT.
 
 It is then up to the third party payment module to implement all necessary queries and mutations
@@ -441,10 +441,10 @@ Special cases for basket preparation
 ------------------------------------
 
 It is also possible for you to add a voucher to your basket. In order to do that,
-you need to know the number of an existing and available voucher that you could use.
-If the voucher does not exist or otherwise is not applicable, the API will return
-an error with a proper message. Of courese this needs to be done before the place
-order mutation gets called.
+you need to know the number of the existing and available voucher that you could use.
+If the voucher does not exist or is not applicable by some other reason, the API will return
+the error with a proper message. Of course this needs to be done before the "place
+order" mutation is called.
 
 .. code-block:: graphql
    :caption: call to ``basketAddVoucher`` mutation

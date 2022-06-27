@@ -7,8 +7,8 @@ CustomerAdministration
 
 The Storefront module comes with all queries and mutations to create and maintain a customer account.
     * Customer Registration
-    * Customer account update (password/email change, setting /changing of invoice address , create/remove delivery address)
-    * Password forgotten
+    * Customer account data update (password/email change, setting /changing of invoice address , create/remove delivery address)
+    * Forgotten password recovery
     * Subscribe/unsubscribe for newsletter
     * Contact
     * And of course queries to get information about your own account
@@ -68,7 +68,7 @@ access and further update your account
 Send this token in every request to the API in the Authorization header (Bearer <JWT>) where it is
 necessary to be logged in and be identifiable as the current customer.
 
-Here are some examples how to update the birthday, set the invoice address, create a delivery address.
+Here are some examples how to update the birthday date, set the invoice address and create a delivery address.
 
 .. code-block:: graphql
    :caption: call to ``customerBirthdateUpdate`` mutation
