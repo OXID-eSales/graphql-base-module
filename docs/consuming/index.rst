@@ -6,4 +6,6 @@ Consuming the API
         :maxdepth: 1
         :glob:
 
+        BrowseStorefront
+        AdministrateCustomer
         PlaceOrder
