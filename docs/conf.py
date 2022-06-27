@@ -99,7 +99,8 @@ html_context = {
         ('5.1', 'https://docs.oxid-esales.com/interfaces/graphql/en/5.1/'),
         ('5.2', 'https://docs.oxid-esales.com/interfaces/graphql/en/5.2/'),
         ('6.0', 'https://docs.oxid-esales.com/interfaces/graphql/en/6.0/'),
-        ('7.0', 'https://docs.oxid-esales.com/interfaces/graphql/en/7.0/')
+        ('7.0', 'https://docs.oxid-esales.com/interfaces/graphql/en/7.0/'),
+        ('latest', 'https://docs.oxid-esales.com/interfaces/graphql/en/latest/')
     ],
     'theme_logo_only': True,
     'show_sphinx': False,
