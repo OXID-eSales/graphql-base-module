@@ -3,13 +3,30 @@ Place an Order
 
 .. important::
    To place an order you need the  `GraphQL Storefront module
-   <https://github.com/OXID-eSales/graphql-storefront-module/>`_ installed which
-   is not available in a stable release as of this writing
+   <https://github.com/OXID-eSales/graphql-storefront-module/>`_ installed and activated.
 
 The big picture
 ---------------
 
-In order to successfully place an order via the GraphQL API you need to first
+Please keep in mind that other than what you know from shop with frontend, the
+GraphQL part of the OXID eShop does not use a session. Means - we have no session cookies
+around and no session to come back to, between requests.
+
+What we do have is the possibility to 'log in' a user once for receiving a JsonWebToken (JWT)
+which can then be used (sent in each request) for identifying a user.
+
+In Frontend part, usually, user starts browsing then shop anonymously - he/she will at first
+not receive a session (cookie). But as soon as the first item for a not logged in customer
+ends up in the cart, we need a way to identify this user - user gets a session id in a cookie (usually)
+and shopping process continues.
+
+By using the Storefront module, only a user with a shop account will be able to
+create a basket, as there is no standard session, as we know it, possible.
+
+Of course the GraphQL Storefront also offers the possibility to fully create and manage a customer account.
+For now let's just assume we have an account to give you a run through the checkout process.
+
+In order to successfully place an order via the GraphQL API, you need to:
 
 - create a basket and fill with products
 - set a delivery address (in case it is different from invoice address)
@@ -18,7 +35,7 @@ In order to successfully place an order via the GraphQL API you need to first
 - and finally place the order
 
 .. important::
-   Ordered Basket will be removed on order creation!
+   Ordered Basket will be removed on order creation (unless prevented by another module like B2B)!
 
 Keep in mind, that you will need to send a valid
 JWT in Authorization header for any of the following queries or mutations.
@@ -41,6 +58,33 @@ JWT in Authorization header for any of the following queries or mutations.
    "Client (PWA)" -> "GraphQL API": placeOrder mutation
    "Client (PWA)" <- "GraphQL API": Order datatype or error
 
+Retrieve and send the JWT
+-------------------------
+
+You need to 'log in' the customer to graphLQ APi once to get a JWT with a predefined lifetime
+(see GraphQL Base module settings for details).
+
+.. code-block:: graphql
+   :caption: call to ``token`` query
+
+        query user {
+            token(
+                username: "user@oxid-esales.com"
+                password: "useruser"
+            )
+        }
+
+.. code-block:: json
+   :caption: ``token`` query response
+
+        {
+            "data": {
+                "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0LmxvY2FsLyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIiwiaWF0IjoxNjUzNDc2MjU5LjU2NTgxNiwibmJmIjoxNjUzNDc2MjU5LjU2NTgxNiwiZXhwIjoxNjUzNTA1MDU5LjU3MTMyMSwic2hvcGlkIjoxLCJ1c2VybmFtZSI6InVzZXJAb3hpZC1lc2FsZXMuY29tIiwidXNlcmlkIjoiZTdhZjFjM2I3ODZmZDAyOTA2Y2NkNzU2OThmNGU2YjkiLCJ1c2VyYW5vbnltb3VzIjpmYWxzZSwidG9rZW5pZCI6ImZkODM2NWZkNDY3ZjJkOTAxNDJiYWFhODAwNjE1MDQ4In0.Q_rih628tTBan9_Dl03htix-c9G_EpqtwPGoiDjq8nab6BdwOVbEVfPRt7zbJlAnJn5_x49dZUxovZZ81aFVlg"
+            }
+        }
+
+This token needs to be sent in an Authorization header, header key needs to be ``"Authorization"``;
+Header value needs to be prefixed with ``"Bearer"`` followed by your token, in our example: ``Bearer eyJ0eXAiOiJKV1QiLCJhbGc...``.
 
 Setup the basket
 ----------------
@@ -80,6 +124,13 @@ products to this basket as well as to do any other preparation and the checkout.
 If you happen to "forget" the ID, you can fetch all baskets belonging to a user
 via the ``baskets`` field in the ``customer`` query.
 
+
+.. important:: Currently the GraphQL Stroefront module requires the userid-basketname to be unique, so one user cannot have two
+     baskets with the same name at a time. But other than in frontend, with GraphQL, a customer can have multiple prepared
+     baskets at the same time.
+
+
+
 This newly created basket is empty, so let's add a product to it.
 
 .. code-block:: graphql
@@ -89,9 +140,11 @@ This newly created basket is empty, so let's add a product to it.
         basketAddItem(
             basketId: "310e50a2b1be309b255d70462cd75507",
             productId:"05848170643ab0deb9914566391c0c63",
-            amount: 1
+            amount: 2
         ) {
+            id
             items {
+                id
                 amount
                 product {
                     id
@@ -107,8 +160,59 @@ This newly created basket is empty, so let's add a product to it.
     {
         "data": {
             "basketAddItem": {
+                "id": "310e50a2b1be309b255d70462cd75507",
                 "items": [
                     {
+                        "id":  "d2317afe6d97d07563a7fe0965935f2f"
+                        "amount": 2,
+                        "product": {
+                            "id": "05848170643ab0deb9914566391c0c63",
+                            "title": "Trapez ION MADTRIXX"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+What you now see in the basket is not the product but what we call a ``basket item`` which
+contains the information of the product, plus additional information, like the amount.
+
+A given amount of products can be removed from the basket item. If the amount of zero
+is reached, the item itself will be removed. Please note that we need the basket item
+id for this mutation, not the product id.
+
+.. code-block:: graphql
+   :caption: call to ``basketRemoveItem`` mutation
+
+    mutation basketRemoveItem {
+        basketRemoveItem(
+            basketId: "310e50a2b1be309b255d70462cd75507"
+            basketItemId: "d2317afe6d97d07563a7fe0965935f2f"
+            amount: 1
+        ) {
+            id
+            items {
+                id
+                amount
+                product {
+                    id
+                    title
+                }
+            }
+        }
+    }
+
+.. code-block:: json
+   :caption: ``basketRemoveItem`` mutation response
+
+    {
+        "data": {
+            "basketRemoveItem": {
+                "id": "310e50a2b1be309b255d70462cd75507",
+                "items": [
+                    {
+                        "id": "d2317afe6d97d07563a7fe0965935f2f"
                         "amount": 1,
                         "product": {
                             "id": "05848170643ab0deb9914566391c0c63",
@@ -120,48 +224,14 @@ This newly created basket is empty, so let's add a product to it.
         }
     }
 
-It is also possible for you to add a voucher to your basket. In order to do that,
-you need to know the number of an existing and available voucher that you could use.
-If the voucher does not exist or otherwise is not applicable, the API will return
-an error with a proper message.
-
-.. code-block:: graphql
-   :caption: call to ``basketAddVoucher`` mutation
-
-    mutation {
-        basketAddVoucher(
-            basketId: "310e50a2b1be309b255d70462cd75507",
-            voucherNumber: "MyVoucher"
-        )
-        {
-            id
-            vouchers{
-              number
-            }
-        }
-    }
-
-In case the voucher exists and is applicable, the following response will be returned:
-
-.. code-block:: json
-   :caption: ``basketAddVoucher`` mutation response
-
-    {
-        "data": {
-            "basketAddVoucher": {
-                "id": "e461fcdcda96b96b9a89a7d0fdc956eb",
-                "vouchers": [
-                    {
-                      "number": "MyVoucher"
-                    }
-                ]
-            }
-        }
-    }
-
 
 Set the desired delivery option
 -------------------------------
+
+We do offer all kinds of possibilities to create and set a delivery address
+as well as query for the available shipping and payment methods for the current basket state.
+For a quick demonstration, we can set delivery and payment method. The customer's invoice
+address will be used for delivery in that case.
 
 In order to set your desired delivery option, you need to know the available
 delivery options for this basket. You may query those via the
@@ -298,7 +368,8 @@ Now that the stage is set up, all that needs to be done is to place the order vi
 the ``placeOrder`` mutation.
 
 .. important::
-   Ordered Basket will be removed on order creation!
+   Ordered Basket will be removed on order creation! This is GraphQL Storefront module default behaviour
+   which can be overruled by other modules like e.g. B2B.
 
 .. code-block:: graphql
    :caption: final call to ``placeOrder`` mutation
@@ -350,6 +421,61 @@ You successfully placed your first order!
             "placeOrder": {
               "id": "20804e7bef3ed3a1dda5b2506e914989",
               "orderNumber": 1
+            }
+        }
+    }
+
+
+Small note about Third party payments - for example, PayPal Express checkout:
+In this payment case, the "not logged in" customer browses the shop, adds items to cart and then proceeds
+to checkout via a third party, never bothering of supplying the shop with information where
+and how to deliver beforehand. That customer account may not even exist in the shop at this time.
+Still, to be used via GraphQL, this "unknown" user needs to be identified with a JWT. So we added the
+possiblity to identify an anonymous user by JWT.
+
+It is then up to the third party payment module to implement all necessary queries and mutations
+to allow the checkout.
+
+
+Special cases for basket preparation
+------------------------------------
+
+It is also possible for you to add a voucher to your basket. In order to do that,
+you need to know the number of the existing and available voucher that you could use.
+If the voucher does not exist or is not applicable by some other reason, the API will return
+the error with a proper message. Of course this needs to be done before the "place
+order" mutation is called.
+
+.. code-block:: graphql
+   :caption: call to ``basketAddVoucher`` mutation
+
+    mutation {
+        basketAddVoucher(
+            basketId: "310e50a2b1be309b255d70462cd75507",
+            voucherNumber: "MyVoucher"
+        )
+        {
+            id
+            vouchers{
+              number
+            }
+        }
+    }
+
+In case the voucher exists and is applicable, the following response will be returned:
+
+.. code-block:: json
+   :caption: ``basketAddVoucher`` mutation response
+
+    {
+        "data": {
+            "basketAddVoucher": {
+                "id": "e461fcdcda96b96b9a89a7d0fdc956eb",
+                "vouchers": [
+                    {
+                      "number": "MyVoucher"
+                    }
+                ]
             }
         }
     }
