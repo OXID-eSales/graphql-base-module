@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [7.0.1] - 2022-06-28
+
+### Fixed
+- Documentation improvements
+
 ## [7.0.0] - 2022-06-17
 
 ### Added
@@ -33,4 +38,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update GraphQLite version to v5
 - Code quality tools list simplified and reconfigured to fit our quality requirements
 
+[7.0.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v6.0.2...v7.0.0
