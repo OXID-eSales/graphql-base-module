@@ -35,7 +35,7 @@ final class ProductTitleInput
         try {
             $product = $this->productRepository->product($productId);
         } catch (NotFound $e) {
-            throw ProductNotFound::byId($productId);
+            throw new ProductNotFound($productId);
         }
 
         return $this->productMutationService->assignTitle($product, $title);

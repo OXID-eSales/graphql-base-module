@@ -13,13 +13,13 @@ class NotFound extends Error
 {
     protected const NOT_FOUND_MESSAGE = 'Queried data was not found';
 
+    public function __construct(string $message = self::NOT_FOUND_MESSAGE, array $extensions=[])
+    {
+        parent::__construct($message, 0, null, 'Exception', $extensions);
+    }
+
     public function getCategory(): string
     {
         return ErrorCategories::REQUESTERROR;
-    }
-
-    public static function notFound(): self
-    {
-        return new self(self::NOT_FOUND_MESSAGE);
     }
 }

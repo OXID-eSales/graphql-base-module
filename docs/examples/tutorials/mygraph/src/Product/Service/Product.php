@@ -28,7 +28,7 @@ final class Product
         try {
             $product = $this->productRepository->product($id);
         } catch (NotFound $e) {
-            throw ProductNotFound::byId($id);
+            throw new ProductNotFound($id);
         }
 
         return $product;

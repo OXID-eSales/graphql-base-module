@@ -10,8 +10,8 @@ use function sprintf;
 
 final class ProductNotFound extends NotFound
 {
-    public static function byId(string $id): self
+    public function __construct(string $id)
     {
-        return new self(sprintf('Product was not found by id: %s', $id));
+        parent::__construct(sprintf('Product was not found by id: %s', $id));
     }
 }

@@ -13,8 +13,8 @@ use function sprintf;
 
 final class UserNotFound extends NotFound
 {
-    public static function byId(string $id): self
+    public function __construct(string $id)
     {
-        return new self(sprintf('User was not found by id: %s', $id));
+        parent::__construct(sprintf('User was not found by id: %s', $id));
     }
 }

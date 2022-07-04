@@ -109,7 +109,7 @@ class TokenAdministration
                 UserDataType::class
             );
         } catch (NotFound $e) {
-            throw UserNotFound::byId($id);
+            throw new UserNotFound($id);
         }
 
         return $this->tokenInfrastructure->tokenDelete($user);
