@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Documentation improvements
 
+### Changed
+- Refactore NotFound exception and children to create instance with constructor instead of static methods.
+
 ## [7.0.0] - 2022-06-17
 
 ### Added
