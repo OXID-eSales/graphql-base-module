@@ -11,8 +11,8 @@ jobs:
     install_shop_with_module:
         runs-on: ubuntu-latest
         steps:
-            - name: Clone testing environment v3.0.0
-              run: git clone https://github.com/OXID-eSales/docker-eshop-sdk.git . && git reset --hard v3.0.0
+            - name: Clone testing environment
+              run: git clone https://github.com/OXID-eSales/docker-eshop-sdk.git .
 
             - name: Clone the shop
               run: git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.5.x --single-branch source
