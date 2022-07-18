@@ -6,38 +6,33 @@ Installation
 
 To start with `GraphQL <https://www.graphql.org>`_ you need `OXID eShop <https://www.oxid-esales.com/>`_ up and running (at least ``OXID-eSales/oxideshop_ce: v6.5.0`` component, which is part of the ``6.2.0`` compilation).
 
-To install the available GraphQL modules, first you have to go to the shop's directory
+.. attention::
+
+    Depending on your current shop version, you need to install a suitable version of the **OXID GraphQL API**. This installation manual is compatible with OXID eShop 6.5. For newer or older versions, please see the corresponding documentations.
+
+First navigate to your shop's root directory where the project ``composer.json`` file is located:
 
 .. code-block:: bash
 
     cd <shop_directory>
 
-and to require the modules via ``composer``:
+Then you can simply install the module(s) by using ``composer require`` command. In most cases you want the full GraphQL integration by OXID including the schema for the shop's storefront. To achieve this you need to install the **OXID GraphQL Storefront** module:
 
 .. code-block:: bash
 
-    composer require oxid-esales/graphql-base
-    composer require oxid-esales/graphql-storefront
+    composer require oxid-esales/graphql-storefront:~2.1.0
 
-After installing the modules you need to add their configurations into the project's
-configuration file and run migrations. You can do it by running:
+This will automatically install the **OXID GraphQL Base** module, which is needed for general GraphQL integration. In case you only need the basic GraphQL integration and want to implement your own queries and mutations, you can also install the **GraphQL Base** module exclusively:
 
 .. code-block:: bash
 
-    ./vendor/bin/oe-console oe:module:install-configuration source/modules/oe/graphql-base/
-    ./vendor/bin/oe-console oe:module:install-configuration source/modules/oe/graphql-storefront/
+    composer require oxid-esales/graphql-base:^7.0
+
+If you decided to go with the **GraphQL Storefront** module, you need to run migrations after the installation was successfully executed:
+
+.. code-block:: bash
 
     ./vendor/bin/oe-eshop-doctrine_migration migration:migrate oe_graphql_storefront
-
-This will overwrite the configuration of the modules if it was already present in the project's configuration file.
-
-.. important::
-    Please ensure you have proper ``/graphql/`` entry point configuration in
-    your ``.htaccess`` file:
-
-    .. code-block:: bash
-
-        RewriteRule ^graphql/?$    widget.php?cl=graphql&skipSession=1   [QSA,NC,L]
 
 Activation
 ----------
