@@ -1,14 +1,14 @@
 Install and Setup
 =================
 
-Installation
-------------
-
 To start with `GraphQL <https://www.graphql.org>`_ you need `OXID eShop <https://www.oxid-esales.com/>`_ up and running (at least ``OXID-eSales/oxideshop_ce: v6.5.0`` component, which is part of the ``6.2.0`` compilation).
 
 .. attention::
 
     Depending on your current shop version, you need to install a suitable version of the **OXID GraphQL API**. This installation manual is compatible with OXID eShop 6.5. For newer or older versions, please see the corresponding documentations.
+
+Installation
+------------
 
 First navigate to your shop's root directory where the project ``composer.json`` file is located:
 
@@ -28,7 +28,16 @@ This will automatically install the **OXID GraphQL Base** module, which is neede
 
     composer require oxid-esales/graphql-base:^7.0
 
-If you decided to go with the **GraphQL Storefront** module, you need to run migrations after the installation was successfully executed:
+Migration
+---------
+
+After the installation you need to run the migrations for the **GraphQL Base** module:
+
+.. code-block:: bash
+
+    ./vendor/bin/oe-eshop-doctrine_migration migration:migrate oe_graphql_base
+
+And if you decided to go with the **GraphQL Storefront** module, you must execute migrations for this one as well:
 
 .. code-block:: bash
 
@@ -37,7 +46,7 @@ If you decided to go with the **GraphQL Storefront** module, you need to run mig
 Activation
 ----------
 
-Now you need to activate the modules, either via OXID eShop admin or CLI.
+Now you need to activate the modules, either via OXID eShop administration area or the CLI:
 
 .. code-block:: bash
 
