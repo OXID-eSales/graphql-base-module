@@ -4,28 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - undecided
-
-### Added
-- Logic to track tokens of not anonymous users in database
-- Logic to invalidate tokens
-- New table `oegraphqltoken`
-- Module setting `sJsonWebTokenUserQuota` to limit the number of valid JWT for a single user.
-- Classes
-  - `OxidEsales\GraphQL\Base\Controller\Token`
-  - `OxidEsales\GraphQL\Base\DataType\User`
-  - `OxidEsales\GraphQL\Base\Infrastructure\Model\Token`
-  - `OxidEsales\GraphQL\Base\Infrastructure\Token`
-  - `OxidEsales\GraphQL\Base\Infrastructure\Repository`
-  - `OxidEsales\GraphQL\Base\Exception\TokenQuota`
-  - `OxidEsales\GraphQL\Base\Exception\UserNotFound`
-  - `OxidEsales\GraphQL\Base\Service\TokenAdministration`
-- Public Methods
-  - `OxidEsales\GraphQL\Base\Exception\InvalidToken::unknownToken()`
-  - `OxidEsales\GraphQL\Base\Service\ModuleConfiguration::getUserTokenQuota()`
+## [6.0.3] - 2022-08-08
 
 ### Fixed
-- Fixed a link to documentation in troubleshooting section [PR-22](https://github.com/OXID-eSales/graphql-base-module/pull/22)
+- Improve the installation instructions [PR-26](https://github.com/OXID-eSales/graphql-base-module/pull/26)
 
 ## [6.0.2] - 2022-03-31
 
@@ -81,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `OxidEsales\GraphQL\Base\Framework\NullToken`
 - Removed deprecated `OxidEsales\GraphQL\Base\Service\Legacy`
 
-[Undecided]: https://github.com/OXID-eSales/graphql-base-module/compare/v6.0.2...b-6.4.x
+[6.0.3]: https://github.com/OXID-eSales/graphql-base-module/compare/v6.0.2...v6.0.3
 [6.0.2]: https://github.com/OXID-eSales/graphql-base-module/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v5.2.1...v6.0.0
