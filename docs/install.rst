@@ -57,12 +57,3 @@ Now you need to activate the modules, either via OXID eShop administration area 
 .. important::
 
     Keep in mind that you have to activate the **GraphQL Base** module first.
-
-Entry Point Configuration
--------------------------
-
-The GraphQL API uses the single entry point ``/graphql/``. Usually this entry point is configured in the ``.htaccess`` file that is coming with the OXID eShop. However, if you encounter trouble with that, ensure you have the proper ``/graphql/`` entry point configuration in your ``.htaccess`` file or add it, if not present:
-
-.. code-block:: bash
-
-    RewriteRule ^graphql/?$    widget.php?cl=graphql&skipSession=1   [QSA,NC,L]
