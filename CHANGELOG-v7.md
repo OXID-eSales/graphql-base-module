@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Documentation improvements [PR-27](https://github.com/OXID-eSales/graphql-base-module/pull/27)
+- Dependency on `lcobucci/jwt`changed to `^4.1` as functionality of it is used in the application [PR-28](https://github.com/OXID-eSales/graphql-base-module/pull/28)
 
 ## [7.0.1] - 2022-06-28
 
