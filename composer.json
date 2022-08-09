@@ -17,7 +17,7 @@
         "php": "^7.4|^8.0",
         "ext-json": "*",
         "thecodingmachine/graphqlite": "^5.0.2",
-        "lcobucci/jwt": "^4.0",
+        "lcobucci/jwt": "^4.1",
         "symfony/cache": "*",
         "ecodev/graphql-upload": "^6.1",
         "laminas/laminas-diactoros": "^2.5",
