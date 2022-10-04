@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "ext-json": "*",
         "thecodingmachine/graphqlite": "^5.0.2",
         "lcobucci/jwt": "^4.0",
