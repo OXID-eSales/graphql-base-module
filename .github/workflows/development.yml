@@ -140,39 +140,45 @@ jobs:
                       source/test-module/phpstan.report.json
                       source/test-module/phpmd.report.json
 
-#    unit_tests:
-#        strategy:
-#            matrix:
-#                php: [ '8.0', '8.1' ]
-#        needs: [ install_shop_with_module ]
-#        runs-on: ubuntu-latest
-#        steps:
-#            - name: Load current installation from cache
-#              uses: actions/cache@v2
-#              with:
-#                  path: |
-#                      ./*
-#                  key: shopInstallation-${{ matrix.php }}-${{ github.sha }}
-#                  restore-keys: |
-#                      shopInstallation-${{ matrix.php }}-${{ github.sha }}
-#
-#            - name: Start containers
-#              run: |
-#                  make up
-#                  sleep 2
-#
-#            - name: Run tests
-#              continue-on-error: true
-#              run: |
-#                  docker-compose run -T --rm \
-#                    -e MODULE_IDS=oe_graphql_base \
-#                    -e ACTIVATE_ALL_MODULES=1 \
-#                    -e RUN_TESTS_FOR_SHOP=0 \
-#                    -e RUN_TESTS_FOR_MODULES=0 \
-#                    -e XDEBUG_MODE=coverage \
-#                    -e ADDITIONAL_TEST_PATHS='/var/www/vendor/oxid-esales/graphql-base/tests' \
-#                    php php vendor/bin/runtests
-#
+    unit_tests:
+        strategy:
+            matrix:
+                php: [ '8.0', '8.1' ]
+        needs: [ install_shop_with_module ]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Load current installation from cache
+              uses: actions/cache@v2
+              with:
+                  path: |
+                      ./*
+                  key: shopInstallation-${{ matrix.php }}-${{ github.sha }}
+                  restore-keys: |
+                      shopInstallation-${{ matrix.php }}-${{ github.sha }}
+
+            - name: Start containers
+              run: |
+                  make up
+                  sleep 2
+
+            - name: Activate module
+              run: |
+                  docker-compose exec -T php bin/oe-console oe:module:activate oe_graphql_base
+
+            - name: Run tests
+              continue-on-error: true
+              run: |
+                  docker-compose exec -T \
+                    -e XDEBUG_MODE=coverage \
+                    php php vendor/bin/phpunit \
+                      -c /var/www/vendor/oxid-esales/graphql-base/tests/phpunit.xml \
+                      --bootstrap=/var/www/source/bootstrap.php \
+                      --coverage-html=Coverage \
+                      --coverage-clover=/var/www/coverage.xml \
+                      --coverage-text \
+                      --log-junit=/var/www/phpunit.xml \
+                      /var/www/vendor/oxid-esales/graphql-base/tests/
+
 #    codeception_tests:
 #        strategy:
 #            matrix:
