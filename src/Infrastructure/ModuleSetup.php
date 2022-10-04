@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 
 /**
@@ -21,7 +21,7 @@ class ModuleSetup
     /** @var ModuleConfiguration */
     private $moduleConfiguration;
 
-    /** @var ModuleSettingBridgeInterface */
+    /** @var ModuleSettingServiceInterface */
     private $moduleSettings;
 
     /**
@@ -29,7 +29,7 @@ class ModuleSetup
      */
     public function __construct(
         ModuleConfiguration $moduleConfiguration,
-        ModuleSettingBridgeInterface $moduleSettings
+        ModuleSettingServiceInterface $moduleSettings
     ) {
         $this->moduleConfiguration = $moduleConfiguration;
         $this->moduleSettings = $moduleSettings;
@@ -37,7 +37,7 @@ class ModuleSetup
 
     public function runSetup(): void
     {
-        $this->moduleSettings->save(
+        $this->moduleSettings->saveString(
             ModuleConfiguration::SIGNATUREKEYNAME,
             $this->moduleConfiguration->generateSignatureKey(),
             'oe_graphql_base'

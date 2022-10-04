@@ -57,8 +57,8 @@ $aModule = [
         [
             'group' => 'graphql_base',
             'name'  => 'sJsonWebTokenUserQuota',
-            'type'  => 'str',
-            'value' => '10000',
+            'type'  => 'num',
+            'value' => 10000,
         ],
     ],
     'events'      => [

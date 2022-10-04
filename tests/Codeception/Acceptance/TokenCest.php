@@ -20,7 +20,7 @@ class TokenCest
 {
     private const TEST_USER_ID = 'e7af1c3b786fd02906ccd75698f4e6b9';
 
-    private const ADMIN_LOGIN = 'admin';
+    private const ADMIN_LOGIN = 'admin@admin.com';
 
     private const ADMIN_PASSWORD = 'admin';
 
@@ -612,9 +612,7 @@ class TokenCest
     {
         $I->logout();
 
-        $I->sendGQLQuery('query { token (username: "admin", password: "admin") }');
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
-        $I->amBearerAuthenticated($token);
+        $I->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
 
         if ($userId) {
             $this->sendTokenDeleteMutation($I, $userId);

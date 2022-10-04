@@ -9,11 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 
 use function bin2hex;
-use function is_string;
 use function random_bytes;
 use function strlen;
 
@@ -31,9 +30,6 @@ class ModuleConfiguration
 
     public const QUOTANAME = 'sJsonWebTokenUserQuota';
 
-    /** @var ModuleSettingBridgeInterface */
-    private $moduleSettingBridge;
-
     /** @var string[] */
     private $lifetimeMap = [
         '15min' => '+15 minutes',
@@ -44,9 +40,8 @@ class ModuleConfiguration
     ];
 
     public function __construct(
-        ModuleSettingBridgeInterface $moduleSettingBridge
+        private ModuleSettingServiceInterface $moduleSettingService
     ) {
-        $this->moduleSettingBridge = $moduleSettingBridge;
     }
 
     public function generateSignatureKey(): string
@@ -59,11 +54,10 @@ class ModuleConfiguration
      */
     public function getSignatureKey(): string
     {
-        $signature = $this->moduleSettingBridge->get(static::SIGNATUREKEYNAME, 'oe_graphql_base');
-
-        if (!is_string($signature)) {
-            throw MissingSignatureKey::wrongType();
-        }
+        $signature = $this->moduleSettingService
+            ->getString(static::SIGNATUREKEYNAME, 'oe_graphql_base')
+            ->trim()
+            ->toString();
 
         if (strlen($signature) < 64) {
             throw MissingSignatureKey::wrongSize();
@@ -74,13 +68,15 @@ class ModuleConfiguration
 
     public function getTokenLifeTime(): string
     {
-        $key = (string)$this->moduleSettingBridge->get(static::LIFETIMENAME, 'oe_graphql_base');
+        $key = $this->moduleSettingService
+            ->getString(static::LIFETIMENAME, 'oe_graphql_base')
+            ->toString();
 
         return $this->lifetimeMap[$key] ?? $this->lifetimeMap['8hrs'];
     }
 
     public function getUserTokenQuota(): int
     {
-        return (int)$this->moduleSettingBridge->get(static::QUOTANAME, 'oe_graphql_base');
+        return $this->moduleSettingService->getInteger(static::QUOTANAME, 'oe_graphql_base');
     }
 }

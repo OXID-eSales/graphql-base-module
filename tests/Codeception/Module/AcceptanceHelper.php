@@ -27,7 +27,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
     /**
      * @return array|mixed
      */
-    public function _depends()
+    public function _depends(): array
     {
         return [REST::class => 'Codeception\Module\REST is required'];
     }

@@ -16,6 +16,10 @@ use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
  */
 class LoginCest
 {
+    private const ADMIN_LOGIN = 'admin@admin.com';
+
+    private const ADMIN_PASSWORD = 'admin';
+
     public function testLoginWithMissingCredentials(AcceptanceTester $I): void
     {
         $I->sendGQLQuery('query { token }'); // anonymous token
@@ -50,7 +54,7 @@ class LoginCest
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query { token (username: "admin", password: "admin") }');
+        $I->sendGQLQuery('query { token (username: "'.self::ADMIN_LOGIN.'", password: "'.self::ADMIN_PASSWORD.'") }');
         $result = $I->grabJsonResponseAsArray();
 
         $I->assertNotEmpty($result['data']['token']);
@@ -61,8 +65,8 @@ class LoginCest
         $I->sendGQLQuery(
             'query ($username: String!, $password: String!) { token (username: $username, password: $password) }',
             [
-                'username' => 'admin',
-                'password' => 'admin',
+                'username' => self::ADMIN_LOGIN,
+                'password' => self::ADMIN_PASSWORD,
             ]
         );
         $result = $I->grabJsonResponseAsArray();

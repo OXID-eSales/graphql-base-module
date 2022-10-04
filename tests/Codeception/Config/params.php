@@ -7,9 +7,10 @@
 
 declare(strict_types=1);
 
-use OxidEsales\Eshop\Core\ConfigFile;
+use OxidEsales\Codeception\Module\Database\DatabaseDefaultsFileGenerator;
+use OxidEsales\Facts\Config\ConfigFile;
 use OxidEsales\Facts\Facts;
-use OxidEsales\TestingLibrary\Services\Library\DatabaseDefaultsFileGenerator;
+use Webmozart\PathUtil\Path;
 
 $facts = new Facts();
 $php = (getenv('PHPBIN')) ?: 'php';
@@ -23,14 +24,14 @@ return [
     'DB_PASSWORD' => $facts->getDatabasePassword(),
     'DB_HOST' => $facts->getDatabaseHost(),
     'DB_PORT' => $facts->getDatabasePort(),
-    'DUMP_PATH' => getTestDataDumpFilePath(),
+    'MODULE_DUMP_PATH' => getModuleTestDataDumpFilePath(),
     'MYSQL_CONFIG_PATH' => getMysqlConfigPath(),
     'PHP_BIN' => $php,
 ];
 
-function getTestDataDumpFilePath()
+function getModuleTestDataDumpFilePath()
 {
-    return __DIR__ . '/../../Fixtures/testdemodata.sql';
+    return Path::join(__DIR__, '/../', '_data', 'dump.sql');
 }
 
 function getMysqlConfigPath()

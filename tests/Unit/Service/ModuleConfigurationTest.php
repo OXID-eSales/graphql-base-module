@@ -9,17 +9,17 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Configuration\Bridge\ModuleSettingBridgeInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use PHPUnit\Framework\TestCase;
-use stdClass;
+use Symfony\Component\String\UnicodeString;
 
 class ModuleConfigurationTest extends TestCase
 {
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
     {
-        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
         $iterations = 5;
         $keys = [];
@@ -42,48 +42,47 @@ class ModuleConfigurationTest extends TestCase
         );
     }
 
-    public function signatureKeyProvider(): array
+    public function shortSignatureKeyProvider(): array
     {
         return [
-            [true, false],
-            [null, false],
-            [false, false],
-            [new stdClass(), false],
-            ['', false],
-            ['too short', false],
-            [[], false],
-            ['33189b36e3fe1198cb92f49c8b6701cfd92bc58876f33361fc97bb69614c9592', true],
+            [''],
+            ['too short'],
         ];
     }
 
     /**
-     * @dataProvider signatureKeyProvider
+     * @dataProvider shortSignatureKeyProvider
      *
-     * @param mixed $signature
+     * @param string $signature
      */
-    public function testGetSignatureKeyWithInvalidOrNoSignature($signature, bool $valid): void
+    public function testGetShortSignatureKey(string $signature): void
     {
-        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
-        $moduleSettingBridgeMock->method('get')->willReturn($signature);
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('getString')->willReturn(new UnicodeString($signature));
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
 
-        if (!$valid) {
-            $this->expectException(MissingSignatureKey::class);
-        }
+        $this->expectException(MissingSignatureKey::class);
 
+        $moduleConfiguration->getSignatureKey();
+    }
+
+    public function testGetSignatureKey(): void
+    {
+        $signature = '33189b36e3fe1198cb92f49c8b6701cfd92bc58876f33361fc97bb69614c9592';
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('getString')->willReturn(new UnicodeString($signature));
+
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
         $sig = $moduleConfiguration->getSignatureKey();
 
-        $this->assertTrue(
-            is_string($sig),
-            'Signature key needs to be a string'
-        );
+        $this->assertTrue(is_string($sig));
     }
 
     public function testGetTokenLifetimeDefault(): void
     {
-        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
-        $moduleSettingBridgeMock->method('get')->willReturn('asdf');
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('getString')->willReturn(new UnicodeString('asdf'));
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
 
@@ -92,8 +91,8 @@ class ModuleConfigurationTest extends TestCase
 
     public function testGetTokenLifetime(): void
     {
-        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
-        $moduleSettingBridgeMock->method('get')->willReturn('24hrs');
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('getString')->willReturn(new UnicodeString('24hrs'));
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
 
@@ -102,8 +101,8 @@ class ModuleConfigurationTest extends TestCase
 
     public function testGetUserTokenQuota(): void
     {
-        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingBridgeInterface::class)->getMock();
-        $moduleSettingBridgeMock->method('get')->willReturn('666');
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();
+        $moduleSettingBridgeMock->method('getInteger')->willReturn(666);
 
         $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
 
