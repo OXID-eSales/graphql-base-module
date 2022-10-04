@@ -51,6 +51,8 @@ class ModuleConfiguration
 
     /**
      * @throws MissingSignatureKey
+     *
+     * @return non-empty-string
      */
     public function getSignatureKey(): string
     {

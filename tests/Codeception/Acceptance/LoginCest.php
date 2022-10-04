@@ -54,7 +54,8 @@ class LoginCest
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query { token (username: "'.self::ADMIN_LOGIN.'", password: "'.self::ADMIN_PASSWORD.'") }');
+        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
+        $I->sendGQLQuery($query);
         $result = $I->grabJsonResponseAsArray();
 
         $I->assertNotEmpty($result['data']['token']);
