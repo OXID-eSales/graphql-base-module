@@ -13,7 +13,7 @@ use OxidEsales\Facts\Facts;
 
 abstract class EnterpriseTestCase extends TokenTestCase
 {
-    protected function setUp(): void
+    public function setUp(): void
     {
         $facts = new Facts();
 

@@ -18,7 +18,7 @@ use OxidEsales\TestingLibrary\Services\ModuleInstaller\ModuleInstaller;
 
 abstract class MultishopTestCase extends EnterpriseTestCase
 {
-    protected function setUp(): void
+    public function setUp(): void
     {
         $this->setGETRequestParameter('shp', '1');
         static::$container = null;
@@ -29,7 +29,7 @@ abstract class MultishopTestCase extends EnterpriseTestCase
         $this->cleanupCachedRegistry();
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         $this->cleanupCachedRegistry();
 

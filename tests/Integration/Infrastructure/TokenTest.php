@@ -13,15 +13,15 @@ use DateTimeImmutable;
 use Lcobucci\JWT\Token\DataSet;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User;
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
-use OxidEsales\TestingLibrary\UnitTestCase;
 
-class TokenTest extends UnitTestCase
+class TokenTest extends IntegrationTestCase
 {
     private const TEST_TOKEN_ID = '_my_test_token';
 
@@ -37,13 +37,6 @@ class TokenTest extends UnitTestCase
         $container = $containerFactory->create();
         $container->compile();
         $this->tokenInfrastructure = $container->get(TokenInfrastructure::class);
-    }
-
-    public function tearDown(): void
-    {
-        $this->cleanUpTable('oegraphqltoken');
-
-        parent::tearDown();
     }
 
     public function testRegisterToken(): void

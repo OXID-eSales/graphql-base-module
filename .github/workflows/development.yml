@@ -172,7 +172,6 @@ jobs:
                     -e XDEBUG_MODE=coverage \
                     php php vendor/bin/phpunit \
                       -c /var/www/vendor/oxid-esales/graphql-base/tests/phpunit.xml \
-                      --bootstrap=/var/www/source/bootstrap.php \
                       --coverage-html=Coverage \
                       --coverage-clover=/var/www/coverage.xml \
                       --coverage-text \

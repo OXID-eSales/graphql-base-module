@@ -11,7 +11,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration;
 
 use DateTimeImmutable;
 use Lcobucci\JWT\UnencryptedToken;
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\Facts\Facts;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
@@ -24,12 +27,11 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token;
-use OxidEsales\TestingLibrary\UnitTestCase as PHPUnitTestCase;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-abstract class TestCase extends PHPUnitTestCase
+abstract class TestCase extends IntegrationTestCase
 {
     protected static $queryResult;
 
@@ -40,8 +42,22 @@ abstract class TestCase extends PHPUnitTestCase
 
     protected static $query;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
+        parent::setUp();
+
+        $connection = ContainerFactory::getInstance()
+            ->getContainer()
+            ->get(QueryBuilderFactoryInterface::class)
+            ->create()
+            ->getConnection();
+
+        $connection->executeStatement(
+            file_get_contents(
+                __DIR__ . '/../Fixtures/dump.sql'
+            )
+        );
+
         \OxidEsales\Eshop\Core\Registry::getLang()->resetBaseLanguage();
 
         if (static::$container !== null) {
@@ -87,8 +103,9 @@ abstract class TestCase extends PHPUnitTestCase
         static::$container->compile();
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
+        parent::tearDown();
         static::$queryResult = null;
         static::$logResult = null;
         static::$query = null;
@@ -202,7 +219,7 @@ abstract class TestCase extends PHPUnitTestCase
         $response = curl_exec($ch);
         curl_close($ch);
 
-        return json_decode($response, true);
+        return json_decode($response, true) ?: [];
     }
 
     protected function buildFileUpload(string $delimiter, array $fields, array $map, array $files = []): string

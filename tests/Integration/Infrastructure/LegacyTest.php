@@ -11,13 +11,18 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
 
 use oxField;
 use OxidEsales\Eshop\Application\Model\User;
-use OxidEsales\EshopCommunity\Tests\Integration\Internal\TestContainerFactory;
+use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
+use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\TestingLibrary\UnitTestCase;
 
-class LegacyTest extends UnitTestCase
+class LegacyTest extends IntegrationTestCase
 {
+    private const ADMIN_LOGIN = 'admin@admin.com';
+
+    private const ADMIN_PASSWORD = 'admin';
+
     /** @var Legacy */
     private $legacyInfrastructure;
 
@@ -30,25 +35,17 @@ class LegacyTest extends UnitTestCase
         $this->legacyInfrastructure = $container->get(Legacy::class);
     }
 
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        $this->cleanUpTable('oxuser');
-    }
-
     public function testValidLogin(): void
     {
-        $works = false;
-        $this->legacyInfrastructure->login('admin', 'admin');
-        $works = true;
-        $this->assertTrue($works);
+        $user = $this->legacyInfrastructure->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
+        $this->assertSame($user::class, UserDataType::class);
     }
 
     public function testInvalidLogin(): void
     {
         $this->expectException(InvalidLogin::class);
         $this->legacyInfrastructure->login(
-            'admin',
+            self::ADMIN_LOGIN,
             'wrongpassword'
         );
     }
@@ -105,8 +102,8 @@ class LegacyTest extends UnitTestCase
                 'expectedException' => true,
             ],
             'correct login' => [
-                'login' => 'admin',
-                'password' => 'admin',
+                'login' => self::ADMIN_LOGIN,
+                'password' => self::ADMIN_PASSWORD,
                 'expectedAnonymous' => false,
                 'expectedUserIdNull' => false,
                 'expectedException' => false,

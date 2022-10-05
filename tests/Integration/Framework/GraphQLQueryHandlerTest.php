@@ -15,13 +15,13 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class GraphQLQueryHandlerTest extends TestCase
 {
-    public static function setUpBeforeClass(): void
-    {
-        static::$container = null;
-    }
+    private const ADMIN_LOGIN = 'admin@admin.com';
 
-    public static function tearDownAfterClass(): void
+    private const ADMIN_PASSWORD = 'admin';
+
+    public function tearDown(): void
     {
+        parent::tearDown();
         static::$container = null;
     }
 
@@ -102,11 +102,9 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testLoggedQuery(): void
     {
-        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
+        $result = $this->query($query);
         $this->setAuthToken($result['body']['data']['token']);
-
-        static::$container = null;
-        $this->setUp();
 
         $result = $this->query('query { testLoggedQuery(foo: "bar") }');
         $this->assertEquals(
@@ -119,16 +117,13 @@ class GraphQLQueryHandlerTest extends TestCase
             ],
             $result
         );
-        static::$container = null;
     }
 
     public function testLoggedRightQuery(): void
     {
-        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
+        $result = $this->query($query);
         $this->setAuthToken($result['body']['data']['token']);
-
-        static::$container = null;
-        $this->setUp();
 
         $result = $this->query('query { testLoggedRightQuery(foo: "bar") }');
         $this->assertEquals(
@@ -141,39 +136,29 @@ class GraphQLQueryHandlerTest extends TestCase
             ],
             $result
         );
-        static::$container = null;
     }
 
     public function testLoggedButNoRightQuery(): void
     {
-        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
+        $result = $this->query($query);
         $this->setAuthToken($result['body']['data']['token']);
-
-        static::$container = null;
-        $this->setUp();
 
         $result = $this->query('query { testLoggedButNoRightQuery(foo: "bar") }');
         $this->assertNotEmpty($result['body']['errors']);
-        static::$container = null;
     }
 
     public function testRightOnlyQueryWithoutToken(): void
     {
-        static::$container = null;
-        $this->setUp();
-
         $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
         $this->assertNotEmpty($result['body']['errors']);
-        static::$container = null;
     }
 
     public function testRightOnlyQueryWithUserToken(): void
     {
-        $result = $this->query('query { token (username: "admin", password: "admin") }');
+        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
+        $result = $this->query($query);
         $this->setAuthToken($result['body']['data']['token']);
-
-        static::$container = null;
-        $this->setUp();
 
         $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
         $this->assertNotEmpty($result['body']['errors']);
@@ -184,9 +169,6 @@ class GraphQLQueryHandlerTest extends TestCase
     {
         $result = $this->query('query { token }');
         $this->setAuthToken($result['body']['data']['token']);
-
-        static::$container = null;
-        $this->setUp();
 
         $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
 
@@ -200,7 +182,6 @@ class GraphQLQueryHandlerTest extends TestCase
             ],
             $result
         );
-        static::$container = null;
     }
 
     public function testBasicInputFilterQuery(): void
