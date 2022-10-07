@@ -21,11 +21,11 @@ This module provides:
 
 ## Usage
 
-This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.8.0` component, which is part of the `6.3.0` compilation) up and running.
+This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.0.0` component, which is part of the `7.0.0` compilation) up and running.
 
 ## Branch Compatibility
 
-* master branch is compatible with latest shop compilations: 7.0.x and master
+* master branch is compatible with latest shop compilation: 7.0.x
 * 7.x versions (or b-6.5.x branch) are compatible with latest shop compilations: 6.5.x resp. b-6.5.x shop compilation branches
 * 6.x versions (or b-6.4.x branch) are compatible with latest shop compilations: 6.4.x resp. b-6.4.x shop compilation branches
 * 5.x versions (or b-6.3.x branch) are compatible with latest shop compilations: 6.3.x resp. b-6.3.x shop compilation branches (NOTE: no support for PHP 8 yet)
@@ -33,7 +33,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v6.8.0` co
 ### Install
 
 ```bash
-# Install desired version of oxid-esales/graphql-base module, in this case - latest released 6.x version
+# Install desired version of oxid-esales/graphql-base module, in this case - latest released 7.x version
 $ composer require oxid-esales/graphql-base ^7.0.0
 ```
 
@@ -53,21 +53,21 @@ To login and retrieve a token send the following GraphQL query to the server
 ```graphql
 query {
     token (
-        username: "admin",
+        username: "admin@admin.com",
         password: "admin"
     )
 }
 ```
 
-You could simply just fire up your terminal and use `curl` to do a basic check
-if the GraphQL base module is up and running as epxected. To retrieve a valid
+You could simply fire up your terminal and use `curl` to do a basic check
+if the GraphQL base module is up and running as expected. To retrieve a valid
 token you need to replace the username and password below with valid login
 credentials.
 
 ```bash
 $ curl http://oxideshop.local/graphql/ \
   -H 'Content-Type: application/json' \
-  --data-binary '{"query":"query {token(username: \"admin\", password: \"admin\")}"}'
+  --data-binary '{"query":"query {token(username: \"admin@admin.com\", password: \"admin\")}"}'
 ```
 
 You should see a response similar to this:
@@ -95,21 +95,26 @@ How to extend GraphQL module types and implement your new mutations and queries 
 
 ## Testing
 
-### Linting, syntax check, static analysis and unit tests
+### Syntax check and static analysis
 
 ```bash
-$ composer test
+$ composer static
 ```
 
-### Integration/Acceptance tests
+### Unit/Integration/Acceptance tests
 
 - install this module into a running OXID eShop
-- change the `test_config.yml`
-  - add `oe/graphql-base` to the `partial_module_paths`
-  - set `activate_all_modules` to `true`
-
+- reset shop's database
 ```bash
-$ ./vendor/bin/runtests
+$ bin/oe-console oe:database:reset --db-host=db-host --db-port=db-port --db-name=db-name --db-user=db-user --db-password=db-password --force
+```
+- run Unit/Integration tests
+```bash
+$ ./vendor/bin/phpunit -c vendor/oxid-esales/graphql-base/tests/phpunit.xml
+```
+- run Acceptance tests
+```bash
+$ SELENIUM_SERVER_HOST=selenium MODULE_IDS=oe_graphql_base vendor/bin/codecept run acceptance -c vendor/oxid-esales/graphql-base/tests/codeception.yml
 ```
 
 ## Issues
