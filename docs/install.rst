@@ -56,4 +56,6 @@ Now you need to activate the modules, either via OXID eShop administration area 
 
 .. important::
 
-    Keep in mind that you have to activate the **GraphQL Base** module first.
+    Keep in mind that you have to activate the **GraphQL Base** module first. In case you are using the OXID eShop Enterprise Edition,
+    it is important that the **GraphQL Base** module is activated in each subshop that is using the **GraphQL Storefront** module.
+    Before deactivating **GraphQL Base** module please ensure **GraphQL Storefront** is deactivated first.
