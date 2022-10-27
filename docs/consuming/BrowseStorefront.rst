@@ -95,51 +95,51 @@ We have the built in possibility to filter for specific categories, e.g. by titl
 .. code-block:: graphql
    :caption: call to ``categories`` query with filter and sorting and category products sorted by title
 
-        query catsWithFilter {
-            categories(
-                filter: {
-                    title: {
-                        contains: "Kite"
-                    }
-                }
-                sort: {
-                    title: "ASC"
-                }
-            ) {
-            title
-            products (
-                  sort: {
-                      title: "DESC"
-                  }
-            ) {
-               title
+    query catsWithFilter {
+        categories(
+            filter: {
+                title: {
+                    contains: "Kite"
                 }
             }
+            sort: {
+                title: "ASC"
+            }
+        ) {
+        title
+        products (
+              sort: {
+                  title: "DESC"
+              }
+        ) {
+           title
+            }
         }
+    }
 
 .. code-block:: json
    :caption: ``categories`` query with filter response
 
-        {
-            "data": {
-                "categories": [
-                    {
-                        "title": "Kiteboarding",
-                        "products": []
-                    },
-                    {
-                        "title": "Kites",
-                        "products": [
-                            {
-                                "title": "Kite SPLEENE SP-X 2010"
-                            },
-                            {
-                                "title": "Kite RRD PASSION 2010"
-                            }
-                    }
-                ]
-            }
+    {
+        "data": {
+            "categories": [
+                {
+                    "title": "Kiteboarding",
+                    "products": []
+                },
+                {
+                    "title": "Kites",
+                    "products": [
+                        {
+                            "title": "Kite SPLEENE SP-X 2010"
+                        },
+                        {
+                            "title": "Kite RRD PASSION 2010"
+                        }
+                }
+            ]
         }
+    }
 
 
 Or the all time favourite of every bargain hunter, get products sorted by price, lowest first:
@@ -147,7 +147,7 @@ Or the all time favourite of every bargain hunter, get products sorted by price,
 .. code-block:: graphql
    :caption: call to ``products`` sorted by price
 
-    query  productsByPrice {
+    query productsByPrice {
         products (
               sort: {
                   price: "ASC"
@@ -200,22 +200,22 @@ Of course it is possible to query one product for its details information:
 .. code-block:: graphql
    :caption: call to ``product`` query
 
-        query singleProduct {
-            product (productId: "dc5ffdf380e15674b56dd562a7cb6aec")
-            {
-                title
-                shortDescription
-                seo {
-                    url
-                }
-                price {
-                    price
-                    currency {
-                        name
-                    }
+    query singleProduct {
+        product (productId: "dc5ffdf380e15674b56dd562a7cb6aec")
+        {
+            title
+            shortDescription
+            seo {
+                url
+            }
+            price {
+                price
+                currency {
+                    name
                 }
             }
         }
+    }
 
 .. code-block:: json
    :caption: ``product`` query response

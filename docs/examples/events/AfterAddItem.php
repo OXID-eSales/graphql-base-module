@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Full\Qualified\Namespace;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
 use OxidEsales\GraphQL\Storefront\Basket\Event\AfterAddItem;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DeveloperAfterAddItemEventSubscriber extends AbstractShopAwareEventSubscriber
+class DeveloperAfterAddItemEventSubscriber implements EventSubscriberInterface
 {
     public function handle(AfterAddItem $event): AfterAddItem
     {

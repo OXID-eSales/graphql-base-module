@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Full\Qualified\Namespace;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
 use OxidEsales\GraphQL\Storefront\Basket\Event\BeforeBasketRemove;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DeveloperBeforeBasketRemoveEventSubscriber extends AbstractShopAwareEventSubscriber
+class DeveloperBeforeBasketRemoveEventSubscriber implements EventSubscriberInterface
 {
     public function handle(BeforeBasketRemove $event): BeforeBasketRemove
     {

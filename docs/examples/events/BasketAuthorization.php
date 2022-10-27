@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Full\Qualified\Namespace;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
 use OxidEsales\GraphQL\Storefront\Basket\Event\BasketAuthorization;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use function rand;
 
-class BasketAuthorizationEventSubscriber extends AbstractShopAwareEventSubscriber
+class BasketAuthorizationEventSubscriber implements EventSubscriberInterface
 {
     public function handleAuth(BasketAuthorization $event): BasketAuthorization {
         // decide

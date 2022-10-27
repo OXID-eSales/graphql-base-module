@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Full\Qualified\Namespace\Context\Events;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use function rand;
 
-class AuthorizationEventSubscriber extends AbstractShopAwareEventSubscriber
+class AuthorizationEventSubscriber implements EventSubscriberInterface
 {
     public function handleAuth(BeforeAuthorization $event): BeforeAuthorization {
         // decide

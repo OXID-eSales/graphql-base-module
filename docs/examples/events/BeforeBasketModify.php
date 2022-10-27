@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Full\Qualified\Namespace;
 
-use OxidEsales\EshopCommunity\Internal\Framework\Event\AbstractShopAwareEventSubscriber;
 use OxidEsales\GraphQL\Storefront\Basket\Event\BeforeBasketModify;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class DeveloperBeforeBasketModifyEventSubscriber extends AbstractShopAwareEventSubscriber
+class DeveloperBeforeBasketModifyEventSubscriber implements EventSubscriberInterface
 {
     public function handle(BeforeBasketModify $event): BeforeBasketModify
     {
