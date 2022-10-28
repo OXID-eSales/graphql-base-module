@@ -67,21 +67,21 @@ You need to 'log in' the customer to graphLQ APi once to get a JWT with a predef
 .. code-block:: graphql
    :caption: call to ``token`` query
 
-        query user {
-            token(
-                username: "user@oxid-esales.com"
-                password: "useruser"
-            )
-        }
+    query user {
+        token(
+            username: "user@oxid-esales.com"
+            password: "useruser"
+        )
+    }
 
 .. code-block:: json
    :caption: ``token`` query response
 
-        {
-            "data": {
-                "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0LmxvY2FsLyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIiwiaWF0IjoxNjUzNDc2MjU5LjU2NTgxNiwibmJmIjoxNjUzNDc2MjU5LjU2NTgxNiwiZXhwIjoxNjUzNTA1MDU5LjU3MTMyMSwic2hvcGlkIjoxLCJ1c2VybmFtZSI6InVzZXJAb3hpZC1lc2FsZXMuY29tIiwidXNlcmlkIjoiZTdhZjFjM2I3ODZmZDAyOTA2Y2NkNzU2OThmNGU2YjkiLCJ1c2VyYW5vbnltb3VzIjpmYWxzZSwidG9rZW5pZCI6ImZkODM2NWZkNDY3ZjJkOTAxNDJiYWFhODAwNjE1MDQ4In0.Q_rih628tTBan9_Dl03htix-c9G_EpqtwPGoiDjq8nab6BdwOVbEVfPRt7zbJlAnJn5_x49dZUxovZZ81aFVlg"
-            }
+    {
+        "data": {
+            "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0LmxvY2FsLyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIiwiaWF0IjoxNjUzNDc2MjU5LjU2NTgxNiwibmJmIjoxNjUzNDc2MjU5LjU2NTgxNiwiZXhwIjoxNjUzNTA1MDU5LjU3MTMyMSwic2hvcGlkIjoxLCJ1c2VybmFtZSI6InVzZXJAb3hpZC1lc2FsZXMuY29tIiwidXNlcmlkIjoiZTdhZjFjM2I3ODZmZDAyOTA2Y2NkNzU2OThmNGU2YjkiLCJ1c2VyYW5vbnltb3VzIjpmYWxzZSwidG9rZW5pZCI6ImZkODM2NWZkNDY3ZjJkOTAxNDJiYWFhODAwNjE1MDQ4In0.Q_rih628tTBan9_Dl03htix-c9G_EpqtwPGoiDjq8nab6BdwOVbEVfPRt7zbJlAnJn5_x49dZUxovZZ81aFVlg"
         }
+    }
 
 This token needs to be sent in an Authorization header, header key needs to be ``"Authorization"``;
 Header value needs to be prefixed with ``"Bearer"`` followed by your token, in our example: ``Bearer eyJ0eXAiOiJKV1QiLCJhbGc...``.

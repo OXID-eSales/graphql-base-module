@@ -106,13 +106,13 @@ We have the built in possibility to filter for specific categories, e.g. by titl
                 title: "ASC"
             }
         ) {
-        title
-        products (
-              sort: {
+            title
+            products (
+                sort: {
                   title: "DESC"
-              }
-        ) {
-           title
+                }
+            ) {
+                title
             }
         }
     }
@@ -136,6 +136,7 @@ We have the built in possibility to filter for specific categories, e.g. by titl
                         {
                             "title": "Kite RRD PASSION 2010"
                         }
+                    ]
                 }
             ]
         }
@@ -153,13 +154,13 @@ Or the all time favourite of every bargain hunter, get products sorted by price,
                   price: "ASC"
               }
         ) {
-           title
+            title
             id
-             price {
-                 price
-                 currency {
-                      name
-                 }
+            price {
+                price
+                currency {
+                    name
+                }
             }
         }
     }
@@ -179,7 +180,7 @@ Or the all time favourite of every bargain hunter, get products sorted by price,
                         "currency": {
                             "name": "EUR"
                         }
-                     }
+                    }
                 },
                 {
                     "title": "Klebeband DACRON KITEFIX",
@@ -201,8 +202,7 @@ Of course it is possible to query one product for its details information:
    :caption: call to ``product`` query
 
     query singleProduct {
-        product (productId: "dc5ffdf380e15674b56dd562a7cb6aec")
-        {
+        product (productId: "dc5ffdf380e15674b56dd562a7cb6aec") {
             title
             shortDescription
             seo {

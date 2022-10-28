@@ -61,7 +61,7 @@ access and further update your account
 
     {
         "data": {
-        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0LmxvY2FsLyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIiwiaWF0IjoxNjUzNDgwMjI4LjIyMjQwOCwibmJmIjoxNjUzNDgwMjI4LjIyMjQwOCwiZXhwIjoxNjUzNTA5MDI4LjIyNzkwNSwic2hvcGlkIjoxLCJ1c2VybmFtZSI6InVzZXJAb3hpZC1lc2FsZXMuY29tIiwidXNlcmlkIjoiZTdhZjFjM2I3ODZmZDAyOTA2Y2NkNzU2OThmNGU2YjkiLCJ1c2VyYW5vbnltb3VzIjpmYWxzZSwidG9rZW5pZCI6Ijc5ZTEwMjVjNjJhOWFiNTY2YzZmMzdlYzliMDlhYjJlIn0.JrfP112Th23o4sPB22w7Bq0eYISy_9A7zvYmjOMcvqcBpyt5QibeBSPUCtk2-PFLJ2bWZwGepDOG-gy8-cLunw"
+            "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIn0.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0LmxvY2FsLyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3QubG9jYWwvIiwiaWF0IjoxNjUzNDgwMjI4LjIyMjQwOCwibmJmIjoxNjUzNDgwMjI4LjIyMjQwOCwiZXhwIjoxNjUzNTA5MDI4LjIyNzkwNSwic2hvcGlkIjoxLCJ1c2VybmFtZSI6InVzZXJAb3hpZC1lc2FsZXMuY29tIiwidXNlcmlkIjoiZTdhZjFjM2I3ODZmZDAyOTA2Y2NkNzU2OThmNGU2YjkiLCJ1c2VyYW5vbnltb3VzIjpmYWxzZSwidG9rZW5pZCI6Ijc5ZTEwMjVjNjJhOWFiNTY2YzZmMzdlYzliMDlhYjJlIn0.JrfP112Th23o4sPB22w7Bq0eYISy_9A7zvYmjOMcvqcBpyt5QibeBSPUCtk2-PFLJ2bWZwGepDOG-gy8-cLunw"
         }
     }
 
@@ -86,8 +86,8 @@ Here are some examples how to update the birthday date, set the invoice address 
     {
         "data": {
             "customerBirthdateUpdate": {
-            "email": "newuser@oxid.de",
-            "birthdate": "2001-04-01T00:00:00+02:00"
+                "email": "newuser@oxid.de",
+                "birthdate": "2001-04-01T00:00:00+02:00"
             }
         }
     }
@@ -113,7 +113,7 @@ Here are some examples how to update the birthday date, set the invoice address 
                 mobile: "12345678"
                 fax: "555"
             }
-        ){
+        ) {
             salutation
             firstName
             lastName
@@ -171,7 +171,7 @@ Here are some examples how to update the birthday date, set the invoice address 
                 phone: "123456"
                 fax: "555"
             }
-        ){
+        ) {
             id
             salutation
             firstName

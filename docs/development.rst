@@ -54,9 +54,11 @@ Integration testing
 -------------------
 
 You have two ways to write integration tests for your GraphQL module, see below.
-Those tests need the Shop to be setup and your module alongside the GraphQL Base
-module installed. You can run them via ``vendor/bin/runtests`` or (for Codeception)
-via ``vendor/bin/runtests-codeception``.
+Those tests need the Shop to be setup and your module alongside the GraphQL Base module installed.
+You can run them via
+``vendor/bin/phpunit -c vendor/oxid-esales/graphql-base/tests/phpunit.xml``
+or (for Codeception) via
+``vendor/bin/codecept run acceptance -c vendor/oxid-esales/graphql-base/tests/codeception.yml``.
 
 Using PHPUnit
 ^^^^^^^^^^^^^
@@ -115,13 +117,5 @@ is pretty slim and tests are pretty fast.
 
 .. literalinclude:: examples/development/IntegrationTestCodeception.php
    :language: php
-
-Travis
-------
-
-The module skeleton comes with a ``.travsi.yml`` file which will run the syntax
-check, PHP-CS-Fixer, PHPStan and the unit tests via PHPUnit in Travis-CI for
-for PHP version 7.1 to 7.4. Feel free to change this to your needs, or adapt to
-whatever CI service you are using.
 
 Happy hacking!
