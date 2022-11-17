@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored NotFound exception and children to create instance with constructor instead of static methods.
 
+## [7.0.2] - 2022-08-10
+
+### Fixed
+- Documentation improvements [PR-27](https://github.com/OXID-eSales/graphql-base-module/pull/27)
+- Dependency on `lcobucci/jwt`changed to `^4.1` as functionality of it is used in the application [PR-28](https://github.com/OXID-eSales/graphql-base-module/pull/28)
+
 ## [7.0.1] - 2022-06-28
 
 ### Fixed
@@ -43,5 +49,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update GraphQLite version to v5
 - Code quality tools list simplified and reconfigured to fit our quality requirements
 
+[7.0.2]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v6.0.2...v7.0.0
