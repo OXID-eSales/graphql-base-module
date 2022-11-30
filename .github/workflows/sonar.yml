@@ -242,32 +242,32 @@ jobs:
                       -Dsonar.cpd.php.minimumLines=6
 
     notify_slack:
-      runs-on: ubuntu-latest
-      needs: [ unit_tests, codeception_tests, sonarcloud ]
-      if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
-      steps:
-        - name: Send custom JSON data to Slack workflow
-          uses: slackapi/slack-github-action@v1.23.0
-          with:
-            # "needs" context used to access the state of related jobs
-            # "github" context used to access workflow its trigger information
-            # Warning: Payload is JSON format given through Yaml. Be careful with new lines and do not make it NICE looking, it will not work here ;)
-            # Help: New lines can be easily added for texts bellow. Check how it's currently implemented in this example!
-            payload: >
-              {"text": "
-              ${{ github.event_name == 'workflow_dispatch' && 'Manual' || 'Scheduled' }} ${{ github.workflow }} workflow on ${{ github.repository }}
-              ${{ (needs.unit_tests.result=='success' && needs.codeception_tests.result=='success' && needs.sonarcloud.result=='success') && 'Successful' || 'Failed' }}
-              ", "blocks": [{"type": "header","text": {"type": "plain_text", "emoji": true, "text": "
-              ${{ github.event_name == 'workflow_dispatch' && 'Manual' || 'Scheduled' }} ${{ github.workflow }} workflow on ${{ github.repository }}
-              "}},{"type": "section","fields": [{"type": "mrkdwn","text": "
-              *Status:* ${{ (needs.unit_tests.result=='success' && needs.codeception_tests.result=='success' && needs.sonarcloud.result=='success') && ':heavy_check_mark:' || ':x:' }}
-              "},{"type": "mrkdwn","text": "
-              Repository: <${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>
-              "}]},{"type": "section", "text": {"type": "mrkdwn", "text": "
-              \n* Unit tests job ${{ (needs.unit_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
-              \n* Codeception tests job ${{ (needs.codeception_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
-              \n* Sonarcloud job ${{ (needs.sonarcloud.result=='success') && ':heavy_check_mark:' || ':x:' }}
-              "}}, {"type": "divider"}]}
-            env:
-              SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-              SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        runs-on: ubuntu-latest
+        needs: [ unit_tests, codeception_tests, sonarcloud ]
+        if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
+        steps:
+            - name: Send custom JSON data to Slack workflow
+              uses: slackapi/slack-github-action@v1.23.0
+              with:
+                  # "needs" context used to access the state of related jobs
+                  # "github" context used to access workflow its trigger information
+                  # Warning: Payload is JSON format given through Yaml. Be careful with new lines and do not make it NICE looking, it will not work here ;)
+                  # Help: New lines can be easily added for texts bellow. Check how it's currently implemented in this example!
+                  payload: >
+                      {"text": "
+                      ${{ github.event_name == 'workflow_dispatch' && 'Manual' || 'Scheduled' }} ${{ github.workflow }} workflow on ${{ github.repository }}
+                      ${{ (needs.unit_tests.result=='success' && needs.codeception_tests.result=='success' && needs.sonarcloud.result=='success') && 'Successful' || 'Failed' }}
+                      ", "blocks": [{"type": "header","text": {"type": "plain_text", "emoji": true, "text": "
+                      ${{ github.event_name == 'workflow_dispatch' && 'Manual' || 'Scheduled' }} ${{ github.workflow }} workflow on ${{ github.repository }}
+                      "}},{"type": "section","fields": [{"type": "mrkdwn","text": "
+                      *Status:* ${{ (needs.unit_tests.result=='success' && needs.codeception_tests.result=='success' && needs.sonarcloud.result=='success') && ':heavy_check_mark:' || ':x:' }}
+                      "},{"type": "mrkdwn","text": "
+                      Repository: <${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>
+                      "}]},{"type": "section", "text": {"type": "mrkdwn", "text": "
+                      \n* Unit tests job ${{ (needs.unit_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
+                      \n* Codeception tests job ${{ (needs.codeception_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
+                      \n* Sonarcloud job ${{ (needs.sonarcloud.result=='success') && ':heavy_check_mark:' || ':x:' }}
+                      "}}, {"type": "divider"}]}
+                  env:
+                      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                      SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
