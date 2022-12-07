@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored NotFound exception and children to create instance with constructor instead of static methods.
 
+## [7.0.3] - Unreleased
+
+### Fixed
+- Update module dependency warning in documentation
+- Updated the phpstan in development dependencies and fixed several related coding style issues
+
 ## [7.0.2] - 2022-08-10
 
 ### Fixed
@@ -49,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update GraphQLite version to v5
 - Code quality tools list simplified and reconfigured to fit our quality requirements
 
+[7.0.3]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.2...b-6.5.x
 [7.0.2]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.1...v7.0.2
 [7.0.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.0...v7.0.1
 [7.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v6.0.2...v7.0.0
