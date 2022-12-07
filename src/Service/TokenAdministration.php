@@ -100,6 +100,8 @@ class TokenAdministration
             throw new InvalidLogin('Unauthorized');
         }
 
+        /** TODO: Fix this unstable setting */
+        /** @phpstan-ignore-next-line */
         $id = $customerId ? (string)$customerId->val() : (string)$this->authenticationService->getUser()->id()->val();
 
         try {

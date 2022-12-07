@@ -54,9 +54,9 @@ class RequestReader
         if ($authHeader === null) {
             return null;
         }
-        [$jwt] = sscanf($authHeader, 'Bearer %s');
 
-        if (!$jwt) {
+        $bearerFound = sscanf($authHeader, 'Bearer %s', $jwt);
+        if ($bearerFound < 1) {
             return null;
         }
 
@@ -64,6 +64,7 @@ class RequestReader
         $jwtConfiguration = $this->jwtConfigurationBuilder->getConfiguration();
 
         try {
+            /** @var string $jwt */
             /** @var UnencryptedToken $token */
             $token = $jwtConfiguration->parser()->parse($jwt);
         } catch (Exception $e) {
