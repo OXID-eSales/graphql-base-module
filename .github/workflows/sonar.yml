@@ -16,7 +16,7 @@ jobs:
               run: git clone https://github.com/OXID-eSales/docker-eshop-sdk.git .
 
             - name: Clone the shop
-              run: git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-6.5.x --single-branch source
+              run: git clone --depth 1 https://github.com/OXID-eSales/oxideshop_ce.git --branch b-7.0.x --single-branch source
 
             - name: Cache current installation
               uses: actions/cache@v2
@@ -30,13 +30,14 @@ jobs:
                   make setup
                   make addbasicservices
                   perl -pi\
-                      -e "s#PHP_VERSION=.*#PHP_VERSION='${{ env.PHP }}'#g;"\
+                      -e "s#PHP_VERSION=.*#PHP_VERSION=${{ env.PHP }}#g;"\
                       .env
 
                   perl -pi\
                       -e 's#display_errors =.*#display_errors = false#g;'\
-                      -e 'print "xdebug.max_nesting_level=1000\nxdebug.mode=coverage\n\n"'\
-                      containers/php-fpm/custom.ini
+                      -e 'print "xdebug.max_nesting_level=1000\nxdebug.mode=coverage\n\n";'\
+                      -e 'print "error_reporting = E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_WARNING\n"'\
+                      containers/php/custom.ini
 
                   perl -pi\
                       -e 's#/var/www/#/var/www/source/#g;'\
@@ -64,6 +65,9 @@ jobs:
                   make up
                   sleep 2
 
+            - name: Install dependencies
+              run: docker-compose exec -T php composer update --no-interaction
+
             - name: Checkout current module
               uses: actions/checkout@v2
               with:
@@ -75,12 +79,17 @@ jobs:
                     php composer config repositories.oxid-esales/grapqhl-base \
                     --json '{"type":"path", "url":"./test-module", "options": {"symlink": true}}'
                   docker-compose exec -T \
-                    php composer require oxid-esales/graphql-base:* --no-update
+                    php composer require oxid-esales/graphql-base:* --no-interaction
 
-            - name: Install dependencies and reset shop to development state
+            - name: Reset shop
               run: |
-                  docker-compose exec -T php composer update --no-interaction
-                  docker-compose exec -T php php vendor/bin/reset-shop
+                  docker-compose exec -T \
+                    php bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 \
+                    --db-name=example --db-user=root --db-password=root --force
+
+            - name: Activate module
+              run: |
+                  docker-compose exec -T php bin/oe-console oe:module:activate oe_graphql_base
 
             - name: Stop containers
               run: |
@@ -109,13 +118,14 @@ jobs:
               continue-on-error: true
               run: |
                   docker-compose exec -T \
-                    -e PARTIAL_MODULE_PATHS=oe/graphql-base \
-                    -e ACTIVATE_ALL_MODULES=1 \
-                    -e RUN_TESTS_FOR_SHOP=0 \
-                    -e RUN_TESTS_FOR_MODULES=0 \
                     -e XDEBUG_MODE=coverage \
-                    -e ADDITIONAL_TEST_PATHS='/var/www/vendor/oxid-esales/graphql-base/tests' \
-                    php php vendor/bin/runtests --coverage-php=/var/www/unit.cov AllTestsUnit
+                    php php vendor/bin/phpunit \
+                      -c /var/www/vendor/oxid-esales/graphql-base/tests/phpunit.xml \
+                      --coverage-html=Coverage \
+                      --coverage-php=/var/www/unit.cov \
+                      --coverage-text \
+                      --log-junit=/var/www/phpunit.xml \
+                      /var/www/vendor/oxid-esales/graphql-base/tests/
 
             - name: Upload log artifact
               uses: actions/upload-artifact@v2
@@ -144,8 +154,8 @@ jobs:
             - name: Install codeception dependencies
               run: |
                   docker-compose exec -T php composer require codeception/c3 --dev --no-update
-                  docker-compose exec -T php composer require codeception/module-rest:^1.4.2 --dev --no-update
-                  docker-compose exec -T php composer require codeception/module-phpbrowser ^1.0.2 --dev --no-update
+                  docker-compose exec -T php composer require codeception/module-rest:^3.0.0 --dev --no-update
+                  docker-compose exec -T php composer require codeception/module-phpbrowser:^3.0.0 --dev --no-update
                   docker-compose exec -T php composer config --no-plugins allow-plugins.codeception/c3 true
                   docker-compose exec -T php composer update
                   sed -i 's/<?php/<?php\n\nrequire(__DIR__ . "\/..\/c3.php");/' source/source/bootstrap.php
@@ -154,13 +164,12 @@ jobs:
               continue-on-error: true
               run: |
                   docker-compose exec -T \
-                    -e PARTIAL_MODULE_PATHS=oe/graphql-base \
-                    -e ACTIVATE_ALL_MODULES=1 \
-                    -e RUN_TESTS_FOR_SHOP=0 \
-                    -e RUN_TESTS_FOR_MODULES=0 \
+                    -e SELENIUM_SERVER_HOST=selenium \
+                    -e MODULE_IDS=oe_graphql_base \
                     -e XDEBUG_MODE=coverage \
-                    -e ADDITIONAL_TEST_PATHS='/var/www/vendor/oxid-esales/graphql-base/tests' \
-                    php php vendor/bin/runtests-codeception --coverage-phpunit
+                    php php vendor/bin/codecept run acceptance \
+                      --coverage \
+                      -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml
 
             - name: Extract and prepare the coverage artifact
               run: |
