@@ -30,7 +30,7 @@ jobs:
                   make setup
                   make addbasicservices
                   perl -pi\
-                      -e "s#PHP_VERSION=.*#PHP_VERSION='${{ env.PHP }}'#g;"\
+                      -e "s#PHP_VERSION=.*#PHP_VERSION=${{ env.PHP }}#g;"\
                       .env
 
                   perl -pi\
@@ -168,6 +168,7 @@ jobs:
                     -e MODULE_IDS=oe_graphql_base \
                     -e XDEBUG_MODE=coverage \
                     php php vendor/bin/codecept run acceptance \
+                      --coverage \
                       -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml
 
             - name: Extract and prepare the coverage artifact
