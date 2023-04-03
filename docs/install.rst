@@ -4,7 +4,7 @@ Install and Setup
 Installation
 ------------
 
-To start with `GraphQL <https://www.graphql.org>`_ you need `OXID eShop <https://www.oxid-esales.com/>`_ up and running (at least ``OXID-eSales/oxideshop_ce: v6.5.0`` component, which is part of the ``6.2.0`` compilation).
+To start with `GraphQL <https://www.graphql.org>`_ you need `OXID eShop <https://www.oxid-esales.com/>`_ up and running (at least ``OXID-eSales/oxideshop_ce: v7.0.0`` component, which is part of the ``7.0.0`` compilation).
 
 First navigate to your shop's root directory where the project ``composer.json`` file is located:
 
