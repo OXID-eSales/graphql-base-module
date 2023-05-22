@@ -6,10 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.3] - Unreleased
 
+### Changed
+- License updated - now using OXID Module and Component License
+
 ### Fixed
 - Update module dependency warning in documentation
 - Updated the phpstan in development dependencies and fixed several related coding style issues
-- License updated - now using OXID Module and Component License
 
 ## [7.0.2] - 2022-08-10
 
