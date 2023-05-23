@@ -9,7 +9,7 @@ on:
             mysql:
                 required: true
                 type: string
-            template_engine:
+            theme:
                 type: string
                 default: 'all'
             module_codecept_test_group:
@@ -589,7 +589,7 @@ jobs:
 
     notify_slack:
       runs-on: ubuntu-latest
-      needs: [ unit_tests, integration_tests, codeception_twig, codeception_smarty, sonarcloud ]
+      needs: [ unit_tests, integration_tests, codeception_apex, codeception_twig, codeception_smarty, sonarcloud ]
       if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
       steps:
           - name: Send custom JSON data to Slack workflow
@@ -612,6 +612,7 @@ jobs:
                     "}]},{"type": "section", "text": {"type": "mrkdwn", "text": "
                     \n* Unit tests job ${{ (needs.unit_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Integration tests job ${{ (needs.integration_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
+                    \n* Codeception tests with apex job ${{ (needs.codeception_apex.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Codeception tests with twig job ${{ (needs.codeception_twig.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Codeception tests with smarty job ${{ (needs.codeception_smarty.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Sonarcloud job ${{ (needs.sonarcloud.result=='success') && ':heavy_check_mark:' || ':x:' }}
