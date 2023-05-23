@@ -14,4 +14,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Constant `WRONG_TYPE_MESSAGE` from `OxidEsales\GraphQL\Base\Exception\MissingSignatureKey` exception.
 - Method `wrongType` from `OxidEsales\GraphQL\Base\Exception\MissingSignatureKey` exception.
 
-[8.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.2...master
+[8.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v7.0.2...v8.0.0
