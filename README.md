@@ -133,4 +133,4 @@ Go and check the [contribution guidelines](CONTRIBUTING.md)
 
 ## License
 
-GPLv3, see [LICENSE file](LICENSE).
+OXID Module and Component License, see [LICENSE file](LICENSE).
