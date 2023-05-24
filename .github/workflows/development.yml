@@ -9,9 +9,9 @@ on:
             mysql:
                 required: true
                 type: string
-            theme:
+            template_engine:
                 type: string
-                default: 'all'
+                default: 'both'
             module_codecept_test_group:
                 type: string
                 default: 'oe_graphql_base'
@@ -37,14 +37,13 @@ on:
                 options:
                     - '5.7.37'
                     - '8.0'
-            theme:
-                description: 'Theme - smarty (flow), twig (twig) or apex (twig)'
+            template_engine:
+                description: 'Template engine - smarty with flow theme, twig with apex theme'
                 required: true
                 default: 'twig'
                 type: choice
                 options:
-                    - 'all'
-                    - 'apex'
+                    - 'both'
                     - 'twig'
                     - 'smarty'
             module_codecept_test_group:
@@ -73,7 +72,7 @@ jobs:
                   echo "Running job with:\
                     PHP version: ${{ inputs.php }}\
                     MySQL version: ${{ inputs.mysql }}\
-                    Template engine: ${{ inputs.theme }}\
+                    Template engine: ${{ inputs.template_engine }}\
                     Tests group: ${{ inputs.module_codecept_test_group }}\
                     Trigger event: ${{ github.event_name }}"
             - name: Clone testing environment
@@ -159,7 +158,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v3
               with:
-                  name: Configs-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.theme }}
+                  name: Configs-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
                   path: |
                       docker-compose.yml
                       source/composer.json
@@ -259,7 +258,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v3
               with:
-                  name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.theme }}
+                  name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
                   path: |
                       source/integration.cov
                       source/source/log/oxideshop.log
@@ -302,7 +301,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v3
               with:
-                  name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.theme }}
+                  name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
                   path: |
                       source/unit.cov
                       source/source/log/oxideshop.log
@@ -314,9 +313,9 @@ jobs:
                   docker-compose down
                   sleep 2
 
-    codeception_apex:
+    codeception_twig:
         needs: [ install_shop_with_module ]
-        if: ${{ inputs.theme == 'all' || inputs.theme == 'apex' }}
+        if: ${{ inputs.template_engine == 'both' || inputs.template_engine == 'twig' }}
         runs-on: ubuntu-latest
         steps:
             - name: Load current installation from cache
@@ -338,7 +337,6 @@ jobs:
                   docker-compose exec -T php composer require oxid-esales/twig-component:dev-b-7.0.x --no-update
                   docker-compose exec -T php composer require oxid-esales/twig-admin-theme:dev-b-7.0.x --no-update
                   docker-compose exec -T php composer require oxid-esales/twig-theme:dev-b-7.0.x --no-update
-                  docker-compose exec -T php composer require oxid-esales/apex-theme:dev-b-7.0.x --no-update
                   docker-compose exec -T php composer require codeception/c3 --dev --no-update
                   docker-compose exec -T php composer require codeception/module-rest:^3.0.0 --dev --no-update
                   docker-compose exec -T php composer require codeception/module-phpbrowser:^3.0.0 --dev --no-update
@@ -360,68 +358,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v3
               with:
-                  name: ModuleApexCodeceptionATestsLog-${{ inputs.php }}-${{ inputs.mysql }}
-                  path: |
-                      docker-compose.yml
-                      source/composer.json
-                      source/composer.lock
-                      source/source/config.inc.php
-                      source/source/log/oxideshop.log
-                      data/php/logs/error_log.txt
-                      source/tests/Codeception/_output
-
-            - name: Stop containers
-              if: always()
-              run: |
-                  make down
-                  sleep 2
-
-    codeception_twig:
-        needs: [ install_shop_with_module ]
-        if: ${{ inputs.theme == 'all' || inputs.theme == 'twig' }}
-        runs-on: ubuntu-latest
-        steps:
-            - name: Load current installation from cache
-              uses: actions/cache@v3
-              with:
-                  path: |
-                      ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-                  restore-keys: |
-                      installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
-
-            - name: Start containers
-              run: |
-                  make up
-                  sleep 2
-
-            - name: Install dependencies, twig template engine and twig theme
-              run: |
-                  docker-compose exec -T php composer require oxid-esales/twig-component:dev-b-7.0.x --no-update
-                  docker-compose exec -T php composer require oxid-esales/twig-admin-theme:dev-b-7.0.x --no-update
-                  docker-compose exec -T php composer require oxid-esales/twig-theme:dev-b-7.0.x --no-update
-                  docker-compose exec -T php composer require codeception/c3 --dev --no-update
-                  docker-compose exec -T php composer require codeception/module-rest:^3.0.0 --dev --no-update
-                  docker-compose exec -T php composer require codeception/module-phpbrowser:^3.0.0 --dev --no-update
-                  docker-compose exec -T php composer config --no-plugins allow-plugins.codeception/c3 true
-                  docker-compose exec -T php composer update --no-interaction
-                  sed -i 's/<?php/<?php\n\nrequire(__DIR__ . "\/..\/c3.php");/' source/source/bootstrap.php
-
-            - name: Run tests
-              run: |
-                  docker-compose exec -T \
-                    -e SELENIUM_SERVER_HOST=selenium \
-                    -e BROWSER_NAME=chrome \
-                    -e THEME_ID=twig \
-                    -e MODULE_IDS=${{ env.MODULE_IDS }} \
-                    php vendor/bin/codecept run acceptance \
-                        -c /var/www/vendor/${{ env.PACKAGE_NAME }}/tests/codeception.yml -g ${{ inputs.module_codecept_test_group }}
-
-            - name: Upload log artifact
-              if: always()
-              uses: actions/upload-artifact@v3
-              with:
-                  name: ModuleTwigCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
+                  name: ModuleCodeceptionTwigTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
                   path: |
                       docker-compose.yml
                       source/composer.json
@@ -439,7 +376,7 @@ jobs:
 
     codeception_smarty:
         needs: [ install_shop_with_module ]
-        if: ${{ inputs.theme == 'all' || inputs.theme == 'smarty' }}
+        if: ${{ inputs.template_engine == 'both' || inputs.template_engine == 'smarty' }}
         runs-on: ubuntu-latest
         steps:
             - name: Load current installation from cache
@@ -494,7 +431,7 @@ jobs:
               if: always()
               uses: actions/upload-artifact@v3
               with:
-                  name: ModuleSmartyCodeceptionTestsLog-${{ inputs.php }}-${{ inputs.mysql }}
+                  name: sModuleCodeceptionSmartyTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
                   path: |
                       docker-compose.yml
                       source/composer.json
@@ -527,13 +464,13 @@ jobs:
             - name: Download unit artifacts
               uses: actions/download-artifact@v3
               with:
-                  name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.theme }}
+                  name: ModuleUnitTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
                   path: ./source/coverage/
 
             - name: Download integration artifacts
               uses: actions/download-artifact@v3
               with:
-                  name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.theme }}
+                  name: ModuleIntegrationTestsLog-${{ inputs.php }}-${{ inputs.mysql }}-${{ inputs.template_engine }}
                   path: ./source/coverage/
 
             - name: Start containers
@@ -589,7 +526,7 @@ jobs:
 
     notify_slack:
       runs-on: ubuntu-latest
-      needs: [ unit_tests, integration_tests, codeception_apex, codeception_twig, codeception_smarty, sonarcloud ]
+      needs: [ unit_tests, integration_tests, codeception_twig, codeception_smarty, sonarcloud ]
       if: always() && (github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
       steps:
           - name: Send custom JSON data to Slack workflow
@@ -612,7 +549,6 @@ jobs:
                     "}]},{"type": "section", "text": {"type": "mrkdwn", "text": "
                     \n* Unit tests job ${{ (needs.unit_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Integration tests job ${{ (needs.integration_tests.result=='success') && ':heavy_check_mark:' || ':x:' }}
-                    \n* Codeception tests with apex job ${{ (needs.codeception_apex.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Codeception tests with twig job ${{ (needs.codeception_twig.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Codeception tests with smarty job ${{ (needs.codeception_smarty.result=='success') && ':heavy_check_mark:' || ':x:' }}
                     \n* Sonarcloud job ${{ (needs.sonarcloud.result=='success') && ':heavy_check_mark:' || ':x:' }}
