@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [8.0.0] - 2023-05-24
+## [8.0.0] - 2023-05-25
 
 ### Added
 - Module upgraded for eshop version 7
@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - The type of `sJsonWebTokenUserQuota` setting was changed from `str` to `num`.
+- License updated - now using OXID Module and Component License
 - Refactored NotFound exception and children to create instance with constructor instead of static methods.
   - `OxidEsales\GraphQL\Base\Exception\NotFound::notFound()` removed
   - `OxidEsales\GraphQL\Base\Exception\UserNotFound::byId()` removed
