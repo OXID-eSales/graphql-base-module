@@ -56,18 +56,15 @@ jobs:
                     -e 's#<sCompileDir>#/var/www/source/tmp/#g;'\
                     source/source/config.inc.php
 
-            - name: Start containers
-              run: |
-                  make up
-                  sleep 2
-
-            - name: Install dependencies
-              run: docker-compose exec -T php composer update --no-interaction
-
             - name: Checkout current module
               uses: actions/checkout@v2
               with:
                   path: source/test-module
+
+            - name: Start containers
+              run: |
+                  make up
+                  sleep 2
 
             - name: Install module
               run: |
@@ -76,6 +73,9 @@ jobs:
                     --json '{"type":"path", "url":"./test-module", "options": {"symlink": true}}'
                   docker-compose exec -T \
                     php composer require oxid-esales/graphql-base:* --no-interaction
+
+            - name: Install dependencies
+              run: docker-compose exec -T php composer update --no-interaction
 
             - name: Reset shop
               run: docker-compose exec -T php php vendor/bin/reset-shop
