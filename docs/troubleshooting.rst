@@ -98,7 +98,7 @@ A more reliable first step in setting things up would be to clone the desired re
 
     The <target-directory> should be the same as the ``target-directory`` value in the module's ``composer.json`` file, so for ``graphql-base-module`` it's ``source/modules/oe/graphql-base``.
 
-After that, you can continue from step ``2. Register module package in project composer.json`` in the `docs <https://docs.oxid-esales.com/developer/en/6.0/modules/good_practices/module_setup.html>`_.
+After that, you can continue from step ``2. Register module package in project composer.json`` in the `docs <https://docs.oxid-esales.com/developer/en/7.0/development/modules_components_themes/module/tutorials/module_setup.html>`_.
 
 Allowing Cross-Origin Resource Sharing (CORS)
 ---------------------------------------------
