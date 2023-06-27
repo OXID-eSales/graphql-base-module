@@ -36,7 +36,7 @@ final class Category
             /** @var CategoryDataType $category */
             $category = $this->repository->getById($id, CategoryDataType::class);
         } catch (NotFound $e) {
-            throw CategoryNotFound::byId($id);
+            throw new CategoryNotFound($id);
         }
 
         if ($category->isActive()) {

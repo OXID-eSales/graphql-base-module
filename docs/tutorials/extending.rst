@@ -37,10 +37,10 @@ information about the manufacturer assigned to a product.
     }
 
 .. important::
-   As stated in the `Specification <specification.html>`_ section, if no manufacturer can be found for the product, we get a null.
+   As stated in the `Specification <../specification.html>`_ section, if no manufacturer can be found for the product, we get a null.
 
 We might be tempted to simply extend the product DataType to have a field for the manufacturer id, but
-please check the hints given in `Specification <specification.html>`_ section. The manufacturer should get
+please check the hints given in `Specification <../specification.html>`_ section. The manufacturer should get
 its own datatype and then get a relation to the product. So let's add the Manufacturer Data Type:
 
 .. literalinclude:: ../examples/tutorials/mygraph/src/Manufacturer/DataType/Manufacturer.php

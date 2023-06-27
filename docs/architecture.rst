@@ -67,7 +67,7 @@ Additionally to this, we put the relation services for the data types into the `
 Infrastructure
 --------------
 
-The purpose of the infrastructure layer is to fetch entities from the persistence, in our case mostly the database itself. For most of our cases we can just use the `repository from the graphql-storefront module <https://github.com/OXID-eSales/graphql-storefront-module/blob/master/src/Shared/Infrastructure/Repository.php>`_.
+The purpose of the infrastructure layer is to fetch entities from the persistence, in our case mostly the database itself. For most of our cases we can just use the `repository from the graphql-storefront module <https://github.com/OXID-eSales/graphql-storefront-module/blob/b-7.0.x/src/Shared/Infrastructure/Repository.php>`_.
 
 You are also free to create your own repository or infrastructure service to communicate with the OXID eShop.
 
