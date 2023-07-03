@@ -93,7 +93,7 @@ todo_include_todos = False
 html_theme = 'sphinx_rtd_theme'
 
 html_context = {
-    'current_version': '7.0',
+    'current_version': '8.0',
     'versions': [
         ('5.0', 'https://docs.oxid-esales.com/interfaces/graphql/en/5.0/'),
         ('5.1', 'https://docs.oxid-esales.com/interfaces/graphql/en/5.1/'),
