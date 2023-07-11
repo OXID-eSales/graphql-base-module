@@ -11,13 +11,13 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
 
 use oxField;
 use OxidEsales\Eshop\Application\Model\User;
-use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
-class LegacyTest extends IntegrationTestCase
+class LegacyTest extends TestCase
 {
     private const ADMIN_LOGIN = 'admin@admin.com';
 
