@@ -72,7 +72,7 @@ class GraphQLQueryHandler
     /**
      * Execute the GraphQL query
      *
-     * @param array{query: string, variables: string[], operationName: string} $queryData
+     * @param array{query: string, variables?: string[], operationName?: string} $queryData
      *
      * @throws Throwable
      */

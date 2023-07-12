@@ -54,6 +54,8 @@ class RequestReader
         if ($authHeader === null) {
             return null;
         }
+
+        // @phpstan-ignore-next-line
         [$jwt] = sscanf($authHeader, 'Bearer %s');
 
         if (!$jwt) {

@@ -62,6 +62,7 @@ class DateFilter implements FilterInterface
 
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
+        /** @var array */
         $from = $builder->getQueryPart('from');
 
         if ($from === []) {

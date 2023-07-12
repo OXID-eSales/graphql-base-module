@@ -100,7 +100,7 @@ class TokenAdministration
             throw new InvalidLogin('Unauthorized');
         }
 
-        $id = $customerId ? (string)$customerId->val() : (string)$this->authenticationService->getUser()->id()->val();
+        $id = $customerId ? (string)$customerId : (string)$this->authenticationService->getUser()->id();
 
         try {
             /** @var UserDataType $user */

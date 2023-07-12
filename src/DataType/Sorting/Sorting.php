@@ -44,6 +44,7 @@ abstract class Sorting
 
     public function addToQuery(QueryBuilder $builder): void
     {
+        /** @var array */
         $from = $builder->getQueryPart('from');
 
         if ($from === []) {
