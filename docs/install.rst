@@ -28,7 +28,7 @@ If you decided to go with the **GraphQL Storefront** module, you need to run mig
 
 .. code-block:: bash
 
-    vendor/bin/oe-eshop-doctrine_migration migration:migrate oe_graphql_storefront
+    vendor/bin/oe-eshop-db_migrate migrations:migrate oe_graphql_storefront
 
 Activation
 ----------
