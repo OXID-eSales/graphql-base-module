@@ -13,7 +13,7 @@ section we will implement the query for getting the product title like so.
 
     query {
         product (
-            id: "dc5ffdf380e15674b56dd562a7cb6aec"
+            id: "413aca742d9af77ce3eb1feec233bb9a"
         ){
             title
         }
@@ -26,7 +26,7 @@ section we will implement the query for getting the product title like so.
     {
         "data": {
             "product": {
-                "title": "Kuyichi Ledergürtel JEVER",
+                "title": "OX7 Coupé",
             }
         }
     }
