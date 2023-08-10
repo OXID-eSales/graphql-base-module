@@ -9,9 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
+use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * @codeCoverageIgnore
@@ -55,6 +57,9 @@ class ModuleSetup
         /** @var ModuleSetup $moduleSetup */
         $moduleSetup = $container->get(self::class);
         $moduleSetup->runSetup();
+
+        // execute module migrations
+        self::executeModuleMigrations();
     }
 
     /**
@@ -62,5 +67,21 @@ class ModuleSetup
      */
     public static function onDeactivate(): void
     {
+    }
+
+    /**
+     * Execute necessary module migrations on activate event
+     */
+    private static function executeModuleMigrations(): void
+    {
+        $migrations = (new MigrationsBuilder())->build();
+
+        $output = new BufferedOutput();
+        $migrations->setOutput($output);
+        $neeedsUpdate = $migrations->execute('migrations:up-to-date', 'oe_graphql_base');
+
+        if ($neeedsUpdate) {
+            $migrations->execute('migrations:migrate', 'oe_graphql_base');
+        }
     }
 }
