@@ -1,9 +1,0 @@
-services:
-
-    _defaults:
-        public: false
-        autowire: true
-
-    Full\Qualified\Namespace\DeveloperBeforeTokenCreationEventSubscriber:
-        class: Full\Qualified\Namespace\DeveloperBeforeTokenCreationSubscriber
-        tags: ['kernel.event_subscriber']

@@ -1,9 +1,0 @@
-services:
-
-    _defaults:
-        public: false
-        autowire: true
-
-    Full\Qualified\Namespace\DeveloperBeforeBasketDeliveryMethodsEventSubscriber:
-        class: Full\Qualified\Namespace\DeveloperBeforeBasketDeliveryMethodsEventSubscriber
-        tags: ['kernel.event_subscriber']

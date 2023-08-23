@@ -1,9 +1,0 @@
-services:
-
-    _defaults:
-        public: false
-        autowire: true
-
-    Full\Qualified\Namespace\DeveloperBeforeBasketRemoveOnPlaceOrderEventSubscriber:
-        class: Full\Qualified\Namespace\DeveloperBeforeBasketRemoveOnPlaceOrderEventSubscriber
-        tags: ['kernel.event_subscriber']

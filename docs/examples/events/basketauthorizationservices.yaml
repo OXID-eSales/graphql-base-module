@@ -1,9 +1,0 @@
-services:
-
-    _defaults:
-        public: false
-        autowire: true
-
-    Full\Qualified\Namespace\BasketAuthorizationEventSubscriber:
-        class: Full\Qualified\Namespace\BasketAuthorizationEventSubscriber
-        tags: ['kernel.event_subscriber']
