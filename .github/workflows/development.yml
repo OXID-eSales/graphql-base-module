@@ -86,7 +86,7 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                  key: installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
             - name: Prepare container configuration
               run: |
@@ -174,9 +174,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                  key: installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
                   restore-keys: |
-                      installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                      installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
             - name: Start containers
               run: |
@@ -235,9 +235,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                  key: installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
                   restore-keys: |
-                      installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                      installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
             - name: Start containers
               run: |
@@ -279,9 +279,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                  key: installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
                   restore-keys: |
-                      installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                      installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
             - name: Start containers
               run: |
@@ -323,9 +323,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                  key: installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
                   restore-keys: |
-                      installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                      installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
             - name: Start containers
               run: |
@@ -384,9 +384,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                  key: installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
                   restore-keys: |
-                      installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                      installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
             - name: Start containers
               run: |
@@ -445,9 +445,9 @@ jobs:
               with:
                   path: |
                       ./*
-                  key: installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                  key: installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
                   restore-keys: |
-                      installation-${{ join(inputs, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
+                      installation-${{ join(inputs.*, '-') }}-${{ github.run_number }}-${{ github.run_attempt }}
 
             - name: Download unit artifacts
               uses: actions/download-artifact@v3
