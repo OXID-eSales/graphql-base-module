@@ -10,7 +10,7 @@ declare(strict_types=1);
 use OxidEsales\Codeception\Module\Database\DatabaseDefaultsFileGenerator;
 use OxidEsales\Facts\Config\ConfigFile;
 use OxidEsales\Facts\Facts;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 $facts = new Facts();
 $php = (getenv('PHPBIN')) ?: 'php';
