@@ -2,9 +2,7 @@ name: Trigger schema workflow for storefront
 
 on:
     push:
-        branches:
-            - b-7.0.x-*
-        #tags: [ v8.* ]
+        tags: [ v8.* ]
 
 jobs:
     documentation_schema:
