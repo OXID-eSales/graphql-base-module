@@ -47,4 +47,4 @@ jobs:
                   github_user: ${{ secrets.CI_USER }}
                   github_token: ${{ secrets.GH_CI_JENKINS_TOKEN }}
                   workflow_file_name: schema.yml
-                  ref: "{{env.DOCUMENTATION_BRANCH}}"
+                  ref: ${{ env.DOCUMENTATION_BRANCH }}
