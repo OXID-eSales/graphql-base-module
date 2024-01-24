@@ -16,23 +16,28 @@ jobs:
         steps:
             - name: Set documentation branch for 5.0
               if: startsWith(github.event.ref, 'refs/tags/v5.0')
-              run: echo "DOCUMENTATION_BRANCH=5.0-en" >> $GITHUB_ENV
+              run: |
+                echo "DOCUMENTATION_BRANCH=5.0-en" >> $GITHUB_ENV
 
             - name: Set documentation branch for 5.1
               if: startsWith(github.event.ref, 'refs/tags/v5.1')
-              run: echo "DOCUMENTATION_BRANCH=5.1-en" >> $GITHUB_ENV
+              run: |
+                echo "DOCUMENTATION_BRANCH=5.1-en" >> $GITHUB_ENV
 
             - name: Set documentation branch for 5.2
               if: startsWith(github.event.ref, 'refs/tags/v5.2')
-              run: echo "DOCUMENTATION_BRANCH=5.2-en" >> $GITHUB_ENV
+              run: |
+                echo "DOCUMENTATION_BRANCH=5.2-en" >> $GITHUB_ENV
 
             - name: Set documentation branch for 6.0
               if: startsWith(github.event.ref, 'refs/tags/v6.0')
-              run: echo "DOCUMENTATION_BRANCH=6.0-en" >> $GITHUB_ENV
+              run: |
+                echo "DOCUMENTATION_BRANCH=6.0-en" >> $GITHUB_ENV
 
             - name: Set documentation branch for feature branch
               if: startsWith(github.ref_name, 'b-6.4')
-              run: echo "DOCUMENTATION_BRANCH=6.0-en" >> $GITHUB_ENV
+              run: |
+                echo "DOCUMENTATION_BRANCH=6.0-en" >> $GITHUB_ENV
 
             - name: Trigger schema generation in documentation
               uses: convictional/trigger-workflow-and-wait@v1.6.5
