@@ -7,7 +7,7 @@ on:
             - v5.1.*
             - v5.2.*
             - v6.0.*
-        branch:
+        branches:
             - b-6.4.x-*
 
 jobs:
