@@ -37,7 +37,7 @@ jobs:
             - name: Set documentation branch for feature branch
               if: startsWith(github.ref_name, 'b-6.4')
               run: |
-                echo "DOCUMENTATION_BRANCH=6.0-en" >> $GITHUB_ENV
+                echo "DOCUMENTATION_BRANCH=6.0-en-doc_schema_version_per_graphql-version-OXDEV-7758" >> $GITHUB_ENV
 
             - name: Trigger schema generation in documentation
               uses: convictional/trigger-workflow-and-wait@v1.6.5
