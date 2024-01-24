@@ -1,0 +1,45 @@
+name: Trigger schema workflow for graphql base
+
+on:
+    push:
+        tags:
+            - v5.0.*
+            - v5.1.*
+            - v5.2.*
+            - v6.0.*
+        branch:
+            - b-6.4.x-*
+
+jobs:
+    documentation_schema:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Set documentation branch for 5.0
+              if: startsWith(github.event.ref, 'refs/tags/v5.0')
+              env:
+                  DOCUMENTATION_BRANCH: '5.0-en'
+            - name: Set documentation branch for 5.1
+              if: startsWith(github.event.ref, 'refs/tags/v5.1')
+              env:
+                  DOCUMENTATION_BRANCH: '5.1-en'
+            - name: Set documentation branch for 5.2
+              if: startsWith(github.event.ref, 'refs/tags/v5.2')
+              env:
+                  DOCUMENTATION_BRANCH: '5.2-en'
+            - name: Set documentation branch for 6.0
+              if: startsWith(github.event.ref, 'refs/tags/v6.0')
+              env:
+                  DOCUMENTATION_BRANCH: '6.0-en'
+            - name: Set documentation branch for feature branch
+              if: startsWith(github.ref_name, 'b-6.4')
+              env:
+                  DOCUMENTATION_BRANCH: '6.0-en'
+            - name: Trigger schema generation in documentation
+              uses: convictional/trigger-workflow-and-wait@v1.6.5
+              with:
+                  owner: oxid-esales
+                  repo: oxapi-documentation
+                  github_user: ${{ secrets.CI_USER }}
+                  github_token: ${{ secrets.GH_CI_JENKINS_TOKEN }}
+                  workflow_file_name: schema.yml
+                  ref: "{{DOCUMENTATION_BRANCH}}"
