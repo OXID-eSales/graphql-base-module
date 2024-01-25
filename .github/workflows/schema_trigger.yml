@@ -1,4 +1,4 @@
-name: Trigger schema workflow for storefront
+name: Trigger schema workflow
 
 on:
     push:
