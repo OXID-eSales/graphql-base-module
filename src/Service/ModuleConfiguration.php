@@ -68,6 +68,15 @@ class ModuleConfiguration
         return $signature;
     }
 
+    public function saveSignatureKey(): void
+    {
+        $this->moduleSettingService->saveString(
+            static::SIGNATUREKEYNAME,
+            $this->generateSignatureKey(),
+            'oe_graphql_base'
+        );
+    }
+
     public function getTokenLifeTime(): string
     {
         $key = $this->moduleSettingService

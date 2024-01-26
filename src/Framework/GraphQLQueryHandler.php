@@ -36,8 +36,6 @@ class GraphQLQueryHandler
     /** @var TimerHandler */
     private $timerHandler;
 
-    private $loggingErrorFormatter;
-
     public function __construct(
         LoggerInterface $logger,
         SchemaFactory $schemaFactory,
@@ -50,12 +48,6 @@ class GraphQLQueryHandler
         $this->requestReader = $requestReader;
         $this->responseWriter = $responseWriter;
         $this->timerHandler = $timerHandler;
-
-        $this->loggingErrorFormatter = function (Error $error) {
-            $this->logger->error((string)$error);
-
-            return FormattedError::createFromException($error);
-        };
     }
 
     public function executeGraphQLQuery(): void
@@ -63,7 +55,7 @@ class GraphQLQueryHandler
         $result = $this->executeQuery(
             $this->requestReader->getGraphQLRequestData()
         );
-        $result->setErrorFormatter($this->loggingErrorFormatter);
+        $result->setErrorFormatter($this->getErrors());
         $this->responseWriter->renderJsonResponse(
             $result->toArray(DebugFlag::INCLUDE_DEBUG_MESSAGE)
         );
@@ -116,5 +108,14 @@ class GraphQLQueryHandler
     public static function addError(Error $e): void
     {
         self::$errors[] = $e;
+    }
+
+    private function getErrors(): \Closure
+    {
+        return function (Error $error) {
+            $this->logger->error((string)$error);
+
+            return FormattedError::createFromException($error);
+        };
     }
 }

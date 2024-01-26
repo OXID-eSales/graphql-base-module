@@ -52,6 +52,14 @@
             "@phpcs",
             "@phpstan",
             "@phpmd"
+        ],
+
+        "phpunit": "vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/",
+        "phpunit-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/reports/coverage",
+
+        "codeception": [
+            "Composer\\Config::disableProcessTimeout",
+            "MODULE_IDS=oe_graphql_base /var/www/vendor/bin/codecept run acceptance -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml --no-redirect"
         ]
     },
     "config": {

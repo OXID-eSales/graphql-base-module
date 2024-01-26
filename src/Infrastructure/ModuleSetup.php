@@ -11,7 +11,6 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
 use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
-use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -23,27 +22,18 @@ class ModuleSetup
     /** @var ModuleConfiguration */
     private $moduleConfiguration;
 
-    /** @var ModuleSettingServiceInterface */
-    private $moduleSettings;
-
     /**
      * ModuleSetup constructor.
      */
     public function __construct(
-        ModuleConfiguration $moduleConfiguration,
-        ModuleSettingServiceInterface $moduleSettings
+        ModuleConfiguration $moduleConfiguration
     ) {
         $this->moduleConfiguration = $moduleConfiguration;
-        $this->moduleSettings = $moduleSettings;
     }
 
     public function runSetup(): void
     {
-        $this->moduleSettings->saveString(
-            ModuleConfiguration::SIGNATUREKEYNAME,
-            $this->moduleConfiguration->generateSignatureKey(),
-            'oe_graphql_base'
-        );
+        $this->moduleConfiguration->saveSignatureKey();
     }
 
     /**
