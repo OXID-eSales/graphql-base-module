@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update module dependency warning in documentation
 - Updated the phpstan in development dependencies and fixed several related coding style issues
 
+### Added
+- Workflow trigger to update schema in documentation
+
 ## [7.0.2] - 2022-08-10
 
 ### Fixed
