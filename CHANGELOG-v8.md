@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Replace webmozart/path-util usage with symfony/filesystem
 
+### Added
+- Workflow trigger to update schema in documentation
+
 ## [8.0.1] - 2023-06-30
 
 ### Changed
