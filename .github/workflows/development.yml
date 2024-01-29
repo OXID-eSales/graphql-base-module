@@ -24,11 +24,11 @@ on:
             php:
                 description: 'PHP version'
                 required: true
-                default: '8.0'
+                default: '8.1'
                 type: choice
                 options:
-                    - '8.0'
                     - '8.1'
+                    - '8.2'
             mysql:
                 description: 'MySQL version'
                 required: true

@@ -5,10 +5,10 @@ on:
         - cron: '0 0 */7 * *'
 
 jobs:
-    p80m57both:
-        name: 'Php-8.0-Mysql-5.7'
+    p81m57both:
+        name: 'Php-8.1-Mysql-5.7'
         uses: ./.github/workflows/development.yml
         secrets: inherit
         with:
-            php: '8.0'
+            php: '8.1'
             mysql: '5.7.37'
