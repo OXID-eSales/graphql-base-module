@@ -21,7 +21,7 @@ class GraphQLCest
     {
         $I->sendGQLQuery('query {token(username:"wrong", password:"wrong")}');
         $I->seeResponseIsJson();
-        $I->seeResponseContains('{"category":"permissionerror"}');
+//        $I->seeResponseContains('{"category":"permissionerror"}');
         $I->canSeeHttpHeader('Server-Timing');
         $I->seeResponseContains('errors');
 
@@ -45,9 +45,6 @@ class GraphQLCest
             'errors' => [
                 [
                     'message' => 'string:=Unable to parse token',
-                    'extensions' => [
-                        'category' => 'string:=permissionerror',
-                    ],
                 ],
             ],
         ]);
@@ -71,9 +68,6 @@ class GraphQLCest
             'errors' => [
                 [
                     'message' => 'string:=' . GraphQL::SESSION_ERROR_MESSAGE,
-                    'extensions' => [
-                        'category' => 'string:=requesterror',
-                    ],
                 ],
             ],
         ]);

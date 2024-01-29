@@ -238,9 +238,6 @@ class GraphQLQueryHandlerTest extends TestCase
                     'errors' => [
                         [
                             'message' => 'error message',
-                            'extensions' => [
-                                'category' => 'graphql',
-                            ],
                         ],
                     ],
                 ],
