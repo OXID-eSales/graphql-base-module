@@ -11,8 +11,8 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
-use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
-use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\AccessToken as TokenDataType;
+use OxidEsales\GraphQL\Base\DataType\AccessTokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
@@ -20,13 +20,13 @@ use OxidEsales\GraphQL\Base\Exception\UserNotFound;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyInfrastructure;
 use OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup;
 use OxidEsales\GraphQL\Base\Infrastructure\Repository as BaseRepository;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * Token data access service
  */
-class TokenAdministration
+class AccessTokenAdministration
 {
     /** @var BaseRepository */
     private $repository;
@@ -66,7 +66,7 @@ class TokenAdministration
      * @return TokenDataType[]
      */
     public function tokens(
-        TokenFilterList $filterList,
+        AccessTokenFilterList $filterList,
         Pagination $pagination,
         TokenSorting $sort
     ): array {

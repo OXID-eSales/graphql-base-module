@@ -11,11 +11,11 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit;
 
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
-use OxidEsales\GraphQL\Base\Service\Token as TokenService;
-use OxidEsales\GraphQL\Base\Service\TokenValidator;
+use OxidEsales\GraphQL\Base\Service\AccessToken as TokenService;
+use OxidEsales\GraphQL\Base\Service\AccessTokenValidator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -50,9 +50,9 @@ abstract class BaseTestCase extends TestCase
         return $userModelStub;
     }
 
-    protected function getTokenValidator($legacy, $tokenInfrastructure = null): TokenValidator
+    protected function getTokenValidator($legacy, $tokenInfrastructure = null): AccessTokenValidator
     {
-        return new TokenValidator(
+        return new AccessTokenValidator(
             $this->getJwtConfigurationBuilder($legacy),
             $legacy,
             $tokenInfrastructure ?: $this->createPartialMock(

@@ -26,7 +26,7 @@ class Authorization implements AuthorizationServiceInterface
     /** @var EventDispatcherInterface */
     private $eventDispatcher;
 
-    /** @var Token */
+    /** @var AccessToken */
     private $tokenService;
 
     /** @var LegacyService */
@@ -38,7 +38,7 @@ class Authorization implements AuthorizationServiceInterface
     public function __construct(
         iterable $permissionProviders,
         EventDispatcherInterface $eventDispatcher,
-        Token $tokenService,
+        AccessToken $tokenService,
         LegacyService $legacyService
     ) {
         foreach ($permissionProviders as $permissionProvider) {
@@ -73,7 +73,7 @@ class Authorization implements AuthorizationServiceInterface
             return $authByEvent;
         }
 
-        $userId = $this->tokenService->getTokenClaim(Token::CLAIM_USERID);
+        $userId = $this->tokenService->getTokenClaim(AccessToken::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
 
         $isAllowed = false;

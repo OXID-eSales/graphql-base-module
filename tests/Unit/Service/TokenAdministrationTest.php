@@ -12,16 +12,16 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
-use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\AccessTokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyInfrastructure;
 use OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup;
 use OxidEsales\GraphQL\Base\Infrastructure\Repository as BaseRepository;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Service\TokenAdministration;
+use OxidEsales\GraphQL\Base\Service\AccessTokenAdministration;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 
@@ -43,7 +43,7 @@ class TokenAdministrationTest extends BaseTestCase
         $legacyInfrastructure = $this->createPartialMock(LegacyInfrastructure::class, []);
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, []);
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,
@@ -51,7 +51,7 @@ class TokenAdministrationTest extends BaseTestCase
             $legacyInfrastructure,
             $moduleSetup
         );
-        $filterList = new TokenFilterList(new IDFilter(new ID('unknown')));
+        $filterList = new AccessTokenFilterList(new IDFilter(new ID('unknown')));
         $sort = TokenSorting::fromUserInput();
         $pagination = new Pagination();
 
@@ -75,7 +75,7 @@ class TokenAdministrationTest extends BaseTestCase
         $legacyInfrastructure = $this->createPartialMock(LegacyInfrastructure::class, []);
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, []);
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,
@@ -83,7 +83,7 @@ class TokenAdministrationTest extends BaseTestCase
             $legacyInfrastructure,
             $moduleSetup
         );
-        $filterList = new TokenFilterList(new IDFilter(new ID('_testuserid')));
+        $filterList = new AccessTokenFilterList(new IDFilter(new ID('_testuserid')));
         $sort = TokenSorting::fromUserInput();
         $pagination = new Pagination();
 
@@ -109,7 +109,7 @@ class TokenAdministrationTest extends BaseTestCase
         $legacyInfrastructure = $this->createPartialMock(LegacyInfrastructure::class, []);
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, []);
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,
@@ -140,7 +140,7 @@ class TokenAdministrationTest extends BaseTestCase
         $legacyInfrastructure = $this->createPartialMock(LegacyInfrastructure::class, []);
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, []);
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,
@@ -167,7 +167,7 @@ class TokenAdministrationTest extends BaseTestCase
         $legacyInfrastructure = $this->createPartialMock(LegacyInfrastructure::class, []);
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, []);
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,
@@ -199,7 +199,7 @@ class TokenAdministrationTest extends BaseTestCase
         $legacyInfrastructure = $this->createPartialMock(LegacyInfrastructure::class, []);
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, []);
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,
@@ -224,7 +224,7 @@ class TokenAdministrationTest extends BaseTestCase
         $legacyInfrastructure->method('getShopId')->willReturn(42);
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, []);
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,
@@ -246,7 +246,7 @@ class TokenAdministrationTest extends BaseTestCase
         $moduleSetup = $this->createPartialMock(ModuleSetup::class, ['runSetup']);
         $moduleSetup->expects($this->once())->method('runSetup');
 
-        $tokenAdministration = new TokenAdministration(
+        $tokenAdministration = new AccessTokenAdministration(
             $repository,
             $authorizationService,
             $authenticationService,

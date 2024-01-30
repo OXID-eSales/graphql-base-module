@@ -11,19 +11,19 @@ namespace OxidEsales\GraphQL\Base\Infrastructure\Model;
 
 use OxidEsales\Eshop\Core\Model\BaseModel as EshopModelBase;
 
-class Token extends EshopModelBase
+class RefreshToken extends EshopModelBase
 {
     /**
      * Name of current class.
      *
      * @var string
      */
-    protected $_sClassName = 'oegraphqltoken';
+    protected $_sClassName = 'oegraphqlrefreshtoken';
 
     /**
      * Core database table name. $sCoreTable could be only original data table name and not view name.
      *
      * @var string
      */
-    protected $_sCoreTable = 'oegraphqltoken';
+    protected $_sCoreTable = 'oegraphqlrefreshtoken';
 }

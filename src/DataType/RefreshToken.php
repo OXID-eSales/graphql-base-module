@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataType;
 
 use DateTimeInterface;
-use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as GraphQLTokenModel;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken as GraphQLTokenModel;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -18,7 +18,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class Token implements ShopModelAwareInterface
+final class RefreshToken implements ShopModelAwareInterface
 {
     /** @var GraphQLTokenModel */
     private $tokenModel;
@@ -67,14 +67,6 @@ final class Token implements ShopModelAwareInterface
         return DateTimeImmutableFactory::fromString(
             (string)$this->tokenModel->getRawFieldData('expires_at')
         );
-    }
-
-    /**
-     * @Field()
-     */
-    public function userAgent(): string
-    {
-        return $this->tokenModel->getRawFieldData('useragent');
     }
 
     /**

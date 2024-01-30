@@ -15,11 +15,11 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
-use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
+use OxidEsales\GraphQL\Base\DataType\AccessToken as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
-use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
-use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\AccessToken as TokenModel;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Service\AccessToken as TokenService;
 
 class TokenTest extends IntegrationTestCase
 {

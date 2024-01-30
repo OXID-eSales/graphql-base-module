@@ -37,21 +37,28 @@ services:
     class: OxidEsales\GraphQL\Base\Service\Authentication
     public: true
 
-  OxidEsales\GraphQL\Base\Service\Token:
-    class: OxidEsales\GraphQL\Base\Service\Token
+  OxidEsales\GraphQL\Base\Service\AccessToken:
+    class: OxidEsales\GraphQL\Base\Service\AccessToken
     public: true
 
-  OxidEsales\GraphQL\Base\Service\TokenValidator:
-      class: OxidEsales\GraphQL\Base\Service\TokenValidator
+  OxidEsales\GraphQL\Base\Service\RefreshToken:
+    class: OxidEsales\GraphQL\Base\Service\RefreshToken
+    public: true
 
-  OxidEsales\GraphQL\Base\Service\TokenAdministration:
-      class: OxidEsales\GraphQL\Base\Service\TokenAdministration
+  OxidEsales\GraphQL\Base\Service\AccessTokenValidator:
+      class: OxidEsales\GraphQL\Base\Service\AccessTokenValidator
+
+  OxidEsales\GraphQL\Base\Service\AccessTokenAdministration:
+      class: OxidEsales\GraphQL\Base\Service\AccessTokenAdministration
 
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy
 
-  OxidEsales\GraphQL\Base\Infrastructure\Token:
-      class: OxidEsales\GraphQL\Base\Infrastructure\Token
+  OxidEsales\GraphQL\Base\Infrastructure\AccessToken:
+      class: OxidEsales\GraphQL\Base\Infrastructure\AccessToken
+
+  OxidEsales\GraphQL\Base\Infrastructure\RefreshToken:
+      class: OxidEsales\GraphQL\Base\Infrastructure\RefreshToken
 
   OxidEsales\GraphQL\Base\Infrastructure\Repository:
       class: OxidEsales\GraphQL\Base\Infrastructure\Repository

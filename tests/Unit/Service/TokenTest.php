@@ -14,8 +14,8 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
-use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Service\AccessToken as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 

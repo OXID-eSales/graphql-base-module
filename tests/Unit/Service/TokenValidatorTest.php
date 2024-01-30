@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
 class TokenValidatorTest extends BaseTestCase

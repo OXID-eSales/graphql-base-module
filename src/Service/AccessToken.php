@@ -17,14 +17,14 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * Token data access service
  */
-class Token
+class AccessToken
 {
     public const CLAIM_SHOPID = 'shopid';
 
@@ -87,6 +87,19 @@ class Token
     public function getToken(): ?UnencryptedToken
     {
         return $this->token;
+    }
+
+    public function createRefreshToken(?string $username = null, ?string $password = null): string
+    {
+        /** @var UserDataType $user */
+        $user = $this->legacyInfrastructure->login($username, $password);
+        $this->removeExpiredTokens($user);
+
+        $token = 'bla';
+
+        $this->tokenInfrastructure->saveRefreshToken($token);
+
+        return $token;
     }
 
     /**

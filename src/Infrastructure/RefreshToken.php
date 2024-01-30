@@ -10,52 +10,56 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use DateTimeImmutable;
-use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
-use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken as RefreshTokenModel;
 use PDO;
 
-class Token
+class RefreshToken
 {
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
-
     public function __construct(
-        QueryBuilderFactoryInterface $queryBuilderFactory
+        private QueryBuilderFactoryInterface $queryBuilderFactory,
+        private Legacy $legacyInfrastructure
     ) {
-        $this->queryBuilderFactory = $queryBuilderFactory;
     }
 
-    public function registerToken(UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void
+    public function registerToken(
+        string $token,
+        DateTimeImmutable $time,
+        DateTimeImmutable $expire,
+        UserDataType $user
+    ): RefreshTokenDataType
     {
-        $storage = oxNew(Model\Token::class);
-        $storage->assign(
+        $model = new RefreshTokenModel;
+        $model->assign(
             [
-                'OXID' => $token->claims()->get(TokenService::CLAIM_TOKENID),
-                'OXSHOPID' => $token->claims()->get(TokenService::CLAIM_SHOPID),
-                'OXUSERID' => $token->claims()->get(TokenService::CLAIM_USERID),
+                'OXID' => Legacy::createUniqueIdentifier(),
+                'OXSHOPID' => $this->legacyInfrastructure->getShopId(),
+                'OXUSERID' => $user->id()->val(),
                 'ISSUED_AT' => $time->format('Y-m-d H:i:s'),
                 'EXPIRES_AT' => $expire->format('Y-m-d H:i:s'),
                 'USERAGENT' => $_SERVER['HTTP_USER_AGENT'] ?? '',
-                'TOKEN' => $token->toString(),
+                'TOKEN' => $token,
             ]
         );
-        $storage->save();
+        $model->save();
+
+        return new RefreshTokenDataType($model);
     }
 
     public function isTokenRegistered(string $tokenId): bool
     {
-        $storage = oxNew(Model\Token::class);
-        $storage->load($tokenId);
+        $model = oxNew(Model\RefreshToken::class);
+        $model->load($tokenId);
 
-        return $storage->isLoaded();
+        return $model->isLoaded();
     }
 
     public function removeExpiredTokens(UserDataType $user): void
     {
         $queryBuilder = $this->queryBuilderFactory->create()
-            ->delete('oegraphqltoken')
+            ->delete('oegraphqlrefreshtoken')
             ->where('OXUSERID = :userId')
             ->andWhere('EXPIRES_AT <= NOW()')
             ->setParameters([
@@ -70,8 +74,8 @@ class Token
         $return = false;
 
         $result = $this->queryBuilderFactory->create()
-            ->select('count(oegraphqltoken.oxid) as counted')
-            ->from('oegraphqltoken')
+            ->select('count(oegraphqlrefreshtoken.oxid) as counted')
+            ->from('oegraphqlrefreshtoken')
             ->where('OXUSERID = :userId')
             ->setParameters([
                 'userId' => (string)$user->id(),
@@ -91,7 +95,7 @@ class Token
         $condition = 'where';
 
         $queryBuilder = $this->queryBuilderFactory->create()
-            ->delete('oegraphqltoken');
+            ->delete('oegraphqlrefreshtoken');
 
         if ($tokenId) {
             $queryBuilder->$condition('OXID = :tokenId');
@@ -122,7 +126,7 @@ class Token
 
         $queryBuilder
             ->select('count(OXID)')
-            ->from('oegraphqltoken')
+            ->from('oegraphqlrefreshtoken')
             ->where('OXID = :tokenId')
             ->andWhere('OXUSERID = :userId')
             ->setParameters([

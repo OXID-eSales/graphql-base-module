@@ -12,14 +12,14 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 use OxidEsales\GraphQL\Base\DataType\Filter\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\Filter\DateFilter;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
-use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\AccessTokenFilterList;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 class TokenFilterListTest extends DataTypeTestCase
 {
     public function testDefaultFactory(): void
     {
-        $filterList = new TokenFilterList();
+        $filterList = new AccessTokenFilterList();
 
         $expected = [
             'oxuserid' => null,
@@ -38,14 +38,14 @@ class TokenFilterListTest extends DataTypeTestCase
             'expires_at' => new DateFilter(null, ['2021-01-12 12:12:12', '2021-12-31 12:12:12']),
         ];
 
-        $filterList = new TokenFilterList(...array_values($expected));
+        $filterList = new AccessTokenFilterList(...array_values($expected));
 
         $this->assertSame($expected, $filterList->getFilters());
     }
 
     public function testActiveFilter(): void
     {
-        $filterList = new TokenFilterList();
+        $filterList = new AccessTokenFilterList();
 
         $this->assertNull($filterList->getActive());
 
@@ -56,7 +56,7 @@ class TokenFilterListTest extends DataTypeTestCase
 
     public function testWithUserFilter(): void
     {
-        $filterList = new TokenFilterList();
+        $filterList = new AccessTokenFilterList();
 
         $this->assertNull($filterList->getUserFilter());
 

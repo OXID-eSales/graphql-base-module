@@ -22,11 +22,11 @@ use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
-use OxidEsales\GraphQL\Base\Service\Token;
+use OxidEsales\GraphQL\Base\Service\AccessToken;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -123,8 +123,8 @@ abstract class TestCase extends IntegrationTestCase
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
         $authToken = static::$container->get(RequestReader::class)->getAuthToken();
 
-        $tokenService = static::$container->get(Token::class);
-        $refClass = new ReflectionClass(Token::class);
+        $tokenService = static::$container->get(AccessToken::class);
+        $refClass = new ReflectionClass(AccessToken::class);
         $prop = $refClass->getProperty('token');
         $prop->setAccessible(true);
         $prop->setValue($tokenService, $authToken);

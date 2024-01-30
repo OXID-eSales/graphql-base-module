@@ -14,7 +14,7 @@ use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\GraphQL\Base\Service\TokenValidator;
+use OxidEsales\GraphQL\Base\Service\AccessTokenValidator;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
 class RequestReaderTest extends BaseTestCase
@@ -25,7 +25,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetAuthTokenWithoutToken(): void
     {
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $this->assertNull($requestReader->getAuthToken());
@@ -34,7 +34,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetAuthTokenWithWrongFormattedHeader(): void
     {
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $headers = [
@@ -58,7 +58,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT($headerName): void
     {
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $this->expectException(InvalidToken::class);
@@ -82,7 +82,7 @@ class RequestReaderTest extends BaseTestCase
      */
     public function testGetAuthTokenWithCorrectFormatCallsTokenValidation($headerName): void
     {
-        $tokenValidator = $this->createPartialMock(TokenValidator::class, ['validateToken']);
+        $tokenValidator = $this->createPartialMock(AccessTokenValidator::class, ['validateToken']);
         $tokenValidator->expects($this->once())->method('validateToken');
 
         $requestReader = new RequestReader(
@@ -101,7 +101,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetGraphQLRequestDataWithEmptyRequest(): void
     {
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $this->assertEquals(
@@ -117,7 +117,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetGraphQLRequestDataWithInputRequest(): void
     {
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $_SERVER['CONTENT_TYPE'] = 'application/json';
@@ -135,7 +135,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetGraphQLRequestDataWithInputRequestWithoutJson(): void
     {
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $_SERVER['CONTENT_TYPE'] = 'text/plain';
@@ -158,7 +158,7 @@ class RequestReaderTest extends BaseTestCase
         $this->expectException(InvariantViolation::class);
 
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
         $_SERVER['CONTENT_TYPE'] = 'multipart/form-data; boundary=----WebKitFormBoundaryoaY0xvjC2DBjmPRZ';
@@ -171,7 +171,7 @@ class RequestReaderTest extends BaseTestCase
     public function testGetGraphQLRequestDataWithFileInput(): void
     {
         $requestReader = new RequestReader(
-            $this->createPartialMock(TokenValidator::class, []),
+            $this->createPartialMock(AccessTokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
 

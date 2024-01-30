@@ -15,7 +15,7 @@ use OxidEsales\GraphQL\Base\DataType\Filter\FilterListInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
-final class TokenFilterList implements FilterListInterface
+final class AccessTokenFilterList implements FilterListInterface
 {
     /** @var ?IDFilter */
     private $customerId;

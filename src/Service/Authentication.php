@@ -19,12 +19,12 @@ class Authentication implements AuthenticationServiceInterface
     /** @var LegacyInfrastructure */
     private $legacyInfrastructure;
 
-    /** @var Token */
+    /** @var AccessToken */
     private $tokenService;
 
     public function __construct(
         LegacyInfrastructure $legacyService,
-        Token $tokenService
+        AccessToken $tokenService
     ) {
         $this->legacyInfrastructure = $legacyService;
         $this->tokenService = $tokenService;
@@ -45,8 +45,8 @@ class Authentication implements AuthenticationServiceInterface
     public function getUser(): User
     {
         return new User(
-            $this->legacyInfrastructure->getUserModel($this->tokenService->getTokenClaim(Token::CLAIM_USERID)),
-            $this->tokenService->getTokenClaim(Token::CLAIM_USER_ANONYMOUS, false)
+            $this->legacyInfrastructure->getUserModel($this->tokenService->getTokenClaim(AccessToken::CLAIM_USERID)),
+            $this->tokenService->getTokenClaim(AccessToken::CLAIM_USER_ANONYMOUS, false)
         );
     }
 }

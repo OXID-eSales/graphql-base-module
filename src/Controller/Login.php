@@ -9,30 +9,24 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\Service\Token;
+use OxidEsales\GraphQL\Base\DataType\Login as DataTypeLogin;
+use OxidEsales\GraphQL\Base\Service\AccessToken as AccessTokenService;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
 {
-    /** @var Token */
-    protected $tokenService;
-
     public function __construct(
-        Token $tokenService
+        protected AccessTokenService $accessTokenService
     ) {
-        $this->tokenService = $tokenService;
     }
 
     /**
-     * retrieve a JWT for authentication of further requests
-     *
+     * Retrieve a refresh token and access token
+     * 
      * @Query
      */
-    public function token(?string $username = null, ?string $password = null): string
+    public function login(?string $username = null, ?string $password = null): DataTypeLogin
     {
-        return $this->tokenService->createToken(
-            $username,
-            $password
-        )->toString();
+        return $this->tokenService->login($username, $password);
     }
 }

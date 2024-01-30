@@ -12,12 +12,12 @@ namespace OxidEsales\GraphQL\Base\Service;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
 
 /**
  * Token data access service
  */
-class TokenValidator
+class AccessTokenValidator
 {
     /** @var JwtConfigurationBuilder */
     private $jwtConfigurationBuilder;
@@ -55,11 +55,11 @@ class TokenValidator
             throw InvalidToken::invalidToken();
         }
 
-        if (!$token->claims()->get(Token::CLAIM_USER_ANONYMOUS) && !$this->isRegistered($token)) {
+        if (!$token->claims()->get(AccessToken::CLAIM_USER_ANONYMOUS) && !$this->isRegistered($token)) {
             throw InvalidToken::unknownToken();
         }
 
-        if ($this->isUserBlocked($token->claims()->get(Token::CLAIM_USERID))) {
+        if ($this->isUserBlocked($token->claims()->get(AccessToken::CLAIM_USERID))) {
             throw InvalidToken::userBlocked();
         }
     }
@@ -85,6 +85,6 @@ class TokenValidator
 
     private function isRegistered(UnencryptedToken $token): bool
     {
-        return $this->tokenInfrastructure->isTokenRegistered($token->claims()->get(Token::CLAIM_TOKENID));
+        return $this->tokenInfrastructure->isTokenRegistered($token->claims()->get(AccessToken::CLAIM_TOKENID));
     }
 }
