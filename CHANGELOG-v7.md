@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [7.0.3] - Unreleased
 ### Added
-- Executed migration on module activation. 
+- Executed migration on module activation.
+- Workflow trigger to update schema in documentation
 
 ### Changed
 - License updated - now using OXID Module and Component License
