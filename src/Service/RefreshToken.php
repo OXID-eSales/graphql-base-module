@@ -46,7 +46,7 @@ class RefreshToken
         $time = new DateTimeImmutable('now');
         $expire = new DateTimeImmutable('1month'); // TODO: should be configurable
 
-        $token = bin2hex(random_bytes(255));
+        $token = substr(bin2hex(random_bytes(128)), 0, 255);
 
         $this->tokenInfrastructure->registerToken($token, $time, $expire, $user);
 

@@ -13,11 +13,14 @@ use DateTimeImmutable;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken as RefreshTokenModel;
 use PDO;
 
 class RefreshToken
 {
+    private ?RefreshTokenDataType $token = null;
+
     public function __construct(
         private QueryBuilderFactoryInterface $queryBuilderFactory,
         private Legacy $legacyInfrastructure
@@ -29,9 +32,8 @@ class RefreshToken
         DateTimeImmutable $time,
         DateTimeImmutable $expire,
         UserDataType $user
-    ): RefreshTokenDataType
-    {
-        $model = new RefreshTokenModel;
+    ): RefreshTokenDataType {
+        $model = new RefreshTokenModel();
         $model->assign(
             [
                 'OXID' => Legacy::createUniqueIdentifier(),
@@ -45,7 +47,10 @@ class RefreshToken
         );
         $model->save();
 
-        return new RefreshTokenDataType($model);
+        $token = new RefreshTokenDataType($model);
+        $this->token = $token;
+
+        return $token;
     }
 
     public function isTokenRegistered(string $tokenId): bool
@@ -118,6 +123,29 @@ class RefreshToken
         $result = $queryBuilder->execute();
 
         return is_object($result) ? $result->columnCount() : (int)$result;
+    }
+
+    public function getTokenUser(string $token): UserDataType
+    {
+        if ($this->token) {
+            $userId = $this->token->customerId()->val();
+        } else {
+            $queryBuilder = $this->queryBuilderFactory->create()
+                ->select('OXUSERID')
+                ->from('oegraphqlrefreshtoken')
+                ->where('TOKEN = :token')
+                ->andWhere('EXPIRES_AT > NOW()')
+                ->setParameter('token', $token);
+            $userId = $queryBuilder->execute()->fetchOne();
+
+            if ($userId === false) {
+                throw new InvalidToken('Invalid refresh token');
+            }
+        }
+
+        $userModel = $this->legacyInfrastructure->getUserModel($userId);
+
+        return new UserDataType($userModel);
     }
 
     public function userHasToken(UserDataType $user, string $tokenId): bool

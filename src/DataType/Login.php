@@ -28,7 +28,7 @@ final class Login
      */
     public function refreshToken(): string
     {
-        return $this->refreshToken();
+        return $this->refreshToken;
     }
 
     /**
@@ -36,6 +36,6 @@ final class Login
      */
     public function accessToken(): string
     {
-        return $this->accessToken();
+        return $this->accessToken;
     }
 }

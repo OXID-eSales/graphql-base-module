@@ -17,7 +17,8 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
-use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\AccessToken as AccessTokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshToken as RefreshTokenInfrastructure;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Types\ID;
 
@@ -51,8 +52,11 @@ class AccessToken
     /** @var ModuleConfiguration */
     private $moduleConfiguration;
 
-    /** @var TokenInfrastructure */
-    private $tokenInfrastructure;
+    /** @var AccessTokenInfra */
+    private $accessTokenInfra;
+
+    /** @var RefreshTokenInfra */
+    private $refreshTokenInfra;
 
     public function __construct(
         ?UnencryptedToken $token,
@@ -60,14 +64,16 @@ class AccessToken
         Legacy $legacyInfrastructure,
         EventDispatcherInterface $eventDispatcher,
         ModuleConfiguration $moduleConfiguration,
-        TokenInfrastructure $tokenInfrastructure
+        AccessTokenInfrastructure $accessTokenInfra,
+        RefreshTokenInfrastructure $refreshTokenInfra
     ) {
         $this->token = $token;
         $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
         $this->legacyInfrastructure = $legacyInfrastructure;
         $this->eventDispatcher = $eventDispatcher;
         $this->moduleConfiguration = $moduleConfiguration;
-        $this->tokenInfrastructure = $tokenInfrastructure;
+        $this->accessTokenInfra = $accessTokenInfra;
+        $this->refreshTokenInfra = $refreshTokenInfra;
     }
 
     /**
@@ -89,27 +95,14 @@ class AccessToken
         return $this->token;
     }
 
-    public function createRefreshToken(?string $username = null, ?string $password = null): string
-    {
-        /** @var UserDataType $user */
-        $user = $this->legacyInfrastructure->login($username, $password);
-        $this->removeExpiredTokens($user);
-
-        $token = 'bla';
-
-        $this->tokenInfrastructure->saveRefreshToken($token);
-
-        return $token;
-    }
-
     /**
      * @throws InvalidLogin
      * @throws TokenQuota
      */
-    public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
+    public function createToken(string $refreshToken): UnencryptedToken
     {
         /** @var UserDataType $user */
-        $user = $this->legacyInfrastructure->login($username, $password);
+        $user = $this->refreshTokenInfra->getTokenUser($refreshToken);
         $this->removeExpiredTokens($user);
         $this->canIssueToken($user);
 
@@ -149,8 +142,8 @@ class AccessToken
     {
         $tokenId = (string)$tokenId;
 
-        if ($this->tokenInfrastructure->isTokenRegistered($tokenId)) {
-            $this->tokenInfrastructure->tokenDelete(null, $tokenId);
+        if ($this->accessTokenInfra->isTokenRegistered($tokenId)) {
+            $this->accessTokenInfra->tokenDelete(null, $tokenId);
         } else {
             throw InvalidToken::unknownToken();
         }
@@ -158,8 +151,8 @@ class AccessToken
 
     public function deleteUserToken(UserDataType $user, ID $tokenId): void
     {
-        if ($this->tokenInfrastructure->userHasToken($user, (string)$tokenId)) {
-            $this->tokenInfrastructure->tokenDelete($user, (string)$tokenId);
+        if ($this->accessTokenInfra->userHasToken($user, (string)$tokenId)) {
+            $this->accessTokenInfra->tokenDelete($user, (string)$tokenId);
         } else {
             throw InvalidToken::unknownToken();
         }
@@ -172,7 +165,7 @@ class AccessToken
         DateTimeImmutable $expire
     ): void {
         if (!$user->isAnonymous()) {
-            $this->tokenInfrastructure->registerToken($token, $time, $expire);
+            $this->accessTokenInfra->registerToken($token, $time, $expire);
         }
     }
 
@@ -180,7 +173,7 @@ class AccessToken
     {
         if (
             !$user->isAnonymous() &&
-            !$this->tokenInfrastructure->canIssueToken($user, $this->moduleConfiguration->getUserTokenQuota())
+            !$this->accessTokenInfra->canIssueToken($user, $this->moduleConfiguration->getUserTokenQuota())
         ) {
             throw TokenQuota::quotaExceeded();
         }
@@ -189,7 +182,7 @@ class AccessToken
     private function removeExpiredTokens(UserDataType $user): void
     {
         if (!$user->isAnonymous()) {
-            $this->tokenInfrastructure->removeExpiredTokens($user);
+            $this->accessTokenInfra->removeExpiredTokens($user);
         }
     }
 }
