@@ -31,7 +31,7 @@ return [
 
 function getModuleTestDataDumpFilePath()
 {
-    return Path::join(__DIR__, '/../', '_data', 'dump.sql');
+    return Path::join(__DIR__, '..', 'Support', 'Data', 'dump.sql');
 }
 
 function getMysqlConfigPath()

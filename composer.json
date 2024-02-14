@@ -59,7 +59,7 @@
 
         "codeception": [
             "Composer\\Config::disableProcessTimeout",
-            "MODULE_IDS=oe_graphql_base /var/www/vendor/bin/codecept run acceptance -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml --no-redirect"
+            "MODULE_IDS=oe_graphql_base /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml --no-redirect"
         ]
     },
     "config": {
