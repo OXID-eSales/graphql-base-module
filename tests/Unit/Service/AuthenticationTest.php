@@ -84,7 +84,7 @@ class AuthenticationTest extends BaseTestCase
         $this->assertTrue($authenticationService->isLogged());
     }
 
-    public function providerValidCredentials(): array
+    public static function providerValidCredentials(): array
     {
         return [
             'admin' => [
@@ -94,7 +94,7 @@ class AuthenticationTest extends BaseTestCase
         ];
     }
 
-    public function providerInvalidCredentials(): array
+    public static function providerInvalidCredentials(): array
     {
         return [
             'user' => [

@@ -70,7 +70,7 @@ class PaginationTest extends DataTypeTestCase
         $filter->limit();
     }
 
-    public function paginationDataProvider(): array
+    public static function paginationDataProvider(): array
     {
         return [
             [0, 0],
@@ -94,7 +94,7 @@ class PaginationTest extends DataTypeTestCase
         $this->assertEquals($limit, $queryBuilder->getMaxResults());
     }
 
-    public function addPaginationToQueryProvider(): array
+    public static function addPaginationToQueryProvider(): array
     {
         return [
             [0, null],

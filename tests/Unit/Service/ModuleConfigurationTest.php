@@ -42,7 +42,7 @@ class ModuleConfigurationTest extends TestCase
         );
     }
 
-    public function shortSignatureKeyProvider(): array
+    public static function shortSignatureKeyProvider(): array
     {
         return [
             [''],

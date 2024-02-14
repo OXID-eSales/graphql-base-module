@@ -70,7 +70,7 @@ class LegacyTest extends TestCase
         $this->assertSame($expectedUserIdNull, null === $userDataType->id());
     }
 
-    public function loginResponseTestDataProvider(): array
+    public static function loginResponseTestDataProvider(): array
     {
         return [
             'no login' => [
@@ -113,44 +113,51 @@ class LegacyTest extends TestCase
 
     public function testUserGroups(): void
     {
-        $oUser = oxNew(User::class);
+        $user = oxNew(User::class);
 
-        $noUserGroups = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $noUserGroups = $this->legacyInfrastructure->getUserGroupIds($user->getId());
         $this->assertSame([], $noUserGroups);
 
-        $oUser->setId('_testUser');
+        $user->setId('_testUser');
+        $user->setPassword('_testPassword');
+        $user->assign(['oxusername' => '_testUsername']);
 
-        $anonymousUserGroup = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $anonymousUserGroup = $this->legacyInfrastructure->getUserGroupIds($user->getId());
         $this->assertSame(['oxidanonymous'], $anonymousUserGroup);
 
         $groups = ['_testGroup', '_tempGroup'];
-        $this->addToGroups($oUser, $groups);
+        $this->addToGroupsToUser($user, $groups);
 
-        $withUserGroups = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $withUserGroups = $this->legacyInfrastructure->getUserGroupIds($user->getId());
         $this->assertCount(2, $withUserGroups);
         $this->assertEmpty(array_diff($groups, array_values($withUserGroups)));
 
         $otherGroups = ['_newGroup', '_hiddenGroup', '_wrongGroup'];
-        $this->addToGroups($oUser, $otherGroups);
+        $this->addToGroupsToUser($user, $otherGroups);
 
         $allGroups = array_merge($groups, $otherGroups);
-        $allUserGroups = $this->legacyInfrastructure->getUserGroupIds($oUser->getId());
+        $allUserGroups = $this->legacyInfrastructure->getUserGroupIds($user->getId());
         $this->assertCount(5, $allUserGroups);
         $this->assertEmpty(array_diff($groups, array_values($allGroups)));
     }
 
-    private function addToGroups($oUser, array $groups = []): void
+    /**
+     * @param string[] $groupIds
+     */
+    private function addToGroupsToUser(User $user, array $groupIds = []): void
     {
-        foreach ($groups as $group) {
-            $oGroup = oxNew('oxGroups');
-            $oGroup->setId($group);
-            $oGroup->oxgroups__oxtitle = new oxField($group, oxField::T_RAW);
-            $oGroup->oxgroups__oxactive = new oxField(1, oxField::T_RAW);
-            $oGroup->save();
+        foreach ($groupIds as $groupId) {
+            $group = oxNew('oxGroups');
+            $group->setId($groupId);
+            $group->assign([
+                'oxtitle' => $groupId,
+                'oxactive' => 1,
+            ]);
+            $group->save();
 
-            $oUser->addToGroup($group);
+            $user->addToGroup($groupId);
         }
 
-        $oUser->save();
+        $user->save();
     }
 }

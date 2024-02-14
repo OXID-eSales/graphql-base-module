@@ -67,7 +67,7 @@ class RequestReaderTest extends BaseTestCase
         $requestReader->getAuthToken();
     }
 
-    public function headerNamesDataProvider(): array
+    public static function headerNamesDataProvider(): array
     {
         return [
             ['HTTP_AUTHORIZATION'],

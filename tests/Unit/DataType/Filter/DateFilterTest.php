@@ -25,7 +25,7 @@ class DateFilterTest extends DataTypeTestCase
         DateFilter::fromUserInput();
     }
 
-    public function invalidBetweens(): array
+    public static function invalidBetweens(): array
     {
         return [
             [

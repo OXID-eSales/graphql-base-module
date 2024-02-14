@@ -32,7 +32,7 @@ class BoolFilterTest extends DataTypeTestCase
         );
     }
 
-    public function boolDataProvider(): array
+    public static function boolDataProvider(): array
     {
         return [
             'equals returns false, if false is given' => [false, false],
@@ -68,7 +68,7 @@ class BoolFilterTest extends DataTypeTestCase
         $this->assertEquals((int)$filterValue, $queryBuilder->getParameter(':db_field'));
     }
 
-    public function addQueryPartProvider(): array
+    public static function addQueryPartProvider(): array
     {
         return [[true], [false]];
     }

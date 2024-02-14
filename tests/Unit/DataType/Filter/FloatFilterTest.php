@@ -89,7 +89,7 @@ class FloatFilterTest extends DataTypeTestCase
         );
     }
 
-    public function invalidBetweens(): array
+    public static function invalidBetweens(): array
     {
         return [
             [
