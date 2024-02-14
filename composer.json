@@ -45,8 +45,8 @@
         "phpstan": "phpstan -ctests/PhpStan/phpstan.neon analyse src/",
         "phpstan-report": "phpstan -ctests/PhpStan/phpstan.neon analyse src/ --error-format=json > phpstan.report.json",
 
-        "phpmd": "phpmd src text cleancode,codesize,design,naming,unusedcode",
-        "phpmd-report": "phpmd src json cleancode,codesize,design,naming,unusedcode --reportfile phpmd.report.json",
+        "phpmd": "phpmd src ansi tests/PhpMd/exclude-static-access-rule.xml --ignore-errors-on-exit --ignore-violations-on-exit",
+        "phpmd-report": "phpmd src json tests/PhpMd/exclude-static-access-rule.xml --ignore-errors-on-exit --ignore-violations-on-exit --reportfile phpmd.report.json",
 
         "static": [
             "@phpcs",

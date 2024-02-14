@@ -16,11 +16,8 @@ namespace OxidEsales\GraphQL\Base\Framework;
  */
 class Timer
 {
-    /** @var float */
-    private $start;
-
-    /** @var float */
-    private $end;
+    private float $start;
+    private float $end;
 
     public function start(): self
     {

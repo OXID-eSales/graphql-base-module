@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Component\Widget;
 use GraphQL\Error\FormattedError;
 use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\GraphQL\Base\Exception\Error;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
@@ -33,21 +34,21 @@ class GraphQL extends WidgetController
     . 'parameter sent to the widget.php. For more information about the problem, check '
     . 'Troubleshooting section in documentation.';
 
-    /**
-     * Init function
-     */
     public function init(): void
     {
         /** @var TimerHandler $timerHandler */
-        $timerHandler = $this->getContainer()->get(TimerHandler::class);
+        $timerHandler = ContainerFacade::get(TimerHandler::class);
         $timerHandler->create('bootstrap')->startAt($_SERVER['REQUEST_TIME_FLOAT'])->stop();
 
         try {
             $this->handleShopSession();
-            $this->getContainer()->get(GraphQLQueryHandler::class)->executeGraphQLQuery();
+            ContainerFacade::get(GraphQLQueryHandler::class)->executeGraphQLQuery();
         } catch (Error $e) {
-            $isAuthenticated = !($e instanceof InvalidLogin || $e instanceof InvalidToken);
-            self::sendErrorResponse(FormattedError::createFromException($e), 200, $isAuthenticated);
+            $message = FormattedError::createFromException($e);
+            if ($this->isAuthenticated($e)) {
+                self::sendErrorResponse($message, 200);
+            }
+            self::sendUnauthenticatedErrorResponse($message, 200);
         } catch (Throwable $e) {
             EshopRegistry::getLogger()->error($e->getMessage(), [$e]);
             self::sendErrorResponse(FormattedError::createFromException($e), 500);
@@ -71,8 +72,7 @@ class GraphQL extends WidgetController
         $session->setBasket(null);
         $session->setVariable('usr', null);
 
-        $userId = $this->getContainer()
-            ->get(GraphQLAuthenticationService::class)
+        $userId = ContainerFacade::get(GraphQLAuthenticationService::class)
             ->getUser()
             ->id()
             ->val();
@@ -82,22 +82,27 @@ class GraphQL extends WidgetController
         }
     }
 
-    public static function sendErrorResponse(array $message, int $status, bool $isAuthenticated = true): void
+    /**
+     * @SuppressWarnings(PHPMD.ExitExpression)
+     */
+    public static function sendErrorResponse(array $message, int $status): void
     {
-        $body = [
-            'errors' => [
-                $message,
-            ],
-        ];
+        $body = ['errors' => [$message]];
 
         header('Content-Type: application/json', true, $status);
 
-        if (!$isAuthenticated) {
-            header('WWW-Authenticate: Bearer', true, $status);
-        }
-
         print json_encode($body);
-
         exit;
+    }
+
+    public static function sendUnauthenticatedErrorResponse(array $message, int $status): void
+    {
+        header('WWW-Authenticate: Bearer', true, $status);
+        self::sendErrorResponse($message, $status);
+    }
+
+    private function isAuthenticated(Error $error): bool
+    {
+        return !($error instanceof InvalidLogin || $error instanceof InvalidToken);
     }
 }

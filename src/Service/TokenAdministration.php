@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
@@ -25,41 +26,19 @@ use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * Token data access service
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) TODO: Consider reducing complexity of this class
  */
 class TokenAdministration
 {
-    /** @var BaseRepository */
-    private $repository;
-
-    /** @var Authorization */
-    private $authorizationService;
-
-    /** @var Authentication */
-    private $authenticationService;
-
-    /** @var TokenInfrastructure */
-    private $tokenInfrastructure;
-
-    /** @var LegacyInfrastructure */
-    private $legacyInfrastructure;
-
-    /** @var ModuleSetup */
-    private $moduleSetup;
-
     public function __construct(
-        BaseRepository $repository,
-        Authorization $authorizationService,
-        Authentication $authenticationService,
-        TokenInfrastructure $tokenInfrastructure,
-        LegacyInfrastructure $legacyInfrastructure,
-        ModuleSetup $moduleSetup
+        private readonly BaseRepository $repository,
+        private readonly Authorization $authorization,
+        private readonly Authentication $authentication,
+        private readonly TokenInfrastructure $tokenInfrastructure,
+        private readonly LegacyInfrastructure $legacyInfrastructure,
+        private readonly ModuleSetup $moduleSetup
     ) {
-        $this->repository = $repository;
-        $this->authorizationService = $authorizationService;
-        $this->authenticationService = $authenticationService;
-        $this->tokenInfrastructure = $tokenInfrastructure;
-        $this->legacyInfrastructure = $legacyInfrastructure;
-        $this->moduleSetup = $moduleSetup;
     }
 
     /**
@@ -70,12 +49,7 @@ class TokenAdministration
         Pagination $pagination,
         TokenSorting $sort
     ): array {
-        //without right to view any token user can only add filter on own id or no filter on id
-        if (
-            !$this->authorizationService->isAllowed('VIEW_ANY_TOKEN') &&
-            ($userFilter = $filterList->getUserFilter()) &&
-            $this->authenticationService->getUser()->id()->val() !== $userFilter->equals()->val()
-        ) {
+        if (!$this->canSeeTokens($filterList)) {
             throw new InvalidLogin('Unauthorized');
         }
 
@@ -87,32 +61,51 @@ class TokenAdministration
         );
     }
 
+    private function canSeeTokens(TokenFilterList $filterList): bool
+    {
+        if ($this->authorization->isAllowed('VIEW_ANY_TOKEN')) {
+            return true;
+        }
+
+        //without right to view any token user can only add filter on own id or no filter on id
+        $userFilter = $filterList->getUserFilter();
+        if ($userFilter === null) {
+            return true;
+        }
+        return $this->authentication->getUser()->id()->val() === $userFilter->equals()->val();
+    }
+
     /**
      * @throws \OxidEsales\GraphQL\Base\Exception\NotFound
      */
     public function customerTokensDelete(?ID $customerId): int
     {
-        if (
-            !$this->authorizationService->isAllowed('INVALIDATE_ANY_TOKEN') &&
-            $customerId &&
-            $this->authenticationService->getUser()->id()->val() !== $customerId->val()
-        ) {
+        $customerId = $customerId ?: $this->authentication->getUser()->id();
+
+        if (!$this->canDeleteCustomerTokens($customerId)) {
             throw new InvalidLogin('Unauthorized');
         }
-
-        $id = $customerId ? (string)$customerId : (string)$this->authenticationService->getUser()->id();
 
         try {
             /** @var UserDataType $user */
             $user = $this->repository->getById(
-                $id,
+                (string)$customerId,
                 UserDataType::class
             );
-        } catch (NotFound $e) {
-            throw new UserNotFound($id);
+        } catch (NotFound) {
+            throw new UserNotFound((string)$customerId);
         }
 
         return $this->tokenInfrastructure->tokenDelete($user);
+    }
+
+    private function canDeleteCustomerTokens(ID $customerId): bool
+    {
+        if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
+            return true;
+        }
+
+        return $this->authentication->getUser()->id()->val() === $customerId->val();
     }
 
     public function shopTokensDelete(): int

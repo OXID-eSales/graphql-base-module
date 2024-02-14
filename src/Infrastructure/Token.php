@@ -18,13 +18,9 @@ use PDO;
 
 class Token
 {
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
-
     public function __construct(
-        QueryBuilderFactoryInterface $queryBuilderFactory
+        private readonly QueryBuilderFactoryInterface $queryBuilderFactory
     ) {
-        $this->queryBuilderFactory = $queryBuilderFactory;
     }
 
     public function registerToken(UnencryptedToken $token, DateTimeImmutable $time, DateTimeImmutable $expire): void

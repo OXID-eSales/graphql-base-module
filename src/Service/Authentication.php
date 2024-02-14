@@ -16,18 +16,10 @@ use TheCodingMachine\GraphQLite\Security\AuthenticationServiceInterface;
 
 class Authentication implements AuthenticationServiceInterface
 {
-    /** @var LegacyInfrastructure */
-    private $legacyInfrastructure;
-
-    /** @var Token */
-    private $tokenService;
-
     public function __construct(
-        LegacyInfrastructure $legacyService,
-        Token $tokenService
+        private readonly LegacyInfrastructure $legacyInfrastructure,
+        private Token $tokenService
     ) {
-        $this->legacyInfrastructure = $legacyService;
-        $this->tokenService = $tokenService;
     }
 
     /**

@@ -19,23 +19,11 @@ use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
  */
 class TokenValidator
 {
-    /** @var JwtConfigurationBuilder */
-    private $jwtConfigurationBuilder;
-
-    /** @var Legacy */
-    private $legacyInfrastructure;
-
-    /** @var TokenInfrastructure */
-    private $tokenInfrastructure;
-
     public function __construct(
-        JwtConfigurationBuilder $jwtConfigurationBuilder,
-        Legacy $legacyInfrastructure,
-        TokenInfrastructure $tokenInfrastructure
+        private readonly JwtConfigurationBuilder $jwtConfigBuilder,
+        private readonly Legacy $legacyInfrastructure,
+        private readonly TokenInfrastructure $tokenInfrastructure
     ) {
-        $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
-        $this->legacyInfrastructure = $legacyInfrastructure;
-        $this->tokenInfrastructure = $tokenInfrastructure;
     }
 
     /**
@@ -66,7 +54,7 @@ class TokenValidator
 
     private function areConstraintsValid(UnencryptedToken $token): bool
     {
-        $config = $this->jwtConfigurationBuilder->getConfiguration();
+        $config = $this->jwtConfigBuilder->getConfiguration();
         $validator = $config->validator();
 
         return $validator->validate($token, ...$config->validationConstraints());

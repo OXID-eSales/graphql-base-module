@@ -13,6 +13,7 @@ use GraphQL\Error\DebugFlag;
 use GraphQL\Error\Error;
 use GraphQL\Error\FormattedError;
 use GraphQL\Executor\ExecutionResult;
+use GraphQL\GraphQL;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
@@ -21,33 +22,13 @@ class GraphQLQueryHandler
     /** @var Error[] */
     private static $errors = [];
 
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var SchemaFactory */
-    private $schemaFactory;
-
-    /** @var RequestReader */
-    private $requestReader;
-
-    /** @var ResponseWriter */
-    private $responseWriter;
-
-    /** @var TimerHandler */
-    private $timerHandler;
-
     public function __construct(
-        LoggerInterface $logger,
-        SchemaFactory $schemaFactory,
-        RequestReader $requestReader,
-        ResponseWriter $responseWriter,
-        TimerHandler $timerHandler
+        private readonly LoggerInterface $logger,
+        private readonly SchemaFactory $schemaFactory,
+        private readonly RequestReader $requestReader,
+        private readonly ResponseWriter $responseWriter,
+        private readonly TimerHandler $timerHandler
     ) {
-        $this->logger = $logger;
-        $this->schemaFactory = $schemaFactory;
-        $this->requestReader = $requestReader;
-        $this->responseWriter = $responseWriter;
-        $this->timerHandler = $timerHandler;
     }
 
     public function executeGraphQLQuery(): void
@@ -70,7 +51,7 @@ class GraphQLQueryHandler
      */
     private function executeQuery(array $queryData): ExecutionResult
     {
-        $graphQL = new \GraphQL\GraphQL();
+        $graphQL = new GraphQL();
         $variables = null;
         $operationName = null;
 
@@ -105,9 +86,9 @@ class GraphQLQueryHandler
         return $result;
     }
 
-    public static function addError(Error $e): void
+    public static function addError(Error $error): void
     {
-        self::$errors[] = $e;
+        self::$errors[] = $error;
     }
 
     private function getErrors(): \Closure

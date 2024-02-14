@@ -17,13 +17,11 @@ use function strtoupper;
 
 class BoolFilter implements FilterInterface
 {
-    /** @var bool */
-    private $equals;
-
-    public function __construct(
-        bool $equals = true
-    ) {
-        $this->equals = $equals;
+    /**
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
+    public function __construct(private readonly bool $equals = true)
+    {
     }
 
     public function equals(): bool

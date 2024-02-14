@@ -18,19 +18,10 @@ use function strtoupper;
 
 class StringFilter implements FilterInterface
 {
-    /** @var ?string */
-    private $equals;
-
-    /** @var ?string */
-    private $contains;
-
-    /** @var ?string */
-    private $beginsWith;
-
     public function __construct(
-        ?string $equals = null,
-        ?string $contains = null,
-        ?string $beginsWith = null
+        private readonly ?string $equals = null,
+        private readonly ?string $contains = null,
+        private readonly ?string $beginsWith = null
     ) {
         if (
             $equals === null &&
@@ -39,9 +30,6 @@ class StringFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type StringFilter must be provided');
         }
-        $this->equals = $equals;
-        $this->contains = $contains;
-        $this->beginsWith = $beginsWith;
     }
 
     public function equals(): ?string

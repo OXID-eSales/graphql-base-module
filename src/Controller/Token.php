@@ -26,28 +26,12 @@ use TheCodingMachine\GraphQLite\Types\ID;
 
 class Token
 {
-    /** @var TokenAdministration */
-    private $tokenAdministration;
-
-    /** @var Authentication */
-    private $authentication;
-
-    /** @var Authorization */
-    private $authorization;
-
-    /** @var TokenService */
-    private $tokenService;
-
     public function __construct(
-        TokenAdministration $tokenAdministration,
-        Authentication $authentication,
-        Authorization $authorization,
-        TokenService $tokenService
+        private readonly TokenAdministration $tokenAdministration,
+        private readonly Authentication $authentication,
+        private readonly Authorization $authorization,
+        private readonly TokenService $tokenService
     ) {
-        $this->tokenAdministration = $tokenAdministration;
-        $this->authentication = $authentication;
-        $this->authorization = $authorization;
-        $this->tokenService = $tokenService;
     }
 
     /**
@@ -101,10 +85,10 @@ class Token
     {
         if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
             $this->tokenService->deleteToken($tokenId);
-        } else {
-            $this->tokenService->deleteUserToken($this->authentication->getUser(), $tokenId);
+            return true;
         }
 
+        $this->tokenService->deleteUserToken($this->authentication->getUser(), $tokenId);
         return true;
     }
 

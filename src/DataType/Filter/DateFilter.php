@@ -24,18 +24,12 @@ class DateFilter implements FilterInterface
 {
     public const SQL_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
-    /** @var ?DateTimeInterface */
-    private $equals;
-
-    /** @var null|array{0: DateTimeInterface, 1: DateTimeInterface} */
-    private $between;
-
     /**
      * @param null|array{0: DateTimeInterface, 1: DateTimeInterface} $between
      */
     public function __construct(
-        ?DateTimeInterface $equals = null,
-        ?array $between = null
+        private readonly ?DateTimeInterface $equals = null,
+        private readonly ?array $between = null
     ) {
         if (
             $equals === null &&
@@ -43,8 +37,6 @@ class DateFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type DateFilterInput must be provided');
         }
-        $this->equals = $equals;
-        $this->between = $between;
     }
 
     public function equals(): ?DateTimeInterface

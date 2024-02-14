@@ -28,18 +28,10 @@ use function trim;
 
 class RequestReader
 {
-    /** @var TokenValidator */
-    private $tokenValidatorService;
-
-    /** @var JwtConfigurationBuilder */
-    private $jwtConfigurationBuilder;
-
     public function __construct(
-        TokenValidator $tokenValidatorService,
-        JwtConfigurationBuilder $jwtConfigurationBuilder
+        private readonly TokenValidator $tokenValidator,
+        private readonly JwtConfigurationBuilder $jwtConfigBuilder
     ) {
-        $this->tokenValidatorService = $tokenValidatorService;
-        $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
     }
 
     /**
@@ -62,17 +54,17 @@ class RequestReader
             return null;
         }
 
-        /** @var Configuration $jwtConfiguration */
-        $jwtConfiguration = $this->jwtConfigurationBuilder->getConfiguration();
+        /** @var Configuration $jwtConfig */
+        $jwtConfig = $this->jwtConfigBuilder->getConfiguration();
 
         try {
             /** @var UnencryptedToken $token */
-            $token = $jwtConfiguration->parser()->parse($jwt);
-        } catch (Exception $e) {
+            $token = $jwtConfig->parser()->parse($jwt);
+        } catch (Exception) {
             throw InvalidToken::unableToParse();
         }
 
-        $this->tokenValidatorService->validateToken($token);
+        $this->tokenValidator->validateToken($token);
 
         return $token;
     }
@@ -84,37 +76,59 @@ class RequestReader
      */
     public function getGraphQLRequestData(string $inputFile = 'php://input'): array
     {
-        if (isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
-            $raw = file_get_contents($inputFile) ?: '';
-            $data = json_decode($raw, true) ?: [];
-        } elseif (
-            isset($_SERVER['CONTENT_TYPE'])
-            && strpos(
-                $_SERVER['CONTENT_TYPE'],
-                'multipart/form-data'
-            ) !== false
-        ) {
-            $request = ServerRequestFactory::fromGlobals();
-            $uploadMiddleware = new UploadMiddleware();
-            $request = $uploadMiddleware->processRequest($request);
-            $data = $request->getParsedBody();
-
-            if (is_array($data) && !isset($data['operationName']) && isset($data['operation'])) {
-                $data['operationName'] = $data['operation'];
-            }
-        } else {
-            $data = $_REQUEST;
-
-            if (isset($data['variables'])) {
-                $data['variables'] = json_decode($data['variables'], true);
-            }
-        }
+        $data = $this->getData($inputFile);
 
         return [
             'query' => $data['query'] ?? null,
             'variables' => $data['variables'] ?? null,
             'operationName' => $data['operationName'] ?? null,
         ];
+    }
+
+    private function getData(string $inputFile): array
+    {
+        if ($this->isContentType('application/json')) {
+            return $this->getJsonData($inputFile);
+        } elseif ($this->isContentType('multipart/form-data')) {
+            return $this->getFormData();
+        }
+        return $this->getGenericData();
+    }
+
+    private function isContentType(string $contentType): bool
+    {
+        return isset($_SERVER['CONTENT_TYPE']) && str_contains($_SERVER['CONTENT_TYPE'], $contentType);
+    }
+
+    private function getJsonData(string $inputFile): array
+    {
+        $raw = file_get_contents($inputFile) ?: '';
+        return json_decode($raw, true) ?: [];
+    }
+
+    private function getFormData(): array
+    {
+        $request = ServerRequestFactory::fromGlobals();
+        $uploadMiddleware = new UploadMiddleware();
+        $request = $uploadMiddleware->processRequest($request);
+        $data = $request->getParsedBody();
+
+        if (is_array($data) && !isset($data['operationName']) && isset($data['operation'])) {
+            $data['operationName'] = $data['operation'];
+        }
+
+        return (array)$data;
+    }
+
+    private function getGenericData(): array
+    {
+        $data = $_REQUEST;
+
+        if (isset($data['variables'])) {
+            $data['variables'] = json_decode($data['variables'], true);
+        }
+
+        return $data;
     }
 
     /**
@@ -127,7 +141,8 @@ class RequestReader
      */
     private function getAuthorizationHeader(): ?string
     {
-        if ($value = $this->getRegularHeaderValue()) {
+        $value = $this->getRegularHeaderValue();
+        if ($value) {
             return $value;
         }
 

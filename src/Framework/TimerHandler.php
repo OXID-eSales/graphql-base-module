@@ -14,8 +14,8 @@ namespace OxidEsales\GraphQL\Base\Framework;
  */
 class TimerHandler
 {
-    /** @var array<Timer> */
-    private $timers;
+    /** @var Timer[] */
+    private array $timers;
 
     public function create(string $name): Timer
     {

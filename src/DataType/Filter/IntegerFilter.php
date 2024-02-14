@@ -19,26 +19,14 @@ use function count;
 
 class IntegerFilter implements FilterInterface
 {
-    /** @var ?int */
-    private $equals;
-
-    /** @var ?int */
-    private $lessThan;
-
-    /** @var ?int */
-    private $greaterThan;
-
-    /** @var null|array{0: int, 1: int} */
-    private $between;
-
     /**
      * @param null|array{0: int, 1: int} $between
      */
     public function __construct(
-        ?int $equals = null,
-        ?int $lessThan = null,
-        ?int $greaterThan = null,
-        ?array $between = null
+        private readonly ?int $equals = null,
+        private readonly ?int $lessThan = null,
+        private readonly ?int $greaterThan = null,
+        private readonly ?array $between = null
     ) {
         if (
             $equals === null &&
@@ -48,10 +36,6 @@ class IntegerFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type IntegerFilter must be provided');
         }
-        $this->equals = $equals;
-        $this->lessThan = $lessThan;
-        $this->greaterThan = $greaterThan;
-        $this->between = $between;
     }
 
     public function equals(): ?int

@@ -17,11 +17,8 @@ use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 
 final class BelongsToShop implements Constraint
 {
-    private int $shopId;
-
-    public function __construct(int $shopId)
+    public function __construct(private readonly int $shopId)
     {
-        $this->shopId = $shopId;
     }
 
     public function assert(Token $token): void

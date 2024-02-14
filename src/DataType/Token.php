@@ -20,12 +20,8 @@ use TheCodingMachine\GraphQLite\Types\ID;
  */
 final class Token implements ShopModelAwareInterface
 {
-    /** @var GraphQLTokenModel */
-    private $tokenModel;
-
-    public function __construct(GraphQLTokenModel $tokenModel)
+    public function __construct(private readonly GraphQLTokenModel $tokenModel)
     {
-        $this->tokenModel = $tokenModel;
     }
 
     public function getEshopModel(): GraphQLTokenModel
@@ -35,6 +31,7 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * @Field()
+     * @SuppressWarnings(PHPMD.ShortMethodName)
      */
     public function id(): ID
     {

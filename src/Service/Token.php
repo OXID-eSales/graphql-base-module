@@ -23,51 +23,25 @@ use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * Token data access service
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects) TODO: Consider splitting this class
  */
 class Token
 {
     public const CLAIM_SHOPID = 'shopid';
-
     public const CLAIM_USERNAME = 'username';
-
     public const CLAIM_USERID = 'userid';
-
     public const CLAIM_USER_ANONYMOUS = 'useranonymous';
-
     public const CLAIM_TOKENID = 'tokenid';
 
-    /** @var ?UnencryptedToken */
-    private $token;
-
-    /** @var JwtConfigurationBuilder */
-    private $jwtConfigurationBuilder;
-
-    /** @var Legacy */
-    private $legacyInfrastructure;
-
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
-
-    /** @var ModuleConfiguration */
-    private $moduleConfiguration;
-
-    /** @var TokenInfrastructure */
-    private $tokenInfrastructure;
-
     public function __construct(
-        ?UnencryptedToken $token,
-        JwtConfigurationBuilder $jwtConfigurationBuilder,
-        Legacy $legacyInfrastructure,
-        EventDispatcherInterface $eventDispatcher,
-        ModuleConfiguration $moduleConfiguration,
-        TokenInfrastructure $tokenInfrastructure
+        private ?UnencryptedToken $token,
+        private readonly JwtConfigurationBuilder $jwtConfigBuilder,
+        private readonly Legacy $legacyInfrastructure,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ModuleConfiguration $moduleConfiguration,
+        private readonly TokenInfrastructure $tokenInfrastructure
     ) {
-        $this->token = $token;
-        $this->jwtConfigurationBuilder = $jwtConfigurationBuilder;
-        $this->legacyInfrastructure = $legacyInfrastructure;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->moduleConfiguration = $moduleConfiguration;
-        $this->tokenInfrastructure = $tokenInfrastructure;
     }
 
     /**
@@ -102,7 +76,7 @@ class Token
 
         $time = new DateTimeImmutable('now');
         $expire = new DateTimeImmutable($this->moduleConfiguration->getTokenLifeTime());
-        $config = $this->jwtConfigurationBuilder->getConfiguration();
+        $config = $this->jwtConfigBuilder->getConfiguration();
 
         $builder = $config->builder()
             ->issuedBy($this->legacyInfrastructure->getShopUrl())
@@ -136,20 +110,20 @@ class Token
     {
         $tokenId = (string)$tokenId;
 
-        if ($this->tokenInfrastructure->isTokenRegistered($tokenId)) {
-            $this->tokenInfrastructure->tokenDelete(null, $tokenId);
-        } else {
+        if (!$this->tokenInfrastructure->isTokenRegistered($tokenId)) {
             throw InvalidToken::unknownToken();
         }
+
+        $this->tokenInfrastructure->tokenDelete(null, $tokenId);
     }
 
     public function deleteUserToken(UserDataType $user, ID $tokenId): void
     {
-        if ($this->tokenInfrastructure->userHasToken($user, (string)$tokenId)) {
-            $this->tokenInfrastructure->tokenDelete($user, (string)$tokenId);
-        } else {
+        if (!$this->tokenInfrastructure->userHasToken($user, (string)$tokenId)) {
             throw InvalidToken::unknownToken();
         }
+
+        $this->tokenInfrastructure->tokenDelete($user, (string)$tokenId);
     }
 
     private function registerToken(

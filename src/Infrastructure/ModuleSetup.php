@@ -19,16 +19,9 @@ use Symfony\Component\Console\Output\BufferedOutput;
  */
 class ModuleSetup
 {
-    /** @var ModuleConfiguration */
-    private $moduleConfiguration;
-
-    /**
-     * ModuleSetup constructor.
-     */
     public function __construct(
-        ModuleConfiguration $moduleConfiguration
+        private readonly ModuleConfiguration $moduleConfiguration
     ) {
-        $this->moduleConfiguration = $moduleConfiguration;
     }
 
     public function runSetup(): void

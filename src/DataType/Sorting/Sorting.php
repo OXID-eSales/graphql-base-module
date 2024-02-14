@@ -19,17 +19,16 @@ abstract class Sorting
     public const SORTING_ASC = 'ASC';
 
     /** @var array<string, null|string> */
-    private $sorting;
+    private array $sorting;
 
     /**
      * @param array<string, null|string> $sorting
      */
-    public function __construct(
-        array $sorting
-    ) {
-        $sorting = array_filter($sorting);
+    public function __construct(array $sorting)
+    {
+        $this->sorting = array_filter($sorting);
 
-        foreach ($sorting as $field => $val) {
+        foreach ($this->sorting as $field => $val) {
             if (
                 $val !== self::SORTING_DESC &&
                 $val !== self::SORTING_ASC
@@ -39,7 +38,6 @@ abstract class Sorting
                 );
             }
         }
-        $this->sorting = $sorting;
     }
 
     public function addToQuery(QueryBuilder $builder): void

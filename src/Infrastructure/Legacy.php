@@ -25,18 +25,10 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
  */
 class Legacy
 {
-    /** @var ContextInterface */
-    private $context;
-
-    /** @var EhopEmailValidator */
-    private $emailValidatorService;
-
     public function __construct(
-        ContextInterface $context,
-        EhopEmailValidator $emailValidatorService
+        private readonly ContextInterface $context,
+        private readonly EhopEmailValidator $emailValidator
     ) {
-        $this->context               = $context;
-        $this->emailValidatorService = $emailValidatorService;
     }
 
     /**
@@ -44,22 +36,20 @@ class Legacy
      */
     public function login(?string $username = null, ?string $password = null): User
     {
-        /** @var UserModel $user */
         $user = $this->getUserModel();
-        $isAnonymous = true;
 
         if ($username && $password) {
             try {
-                $isAnonymous = false;
-                $user->login($username, $password, false);
-            } catch (Exception $e) {
+                $user->login($username, $password);
+            } catch (Exception) {
+                // TODO: Not every exception is an invalid password
                 throw new InvalidLogin('Username/password combination is invalid');
             }
-        } else {
-            $user->setId(self::createUniqueIdentifier());
+            return new User($user, false);
         }
 
-        return new User($user, $isAnonymous);
+        $user->setId(self::createUniqueIdentifier());
+        return new User($user, true);
     }
 
     public function getUserModel(?string $userId = null): UserModel
@@ -104,7 +94,7 @@ class Legacy
 
     public function isValidEmail(string $email): bool
     {
-        return $this->emailValidatorService->isEmailValid($email);
+        return $this->emailValidator->isEmailValid($email);
     }
 
     /**

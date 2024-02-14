@@ -14,13 +14,8 @@ use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
 {
-    /** @var Token */
-    protected $tokenService;
-
-    public function __construct(
-        Token $tokenService
-    ) {
-        $this->tokenService = $tokenService;
+    public function __construct(protected Token $tokenService)
+    {
     }
 
     /**

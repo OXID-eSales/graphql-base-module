@@ -23,16 +23,15 @@ use RuntimeException;
 
 class Repository
 {
-    /** @var QueryBuilderFactoryInterface */
-    private $queryBuilderFactory;
-
     public function __construct(
-        QueryBuilderFactoryInterface $queryBuilderFactory
+        private readonly QueryBuilderFactoryInterface $queryBuilderFactory
     ) {
-        $this->queryBuilderFactory = $queryBuilderFactory;
     }
 
     /**
+     * @SuppressWarnings(PHPMD.ShortVariable)
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     *
      * @template T
      *
      * @param class-string<T> $type
@@ -62,6 +61,8 @@ class Repository
     }
 
     /**
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     *
      * @template T
      *
      * @param class-string<T> $type

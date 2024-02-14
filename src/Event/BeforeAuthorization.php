@@ -14,21 +14,12 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeAuthorization extends Event
 {
-    /** @var ?Token */
-    private $token;
-
-    /** @var string */
-    private $right;
-
-    /** @var ?bool */
-    private $authorized;
+    private ?bool $authorized = null;
 
     public function __construct(
-        ?Token $token,
-        string $right
+        private readonly ?Token $token,
+        private readonly string $right
     ) {
-        $this->token = $token;
-        $this->right = $right;
     }
 
     public function getToken(): ?Token

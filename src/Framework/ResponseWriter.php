@@ -14,18 +14,15 @@ use function json_encode;
 
 class ResponseWriter
 {
-    /** @var TimerHandler */
-    private $timerHandler;
-
-    public function __construct(TimerHandler $timerHandler)
+    public function __construct(private readonly TimerHandler $timerHandler)
     {
-        $this->timerHandler = $timerHandler;
     }
 
     /**
      * Return a JSON Object with the graphql results
      *
      * @codeCoverageIgnore
+     * @SuppressWarnings(PHPMD.ExitExpression)
      *
      * @param mixed[] $result
      */

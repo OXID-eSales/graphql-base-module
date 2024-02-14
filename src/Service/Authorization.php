@@ -21,25 +21,16 @@ use function is_bool;
 class Authorization implements AuthorizationServiceInterface
 {
     /** @var array<string, array<string>> */
-    private $permissions = [];
-
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
-
-    /** @var Token */
-    private $tokenService;
-
-    /** @var LegacyService */
-    private $legacyService;
+    private array $permissions = [];
 
     /**
      * @param PermissionProviderInterface[] $permissionProviders
      */
     public function __construct(
         iterable $permissionProviders,
-        EventDispatcherInterface $eventDispatcher,
-        Token $tokenService,
-        LegacyService $legacyService
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private Token $tokenService,
+        private readonly LegacyService $legacyService
     ) {
         foreach ($permissionProviders as $permissionProvider) {
             $this->permissions = array_merge_recursive(
@@ -47,17 +38,13 @@ class Authorization implements AuthorizationServiceInterface
                 $permissionProvider->getPermissions()
             );
         }
-        $this->eventDispatcher = $eventDispatcher;
-        $this->tokenService = $tokenService;
-        $this->legacyService = $legacyService;
     }
 
     /**
-     * @param mixed $subject
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter) TODO: Make usage of $subject argument
      */
-    public function isAllowed(string $right, $subject = null): bool
+    public function isAllowed(string $right, mixed $subject = null): bool
     {
-        // TODO: Make usage of $subject argument
         $event = new BeforeAuthorization(
             $this->tokenService->getToken(),
             $right

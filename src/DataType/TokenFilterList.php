@@ -17,23 +17,11 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 final class TokenFilterList implements FilterListInterface
 {
-    /** @var ?IDFilter */
-    private $customerId;
-
-    /** @var ?IDFilter */
-    private $shopId;
-
-    /** @var ?DateFilter */
-    private $expiresAt;
-
     public function __construct(
-        ?IDFilter $customerId = null,
-        ?IDFilter $shopId = null,
-        ?DateFilter $expiresAt = null
+        private readonly ?IDFilter $customerId = null,
+        private readonly ?IDFilter $shopId = null,
+        private readonly ?DateFilter $expiresAt = null
     ) {
-        $this->customerId = $customerId;
-        $this->shopId = $shopId;
-        $this->expiresAt = $expiresAt;
     }
 
     public function withActiveFilter(?BoolFilter $active): self
@@ -53,10 +41,7 @@ final class TokenFilterList implements FilterListInterface
 
     public function withUserFilter(IDFilter $user): self
     {
-        $filter = clone $this;
-        $filter->customerId = $user;
-
-        return $filter;
+        return new self($user, $this->shopId, $this->expiresAt);
     }
 
     /**

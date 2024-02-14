@@ -19,15 +19,13 @@ use TheCodingMachine\GraphQLite\Types\ID;
  */
 final class User implements ShopModelAwareInterface
 {
-    /** @var EshopUserModel */
-    private $userModel;
-
-    private bool $isAnonymous;
-
-    public function __construct(EshopUserModel $userModel, bool $isAnonymous = false)
-    {
-        $this->userModel = $userModel;
-        $this->isAnonymous = $isAnonymous;
+    /**
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag) TODO: Consider extracting AnonymousUser class
+     */
+    public function __construct(
+        private readonly EshopUserModel $userModel,
+        private readonly bool $isAnonymous = false
+    ) {
     }
 
     public function getEshopModel(): EshopUserModel
@@ -37,6 +35,7 @@ final class User implements ShopModelAwareInterface
 
     /**
      * @Field()
+     * @SuppressWarnings(PHPMD.ShortMethodName)
      */
     public function id(): ID
     {

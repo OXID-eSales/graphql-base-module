@@ -20,26 +20,14 @@ use function strtoupper;
 
 class FloatFilter implements FilterInterface
 {
-    /** @var ?float */
-    private $equals;
-
-    /** @var ?float */
-    private $lessThan;
-
-    /** @var ?float */
-    private $greaterThan;
-
-    /** @var null|array{0: float, 1: float} */
-    private $between;
-
     /**
      * @param null|array{0: float, 1: float} $between
      */
     public function __construct(
-        ?float $equals = null,
-        ?float $lessThan = null,
-        ?float $greaterThan = null,
-        ?array $between = null
+        private readonly ?float $equals = null,
+        private readonly ?float $lessThan = null,
+        private readonly ?float $greaterThan = null,
+        private readonly ?array $between = null
     ) {
         if (
             $equals === null &&
@@ -49,10 +37,6 @@ class FloatFilter implements FilterInterface
         ) {
             throw new Error('At least one field for type FloatFilter must be provided');
         }
-        $this->equals = $equals;
-        $this->lessThan = $lessThan;
-        $this->greaterThan = $greaterThan;
-        $this->between = $between;
     }
 
     public function equals(): ?float

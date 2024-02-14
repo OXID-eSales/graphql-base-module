@@ -15,20 +15,12 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 final class Pagination
 {
-    /** @var int */
-    private $offset = 0;
-
-    /** @var ?int */
-    private $limit;
-
     /**
-     * PaginationFilter constructor.
-     *
      * @throws Error
      */
     public function __construct(
-        int $offset = 0,
-        ?int $limit = null
+        private readonly int $offset = 0,
+        private readonly ?int $limit = null
     ) {
         if (
             $offset < 0 ||
@@ -36,9 +28,6 @@ final class Pagination
         ) {
             throw new Error('PaginationFilter fields must be positive.');
         }
-
-        $this->offset = $offset;
-        $this->limit = $limit;
     }
 
     public function offset(): ?int

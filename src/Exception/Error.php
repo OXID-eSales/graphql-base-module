@@ -14,20 +14,15 @@ use Throwable;
 
 abstract class Error extends GraphQLError
 {
-    /** @var string */
-    protected $category;
-
-    /** @var int */
-    protected $code;
-
     /**
+     * @param int $code
      * @param array<string, mixed> $extensions
      */
     public function __construct(
         string $message,
-        int $code = 0,
+        protected $code = 0,
         ?Throwable $previous = null,
-        string $category = 'Exception',
+        protected string $category = 'Exception',
         array $extensions = []
     ) {
         parent::__construct(
@@ -39,8 +34,6 @@ abstract class Error extends GraphQLError
             $previous,
             $extensions
         );
-        $this->category = $category;
-        $this->code = $code;
     }
 
     /**

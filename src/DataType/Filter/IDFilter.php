@@ -18,13 +18,8 @@ use function strtoupper;
 
 class IDFilter implements FilterInterface
 {
-    /** @var ID */
-    private $equals;
-
-    public function __construct(
-        ID $equals
-    ) {
-        $this->equals = $equals;
+    public function __construct(private readonly ID $equals)
+    {
     }
 
     public function equals(): ID

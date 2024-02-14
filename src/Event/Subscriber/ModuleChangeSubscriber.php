@@ -18,14 +18,8 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ModuleChangeSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CacheInterface
-     */
-    private $cache;
-
-    public function __construct(CacheInterface $cache)
+    public function __construct(private readonly CacheInterface $cache)
     {
-        $this->cache = $cache;
     }
 
     /**

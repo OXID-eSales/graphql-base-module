@@ -24,46 +24,29 @@ use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
  */
 class SchemaFactory
 {
-    /** @var Schema */
-    private $schema;
-
-    /** @var Authentication */
-    private $authentication;
-
-    /** @var Authorization */
-    private $authorization;
+    private ?Schema $schema = null;
 
     /** @var NamespaceMapperInterface[] */
-    private $namespaceMappers;
-
-    /** @var ContainerInterface */
-    private $container;
+    private array $namespaceMappers;
 
     /** @var CacheInterface */
-    private $cache;
-
-    /** @var TimerHandler */
-    private $timerHandler;
+    private CacheInterface $cache;
 
     /**
      * @param NamespaceMapperInterface[] $namespaceMappers
      */
     public function __construct(
         iterable $namespaceMappers,
-        Authentication $authentication,
-        Authorization $authorization,
-        ContainerInterface $container,
-        TimerHandler $timerHandler,
+        private readonly Authentication $authentication,
+        private readonly Authorization $authorization,
+        private readonly ContainerInterface $container,
+        private readonly TimerHandler $timerHandler,
         ?CacheInterface $cache = null
     ) {
         foreach ($namespaceMappers as $namespaceMapper) {
             $this->namespaceMappers[] = $namespaceMapper;
         }
-        $this->authentication = $authentication;
-        $this->authorization = $authorization;
-        $this->container = $container;
         $this->cache = $cache ?? new Psr16Cache(new NullAdapter());
-        $this->timerHandler = $timerHandler;
     }
 
     public function getSchema(): Schema

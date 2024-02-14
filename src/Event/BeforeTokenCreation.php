@@ -15,18 +15,10 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeTokenCreation extends Event
 {
-    /** @var Builder */
-    private $builder;
-
-    /** @var User */
-    private $user;
-
     public function __construct(
-        Builder $builder,
-        User $userData
+        private readonly Builder $builder,
+        private readonly User $user
     ) {
-        $this->builder = $builder;
-        $this->user = $userData;
     }
 
     public function getBuilder(): Builder
