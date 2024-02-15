@@ -40,6 +40,7 @@
     "prefer-stable": true,
     "scripts": {
         "phpcs": "phpcs --standard=tests/phpcs.xml",
+        "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=phpcs.report.json",
         "phpcbf": "phpcbf --standard=tests/phpcs.xml",
 
         "phpstan": "phpstan -ctests/PhpStan/phpstan.neon analyse src/",
@@ -60,6 +61,10 @@
         "codeception": [
             "Composer\\Config::disableProcessTimeout",
             "MODULE_IDS=oe_graphql_base /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml --no-redirect"
+        ],
+        "codeception-coverage": [
+            "Composer\\Config::disableProcessTimeout",
+            "MODULE_IDS=oe_graphql_base /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml --no-redirect --coverage"
         ]
     },
     "config": {
