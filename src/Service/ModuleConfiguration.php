@@ -17,8 +17,6 @@ use function random_bytes;
 use function strlen;
 
 /**
- * Class ModuleConfiguration
- *
  * The current implementation stores the signature key in
  * the config table. This should be changed eventually.
  */
@@ -30,8 +28,8 @@ class ModuleConfiguration
 
     public const QUOTANAME = 'sJsonWebTokenUserQuota';
 
-    /** @var string[] */
-    private $lifetimeMap = [
+    /** @var array<string, string> */
+    private array $lifetimeMap = [
         '15min' => '+15 minutes',
         '1hrs' => '+1 hour',
         '3hrs' => '+3 hours',
@@ -40,7 +38,7 @@ class ModuleConfiguration
     ];
 
     public function __construct(
-        private ModuleSettingServiceInterface $moduleSettingService
+        private readonly ModuleSettingServiceInterface $moduleSettingService
     ) {
     }
 

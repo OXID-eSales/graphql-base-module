@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
+use Doctrine\DBAL\Result;
 use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Base\DataType\Filter\FilterInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\FilterListInterface as FilterList;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\ShopModelAwareInterface;
@@ -63,7 +63,7 @@ class Repository
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      *
-     * @template T
+     * @template T of ShopModelAwareInterface
      *
      * @param class-string<T> $type
      *
@@ -98,9 +98,7 @@ class Repository
             }
         }
 
-        /** @var FilterInterface[] $filters */
         $filters = array_filter($filter->getFilters());
-
         foreach ($filters as $field => $fieldFilter) {
             $fieldFilter->addToQuery($queryBuilder, $field);
         }
@@ -109,12 +107,9 @@ class Repository
 
         $sorting->addToQuery($queryBuilder);
 
-        $queryBuilder->getConnection()->setFetchMode(PDO::FETCH_ASSOC);
-
-        /** @var \Doctrine\DBAL\Statement $result */
+        /** @var Result $result */
         $result = $queryBuilder->execute();
-
-        foreach ($result as $row) {
+        foreach ($result->fetchAllAssociative() as $row) {
             $newModel = clone $model;
             $newModel->assign($row);
             $types[] = new $type($newModel);

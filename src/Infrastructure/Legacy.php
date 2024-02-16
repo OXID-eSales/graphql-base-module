@@ -63,10 +63,7 @@ class Legacy
         return $userModel;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getConfigParam(string $param)
+    public function getConfigParam(string $param): mixed
     {
         return Registry::getConfig()->getConfigParam($param);
     }
@@ -97,10 +94,7 @@ class Legacy
         return $this->emailValidator->isEmailValid($email);
     }
 
-    /**
-     * @return Email|object
-     */
-    public function getEmail()
+    public function getEmail(): Email
     {
         return oxNew(Email::class);
     }
@@ -114,7 +108,6 @@ class Legacy
             return [];
         }
 
-        /** @var UserModel $user */
         $user = $this->getUserModel($userId);
 
         if (!$user->isLoaded()) {
@@ -135,9 +128,7 @@ class Legacy
 
     public static function createUniqueIdentifier(): string
     {
-        /** @var UtilsObject */
         $utils = Registry::getUtilsObject();
-
         return $utils->generateUId();
     }
 }

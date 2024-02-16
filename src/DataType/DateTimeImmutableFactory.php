@@ -16,11 +16,7 @@ final class DateTimeImmutableFactory
 {
     public static function fromString(string $time = 'now', ?DateTimeZone $timezone = null): ?DateTimeImmutable
     {
-        if (
-            strlen($time) == 0
-            || strpos($time, '0000-00-00') !== false
-            || $time === '-'
-        ) {
+        if (!self::isValid($time)) {
             return null;
         }
 
@@ -34,5 +30,10 @@ final class DateTimeImmutableFactory
         }
 
         return (new DateTimeImmutable())->setTimestamp($timeStamp);
+    }
+
+    private static function isValid(string $time): bool
+    {
+        return strlen($time) != 0 && !str_contains($time, '0000-00-00') && $time !== '-';
     }
 }

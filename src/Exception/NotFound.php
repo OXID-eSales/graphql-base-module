@@ -15,7 +15,10 @@ class NotFound extends Error
 
     public function __construct(string $message = self::NOT_FOUND_MESSAGE, array $extensions = [])
     {
-        parent::__construct($message, 0, null, 'Exception', $extensions);
+        parent::__construct(
+            message: $message,
+            extensions: $extensions
+        );
     }
 
     public function getCategory(): string

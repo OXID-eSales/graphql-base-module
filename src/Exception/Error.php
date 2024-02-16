@@ -26,13 +26,9 @@ abstract class Error extends GraphQLError
         array $extensions = []
     ) {
         parent::__construct(
-            $message,
-            null,
-            null,
-            [],
-            null,
-            $previous,
-            $extensions
+            message: $message,
+            previous: $previous,
+            extensions: $extensions
         );
     }
 

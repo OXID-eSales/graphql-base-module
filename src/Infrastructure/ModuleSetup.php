@@ -61,9 +61,9 @@ class ModuleSetup
 
         $output = new BufferedOutput();
         $migrations->setOutput($output);
-        $neeedsUpdate = $migrations->execute('migrations:up-to-date', 'oe_graphql_base');
+        $needsUpdate = $migrations->execute('migrations:up-to-date', 'oe_graphql_base');
 
-        if ($neeedsUpdate) {
+        if ($needsUpdate) {
             $migrations->execute('migrations:migrate', 'oe_graphql_base');
         }
     }

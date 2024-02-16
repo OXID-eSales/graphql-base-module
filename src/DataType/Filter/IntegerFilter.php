@@ -63,7 +63,7 @@ class IntegerFilter implements FilterInterface
 
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
-        /** @var array */
+        /** @var array $from */
         $from = $builder->getQueryPart('from');
 
         if ($from === []) {

@@ -44,12 +44,7 @@ class Token
     ) {
     }
 
-    /**
-     * @param null|mixed $default
-     *
-     * @return null|mixed
-     */
-    public function getTokenClaim(string $claim, $default = null)
+    public function getTokenClaim(string $claim, mixed $default = null): mixed
     {
         if (!$this->token instanceof UnencryptedToken) {
             return $default;
@@ -69,7 +64,6 @@ class Token
      */
     public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
     {
-        /** @var UserDataType $user */
         $user = $this->legacyInfrastructure->login($username, $password);
         $this->removeExpiredTokens($user);
         $this->canIssueToken($user);

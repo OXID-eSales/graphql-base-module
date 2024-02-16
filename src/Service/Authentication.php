@@ -27,11 +27,10 @@ class Authentication implements AuthenticationServiceInterface
      */
     public function isLogged(): bool
     {
-        if (!$this->tokenService->getToken() || $this->getUser()->isAnonymous()) {
+        if (!$this->tokenService->getToken()) {
             return false;
         }
-
-        return true;
+        return !$this->getUser()->isAnonymous();
     }
 
     public function getUser(): User

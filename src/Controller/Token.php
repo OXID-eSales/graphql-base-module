@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Controller;
 
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
+use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
@@ -55,7 +56,7 @@ class Token
                 )
             ),
             $pagination ?? new Pagination(),
-            $sort ?? TokenSorting::fromUserInput(TokenSorting::SORTING_ASC)
+            $sort ?? TokenSorting::fromUserInput(Sorting::SORTING_ASC)
         );
     }
 

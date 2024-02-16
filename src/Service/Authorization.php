@@ -63,14 +63,12 @@ class Authorization implements AuthorizationServiceInterface
         $userId = $this->tokenService->getTokenClaim(Token::CLAIM_USERID);
         $groups = $this->legacyService->getUserGroupIds($userId);
 
-        $isAllowed = false;
-
         foreach ($groups as $id) {
-            if (isset($this->permissions[$id]) && array_search($right, $this->permissions[$id], true) !== false) {
-                $isAllowed = true;
+            if (isset($this->permissions[$id]) && in_array($right, $this->permissions[$id], true)) {
+                return true;
             }
         }
 
-        return $isAllowed;
+        return false;
     }
 }

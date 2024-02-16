@@ -39,16 +39,12 @@ class ResponseWriter
     /**
      * Remove all headers the shop core might have set
      */
-    private function cleanHeaders(): bool
+    private function cleanHeaders(): void
     {
         //in case headers have already been sent nothing can be cleaned
         if (!headers_sent()) {
             header_remove();
-
-            return true;
         }
-
-        return false;
     }
 
     private function generateServerTimingHeader(): string

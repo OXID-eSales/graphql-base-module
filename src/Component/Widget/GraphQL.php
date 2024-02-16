@@ -23,8 +23,6 @@ use OxidEsales\GraphQL\Base\Service\Authentication as GraphQLAuthenticationServi
 use Throwable;
 
 /**
- * Class GraphQL
- *
  * Implements the GraphQL widget for the OXID eShop to make all
  * of this callable via a SEO Url or via widget.php?cl=graphql
  */
@@ -72,10 +70,8 @@ class GraphQL extends WidgetController
         $session->setBasket(null);
         $session->setVariable('usr', null);
 
-        $userId = ContainerFacade::get(GraphQLAuthenticationService::class)
-            ->getUser()
-            ->id()
-            ->val();
+        $authentication = ContainerFacade::get(GraphQLAuthenticationService::class);
+        $userId = $authentication->getUser()->id()->val();
 
         if ($userId) {
             $session->setVariable('usr', $userId);
@@ -85,7 +81,7 @@ class GraphQL extends WidgetController
     /**
      * @SuppressWarnings(PHPMD.ExitExpression)
      */
-    public static function sendErrorResponse(array $message, int $status): void
+    public static function sendErrorResponse(array $message, int $status): never
     {
         $body = ['errors' => [$message]];
 
@@ -95,7 +91,7 @@ class GraphQL extends WidgetController
         exit;
     }
 
-    public static function sendUnauthenticatedErrorResponse(array $message, int $status): void
+    public static function sendUnauthenticatedErrorResponse(array $message, int $status): never
     {
         header('WWW-Authenticate: Bearer', true, $status);
         self::sendErrorResponse($message, $status);

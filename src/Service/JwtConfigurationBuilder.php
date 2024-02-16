@@ -22,18 +22,10 @@ use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 
 class JwtConfigurationBuilder
 {
-    /** @var ModuleConfiguration */
-    private $moduleConfiguration;
-
-    /** @var LegacyService */
-    private $legacyService;
-
     public function __construct(
-        ModuleConfiguration $moduleConfiguration,
-        LegacyService $legacyService
+        private readonly ModuleConfiguration $moduleConfiguration,
+        private readonly LegacyService $legacyService
     ) {
-        $this->moduleConfiguration = $moduleConfiguration;
-        $this->legacyService = $legacyService;
     }
 
     public function getConfiguration(): Configuration

@@ -129,7 +129,7 @@ class Token
         $result = $queryBuilder->execute();
 
         if (is_object($result)) {
-            return $result->fetch(PDO::FETCH_COLUMN) > 0;
+            return $result->fetchOne() > 0;
         }
 
         return false;

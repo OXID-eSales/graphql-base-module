@@ -19,9 +19,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
-/**
- * Class SchemaFactory
- */
 class SchemaFactory
 {
     private ?Schema $schema = null;
@@ -29,7 +26,6 @@ class SchemaFactory
     /** @var NamespaceMapperInterface[] */
     private array $namespaceMappers;
 
-    /** @var CacheInterface */
     private CacheInterface $cache;
 
     /**

@@ -20,7 +20,7 @@ use Throwable;
 class GraphQLQueryHandler
 {
     /** @var Error[] */
-    private static $errors = [];
+    private static array $errors = [];
 
     public function __construct(
         private readonly LoggerInterface $logger,

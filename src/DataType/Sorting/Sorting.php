@@ -42,7 +42,7 @@ abstract class Sorting
 
     public function addToQuery(QueryBuilder $builder): void
     {
-        /** @var array */
+        /** @var array $from */
         $from = $builder->getQueryPart('from');
 
         if ($from === []) {
