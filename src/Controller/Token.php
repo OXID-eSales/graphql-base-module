@@ -51,6 +51,7 @@ class Token
     }
 
     /**
+     * Query of Base Module.
      * Query a customer's active JWT.
      * User with right 'VIEW_ANY_TOKEN' can query any customer's tokens.
      *
@@ -76,6 +77,7 @@ class Token
     }
 
     /**
+     * Mutation of Base Module.
      * Invalidate all tokens per customer.
      *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate tokens for any customer Id.
      *  - Customer without special rights can invalidate only own tokens.
@@ -90,6 +92,7 @@ class Token
     }
 
     /**
+     * Mutation of Base Module.
      * Invalidate specific token.
      *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate any token.
      *  - Customer without special rights can invalidate only own token.
@@ -109,6 +112,7 @@ class Token
     }
 
     /**
+     * Mutation of Base Module.
      * Invalidate all tokens for current shop.
      * INVALIDATE_ANY_TOKEN right is required.
      *
@@ -122,6 +126,7 @@ class Token
     }
 
     /**
+     * Mutation of Base Module.
      * Regenerates the JWT signature key.
      * This will invalidate all issued tokens for the current shop.
      * Only use if no other option is left.
