@@ -34,22 +34,7 @@ final class Token implements ShopModelAwareInterface
     }
 
     /**
-     * @Field()
-     */
-    public function id(): ID
-    {
-        return new ID((string)$this->tokenModel->getId());
-    }
-
-    /**
-     * @Field()
-     */
-    public function token(): string
-    {
-        return (string)$this->tokenModel->getRawFieldData('token');
-    }
-
-    /**
+     * Field of Base module's Token-Type.
      * @Field()
      */
     public function createdAt(): ?DateTimeInterface
@@ -60,6 +45,16 @@ final class Token implements ShopModelAwareInterface
     }
 
     /**
+     * Field of Base module's Token-Type.
+     * @Field()
+     */
+    public function customerId(): ID
+    {
+        return new ID((string)$this->tokenModel->getRawFieldData('oxuserid'));
+    }
+
+    /**
+     * Field of Base module's Token-Type.
      * @Field()
      */
     public function expiresAt(): ?DateTimeInterface
@@ -70,27 +65,39 @@ final class Token implements ShopModelAwareInterface
     }
 
     /**
+     * Field of Base module's Token-Type.
      * @Field()
      */
-    public function userAgent(): string
+    public function id(): ID
     {
-        return $this->tokenModel->getRawFieldData('useragent');
+        return new ID((string)$this->tokenModel->getId());
     }
 
     /**
-     * @Field()
-     */
-    public function customerId(): ID
-    {
-        return new ID((string)$this->tokenModel->getRawFieldData('oxuserid'));
-    }
-
-    /**
+     * Field of Base module's Token-Type.
      * @Field()
      */
     public function shopId(): ID
     {
         return new ID((string)$this->tokenModel->getRawFieldData('oxshopid'));
+    }
+
+    /**
+     * Field of Base module's Token-Type
+     * @Field()
+     */
+    public function token(): string
+    {
+        return (string)$this->tokenModel->getRawFieldData('token');
+    }
+
+    /**
+     * Field of Base module's Token-Type.
+     * @Field()
+     */
+    public function userAgent(): string
+    {
+        return $this->tokenModel->getRawFieldData('useragent');
     }
 
     public static function getModelClass(): string

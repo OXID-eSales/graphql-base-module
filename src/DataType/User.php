@@ -36,19 +36,21 @@ final class User implements ShopModelAwareInterface
     }
 
     /**
-     * @Field()
-     */
-    public function id(): ID
-    {
-        return new ID((string)$this->userModel->getId());
-    }
-
-    /**
+     * Field of Base module's User-Type.
      * @Field()
      */
     public function email(): string
     {
         return (string)$this->userModel->getRawFieldData('oxusername');
+    }
+
+    /**
+     * Field of Base module's User-Type.
+     * @Field()
+     */
+    public function id(): ID
+    {
+        return new ID((string)$this->userModel->getId());
     }
 
     public function isAnonymous(): bool
