@@ -1,9 +1,8 @@
-name: Automatically triggered on push
+name: Scheduled weekly run
 
 on:
-  push:
-    branches:
-      - 'b-7.1.x*'
+  schedule:
+    - cron: '0 4 */7 * *'
 
 jobs:
   call_matrix:
