@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Replace webmozart/path-util usage with symfony/filesystem
+- Order of DataType-methods for alphabetic order in schema
 
 ### Added
 - Workflow trigger to update schema in documentation
+- Descriptions for queries, mutations and DataType-fields
 
 ## [8.0.1] - 2023-06-30
 
