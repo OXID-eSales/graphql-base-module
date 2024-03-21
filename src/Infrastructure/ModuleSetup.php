@@ -26,7 +26,7 @@ class ModuleSetup
 
     public function runSetup(): void
     {
-        $this->moduleConfiguration->saveSignatureKey();
+        $this->moduleConfiguration->generateAndSaveSignatureKey();
     }
 
     /**

@@ -19,7 +19,8 @@ class Login
     }
 
     /**
-     * retrieve a JWT for authentication of further requests
+     * Query of Base Module.
+     * Retrieve a JWT for authentication of further requests
      *
      * @Query
      */
