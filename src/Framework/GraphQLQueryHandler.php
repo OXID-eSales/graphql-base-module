@@ -57,7 +57,7 @@ class GraphQLQueryHandler
         );
         $result->setErrorFormatter($this->getErrors());
         $this->responseWriter->renderJsonResponse(
-            $result->toArray(DebugFlag::INCLUDE_DEBUG_MESSAGE)
+            $result->toArray()
         );
     }
 
