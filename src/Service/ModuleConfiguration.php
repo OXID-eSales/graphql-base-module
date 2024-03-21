@@ -68,7 +68,7 @@ class ModuleConfiguration
         return $signature;
     }
 
-    public function saveSignatureKey(): void
+    public function generateAndSaveSignatureKey(): void
     {
         $this->moduleSettingService->saveString(
             static::SIGNATUREKEYNAME,

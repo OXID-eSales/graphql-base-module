@@ -55,7 +55,7 @@ class GraphQLQueryHandler
         $result = $this->executeQuery(
             $this->requestReader->getGraphQLRequestData()
         );
-        $result->setErrorFormatter($this->getErrors());
+        $result->setErrorFormatter($this->getErrorFormatter());
         $this->responseWriter->renderJsonResponse(
             $result->toArray()
         );
@@ -110,7 +110,7 @@ class GraphQLQueryHandler
         self::$errors[] = $e;
     }
 
-    private function getErrors(): \Closure
+    private function getErrorFormatter(): \Closure
     {
         return function (Error $error) {
             $this->logger->error($error->getMessage(), [$error]);
