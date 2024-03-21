@@ -113,7 +113,7 @@ class GraphQLQueryHandler
     private function getErrors(): \Closure
     {
         return function (Error $error) {
-            $this->logger->error((string)$error);
+            $this->logger->error($error->getMessage(), [$error]);
 
             return FormattedError::createFromException($error);
         };
