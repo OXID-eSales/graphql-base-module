@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [8.0.2] - Unreleased
+## [8.1.0] - Unreleased
 
 ### Changed
 - Replace webmozart/path-util usage with symfony/filesystem
 - Order of DataType-methods for alphabetic order in schema
 - Set DebugFlag for error output to default
+- extract logging error formatter to new method
+- extract save of module signature from `OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup` to `OxidEsales\GraphQL\Base\Service\ModuleConfiguration`
 
 ### Added
 - Workflow trigger to update schema in documentation
