@@ -86,6 +86,9 @@ class GraphQLQueryHandler
         return $result;
     }
 
+    /**
+     * @deprecated Exceptions should be thrown instead of using this method
+     */
     public static function addError(Error $error): void
     {
         self::$errors[] = $error;
