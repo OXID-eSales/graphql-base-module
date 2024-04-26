@@ -40,9 +40,6 @@ class ModuleSetup
         /** @var ModuleSetup $moduleSetup */
         $moduleSetup = $container->get(self::class);
         $moduleSetup->runSetup();
-
-        // execute module migrations
-        self::executeModuleMigrations();
     }
 
     /**
@@ -50,21 +47,5 @@ class ModuleSetup
      */
     public static function onDeactivate(): void
     {
-    }
-
-    /**
-     * Execute necessary module migrations on activate event
-     */
-    private static function executeModuleMigrations(): void
-    {
-        $migrations = (new MigrationsBuilder())->build();
-
-        $output = new BufferedOutput();
-        $migrations->setOutput($output);
-        $needsUpdate = $migrations->execute('migrations:up-to-date', 'oe_graphql_base');
-
-        if ($needsUpdate) {
-            $migrations->execute('migrations:migrate', 'oe_graphql_base');
-        }
     }
 }
