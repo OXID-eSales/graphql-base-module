@@ -1,4 +1,4 @@
-name: Schedule for graphql base module
+name: Scheduled weekly run
 
 on:
     schedule:
@@ -7,7 +7,7 @@ on:
 jobs:
     p80m57both:
         name: 'Php-8.0-Mysql-5.7'
-        uses: ./.github/workflows/development.yml
+        uses: ./.github/workflows/dispatch_module.yml
         secrets: inherit
         with:
             php: '8.0'

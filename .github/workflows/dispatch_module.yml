@@ -1,4 +1,4 @@
-name: Development
+name: Manual trigger for testing github actions development
 
 on:
     workflow_call:
