@@ -22,4 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Issues reported by PHP MD
 
+### Removed
+- Migration trigger on module activation
+
 [9.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v8.0.1...b-7.1.x

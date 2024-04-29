@@ -36,10 +36,16 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.0.0` co
 $ composer require oxid-esales/graphql-base ^8.0.0
 ```
 
+You need to run migrations after the installation was successfully executed:
+
+```bash
+$ vendor/bin/oe-eshop-doctrine_migration migration:migrate oe_graphql_base
+```
+
 After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
 
 ```bash
-$ ./bin/oe-console oe:module:activate oe_graphql_base
+$ bin/oe-console oe:module:activate oe_graphql_base
 ```
 
 ### How to use
