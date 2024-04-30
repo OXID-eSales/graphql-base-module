@@ -24,6 +24,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.0.0` co
 
 ## Branch Compatibility
 
+* b-7.1.x branch is compatible with OXID eShop compilation b-7.1.x
 * 8.x versions (or b-7.0.x branch) are compatible with latest shop compilation: 7.0.x resp. b-7.0.x shop compilation branches
 * 7.x versions (or b-6.5.x branch) are compatible with latest shop compilations: 6.5.x resp. b-6.5.x shop compilation branches
 * 6.x versions (or b-6.4.x branch) are compatible with latest shop compilations: 6.4.x resp. b-6.4.x shop compilation branches
@@ -36,10 +37,10 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.0.0` co
 $ composer require oxid-esales/graphql-base ^8.0.0
 ```
 
-You need to run migrations after the installation was successfully executed:
+You should run migrations both after installing the module and after each module update:
 
 ```bash
-$ vendor/bin/oe-eshop-doctrine_migration migration:migrate oe_graphql_base
+$ vendor/bin/oe-eshop-doctrine_migration migrations:migrate oe_graphql_base
 ```
 
 After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
