@@ -36,12 +36,12 @@ jobs:
                        ;;
                   esac
                   # shellcheck disable=SC2088
-                  TESTPLAN="~/defaults/7.1.x.yml,${LIMIT}~/module-graphql-base.yml"
+                  TESTPLAN="~/defaults/7.1.x.yml,${LIMIT}~/graphql-base.yml"
                   echo "testplan=${TESTPLAN}" | tee -a "${GITHUB_OUTPUT}"
 
     dispatch_stable:
         needs: build_testplan
-        uses: oxid-eSales/github-actions/.github/workflows/call-universal_test_workflow.yml@v4
+        uses: oxid-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
         with:
             testplan: ${{ needs.build_testplan.outputs.testplan }}
             runs_on: '"ubuntu-latest"'
