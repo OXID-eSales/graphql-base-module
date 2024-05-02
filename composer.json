@@ -28,7 +28,14 @@
         "oxid-esales/oxideshop-ce": "dev-b-7.1.x",
         "phpstan/phpstan": "^1.10",
         "squizlabs/php_codesniffer": "3.*",
-        "phpmd/phpmd": "^2.11"
+        "phpmd/phpmd": "^2.11",
+        "mikey179/vfsstream": "~1.6.8",
+        "codeception/module-rest": "*",
+        "codeception/module-phpbrowser": "*",
+        "codeception/module-db": "*",
+        "codeception/codeception": "^5.0",
+        "oxid-esales/codeception-modules": "dev-b-7.1.x",
+        "codeception/module-asserts": "^3.0"
     },
     "autoload": {
         "psr-4": {
@@ -39,15 +46,15 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "phpcs": "phpcs --standard=tests/phpcs.xml",
-        "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=phpcs.report.json",
+        "phpcs": "phpcs --standard=tests/phpcs.xml --report=full",
+        "phpcs-report": "phpcs --standard=tests/phpcs.xml --report=json --report-file=tests/Reports/phpcs.report.json",
         "phpcbf": "phpcbf --standard=tests/phpcs.xml",
 
         "phpstan": "phpstan -ctests/PhpStan/phpstan.neon analyse src/",
-        "phpstan-report": "phpstan -ctests/PhpStan/phpstan.neon analyse src/ --error-format=json > phpstan.report.json",
+        "phpstan-report": "phpstan -ctests/PhpStan/phpstan.neon analyse src/ --error-format=json >  tests/Reports/phpstan.report.json",
 
-        "phpmd": "phpmd src ansi tests/PhpMd/exclude-static-access-rule.xml --ignore-errors-on-exit --ignore-violations-on-exit",
-        "phpmd-report": "phpmd src json tests/PhpMd/exclude-static-access-rule.xml --ignore-errors-on-exit --ignore-violations-on-exit --reportfile phpmd.report.json",
+        "phpmd": "phpmd src ansi tests/PhpMd/standard.xml",
+        "phpmd-report": "phpmd src json cleancode,codesize,design,naming,unusedcode --reportfile tests/Reports/phpmd.report.json",
 
         "static": [
             "@phpcs",
@@ -55,23 +62,21 @@
             "@phpmd"
         ],
 
-        "phpunit": "vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/",
-        "phpunit-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/reports/coverage",
+        "tests-unit": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Unit --coverage-clover=tests/Reports/coverage_unit_graphql-base.xml",
+        "tests-integration": "XDEBUG_MODE=coverage vendor/bin/phpunit --bootstrap=/var/www/source/bootstrap.php --config=tests/ --testsuite=Integration --coverage-clover=tests/Reports/coverage_integration_graphql-base.xml",
+        "tests-coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text --bootstrap=/var/www/source/bootstrap.php --config=tests/ --coverage-html=tests/reports/coverage",
 
-        "codeception": [
+        "tests-codeception": [
             "Composer\\Config::disableProcessTimeout",
-            "MODULE_IDS=oe_graphql_base /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml --no-redirect"
-        ],
-        "codeception-coverage": [
-            "Composer\\Config::disableProcessTimeout",
-            "MODULE_IDS=oe_graphql_base /var/www/vendor/bin/codecept run Acceptance -c /var/www/vendor/oxid-esales/graphql-base/tests/codeception.yml --no-redirect --coverage"
+            "MODULE_IDS=oe_graphql_base SHOP_ROOT_PATH=/var/www vendor/bin/codecept run Acceptance -c tests/codeception.yml --no-redirect"
         ]
+
     },
     "config": {
         "allow-plugins": {
             "infection/extension-installer": true,
             "oxid-esales/oxideshop-unified-namespace-generator": true,
-            "oxid-esales/oxideshop-composer-plugin": true
+            "oxid-esales/oxideshop-composer-plugin": false
         }
     }
 }
