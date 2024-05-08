@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class InvalidArgument extends Error
+class InvalidArgumentMultiplePossible extends Error
 {
-    public function __construct(array $validEquals, string $invalidEqual) {
-        $message = '"equals" is only allowed to be one of "' .
-                implode(', ', $validEquals) . '"  was "' . $invalidEqual . '"';
+    public function __construct(string $field, array $validValues, string $invalidValue) {
+        $message = '"'.$field.'" is only allowed to be one of "' .
+                implode(', ', $validValues) . '", was "' . $invalidValue . '"';
 
         parent::__construct($message);
     }

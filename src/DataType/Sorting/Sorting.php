@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Sorting;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
+use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
 
 abstract class Sorting
 {
@@ -33,9 +34,7 @@ abstract class Sorting
                 $val !== self::SORTING_DESC &&
                 $val !== self::SORTING_ASC
             ) {
-                throw new InvalidArgumentException(
-                    '"' . $field . '" is only allowed to be one of ASC, DESC, was "' . $val . '"'
-                );
+                throw new InvalidArgumentMultiplePossible($field, ['ASC', 'DESC'], $val);
             }
         }
     }

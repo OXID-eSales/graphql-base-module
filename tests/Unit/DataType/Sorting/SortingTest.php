@@ -10,16 +10,17 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Sorting;
 
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
-use Exception;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
+use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 
 class SortingTest extends DataTypeTestCase
 {
     public function testThrowsExceptionOnInvalidInput(): void
     {
-        $this->expectException(Exception::class);
+        $this->expectException(InvalidArgumentMultiplePossible::class);
+        $this->expectExceptionMessage('"foo" is only allowed to be one of "ASC, DESC", was "bar"');
         new class (['foo' => 'bar']) extends Sorting {
         };
     }
@@ -99,8 +100,8 @@ class SortingTest extends DataTypeTestCase
 
     public function testFailOnWrongSortingConfiguration(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('"foo" is only allowed to be one of ASC, DESC, was "x"');
+        $this->expectException(InvalidArgumentMultiplePossible::class);
+        $this->expectExceptionMessage('"foo" is only allowed to be one of "ASC, DESC", was "x"');
         new class (['foo' => 'x']) extends Sorting {
         };
     }
