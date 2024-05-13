@@ -11,8 +11,9 @@ namespace OxidEsales\GraphQL\Base\Exception;
 
 class InvalidArgumentMultiplePossible extends Error
 {
-    public function __construct(string $field, array $validValues, string $invalidValue) {
-        $message = '"'.$field.'" is only allowed to be one of "' .
+    public function __construct(string $field, array $validValues, string $invalidValue)
+    {
+        $message = '"' . $field . '" is only allowed to be one of "' .
                 implode(', ', $validValues) . '", was "' . $invalidValue . '"';
 
         parent::__construct($message);

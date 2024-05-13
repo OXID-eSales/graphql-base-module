@@ -13,7 +13,6 @@ use OxidEsales\GraphQL\Base\Exception\ErrorCategories;
 use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
 use PHPUnit\Framework\TestCase;
 
-
 final class InvalidArgumentTest extends TestCase
 {
     public function testExceptionCategory(): void
@@ -21,7 +20,9 @@ final class InvalidArgumentTest extends TestCase
         $invalidArgumentException = new InvalidArgumentMultiplePossible('field', ['VALID', 'EQUALS'], 'INVALID_EQUALS');
 
         $this->assertSame(ErrorCategories::REQUESTERROR, $invalidArgumentException->getCategory());
-        $this->assertSame($invalidArgumentException->getMessage(),
-            '"field" is only allowed to be one of "VALID, EQUALS", was "INVALID_EQUALS"');
+        $this->assertSame(
+            $invalidArgumentException->getMessage(),
+            '"field" is only allowed to be one of "VALID, EQUALS", was "INVALID_EQUALS"'
+        );
     }
 }

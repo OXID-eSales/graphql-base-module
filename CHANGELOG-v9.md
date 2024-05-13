@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Missing type signatures in
+  - `Exception\InvalidArgumentMultiplePossible` class
   - `Infrastructure\Legacy` class
   - `Service\Authorization::isAllowed` method
   - `Service\Token::getTokenClaim` method
