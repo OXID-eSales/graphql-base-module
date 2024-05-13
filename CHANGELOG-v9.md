@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade Codeception and PHPUnit versions
 - Logo
 - Update GraphQLite version to ^6.2
+- Use ClientAware-Exception if `DataType\Sorting` "sorting" parameter is invalid
 
 ### Added
 - Missing type signatures in
