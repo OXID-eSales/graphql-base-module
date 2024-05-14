@@ -1,0 +1,19 @@
+name: Trigger schema workflow
+
+on:
+    push:
+        tags: [ v9.* ]
+
+jobs:
+    documentation_schema:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Trigger schema generation in documentation
+              uses: convictional/trigger-workflow-and-wait@v1.6.5
+              with:
+                  owner: oxid-esales
+                  repo: oxapi-documentation
+                  github_user: ${{ secrets.CI_USER }}
+                  github_token: ${{ secrets.GH_CI_JENKINS_TOKEN }}
+                  workflow_file_name: schema.yml
+                  ref: "9.0-en-OXDEV-8206"
