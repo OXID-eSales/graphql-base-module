@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use DateTimeImmutable;
+use Doctrine\DBAL\Connection;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
@@ -59,6 +60,26 @@ class Token
             ]);
 
         $queryBuilder->execute();
+    }
+
+    public function cleanUpTokens(): void
+    {
+        /** @var \Doctrine\DBAL\Driver\Statement $execute */
+        $execute = $this->queryBuilderFactory->create()
+            ->select('t.oxid')
+            ->from('oegraphqltoken', 't')
+            ->leftJoin('t', 'oxuser', 'u', 't.oxuserid = u.oxid')
+            ->where('u.oxid is NULL')
+            ->execute();
+        $tokenIds = $execute->fetchAll(PDO::FETCH_COLUMN);
+
+        if (!empty($tokenIds)) {
+            $queryBuilder = $this->queryBuilderFactory->create();
+            $queryBuilder->delete('oegraphqltoken')
+                ->where($queryBuilder->expr()->in('oxid', ':ids'))
+                ->setParameter('ids', $tokenIds, Connection::PARAM_STR_ARRAY);
+            $queryBuilder->execute();
+        }
     }
 
     public function canIssueToken(UserDataType $user, int $quota): bool
