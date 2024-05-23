@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `Infrastructure\Legacy` class
   - `Service\Authorization::isAllowed` method
   - `Service\Token::getTokenClaim` method
+- Clean up orphaned tokens after user deletion
 
 ### Fixed
 - Issues reported by PHP MD
