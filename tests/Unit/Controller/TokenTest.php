@@ -82,6 +82,16 @@ class TokenTest extends BaseTestCase
         $tokenController->customerTokensDelete(new ID('someUserId'));
     }
 
+    public function testTokenDelete(): void
+    {
+        $authorization = $this->createPartialMock(Authorization::class, ['isAllowed']);
+        $authorization->method('isAllowed')
+            ->willReturn(true);
+
+        $tokenController = $this->getTokenController(null, null, $authorization);
+        $tokenController->tokenDelete(new ID('someTokenId'));
+    }
+
     private function getTokenController(
         ?TokenAdministration $tokenAdministration = null,
         ?Authentication $authentication = null,
