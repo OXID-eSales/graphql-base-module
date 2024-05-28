@@ -37,6 +37,9 @@
         "oxid-esales/codeception-modules": "dev-b-7.1.x",
         "codeception/module-asserts": "^3.0"
     },
+  "conflict": {
+    "oxid-esales/oxideshop-ce": "<7.1"
+  },
     "autoload": {
         "psr-4": {
             "OxidEsales\\GraphQL\\Base\\": "src",
