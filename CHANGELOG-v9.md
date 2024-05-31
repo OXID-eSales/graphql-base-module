@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use ClientAware-Exception if `DataType\Sorting` "sorting" parameter is invalid
 
 ### Added
+- PHP 8.2
+- Upgraded to work with shop compilation 7.1.0
 - Missing type signatures in
   - `Exception\InvalidArgumentMultiplePossible` class
   - `Infrastructure\Legacy` class
@@ -26,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issues reported by PHP MD
 
 ### Removed
+- PHP 8.0 support
 - Migration trigger on module activation
 
 [9.0.0-rc.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v8.1.1...9.0.0-rc.1
