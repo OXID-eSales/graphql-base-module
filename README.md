@@ -49,6 +49,14 @@ After requiring the module, you need to activate it, either via OXID eShop admin
 $ bin/oe-console oe:module:activate oe_graphql_base
 ```
 
+### Update
+
+If you when to update this module from older version to new version. Then run below command to ensure that all dependencies including in the composer.lock are updated that are compatible with each other.
+
+```bash
+$ composer update --with-all-dependencies
+```
+
 ### How to use
 
 You can use your favourite GraphQL client to explore the API, if you do not
