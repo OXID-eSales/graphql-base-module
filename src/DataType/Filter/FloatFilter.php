@@ -62,7 +62,7 @@ class FloatFilter extends AbstractNumberFilter implements FilterInterface
         ?float $greaterThan = null,
         ?array $between = null
     ): self {
-        self::checkRangeOfBetween($between);
+        self::checkRangeOfBetween($between, 'is_float');
 
         /** @var array{0: float, 1: float} $between */
         return new self(

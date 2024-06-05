@@ -62,7 +62,7 @@ class IntegerFilter extends AbstractNumberFilter implements FilterInterface
         ?int $greaterThan = null,
         ?array $between = null
     ): self {
-        self::checkRangeOfBetween($between);
+        self::checkRangeOfBetween($between, 'is_int');
 
         /** @var array{0: int, 1: int} $between */
         return new self(

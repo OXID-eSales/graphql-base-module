@@ -15,9 +15,9 @@ use OutOfBoundsException;
 
 abstract class AbstractNumberFilter
 {
-    abstract public function equals();
-    abstract public function lessThan();
-    abstract public function greaterThan();
+    abstract public function equals(): mixed;
+    abstract public function lessThan(): mixed;
+    abstract public function greaterThan(): mixed;
     abstract public function between(): ?array;
 
     public function addToQuery(QueryBuilder $builder, string $field): void
@@ -56,12 +56,13 @@ abstract class AbstractNumberFilter
     }
 
     protected static function checkRangeOfBetween(?array $between): void
+    protected static function checkRangeOfBetween(?array $between, string $checkMethod): void
     {
         if (
             $between !== null && (
                 count($between) !== 2 ||
-                !is_int($between[0]) ||
-                !is_int($between[1])
+                !$checkMethod($between[0]) ||
+                !$checkMethod($between[1])
             )
         ) {
             throw new OutOfBoundsException();
