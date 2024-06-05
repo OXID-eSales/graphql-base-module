@@ -23,7 +23,7 @@ class FloatFilter extends AbstractNumberFilter implements FilterInterface
         private readonly ?float $greaterThan = null,
         private readonly ?array $between = null
     ) {
-        if (!isset($equals, $lessthan, $greaterThan, $between)) {
+        if (!$this->atLeastOneIsNotNull($equals, $lessThan, $greaterThan, $between)) {
             throw new Error('At least one field for type FloatFilter must be provided');
         }
     }

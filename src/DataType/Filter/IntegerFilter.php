@@ -23,7 +23,7 @@ class IntegerFilter extends AbstractNumberFilter implements FilterInterface
         private readonly ?int $greaterThan = null,
         private readonly ?array $between = null
     ) {
-        if (!isset($equals, $lessthan, $greaterThan, $between)) {
+        if (!$this->atLeastOneIsNotNull($equals, $lessThan, $greaterThan, $between)) {
             throw new Error('At least one field for type IntegerFilter must be provided');
         }
     }

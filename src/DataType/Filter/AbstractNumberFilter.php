@@ -55,7 +55,15 @@ abstract class AbstractNumberFilter
         }
     }
 
-    protected static function checkRangeOfBetween(?array $between): void
+    protected function atLeastOneIsNotNull(...$values): bool
+    {
+        $result = array_map('is_null', $values);
+        if (in_array(false, $result, true)) {
+            return true;
+        }
+        return false;
+    }
+
     protected static function checkRangeOfBetween(?array $between, string $checkMethod): void
     {
         if (
