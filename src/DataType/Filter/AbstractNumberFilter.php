@@ -55,7 +55,7 @@ abstract class AbstractNumberFilter
         }
     }
 
-    protected function atLeastOneIsNotNull(...$values): bool
+    protected function atLeastOneIsNotNull(array ...$values): bool
     {
         $result = array_map('is_null', $values);
         if (in_array(false, $result, true)) {
