@@ -6,9 +6,9 @@ on:
 
 jobs:
     call_matrix:
-        uses: OXID-eSales/github-actions/.github/workflows/universal_workflow_light.yml@v4
+        uses: OXID-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
         with:
-            testplan: '~/defaults/7.1.x.yml,~/defaults/php8.2_mysql8.0_only.yml,~/graphql-base.yml'
+            testplan: '~/defaults/7.1.x.yaml,~/defaults/php8.2_mysql8.0_only.yaml,~/graphql-base.yaml'
             runs_on: '"ubuntu-latest"'
             defaults: 'v4'
             plan_folder: '.github/oxid-esales'
