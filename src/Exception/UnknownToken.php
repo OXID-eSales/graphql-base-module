@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class TokenQuota extends Error
+class UnknownToken extends Error
 {
-    protected const QUOTA_EXCEEDED_MESSAGE = 'Token quota exceeded.';
+    protected const UNKNOWN_TOKEN_MESSAGE = 'The token is not registered';
 
-    public function __construct(string $message = self::QUOTA_EXCEEDED_MESSAGE, array $extensions = [])
+    public function __construct(string $message = self::UNKNOWN_TOKEN_MESSAGE, array $extensions = [])
     {
         parent::__construct(
             message: $message,

@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 use GraphQL\Error\InvariantViolation;
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Exception\UnableToParseToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
@@ -61,7 +62,7 @@ class RequestReaderTest extends BaseTestCase
             $this->createPartialMock(TokenValidator::class, []),
             $this->getJwtConfigurationBuilder($this->getLegacyMock())
         );
-        $this->expectException(InvalidToken::class);
+        $this->expectException(UnableToParseToken::class);
 
         $_SERVER[$headerName] = 'Bearer invalidjwt';
         $requestReader->getAuthToken();

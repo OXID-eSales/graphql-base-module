@@ -13,6 +13,7 @@ use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
+use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
@@ -111,7 +112,7 @@ class TokenTest extends BaseTestCase
     {
         $legacy = $this->createMock(LegacyService::class);
 
-        $this->expectException(InvalidToken::class);
+        $this->expectException(UnknownToken::class);
         $this->expectExceptionMessage('The token is not registered');
 
         $this->getTokenService($legacy)->deleteToken(new ID('not_existing'));
@@ -140,7 +141,7 @@ class TokenTest extends BaseTestCase
         $tokenInfrastructure = $this->createPartialMock(TokenInfrastructure::class, ['userHasToken']);
         $tokenInfrastructure->method('userHasToken')->willReturn(false);
 
-        $this->expectException(InvalidToken::class);
+        $this->expectException(UnknownToken::class);
         $this->expectExceptionMessage('The token is not registered');
 
         $this->getTokenService($legacy, $tokenInfrastructure)->deleteUserToken($user, new ID('not_existing'));
