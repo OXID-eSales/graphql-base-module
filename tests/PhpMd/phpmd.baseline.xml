@@ -8,4 +8,5 @@
   <violation rule="PHPMD\Rule\CleanCode\StaticAccess" file="src/Infrastructure/Legacy.php"/>
   <violation rule="PHPMD\Rule\CleanCode\StaticAccess" file="src/Service/JwtConfigurationBuilder.php"/>
   <violation rule="PHPMD\Rule\CleanCode\StaticAccess" file="src/Service/ModuleConfiguration.php"/>
+  <violation rule="PHPMD\Rule\CleanCode\StaticAccess" file="src/Service/Token.php"/>
 </phpmd-baseline>

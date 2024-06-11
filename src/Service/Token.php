@@ -14,7 +14,6 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
@@ -84,7 +83,7 @@ class Token
             ->withClaim(self::CLAIM_USERNAME, $user->email())
             ->withClaim(self::CLAIM_USERID, $user->id()->val())
             ->withClaim(self::CLAIM_USER_ANONYMOUS, $user->isAnonymous())
-            ->withClaim(self::CLAIM_TOKENID, $this->legacyInfrastructure->createUniqueIdentifier());
+            ->withClaim(self::CLAIM_TOKENID, Legacy::createUniqueIdentifier());
 
         $event = new BeforeTokenCreation($builder, $user);
         $this->eventDispatcher->dispatch(
