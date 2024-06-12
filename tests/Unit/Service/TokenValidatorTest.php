@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Exception\TokenUserBlocked;
+use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
@@ -91,7 +93,7 @@ class TokenValidatorTest extends BaseTestCase
         $token = $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
 
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
-        $this->expectException(InvalidToken::class);
+        $this->expectException(TokenUserBlocked::class);
         $validator->validateToken($token);
     }
 
@@ -140,7 +142,7 @@ class TokenValidatorTest extends BaseTestCase
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
 
         $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken('admin', 'admin');
-        $this->expectException(InvalidToken::class);
+        $this->expectException(UnknownToken::class);
         $validator->validateToken($token);
     }
 

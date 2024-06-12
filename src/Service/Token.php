@@ -14,8 +14,8 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
+use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -105,7 +105,7 @@ class Token
         $tokenId = (string)$tokenId;
 
         if (!$this->tokenInfrastructure->isTokenRegistered($tokenId)) {
-            throw InvalidToken::unknownToken();
+            throw new UnknownToken();
         }
 
         $this->tokenInfrastructure->tokenDelete(null, $tokenId);
@@ -114,7 +114,7 @@ class Token
     public function deleteUserToken(UserDataType $user, ID $tokenId): void
     {
         if (!$this->tokenInfrastructure->userHasToken($user, (string)$tokenId)) {
-            throw InvalidToken::unknownToken();
+            throw new UnknownToken();
         }
 
         $this->tokenInfrastructure->tokenDelete($user, (string)$tokenId);
@@ -137,7 +137,7 @@ class Token
             !$user->isAnonymous() &&
             !$this->tokenInfrastructure->canIssueToken($user, $this->moduleConfiguration->getUserTokenQuota())
         ) {
-            throw TokenQuota::quotaExceeded();
+            throw new TokenQuota();
         }
     }
 

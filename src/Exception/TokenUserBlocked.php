@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class TokenQuota extends Error
+class TokenUserBlocked extends Error
 {
-    protected const QUOTA_EXCEEDED_MESSAGE = 'Token quota exceeded.';
+    protected const USER_BLOCKED_MESSAGE = 'User is blocked';
 
-    public function __construct(string $message = self::QUOTA_EXCEEDED_MESSAGE, array $extensions = [])
+    public function __construct(string $message = self::USER_BLOCKED_MESSAGE, array $extensions = [])
     {
         parent::__construct(
             message: $message,

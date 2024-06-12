@@ -11,6 +11,8 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Exception\TokenUserBlocked;
+use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 
@@ -40,15 +42,15 @@ class TokenValidator
     public function validateToken(UnencryptedToken $token): void
     {
         if (!$this->areConstraintsValid($token)) {
-            throw InvalidToken::invalidToken();
+            throw new InvalidToken();
         }
 
         if (!$token->claims()->get(Token::CLAIM_USER_ANONYMOUS) && !$this->isRegistered($token)) {
-            throw InvalidToken::unknownToken();
+            throw new UnknownToken();
         }
 
         if ($this->isUserBlocked($token->claims()->get(Token::CLAIM_USERID))) {
-            throw InvalidToken::userBlocked();
+            throw new TokenUserBlocked();
         }
     }
 

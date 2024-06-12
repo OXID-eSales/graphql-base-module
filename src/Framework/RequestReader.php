@@ -14,7 +14,7 @@ use GraphQL\Upload\UploadMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Exception\UnableToParseToken;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 
@@ -23,7 +23,6 @@ use function array_change_key_case;
 use function file_get_contents;
 use function json_decode;
 use function sscanf;
-use function strpos;
 use function trim;
 
 class RequestReader
@@ -37,7 +36,7 @@ class RequestReader
     /**
      * Returns the encoded token from the authorization header
      *
-     * @throws InvalidToken
+     * @throws UnableToParseToken
      */
     public function getAuthToken(): ?UnencryptedToken
     {
@@ -61,7 +60,7 @@ class RequestReader
             /** @var UnencryptedToken $token */
             $token = $jwtConfig->parser()->parse($jwt);
         } catch (Exception) {
-            throw InvalidToken::unableToParse();
+            throw new UnableToParseToken();
         }
 
         $this->tokenValidator->validateToken($token);

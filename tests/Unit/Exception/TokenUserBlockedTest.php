@@ -10,29 +10,29 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Exception;
 
 use OxidEsales\GraphQL\Base\Exception\ErrorCategories;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Exception\TokenUserBlocked;
 use PHPUnit\Framework\TestCase;
 
-final class InvalidTokenTest extends TestCase
+final class TokenUserBlockedTest extends TestCase
 {
     public function testExceptionCategory(): void
     {
-        $invalidTokenException = new InvalidToken();
+        $invalidTokenException = new TokenUserBlocked();
 
         $this->assertSame(ErrorCategories::PERMISSIONERRORS, $invalidTokenException->getCategory());
     }
 
     public function testIsClientSafe(): void
     {
-        $invalidTokenException = new InvalidToken();
+        $invalidTokenException = new TokenUserBlocked();
 
         $this->assertTrue($invalidTokenException->isClientSafe());
     }
 
-    public function testInvalidToken(): void
+    public function testUserBlocked(): void
     {
-        $invalidTokenException = new InvalidToken();
+        $invalidTokenException = new TokenUserBlocked();
 
-        $this->assertSame('The token is invalid', $invalidTokenException->getMessage());
+        $this->assertSame('User is blocked', $invalidTokenException->getMessage());
     }
 }

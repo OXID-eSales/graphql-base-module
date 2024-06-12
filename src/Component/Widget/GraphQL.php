@@ -14,6 +14,7 @@ use OxidEsales\Eshop\Application\Component\Widget\WidgetController;
 use OxidEsales\Eshop\Core\Registry as EshopRegistry;
 use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
 use OxidEsales\GraphQL\Base\Exception\Error;
+use OxidEsales\GraphQL\Base\Exception\ErrorCategories;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -99,6 +100,6 @@ class GraphQL extends WidgetController
 
     private function isAuthenticated(Error $error): bool
     {
-        return !($error instanceof InvalidLogin || $error instanceof InvalidToken);
+        return $error->getCategory() !== ErrorCategories::PERMISSIONERRORS;
     }
 }

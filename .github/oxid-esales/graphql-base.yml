@@ -47,7 +47,8 @@ runslim:
         script: |
             [
               "graphql_base:phpcs",
-              "graphql_base:phpstan"
+              "graphql_base:phpstan",
+              "graphql_base:phpmd"
             ]
 
 sonarcloud:
