@@ -15,5 +15,5 @@ jobs:
                   repo: oxapi-documentation
                   github_user: ${{ secrets.CI_USER }}
                   github_token: ${{ secrets.GH_CI_JENKINS_TOKEN }}
-                  workflow_file_name: schema.yml
+                  workflow_file_name: schema.yaml
                   ref: "9.0-en"
