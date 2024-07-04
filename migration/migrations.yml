@@ -1,4 +1,4 @@
 table_storage:
-    table_name: oxmigrations_graphql_base
+  table_name: oxmigrations_graphql_base
 migrations_paths:
-    'OxidEsales\GraphQL\Base\Migrations': data
+  'OxidEsales\GraphQL\Base\Migrations': data

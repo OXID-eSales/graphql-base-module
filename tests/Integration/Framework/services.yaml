@@ -1,21 +1,21 @@
 services:
 
-    _defaults:
-        public: false
-        autowire: true
+  _defaults:
+    public: false
+    autowire: true
 
-    OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController:
-        class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController
-        public: true
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Controller\TestController
+    public: true
 
-    OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilterFactory:
-        class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilterFactory
-        public: true
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilterFactory:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\DataType\TestFilterFactory
+    public: true
 
-    OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper:
-        class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper
-        tags: [ 'graphql_namespace_mapper' ]
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\NamespaceMapper
+    tags: [ 'graphql_namespace_mapper' ]
 
-    OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider:
-        class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider
-        tags: [ 'graphql_permission_provider' ]
+  OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider:
+    class: OxidEsales\GraphQL\Base\Tests\Integration\Framework\Service\PermissionProvider
+    tags: [ 'graphql_permission_provider' ]

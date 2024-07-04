@@ -31,7 +31,7 @@ services:
     public: true
 
   Lcobucci\JWT\UnencryptedToken:
-    factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReader', 'getAuthToken']
+    factory: [ '@OxidEsales\GraphQL\Base\Framework\RequestReader', 'getAuthToken' ]
 
   OxidEsales\GraphQL\Base\Service\Authentication:
     class: OxidEsales\GraphQL\Base\Service\Authentication
@@ -42,24 +42,24 @@ services:
     public: true
 
   OxidEsales\GraphQL\Base\Service\TokenValidator:
-      class: OxidEsales\GraphQL\Base\Service\TokenValidator
+    class: OxidEsales\GraphQL\Base\Service\TokenValidator
 
   OxidEsales\GraphQL\Base\Service\TokenAdministration:
-      class: OxidEsales\GraphQL\Base\Service\TokenAdministration
+    class: OxidEsales\GraphQL\Base\Service\TokenAdministration
 
   OxidEsales\GraphQL\Base\Infrastructure\Legacy:
     class: OxidEsales\GraphQL\Base\Infrastructure\Legacy
 
   OxidEsales\GraphQL\Base\Infrastructure\Token:
-      class: OxidEsales\GraphQL\Base\Infrastructure\Token
+    class: OxidEsales\GraphQL\Base\Infrastructure\Token
 
   OxidEsales\GraphQL\Base\Infrastructure\Repository:
-      class: OxidEsales\GraphQL\Base\Infrastructure\Repository
+    class: OxidEsales\GraphQL\Base\Infrastructure\Repository
 
   OxidEsales\GraphQL\Base\Service\Authorization:
     class: OxidEsales\GraphQL\Base\Service\Authorization
     arguments:
-        $permissionProviders: !tagged graphql_permission_provider
+      $permissionProviders: !tagged graphql_permission_provider
 
   OxidEsales\GraphQL\Base\Controller\:
     resource: 'src/Controller/'
@@ -67,7 +67,7 @@ services:
 
   OxidEsales\GraphQL\Base\Service\NamespaceMapper:
     class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
-    tags: ['graphql_namespace_mapper']
+    tags: [ 'graphql_namespace_mapper' ]
 
   OxidEsales\GraphQL\Base\Framework\SchemaFactory:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
@@ -82,7 +82,7 @@ services:
     arguments:
       $cache: '@oxidesales.graphqlbase.cache'
     tags:
-      - {name: kernel.event_subscriber}
+      - { name: kernel.event_subscriber }
 
   OxidEsales\GraphQL\Base\Event\Subscriber\UserDeleteSubscriber:
     class: OxidEsales\GraphQL\Base\Event\Subscriber\UserDeleteSubscriber
@@ -97,5 +97,5 @@ services:
       $pool: '@oxidesales.graphqlbase.cacheadapter'
 
   OxidEsales\GraphQL\Base\Service\PermissionProvider:
-      class: OxidEsales\GraphQL\Base\Service\PermissionProvider
-      tags: [ 'graphql_permission_provider' ]
+    class: OxidEsales\GraphQL\Base\Service\PermissionProvider
+    tags: [ 'graphql_permission_provider' ]
