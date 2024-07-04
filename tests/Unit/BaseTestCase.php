@@ -10,10 +10,15 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit;
 
 use OxidEsales\Eshop\Application\Model\User as UserModel;
+use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDatatype;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken as RefreshTokenModel;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\Login as LoginService;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
+use OxidEsales\GraphQL\Base\Service\RefreshToken as RefreshTokenService;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use PHPUnit\Framework\TestCase;
@@ -78,6 +83,28 @@ abstract class BaseTestCase extends TestCase
         );
     }
 
+    protected function getRefreshTokenService(
+        $refreshTokenInfra = null,
+        string $lifetime = '+8 hours'
+    ): RefreshTokenService {
+        return new RefreshTokenService(
+            $refreshTokenInfra ?: $this->getRefreshRepositoryMock(),
+            $this->getModuleConfigurationMock($lifetime)
+        );
+    }
+
+    protected function getLoginService(
+        $legacy,
+        $refreshTokenService = null,
+        $accessTokenService = null
+    ): LoginService {
+        return new LoginService(
+            $legacy,
+            $accessTokenService ?: $this->getTokenService($legacy),
+            $refreshTokenService ?: $this->getRefreshTokenService()
+        );
+    }
+
     protected function getTokenInfrastructureMock(): TokenInfrastructure
     {
         $mock = $this->createPartialMock(
@@ -85,6 +112,26 @@ abstract class BaseTestCase extends TestCase
             ['registerToken', 'isTokenRegistered', 'removeExpiredTokens', 'canIssueToken']
         );
         $mock->method('canIssueToken')->willReturn(true);
+
+        return $mock;
+    }
+
+    protected function getRefreshRepositoryMock(): RefreshTokenRepository
+    {
+        $mock = $this->createPartialMock(
+            RefreshTokenRepository::class,
+            [
+                'registerToken',
+                'isTokenRegistered',
+                'removeExpiredTokens',
+                'canIssueToken',
+                'getTokenUser',
+            ]
+        );
+
+        $mock->method('registerToken')->willReturn(new RefreshTokenDatatype(new RefreshTokenModel()));
+        $mock->method('canIssueToken')->willReturn(true);
+        $mock->method('getTokenUser')->willReturn(new UserDataType(new UserModel()));
 
         return $mock;
     }

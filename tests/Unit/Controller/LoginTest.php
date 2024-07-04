@@ -71,7 +71,10 @@ class LoginTest extends BaseTestCase
 
         $this->legacy->method('login')->with($username, $password)->willReturn($user);
 
-        $loginController = new Login($this->tokenService);
+        $loginController = new Login(
+            $this->tokenService,
+            $this->getLoginService($this->legacy)
+        );
 
         $jwt = $loginController->token($username, $password);
         $config = $this->jwtConfigurationBuilder->getConfiguration();
@@ -91,7 +94,10 @@ class LoginTest extends BaseTestCase
             new User($this->getUserModelStub('someRandomId'), true)
         );
 
-        $loginController = new Login($this->tokenService);
+        $loginController = new Login(
+            $this->tokenService,
+            $this->getLoginService($this->legacy)
+        );
 
         $jwt = $loginController->token('none');
         $config = $this->jwtConfigurationBuilder->getConfiguration();
@@ -116,7 +122,10 @@ class LoginTest extends BaseTestCase
             new User($this->getUserModelStub('someRandomId'), true)
         );
 
-        $loginController = new Login($this->tokenService);
+        $loginController = new Login(
+            $this->tokenService,
+            $this->getLoginService($this->legacy)
+        );
 
         $jwt = $loginController->token(null, 'none');
         $config = $this->jwtConfigurationBuilder->getConfiguration();
@@ -141,7 +150,10 @@ class LoginTest extends BaseTestCase
             new User($this->getUserModelStub('someRandomId'), true)
         );
 
-        $loginController = new Login($this->tokenService);
+        $loginController = new Login(
+            $this->tokenService,
+            $this->getLoginService($this->legacy)
+        );
 
         $jwt = $loginController->token();
         $config = $this->jwtConfigurationBuilder->getConfiguration();

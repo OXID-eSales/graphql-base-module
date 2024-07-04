@@ -41,6 +41,14 @@ services:
     class: OxidEsales\GraphQL\Base\Service\Token
     public: true
 
+  OxidEsales\GraphQL\Base\Service\RefreshToken:
+    class: OxidEsales\GraphQL\Base\Service\RefreshToken
+    public: true
+
+  OxidEsales\GraphQL\Base\Service\Login:
+    class: OxidEsales\GraphQL\Base\Service\Login
+    public: true
+
   OxidEsales\GraphQL\Base\Service\TokenValidator:
     class: OxidEsales\GraphQL\Base\Service\TokenValidator
 
@@ -52,6 +60,9 @@ services:
 
   OxidEsales\GraphQL\Base\Infrastructure\Token:
     class: OxidEsales\GraphQL\Base\Infrastructure\Token
+
+  OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository:
+      class: OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository
 
   OxidEsales\GraphQL\Base\Infrastructure\Repository:
     class: OxidEsales\GraphQL\Base\Infrastructure\Repository

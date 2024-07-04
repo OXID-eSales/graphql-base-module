@@ -62,6 +62,16 @@ class Token
     }
 
     /**
+     * retrieve a JWT for authentication of further requests
+     *
+     * @Query
+     */
+    public function refresh(string $refreshToken, string $fingerprint): string
+    {
+        return $this->tokenService->createToken($refreshToken)->toString();
+    }
+
+    /**
      * Mutation of Base Module.
      * Invalidate all tokens per customer.
      *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate tokens for any customer Id.
