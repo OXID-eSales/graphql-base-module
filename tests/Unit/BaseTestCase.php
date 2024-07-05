@@ -18,7 +18,8 @@ use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken as RefreshTokenMod
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\Login as LoginService;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
-use OxidEsales\GraphQL\Base\Service\RefreshToken as RefreshTokenService;
+use OxidEsales\GraphQL\Base\Service\RefreshTokenService as RefreshTokenService;
+use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use PHPUnit\Framework\TestCase;
@@ -86,7 +87,7 @@ abstract class BaseTestCase extends TestCase
     protected function getRefreshTokenService(
         $refreshTokenInfra = null,
         string $lifetime = '+8 hours'
-    ): RefreshTokenService {
+    ): RefreshTokenServiceInterface {
         return new RefreshTokenService(
             $refreshTokenInfra ?: $this->getRefreshRepositoryMock(),
             $this->getModuleConfigurationMock($lifetime)

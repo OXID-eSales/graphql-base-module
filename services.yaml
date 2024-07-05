@@ -41,8 +41,8 @@ services:
     class: OxidEsales\GraphQL\Base\Service\Token
     public: true
 
-  OxidEsales\GraphQL\Base\Service\RefreshToken:
-    class: OxidEsales\GraphQL\Base\Service\RefreshToken
+  OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\RefreshTokenService
     public: true
 
   OxidEsales\GraphQL\Base\Service\Login:

@@ -21,7 +21,7 @@ class Login
     public function __construct(
         private readonly Legacy $legacyInfrastructure,
         private readonly Token $accessTokenService,
-        private readonly RefreshToken $refreshTokenService
+        private readonly RefreshTokenServiceInterface $refreshTokenService
     ) {
     }
 

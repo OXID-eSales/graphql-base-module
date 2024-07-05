@@ -18,7 +18,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * Token data access service
  */
-class RefreshToken
+class RefreshTokenService implements RefreshTokenServiceInterface
 {
     public function __construct(
         private readonly RefreshTokenRepository $tokenRepository,
