@@ -102,6 +102,9 @@ services:
     class: OxidEsales\GraphQL\Base\Event\Subscriber\UserDeleteSubscriber
     tags: [ 'kernel.event_subscriber' ]
 
+  OxidEsales\GraphQL\Base\Event\Subscriber\BeforeTokenCreationSubscriber:
+    tags: [ 'kernel.event_subscriber' ]
+
   oxidesales.graphqlbase.cacheadapter:
     class: Symfony\Component\Cache\Adapter\NullAdapter
 
