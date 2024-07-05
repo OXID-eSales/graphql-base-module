@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use TheCodingMachine\GraphQLite\Types\ID;
@@ -40,7 +41,8 @@ class Token
         private readonly Legacy $legacyInfrastructure,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ModuleConfiguration $moduleConfiguration,
-        private readonly TokenInfrastructure $tokenInfrastructure
+        private readonly TokenInfrastructure $tokenInfrastructure,
+        private readonly RefreshTokenRepository $refreshTokenRepo
     ) {
     }
 
@@ -58,13 +60,26 @@ class Token
         return $this->token;
     }
 
+    public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
+    {
+        $user = $this->legacyInfrastructure->login($username, $password);
+
+        return $this->constructToken($user);
+    }
+
+    public function refreshToken(string $refreshToken): UnencryptedToken
+    {
+        $user = $this->refreshTokenRepo->getTokenUser($refreshToken);
+
+        return $this->constructToken($user);
+    }
+
     /**
      * @throws InvalidLogin
      * @throws TokenQuota
      */
-    public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
+    private function constructToken(UserDataType $user): UnencryptedToken
     {
-        $user = $this->legacyInfrastructure->login($username, $password);
         $this->removeExpiredTokens($user);
         $this->canIssueToken($user);
 

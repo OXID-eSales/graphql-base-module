@@ -159,7 +159,8 @@ class AuthorizationTest extends BaseTestCase
             $legacyService ?: $this->getLegacyMock(),
             $this->createPartialMock(EventDispatcher::class, []),
             $this->getModuleConfigurationMock(),
-            $tokenInfrastructure ?: $this->getTokenInfrastructureMock()
+            $tokenInfrastructure ?: $this->getTokenInfrastructureMock(),
+            $this->getRefreshRepositoryMock()
         ) extends TokenService {
             protected function areConstraintsValid(UnencryptedToken $token): bool
             {

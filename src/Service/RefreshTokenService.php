@@ -10,10 +10,9 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
-use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
-use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
  * Token data access service
@@ -42,26 +41,6 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         $this->tokenRepository->registerToken($token, $time, $expire, $user);
 
         return $token;
-    }
-
-    public function deleteToken(ID $tokenId): void
-    {
-        $tokenId = (string)$tokenId;
-
-        if ($this->tokenRepository->isTokenRegistered($tokenId) === false) {
-            throw new UnknownToken();
-        }
-
-        $this->tokenRepository->tokenDelete(null, $tokenId);
-    }
-
-    public function deleteUserToken(UserDataType $user, ID $tokenId): void
-    {
-        if ($this->tokenRepository->userHasToken($user, (string)$tokenId) === false) {
-            throw new UnknownToken();
-        }
-
-        $this->tokenRepository->tokenDelete($user, (string)$tokenId);
     }
 
     private function removeExpiredTokens(UserDataType $user): void

@@ -57,7 +57,8 @@ class AuthenticationTest extends BaseTestCase
             $this->legacy,
             new EventDispatcher(),
             $this->getModuleConfigurationMock(),
-            $this->tokenInfrastructure
+            $this->tokenInfrastructure,
+            $this->getRefreshRepositoryMock()
         );
     }
 
@@ -347,7 +348,8 @@ class AuthenticationTest extends BaseTestCase
                 $this->legacy,
                 new EventDispatcher(),
                 $this->getModuleConfigurationMock(),
-                $this->tokenInfrastructure
+                $this->tokenInfrastructure,
+                $this->getRefreshRepositoryMock()
             )
         );
     }

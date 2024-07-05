@@ -15,6 +15,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
@@ -145,5 +146,53 @@ class TokenTest extends BaseTestCase
         $this->expectExceptionMessage('The token is not registered');
 
         $this->getTokenService($legacy, $tokenInfrastructure)->deleteUserToken($user, new ID('not_existing'));
+    }
+
+    public function testRefreshToken(): void
+    {
+        $userId = '_testuser';
+        $refreshToken = 'sometoken';
+        $user = $this->getUserDataStub($this->getUserModelStub($userId));
+        $legacy = $this->createPartialMock(
+            LegacyService::class,
+            ['login', 'getShopId', 'getShopUrl']
+        );
+        $legacy->method('login')->willReturn($user);
+
+        $refreshMock = $this->createPartialMock(
+            RefreshTokenRepository::class,
+            ['getTokenUser']
+        );
+
+        $refreshMock->method('getTokenUser')
+            ->with($refreshToken)
+            ->willReturn($user);
+        $token = $this->getTokenService($legacy, refreshTokenRepo: $refreshMock)->refreshToken($refreshToken);
+
+        $this->assertInstanceOf(Token::class, $token);
+    }
+
+    public function testRefreshTokenInvalid(): void
+    {
+        $userId = '_testuser';
+        $refreshToken = 'sometoken';
+        $user = $this->getUserDataStub($this->getUserModelStub($userId));
+        $legacy = $this->createPartialMock(
+            LegacyService::class,
+            ['login', 'getShopId', 'getShopUrl']
+        );
+        $legacy->method('login')->willReturn($user);
+
+        $refreshMock = $this->createPartialMock(
+            RefreshTokenRepository::class,
+            ['getTokenUser']
+        );
+
+        $refreshMock->method('getTokenUser')
+            ->with($refreshToken)
+            ->willThrowException($this->createStub(InvalidToken::class));
+        
+        $this->expectException(InvalidToken::class);
+        $this->getTokenService($legacy, refreshTokenRepo: $refreshMock)->refreshToken($refreshToken);
     }
 }

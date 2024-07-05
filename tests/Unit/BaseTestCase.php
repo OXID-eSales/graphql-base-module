@@ -72,7 +72,8 @@ abstract class BaseTestCase extends TestCase
         $legacy,
         $tokenInfrastructure = null,
         $token = null,
-        string $lifetime = '+8 hours'
+        string $lifetime = '+8 hours',
+        $refreshTokenRepo = null
     ): TokenService {
         return new TokenService(
             $token,
@@ -80,7 +81,8 @@ abstract class BaseTestCase extends TestCase
             $legacy,
             $this->createPartialMock(EventDispatcherInterface::class, []),
             $this->getModuleConfigurationMock($lifetime),
-            $tokenInfrastructure ?: $this->getTokenInfrastructureMock()
+            $tokenInfrastructure ?: $this->getTokenInfrastructureMock(),
+            $refreshTokenRepo?: $this->getRefreshRepositoryMock()
         );
     }
 
@@ -123,7 +125,6 @@ abstract class BaseTestCase extends TestCase
             RefreshTokenRepository::class,
             [
                 'registerToken',
-                'isTokenRegistered',
                 'removeExpiredTokens',
                 'canIssueToken',
                 'getTokenUser',

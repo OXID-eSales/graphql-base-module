@@ -55,7 +55,8 @@ class LoginTest extends BaseTestCase
             $this->legacy,
             new EventDispatcher(),
             $this->getModuleConfigurationMock(),
-            $this->tokenInfrastructure
+            $this->tokenInfrastructure,
+            $this->getRefreshRepositoryMock()
         );
     }
 
