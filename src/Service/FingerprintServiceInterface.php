@@ -11,6 +11,7 @@ use OxidEsales\GraphQL\Base\Exception\FingerprintHashNotValidException;
 
 interface FingerprintServiceInterface
 {
+    public const COOKIE_KEY = 'fingerprint';
     public const TOKEN_KEY = 'fingerprintHash';
 
     public function getFingerprint(): string;
