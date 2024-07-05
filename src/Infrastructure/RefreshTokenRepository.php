@@ -55,14 +55,6 @@ class RefreshTokenRepository
         return $token;
     }
 
-    public function isTokenRegistered(string $tokenId): bool
-    {
-        $model = oxNew(Model\RefreshToken::class);
-        $model->load($tokenId);
-
-        return $model->isLoaded();
-    }
-
     public function removeExpiredTokens(UserDataType $user): void
     {
         $queryBuilder = $this->queryBuilderFactory->create()
@@ -94,37 +86,6 @@ class RefreshTokenRepository
         }
 
         return $return;
-    }
-
-    public function tokenDelete(?UserDataType $user = null, ?string $tokenId = null, ?int $shopId = null): int
-    {
-        $parameters = [];
-        $condition = 'where';
-
-        $queryBuilder = $this->queryBuilderFactory->create()
-            ->delete('oegraphqlrefreshtoken');
-
-        if ($tokenId) {
-            $queryBuilder->$condition('OXID = :tokenId');
-            $parameters['tokenId'] = $tokenId;
-            $condition = 'andWhere';
-        }
-
-        if ($user) {
-            $queryBuilder->$condition('OXUSERID = :userId');
-            $parameters['userId'] = (string)$user->id();
-        }
-
-        if ($shopId) {
-            $queryBuilder->$condition('OXSHOPID = :shopId');
-            $parameters['shopId'] = $shopId;
-        }
-
-        $queryBuilder->setParameters($parameters);
-
-        $result = $queryBuilder->execute();
-
-        return is_object($result) ? $result->columnCount() : (int)$result;
     }
 
     public function getTokenUserId(string $token): string
@@ -165,28 +126,5 @@ class RefreshTokenRepository
         }
 
         return new UserDataType($userModel, $isAnonymous);
-    }
-
-    public function userHasToken(UserDataType $user, string $tokenId): bool
-    {
-        $queryBuilder = $this->queryBuilderFactory->create();
-
-        $queryBuilder
-            ->select('count(OXID)')
-            ->from('oegraphqlrefreshtoken')
-            ->where('OXID = :tokenId')
-            ->andWhere('OXUSERID = :userId')
-            ->setParameters([
-                'tokenId' => $tokenId,
-                'userId' => (string)$user->id(),
-            ]);
-
-        $result = $queryBuilder->execute();
-
-        if (is_object($result)) {
-            return $result->fetch(PDO::FETCH_COLUMN) > 0;
-        }
-
-        return false;
     }
 }

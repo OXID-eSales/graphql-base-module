@@ -82,7 +82,7 @@ abstract class BaseTestCase extends TestCase
             $this->createPartialMock(EventDispatcherInterface::class, []),
             $this->getModuleConfigurationMock($lifetime),
             $tokenInfrastructure ?: $this->getTokenInfrastructureMock(),
-            $refreshTokenRepo?: $this->getRefreshRepositoryMock()
+            $refreshTokenRepo ?: $this->getRefreshRepositoryMock()
         );
     }
 

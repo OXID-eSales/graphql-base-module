@@ -68,7 +68,7 @@ class Token
      */
     public function refresh(string $refreshToken, string $fingerprint): string
     {
-        return $this->tokenService->createToken($refreshToken)->toString();
+        return $this->tokenService->refreshToken($refreshToken)->toString();
     }
 
     /**

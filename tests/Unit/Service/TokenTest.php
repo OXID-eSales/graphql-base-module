@@ -191,7 +191,7 @@ class TokenTest extends BaseTestCase
         $refreshMock->method('getTokenUser')
             ->with($refreshToken)
             ->willThrowException($this->createStub(InvalidToken::class));
-        
+
         $this->expectException(InvalidToken::class);
         $this->getTokenService($legacy, refreshTokenRepo: $refreshMock)->refreshToken($refreshToken);
     }

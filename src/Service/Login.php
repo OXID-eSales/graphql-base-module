@@ -31,7 +31,7 @@ class Login
         $user = $this->legacyInfrastructure->login($username, $password);
 
         $refreshToken = $this->refreshTokenService->createToken($user);
-        $accessToken = $this->accessTokenService->createToken($refreshToken);
+        $accessToken = $this->accessTokenService->refreshToken($refreshToken);
 
         return new LoginDatatype($refreshToken, $accessToken);
     }
