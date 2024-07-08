@@ -9,8 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use DateTimeImmutable;
-use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 
@@ -20,7 +18,7 @@ use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 class RefreshTokenService implements RefreshTokenServiceInterface
 {
     public function __construct(
-        private readonly RefreshTokenRepository $tokenRepository,
+        private readonly RefreshTokenRepository $refreshTokenRepository,
         private readonly ModuleConfiguration $moduleConfiguration
     ) {
     }
@@ -28,25 +26,23 @@ class RefreshTokenService implements RefreshTokenServiceInterface
     public function createToken(UserDataType $user): string
     {
         $this->removeExpiredTokens($user);
-        $this->tokenRepository->canIssueToken(
+        $this->refreshTokenRepository->canIssueToken(
             $user,
             $this->moduleConfiguration->getUserTokenQuota()
         );
 
-        $time = new DateTimeImmutable('now');
-        $expire = new DateTimeImmutable($this->moduleConfiguration->getRefreshTokenLifeTime());
+        $token = $this->refreshTokenRepository->getNewRefreshToken(
+            userId: $user->id()->val(),
+            lifeTime: $this->moduleConfiguration->getRefreshTokenLifeTime()
+        );
 
-        $token = substr(bin2hex(random_bytes(128)), 0, 255);
-
-        $this->tokenRepository->registerToken($token, $time, $expire, $user);
-
-        return $token;
+        return $token->token();
     }
 
     private function removeExpiredTokens(UserDataType $user): void
     {
         if (!$user->isAnonymous()) {
-            $this->tokenRepository->removeExpiredTokens($user);
+            $this->refreshTokenRepository->removeExpiredTokens($user);
         }
     }
 }

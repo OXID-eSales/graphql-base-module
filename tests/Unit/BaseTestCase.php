@@ -124,14 +124,14 @@ abstract class BaseTestCase extends TestCase
         $mock = $this->createPartialMock(
             RefreshTokenRepository::class,
             [
-                'registerToken',
+                'getNewRefreshToken',
                 'removeExpiredTokens',
                 'canIssueToken',
                 'getTokenUser',
             ]
         );
 
-        $mock->method('registerToken')->willReturn(new RefreshTokenDatatype(new RefreshTokenModel()));
+        $mock->method('getNewRefreshToken')->willReturn(new RefreshTokenDatatype(new RefreshTokenModel()));
         $mock->method('canIssueToken')->willReturn(true);
         $mock->method('getTokenUser')->willReturn(new UserDataType(new UserModel()));
 
