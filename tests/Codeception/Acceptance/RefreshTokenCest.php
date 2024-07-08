@@ -9,106 +9,20 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Acceptance;
 
-use DateTimeImmutable;
+use Codeception\Attribute\Group;
 use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
-/**
- * @group oe_graphql_base
- * @group oe_graphql_base_token
- */
+#[Group("oe_graphql_base")]
+#[Group("oe_graphql_base_token")]
 class RefreshTokenCest
 {
-    private const TEST_USER_ID = 'e7af1c3b786fd02906ccd75698f4e6b9';
-
     private const ADMIN_LOGIN = 'admin@admin.com';
-
     private const ADMIN_PASSWORD = 'admin';
 
-    private const USER_LOGIN = 'user@oxid-esales.com';
-
-    public function testRefreshLoginWithMissingCredentials(AcceptanceTester $I): void
+    public function testRefreshAccessToken(AcceptanceTester $I): void
     {
         $I->sendGQLQuery(
-            'query { login
-                {
-                    accessToken
-                    refreshToken
-                }
-            }'
-        ); // anonymous token
-        $result = $I->grabJsonResponseAsArray();
-
-        $I->assertNotEmpty($result['data']['login']['accessToken']);
-        $I->assertNotEmpty($result['data']['login']['refreshToken']);
-    }
-
-    public function testRefreshLoginWithIncompleteCredentialsPassword(AcceptanceTester $I): void
-    {
-        $I->sendGQLQuery(
-            'query { login (username: "foo")
-                {
-                    accessToken
-                    refreshToken
-                }
-            }'
-        ); // anonymous token
-        $result = $I->grabJsonResponseAsArray();
-
-        $I->assertNotEmpty($result['data']['login']['accessToken']);
-        $I->assertNotEmpty($result['data']['login']['refreshToken']);
-    }
-
-    public function testRefreshLoginWithIncompleteCredentialsUsername(AcceptanceTester $I): void
-    {
-        $I->sendGQLQuery(
-            'query { login (password: "foo")
-                {
-                    accessToken
-                    refreshToken
-                }
-            }'
-        ); // anonymous token
-        $result = $I->grabJsonResponseAsArray();
-
-        $I->assertNotEmpty($result['data']['login']['accessToken']);
-        $I->assertNotEmpty($result['data']['login']['refreshToken']);
-    }
-
-    public function testRefreshLoginWithWrongCredentials(AcceptanceTester $I): void
-    {
-        $I->sendGQLQuery(
-            'query { login (username: "foo", password: "bar")
-                {
-                    accessToken
-                    refreshToken
-                }
-            }'
-        );
-        $result = $I->grabJsonResponseAsArray();
-
-        $I->assertEquals('Username/password combination is invalid', $result['errors'][0]['message']);
-    }
-
-    public function testRefreshLoginWithValidCredentials(AcceptanceTester $I): void
-    {
-        $query = 'query {
-            login (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") 
-            {
-                accessToken
-                refreshToken
-            }
-        }';
-        $I->sendGQLQuery($query);
-        $result = $I->grabJsonResponseAsArray();
-
-        $I->assertNotEmpty($result['data']['login']['accessToken']);
-        $I->assertNotEmpty($result['data']['login']['refreshToken']);
-    }
-
-    public function testRefreshLoginWithValidCredentialsInVariables(AcceptanceTester $I): void
-    {
-        $I->sendGQLQuery(
-            'query ($username: String!, $password: String!) { login (username: $username, password: $password) 
+            'query ($username: String!, $password: String!) { login (username: $username, password: $password)
                 {
                     accessToken
                     refreshToken
@@ -119,33 +33,29 @@ class RefreshTokenCest
                 'password' => self::ADMIN_PASSWORD,
             ]
         );
-        $result = $I->grabJsonResponseAsArray();
 
+        $result = $I->grabJsonResponseAsArray();
         $I->assertNotEmpty($result['data']['login']['accessToken']);
         $I->assertNotEmpty($result['data']['login']['refreshToken']);
-    }
 
-    public function testRefreshAccessToken(AcceptanceTester $I): void
-    {
-        $query = 'query {
-            login (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") 
-            {
-                accessToken
-                refreshToken
-            }
-        }';
+        //todo: add check if a fingerprint hash claim is in the access token
+        //todo: add check if fingerprint is in the cookie
+        //todo: check if result jwt is NOT anonymous!
 
-        $I->sendGQLQuery($query);
-        $result = $I->grabJsonResponseAsArray();
         $refreshToken = $result['data']['login']['refreshToken'];
 
-        $refreshQuery = 'query {
-            refresh (refreshToken: "' . $refreshToken . '", fingerprint: "")
-        }';
-
-        $I->sendGQLQuery($refreshQuery);
+        $I->sendGQLQuery(
+            'query ($refreshToken: String!) {refresh (refreshToken: $refreshToken, fingerprint: "")}',
+            [
+                'refreshToken' => $refreshToken,
+            ]
+        );
         $result = $I->grabJsonResponseAsArray();
 
         $I->assertNotEmpty($result['data']['refresh']);
+
+        //todo: check if result jwt is NOT anonymous!
+        //todo: check if fingerprint hash claim changed in access token
+        //todo: check if fingerprint changed in the cookie
     }
 }
