@@ -34,7 +34,7 @@ class HeaderService implements HeaderServiceInterface
      * @param String[] $headers
      * @return String[]
      */
-    public function collectWhitelistedHeaders(array $headers): array
+    protected function collectWhitelistedHeaders(array $headers): array
     {
         $whitelisted = [];
 
@@ -47,7 +47,7 @@ class HeaderService implements HeaderServiceInterface
         return $whitelisted;
     }
 
-    public function shouldKeepHeader(string $header): bool
+    protected function shouldKeepHeader(string $header): bool
     {
         $cookiePattern = sprintf('Set-Cookie: %s', FingerprintService::COOKIE_KEY);
 
@@ -57,7 +57,7 @@ class HeaderService implements HeaderServiceInterface
     /**
      * @param String[] $toRestore
      */
-    public function restoreHeaders(array $toRestore): void
+    protected function restoreHeaders(array $toRestore): void
     {
         foreach ($toRestore as $header) {
             header($header);

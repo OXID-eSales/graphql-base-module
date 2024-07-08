@@ -17,17 +17,19 @@ class HeaderServiceTest extends TestCase
 {
     public function testCleanHeaders(): void
     {
+        $randomFingerprint = uniqid();
+
         $unfiltered = [
             'invalid-header',
             'X-Powered-By: PHP/8.1.29',
             'Expires: Thu, 19 Nov 1981 08:52:00 GMT',
             'Set-Cookie: language=0; path=/; HttpOnly',
-            'Set-Cookie: ' . FingerprintServiceInterface::COOKIE_KEY . '=somerandomfingerprint; HttpOnly',
+            'Set-Cookie: ' . FingerprintServiceInterface::COOKIE_KEY . '=' . $randomFingerprint . '; HttpOnly',
             'not even a header',
         ];
 
         $expected = [
-            'Set-Cookie: ' . FingerprintServiceInterface::COOKIE_KEY . '=somerandomfingerprint; HttpOnly',
+            'Set-Cookie: ' . FingerprintServiceInterface::COOKIE_KEY . '=' . $randomFingerprint . '; HttpOnly',
         ];
 
         $sut = $this->getMockBuilder(HeaderService::class)
