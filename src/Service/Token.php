@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 use DateTimeImmutable;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
@@ -64,21 +65,21 @@ class Token
     {
         $user = $this->legacyInfrastructure->login($username, $password);
 
-        return $this->constructToken($user);
+        return $this->createTokenForUser($user);
     }
 
     public function refreshToken(string $refreshToken): UnencryptedToken
     {
         $user = $this->refreshTokenRepo->getTokenUser($refreshToken);
 
-        return $this->constructToken($user);
+        return $this->createTokenForUser($user);
     }
 
     /**
      * @throws InvalidLogin
      * @throws TokenQuota
      */
-    private function constructToken(UserDataType $user): UnencryptedToken
+    public function createTokenForUser(UserInterface $user): UnencryptedToken
     {
         $this->removeExpiredTokens($user);
         $this->canIssueToken($user);

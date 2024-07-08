@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 
 /**
@@ -23,7 +24,7 @@ class RefreshTokenService implements RefreshTokenServiceInterface
     ) {
     }
 
-    public function createToken(UserDataType $user): string
+    public function createToken(UserInterface $user): string
     {
         $this->removeExpiredTokens($user);
         $this->refreshTokenRepository->canIssueToken(
@@ -45,4 +46,6 @@ class RefreshTokenService implements RefreshTokenServiceInterface
             $this->refreshTokenRepository->removeExpiredTokens($user);
         }
     }
+
+    //todo: refreshToken method.
 }

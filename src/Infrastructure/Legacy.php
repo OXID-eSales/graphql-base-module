@@ -17,6 +17,7 @@ use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Transition\Utility\ContextInterface;
 use OxidEsales\EshopCommunity\Internal\Utility\Email\EmailValidatorServiceInterface as EhopEmailValidator;
 use OxidEsales\GraphQL\Base\DataType\User;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 
 /**
@@ -33,7 +34,7 @@ class Legacy
     /**
      * @throws InvalidLogin
      */
-    public function login(?string $username = null, ?string $password = null): User
+    public function login(?string $username = null, ?string $password = null): UserInterface
     {
         $user = $this->getUserModel();
 

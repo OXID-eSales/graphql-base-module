@@ -9,12 +9,13 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 
 /**
- * Token data access service
+ * User login service
  */
-interface RefreshTokenServiceInterface
+interface LoginServiceInterface
 {
-    public function createToken(UserInterface $user): string;
+    public function login(string $userName, string $password): UserInterface;
 }
