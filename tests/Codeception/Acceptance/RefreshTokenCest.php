@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Acceptance;
 
 use Codeception\Attribute\Group;
+use OxidEsales\GraphQL\Base\Service\FingerprintService;
+use OxidEsales\GraphQL\Base\Service\Token;
 use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
 #[Group("oe_graphql_base")]
@@ -38,9 +40,14 @@ class RefreshTokenCest
         $I->assertNotEmpty($result['data']['login']['accessToken']);
         $I->assertNotEmpty($result['data']['login']['refreshToken']);
 
-        //todo: add check if a fingerprint hash claim is in the access token
-        //todo: add check if fingerprint is in the cookie
-        //todo: check if result jwt is NOT anonymous!
+        $accessToken = $I->parseJwt($result['data']['login']['accessToken']);
+        $fingerprint = $accessToken->claims()->get(FingerprintService::TOKEN_KEY);
+        $cookie = $I->grabCookies()->get(FingerprintService::COOKIE_KEY)->getRawValue();
+
+        $I->assertEquals(self::ADMIN_LOGIN, $accessToken->claims()->get(Token::CLAIM_USERNAME));
+        $I->assertNotEmpty($fingerprint);
+        $I->assertEquals(128, strlen($cookie));
+        $I->assertFalse($accessToken->claims()->get(Token::CLAIM_USER_ANONYMOUS));
 
         $refreshToken = $result['data']['login']['refreshToken'];
 
@@ -54,8 +61,14 @@ class RefreshTokenCest
 
         $I->assertNotEmpty($result['data']['refresh']);
 
-        //todo: check if result jwt is NOT anonymous!
-        //todo: check if fingerprint hash claim changed in access token
-        //todo: check if fingerprint changed in the cookie
+        $accessToken = $I->parseJwt($result['data']['refresh']);
+        $newFingerprint = $accessToken->claims()->get(FingerprintService::TOKEN_KEY);
+        $newCookie = $I->grabCookies()->get(FingerprintService::COOKIE_KEY)->getRawValue();
+
+        $I->assertFalse($accessToken->claims()->get(Token::CLAIM_USER_ANONYMOUS));
+
+        $I->assertNotEquals($fingerprint, $newFingerprint);
+
+        $I->assertNotEquals($cookie, $newCookie);
     }
 }

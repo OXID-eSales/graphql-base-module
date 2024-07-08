@@ -15,9 +15,13 @@ use Codeception\Module\REST;
 use Exception;
 use InvalidArgumentException;
 use Lcobucci\JWT\Encoding\JoseEncoder;
+use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Token\Parser;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\Facts\Facts;
+use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use PHPUnit\Framework\AssertionFailedError;
+use Symfony\Component\BrowserKit\CookieJar;
 
 class AcceptanceHelper extends Module implements DependsOnModule
 {
@@ -125,6 +129,11 @@ class AcceptanceHelper extends Module implements DependsOnModule
         }
     }
 
+    public function grabCookies(): CookieJar
+    {
+        return $this->getModule('PhpBrowser')->client->getCookieJar();
+    }
+
     public function extractSidFromResponseCookies(): string
     {
         $cookieHeaders = $this->rest->grabHttpHeader('Set-Cookie', false);
@@ -142,5 +151,15 @@ class AcceptanceHelper extends Module implements DependsOnModule
         }
 
         return $sid;
+    }
+
+    public function parseJwt(string $jwt): Token
+    {
+        $container = ContainerFactory::getInstance()->getContainer();
+        $config = $container->get(JwtConfigurationBuilder::class);
+
+        $token = $config->getConfiguration()->parser()->parse($jwt);
+
+        return $token;
     }
 }
