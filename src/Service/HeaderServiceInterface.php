@@ -9,5 +9,5 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 interface HeaderServiceInterface
 {
-    public function cleanCurrentHeaders();
+    public function cleanCurrentHeaders(): void;
 }

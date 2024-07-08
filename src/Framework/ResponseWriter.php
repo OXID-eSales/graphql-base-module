@@ -9,13 +9,17 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
+use OxidEsales\GraphQL\Base\Service\HeaderServiceInterface;
+
 use function header;
 use function json_encode;
 
 class ResponseWriter
 {
-    public function __construct(private readonly TimerHandler $timerHandler)
-    {
+    public function __construct(
+        private readonly TimerHandler $timerHandler,
+        private readonly HeaderServiceInterface $headerService
+    ) {
     }
 
     /**
@@ -43,7 +47,7 @@ class ResponseWriter
     {
         //in case headers have already been sent nothing can be cleaned
         if (!headers_sent()) {
-            header_remove();
+            $this->headerService->cleanCurrentHeaders();
         }
     }
 

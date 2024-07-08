@@ -75,6 +75,9 @@ services:
   OxidEsales\GraphQL\Base\Service\CookieServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\CookieService
 
+  OxidEsales\GraphQL\Base\Service\HeaderServiceInterface:
+    class: OxidEsales\GraphQL\Base\Service\HeaderService
+
   OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\FingerprintService
 
