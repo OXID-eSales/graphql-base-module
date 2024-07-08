@@ -17,7 +17,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class User implements ShopModelAwareInterface
+final class User implements ShopModelAwareInterface, UserInterface
 {
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag) TODO: Consider extracting AnonymousUser class
