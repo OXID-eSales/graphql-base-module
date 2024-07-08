@@ -40,7 +40,10 @@ class TokenTest extends BaseTestCase
             )
             ->willReturn([]);
 
-        $tokenController = $this->getTokenController($tokenAdministration, $authentication);
+        $tokenController = $this->getTokenController(
+            tokenAdministration: $tokenAdministration,
+            authentication: $authentication
+        );
         $tokenController->tokens();
     }
 
@@ -67,7 +70,10 @@ class TokenTest extends BaseTestCase
             )
             ->willReturn([]);
 
-        $tokenController = $this->getTokenController($tokenAdministration, $authentication);
+        $tokenController = $this->getTokenController(
+            tokenAdministration: $tokenAdministration,
+            authentication: $authentication
+        );
         $tokenController->tokens($filterList, $pagination, $sort);
     }
 
@@ -78,7 +84,10 @@ class TokenTest extends BaseTestCase
         $tokenAdministration->method('customerTokensDelete')
             ->willReturn(5);
 
-        $tokenController = $this->getTokenController($tokenAdministration, $authentication);
+        $tokenController = $this->getTokenController(
+            tokenAdministration: $tokenAdministration,
+            authentication: $authentication
+        );
         $tokenController->customerTokensDelete(new ID('someUserId'));
     }
 
@@ -88,32 +97,23 @@ class TokenTest extends BaseTestCase
         $authorization->method('isAllowed')
             ->willReturn(true);
 
-        $tokenController = $this->getTokenController(null, null, $authorization);
+        $tokenController = $this->getTokenController(
+            authorization: $authorization
+        );
         $tokenController->tokenDelete(new ID('someTokenId'));
     }
 
     private function getTokenController(
-        ?TokenAdministration $tokenAdministration = null,
-        ?Authentication $authentication = null,
-        ?Authorization $authorization = null,
-        ?TokenService $tokenService = null
+        TokenAdministration $tokenAdministration = null,
+        Authentication $authentication = null,
+        Authorization $authorization = null,
+        TokenService $tokenService = null
     ): TokenController {
-        if (null === $tokenAdministration) {
-            $tokenAdministration = $this->createMock(TokenAdministration::class);
-        }
-
-        if (null === $authentication) {
-            $authentication = $this->createMock(Authentication::class);
-        }
-
-        if (null === $authorization) {
-            $authorization = $this->createMock(Authorization::class);
-        }
-
-        if (null === $tokenService) {
-            $tokenService = $this->createMock(TokenService::class);
-        }
-
-        return new TokenController($tokenAdministration, $authentication, $authorization, $tokenService);
+        return new TokenController(
+            tokenAdministration: $tokenAdministration ?? $this->createStub(TokenAdministration::class),
+            authentication: $authentication ?? $this->createStub(Authentication::class),
+            authorization: $authorization ?? $this->createStub(Authorization::class),
+            tokenService: $tokenService ?? $this->createStub(TokenService::class)
+        );
     }
 }
