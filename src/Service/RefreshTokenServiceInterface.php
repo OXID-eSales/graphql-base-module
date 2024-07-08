@@ -16,5 +16,5 @@ use OxidEsales\GraphQL\Base\DataType\UserInterface;
  */
 interface RefreshTokenServiceInterface
 {
-    public function createToken(UserInterface $user): string;
+    public function createRefreshTokenForUser(UserInterface $user): string;
 }

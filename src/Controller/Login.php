@@ -49,7 +49,7 @@ class Login
         $user = $this->loginService->login($username, $password);
 
         return new LoginDatatype(
-            refreshToken: $this->refreshTokenService->createToken($user),
+            refreshToken: $this->refreshTokenService->createRefreshTokenForUser($user),
             accessToken: $this->tokenService->createTokenForUser($user),
         );
     }

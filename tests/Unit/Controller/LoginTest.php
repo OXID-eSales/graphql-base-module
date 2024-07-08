@@ -189,7 +189,7 @@ class LoginTest extends BaseTestCase
         $loginServiceMock->method('login')->with($userName, $password)->willReturn($userStub);
 
         $refreshToken = uniqid();
-        $refreshTokenMock->method('createToken')->with($userStub)->willReturn($refreshToken);
+        $refreshTokenMock->method('createRefreshTokenForUser')->with($userStub)->willReturn($refreshToken);
 
         $accessTokenStub = $this->createConfiguredStub(UnencryptedToken::class, [
             'toString' => $accessToken = uniqid()
