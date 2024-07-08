@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    public: false
+    autowire: true
+
+  OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshTokenModelFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshTokenModelFactory

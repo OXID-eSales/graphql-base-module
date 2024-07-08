@@ -1,3 +1,6 @@
+imports:
+  - { resource: src/Infrastructure/services.yaml }
+
 services:
 
   _defaults:
