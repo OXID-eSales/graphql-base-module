@@ -51,7 +51,7 @@ $aModule = [
             'group' => 'graphql_base',
             'name'  => 'sRefreshTokenLifetime',
             'type'        => 'select',
-            'constraints' => '12hrs|24hrs|7days|30days|60days|90days',
+            'constraints' => '24hrs|7days|30days|60days|90days',
             'value' => '24hrs'
         ],
         [
