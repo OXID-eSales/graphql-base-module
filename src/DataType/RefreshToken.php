@@ -18,7 +18,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @Type()
  */
-final class RefreshToken implements ShopModelAwareInterface
+final class RefreshToken implements ShopModelAwareInterface, RefreshTokenInterface
 {
     /** @var GraphQLTokenModel */
     private $tokenModel;
