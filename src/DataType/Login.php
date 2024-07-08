@@ -16,7 +16,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class Login
+final class Login implements LoginInterface
 {
     public function __construct(
         private string $refreshToken,
