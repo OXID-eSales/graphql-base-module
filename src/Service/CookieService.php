@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use OxidEsales\GraphQL\Base\Exception\FingerprintMissingException;
+
 class CookieService implements CookieServiceInterface
 {
     public function setFingerprintCookie(string $fingerprint): void
@@ -18,5 +20,14 @@ class CookieService implements CookieServiceInterface
             value: $fingerprint,
             httponly: true
         );
+    }
+
+    public function getFingerprintCookie(): string
+    {
+        if (!key_exists(FingerprintServiceInterface::COOKIE_KEY, $_COOKIE)) {
+            throw new FingerprintMissingException();
+        }
+
+        return $_COOKIE[FingerprintServiceInterface::COOKIE_KEY];
     }
 }
