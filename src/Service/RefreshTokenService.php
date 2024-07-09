@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
-use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 
 /**
  * Token data access service
@@ -19,8 +19,9 @@ use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 class RefreshTokenService implements RefreshTokenServiceInterface
 {
     public function __construct(
-        private readonly RefreshTokenRepository $refreshTokenRepository,
-        private readonly ModuleConfiguration $moduleConfiguration
+        private readonly RefreshTokenRepositoryInterface $refreshTokenRepository,
+        private readonly ModuleConfiguration $moduleConfiguration,
+        private readonly Token $tokenService
     ) {
     }
 
@@ -47,5 +48,13 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         }
     }
 
-    //todo: refreshToken method.
+    public function refreshToken(string $refreshToken, string $fingerprint): string
+    {
+        //todo: check if fingerprint is correct
+
+        $user = $this->refreshTokenRepository->getTokenUser($refreshToken);
+        $newToken = $this->tokenService->createTokenForUser($user);
+
+        return $newToken->toString();
+    }
 }

@@ -10,8 +10,16 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 
 interface RefreshTokenRepositoryInterface
 {
     public function getNewRefreshToken(string $userId, string $lifeTime): RefreshTokenDataType;
+
+    /**
+     * todo: change exception to InvalidRefreshToken
+     * @throws InvalidToken
+     */
+    public function getTokenUser(string $refreshToken): UserInterface;
 }

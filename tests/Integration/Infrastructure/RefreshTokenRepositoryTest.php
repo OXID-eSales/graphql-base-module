@@ -14,6 +14,7 @@ use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(RefreshTokenRepository::class)]
@@ -68,8 +69,8 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
         return $this->get(ConnectionProviderInterface::class)->get();
     }
 
-    public function getSut(): RefreshTokenRepository
+    public function getSut(): RefreshTokenRepositoryInterface
     {
-        return $this->get(RefreshTokenRepository::class);
+        return $this->get(RefreshTokenRepositoryInterface::class);
     }
 }

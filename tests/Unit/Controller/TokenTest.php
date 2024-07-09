@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Controller\Token as TokenController;
 use OxidEsales\GraphQL\Base\DataType\Filter\DateFilter;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
@@ -18,11 +19,13 @@ use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration as TokenAdministration;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 
+//todo: tests do not do any assertions, fix it.
 class TokenTest extends BaseTestCase
 {
     public function testTokensQueryWithDefaultFilters(): void
@@ -103,17 +106,35 @@ class TokenTest extends BaseTestCase
         $tokenController->tokenDelete(new ID('someTokenId'));
     }
 
+    public function testRefreshGivesStringValueOfNewToken(): void
+    {
+        $sut = $this->getTokenController(
+            refreshTokenService: $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class),
+        );
+
+        $refreshToken = uniqid();
+        $fingerprint = uniqid();
+        $newRefreshToken = uniqid();
+
+        $refreshTokenServiceMock->method('refreshToken')
+            ->with($refreshToken, $fingerprint)->willReturn($newRefreshToken);
+
+        $this->assertSame($newRefreshToken, $sut->refresh($refreshToken, $fingerprint));
+    }
+
     private function getTokenController(
         TokenAdministration $tokenAdministration = null,
         Authentication $authentication = null,
         Authorization $authorization = null,
-        TokenService $tokenService = null
+        TokenService $tokenService = null,
+        RefreshTokenServiceInterface $refreshTokenService = null,
     ): TokenController {
         return new TokenController(
             tokenAdministration: $tokenAdministration ?? $this->createStub(TokenAdministration::class),
             authentication: $authentication ?? $this->createStub(Authentication::class),
             authorization: $authorization ?? $this->createStub(Authorization::class),
-            tokenService: $tokenService ?? $this->createStub(TokenService::class)
+            tokenService: $tokenService ?? $this->createStub(TokenService::class),
+            refreshTokenService: $refreshTokenService ?? $this->createStub(RefreshTokenServiceInterface::class),
         );
     }
 }

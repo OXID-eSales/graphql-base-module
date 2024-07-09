@@ -17,4 +17,6 @@ use OxidEsales\GraphQL\Base\DataType\UserInterface;
 interface RefreshTokenServiceInterface
 {
     public function createRefreshTokenForUser(UserInterface $user): string;
+
+    public function refreshToken(string $refreshToken, string $fingerprint): string;
 }

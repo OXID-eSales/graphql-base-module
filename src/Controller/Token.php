@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
@@ -31,7 +32,8 @@ class Token
         private readonly TokenAdministration $tokenAdministration,
         private readonly Authentication $authentication,
         private readonly Authorization $authorization,
-        private readonly TokenService $tokenService
+        private readonly TokenService $tokenService,
+        private readonly RefreshTokenServiceInterface $refreshTokenService,
     ) {
     }
 
@@ -62,13 +64,13 @@ class Token
     }
 
     /**
-     * retrieve a JWT for authentication of further requests
+     * retrieve a new JWT for authentication by refresh token data
      *
      * @Query
      */
     public function refresh(string $refreshToken, string $fingerprint): string
     {
-        return $this->tokenService->refreshToken($refreshToken)->toString();
+        return $this->refreshTokenService->refreshToken($refreshToken, $fingerprint);
     }
 
     /**

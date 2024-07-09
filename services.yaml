@@ -63,9 +63,6 @@ services:
   OxidEsales\GraphQL\Base\Infrastructure\Token:
     class: OxidEsales\GraphQL\Base\Infrastructure\Token
 
-  OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository:
-      class: OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository
-
   OxidEsales\GraphQL\Base\Infrastructure\Repository:
     class: OxidEsales\GraphQL\Base\Infrastructure\Repository
 

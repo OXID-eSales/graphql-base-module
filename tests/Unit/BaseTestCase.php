@@ -20,6 +20,7 @@ use OxidEsales\GraphQL\Base\Service\LoginService as LoginService;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenService as RefreshTokenService;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Token;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use PHPUnit\Framework\TestCase;
@@ -92,7 +93,8 @@ abstract class BaseTestCase extends TestCase
     ): RefreshTokenServiceInterface {
         return new RefreshTokenService(
             $refreshTokenInfra ?: $this->getRefreshRepositoryMock(),
-            $this->getModuleConfigurationMock($lifetime)
+            $this->getModuleConfigurationMock($lifetime),
+            $this->createStub(Token::class)
         );
     }
 
