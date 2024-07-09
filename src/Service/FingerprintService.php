@@ -9,10 +9,15 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Base\Exception\FingerprintHashNotValidException;
+use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
 
 class FingerprintService implements FingerprintServiceInterface
 {
+    public function __construct(
+        private CookieServiceInterface $cookieService,
+    ) {
+    }
+
     public function getFingerprint(): string
     {
         return bin2hex(random_bytes(64));
@@ -23,10 +28,11 @@ class FingerprintService implements FingerprintServiceInterface
         return hash('sha512', $fingerprint);
     }
 
-    public function validateFingerprintHash(string $fingerprint, string $hash): void
+    public function validateFingerprintHashToCookie(string $hashedFingerprint): void
     {
-        if ($hash !== $this->hashFingerprint($fingerprint)) {
-            throw new FingerprintHashNotValidException();
+        $cookieValue = $this->cookieService->getFingerprintCookie();
+        if ($this->hashFingerprint($cookieValue) !== $hashedFingerprint) {
+            throw new FingerprintValidationException();
         }
     }
 }

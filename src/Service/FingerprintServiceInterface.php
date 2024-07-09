@@ -7,7 +7,8 @@
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Base\Exception\FingerprintHashNotValidException;
+use OxidEsales\GraphQL\Base\Exception\FingerprintMissingException;
+use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
 
 interface FingerprintServiceInterface
 {
@@ -19,7 +20,8 @@ interface FingerprintServiceInterface
     public function hashFingerprint(string $fingerprint): string;
 
     /**
-     * @throws FingerprintHashNotValidException
+     * @throws FingerprintMissingException
+     * @throws FingerprintValidationException
      */
-    public function validateFingerprintHash(string $fingerprint, string $hash): void;
+    public function validateFingerprintHashToCookie(string $hashedFingerprint): void;
 }

@@ -9,15 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use OxidEsales\GraphQL\Base\Exception\FingerprintHashNotValidException;
+use OxidEsales\GraphQL\Base\Exception\FingerprintMissingException;
+use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
+use OxidEsales\GraphQL\Base\Service\CookieServiceInterface;
 use OxidEsales\GraphQL\Base\Service\FingerprintService;
+use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class FingerprintServiceTest extends TestCase
 {
     public function testGetFingerprintGeneratesRandomStrings(): void
     {
-        $sut = new FingerprintService();
+        $sut = $this->getSut();
 
         $result1 = $sut->getFingerprint();
         $result2 = $sut->getFingerprint();
@@ -27,7 +30,7 @@ class FingerprintServiceTest extends TestCase
 
     public function testGetFingerprintLengthIsAtLeast32(): void
     {
-        $sut = new FingerprintService();
+        $sut = $this->getSut();
 
         $result = $sut->getFingerprint();
 
@@ -36,7 +39,7 @@ class FingerprintServiceTest extends TestCase
 
     public function testHashFingerprintReturnsNotEmptyResultOnEmptyParameter(): void
     {
-        $sut = new FingerprintService();
+        $sut = $this->getSut();
 
         $result = $sut->hashFingerprint('');
 
@@ -45,7 +48,7 @@ class FingerprintServiceTest extends TestCase
 
     public function testHashFingerprintReturnsTheSameResultOnSameParameter(): void
     {
-        $sut = new FingerprintService();
+        $sut = $this->getSut();
 
         $value = uniqid();
         $result1 = $sut->hashFingerprint($value);
@@ -56,7 +59,7 @@ class FingerprintServiceTest extends TestCase
 
     public function testHashFingerprintReturnsHashedVersionOfFingerprint(): void
     {
-        $sut = new FingerprintService();
+        $sut = $this->getSut();
 
         $originalFingerprint = $sut->getFingerprint();
         $hashedFingerprint = $sut->hashFingerprint($originalFingerprint);
@@ -66,23 +69,48 @@ class FingerprintServiceTest extends TestCase
 
     public function testFingerprintValidationOnCorrectData(): void
     {
-        $sut = new FingerprintService();
+        $sut = $this->getSut(
+            cookieService: $this->createConfiguredStub(CookieServiceInterface::class, [
+                'getFingerprintCookie' => $cookieValue = uniqid()
+            ])
+        );
 
-        $originalFingerprint = $sut->getFingerprint();
-        $hashedFingerprint = $sut->hashFingerprint($originalFingerprint);
+        $hashedFingerprint = $sut->hashFingerprint($cookieValue);
 
-        $sut->validateFingerprintHash($originalFingerprint, $hashedFingerprint);
+        $sut->validateFingerprintHashToCookie($hashedFingerprint);
         $this->addToAssertionCount(1);
     }
 
     public function testFingerprintValidationOnIncorrectData(): void
     {
-        $sut = new FingerprintService();
+        $sut = $this->getSut(
+            cookieService: $this->createConfiguredStub(CookieServiceInterface::class, [
+                'getFingerprintCookie' => uniqid()
+            ])
+        );
 
-        $originalFingerprint = $sut->getFingerprint();
-        $differentFingerpintHash = $sut->hashFingerprint($sut->getFingerprint());
+        $hashedWrongFingerprint = $sut->hashFingerprint(uniqid());
 
-        $this->expectException(FingerprintHashNotValidException::class);
-        $sut->validateFingerprintHash($originalFingerprint, $differentFingerpintHash);
+        $this->expectException(FingerprintValidationException::class);
+        $sut->validateFingerprintHashToCookie($hashedWrongFingerprint);
+    }
+
+    public function testFingerprintValidationDoesNotCatchCookieFingerprintMissingException(): void
+    {
+        $sut = $this->getSut(
+            cookieService: $cookieServiceMock = $this->createMock(CookieServiceInterface::class)
+        );
+        $cookieServiceMock->method('getFingerprintCookie')->willThrowException(new FingerprintMissingException());
+
+        $this->expectException(FingerprintMissingException::class);
+        $sut->validateFingerprintHashToCookie(uniqid());
+    }
+
+    public function getSut(
+        CookieServiceInterface $cookieService = null,
+    ): FingerprintServiceInterface {
+        return new FingerprintService(
+            cookieService: $cookieService ?? $this->createStub(CookieServiceInterface::class)
+        );
     }
 }

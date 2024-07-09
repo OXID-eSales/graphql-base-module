@@ -9,6 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class FingerprintHashNotValidException extends \Exception
+class FingerprintValidationException extends \Exception
 {
 }
