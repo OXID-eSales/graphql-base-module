@@ -68,9 +68,9 @@ class Token
      *
      * @Query
      */
-    public function refresh(string $refreshToken, string $fingerprint): string
+    public function refresh(string $refreshToken, string $fingerprintHash): string
     {
-        return $this->refreshTokenService->refreshToken($refreshToken, $fingerprint);
+        return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
     }
 
     /**

@@ -113,13 +113,13 @@ class TokenTest extends BaseTestCase
         );
 
         $refreshToken = uniqid();
-        $fingerprint = uniqid();
+        $fingerprintHash = uniqid();
         $newRefreshToken = uniqid();
 
         $refreshTokenServiceMock->method('refreshToken')
-            ->with($refreshToken, $fingerprint)->willReturn($newRefreshToken);
+            ->with($refreshToken, $fingerprintHash)->willReturn($newRefreshToken);
 
-        $this->assertSame($newRefreshToken, $sut->refresh($refreshToken, $fingerprint));
+        $this->assertSame($newRefreshToken, $sut->refresh($refreshToken, $fingerprintHash));
     }
 
     private function getTokenController(

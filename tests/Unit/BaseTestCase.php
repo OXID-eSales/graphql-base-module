@@ -15,6 +15,7 @@ use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken as RefreshTokenModel;
+use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\LoginService as LoginService;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
@@ -94,7 +95,8 @@ abstract class BaseTestCase extends TestCase
         return new RefreshTokenService(
             $refreshTokenInfra ?: $this->getRefreshRepositoryMock(),
             $this->getModuleConfigurationMock($lifetime),
-            $this->createStub(Token::class)
+            $this->createStub(Token::class),
+            $this->createStub(FingerprintServiceInterface::class),
         );
     }
 
