@@ -100,7 +100,8 @@ class FingerprintServiceTest extends TestCase
         $sut = $this->getSut(
             cookieService: $cookieServiceMock = $this->createMock(CookieServiceInterface::class)
         );
-        $cookieServiceMock->method('getFingerprintCookie')->willThrowException(new FingerprintMissingException());
+        $cookieServiceMock->method('getFingerprintCookie')
+            ->willThrowException(new FingerprintMissingException(uniqid()));
 
         $this->expectException(FingerprintMissingException::class);
         $sut->validateFingerprintHashToCookie(uniqid());

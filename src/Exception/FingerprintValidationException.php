@@ -9,6 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class FingerprintValidationException extends \Exception
+class FingerprintValidationException extends Error
 {
+    public function getCategory(): string
+    {
+        return ErrorCategories::REQUESTERROR;
+    }
 }

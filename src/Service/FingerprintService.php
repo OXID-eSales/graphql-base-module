@@ -32,7 +32,7 @@ class FingerprintService implements FingerprintServiceInterface
     {
         $cookieValue = $this->cookieService->getFingerprintCookie();
         if ($this->hashFingerprint($cookieValue) !== $hashedFingerprint) {
-            throw new FingerprintValidationException();
+            throw new FingerprintValidationException("Fingerprint validation failed");
         }
     }
 }
