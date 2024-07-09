@@ -17,6 +17,8 @@ interface RefreshTokenRepositoryInterface
 {
     public function getNewRefreshToken(string $userId, string $lifeTime): RefreshTokenDataType;
 
+    public function removeExpiredTokens(): void;
+
     /**
      * todo: change exception to InvalidRefreshToken
      * @throws InvalidToken

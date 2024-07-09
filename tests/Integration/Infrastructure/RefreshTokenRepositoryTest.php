@@ -57,11 +57,27 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
         );
         $id = $token->id()->val();
 
-        $result = $this->getDbConnection()->executeQuery(
-            "select count(*) from `oegraphqlrefreshtoken` where OXID=:oxid",
-            ['oxid' => $id]
-        );
+        $result = $this->checkRefreshTokenWithIdExists($id);
         $this->assertSame(1, $result->fetchOne());
+    }
+
+    public function testRemoveExpiredTokens(): void
+    {
+        $this->addToken(
+            oxid: $expiredId = uniqid(),
+            expires: (new DateTime('-1 day'))->format(DateTime::ATOM)
+        );
+
+        $this->addToken(
+            oxid: $notExpiredId = uniqid(),
+            expires: (new DateTime('+1 day'))->format(DateTime::ATOM)
+        );
+
+        $sut = $this->getSut();
+        $sut->removeExpiredTokens();
+
+        $this->assertFalse($this->checkRefreshTokenWithIdExists($expiredId));
+        $this->assertTrue($this->checkRefreshTokenWithIdExists($notExpiredId));
     }
 
     private function getDbConnection(): Connection
@@ -72,5 +88,26 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
     public function getSut(): RefreshTokenRepositoryInterface
     {
         return $this->get(RefreshTokenRepositoryInterface::class);
+    }
+
+    private function checkRefreshTokenWithIdExists(string $notExpiredId): bool
+    {
+        $result = $this->getDbConnection()->executeQuery(
+            "select count(*) from `oegraphqlrefreshtoken` where OXID=:oxid",
+            ['oxid' => $notExpiredId]
+        );
+
+        return $result->fetchOne() > 0;
+    }
+
+    public function addToken(
+        string $oxid,
+        string $expires,
+    ): void {
+        $insertTokensQuery = "insert into `oegraphqlrefreshtoken` (OXID, EXPIRES_AT) values (:oxid, :expires)";
+        $this->getDbConnection()->executeQuery($insertTokensQuery, [
+            "oxid" => $oxid,
+            "expires" => $expires,
+        ]);
     }
 }

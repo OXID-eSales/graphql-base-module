@@ -45,15 +45,11 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         return new RefreshTokenDataType($model);
     }
 
-    public function removeExpiredTokens(UserDataType $user): void
+    public function removeExpiredTokens(): void
     {
         $queryBuilder = $this->queryBuilderFactory->create()
             ->delete('oegraphqlrefreshtoken')
-            ->where('OXUSERID = :userId')
-            ->andWhere('EXPIRES_AT <= NOW()')
-            ->setParameters([
-                'userId' => (string)$user->id(),
-            ]);
+            ->where('EXPIRES_AT <= NOW()');
 
         $queryBuilder->execute();
     }

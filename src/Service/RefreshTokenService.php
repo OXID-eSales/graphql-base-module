@@ -45,7 +45,7 @@ class RefreshTokenService implements RefreshTokenServiceInterface
     private function removeExpiredTokens(UserDataType $user): void
     {
         if (!$user->isAnonymous()) {
-            $this->refreshTokenRepository->removeExpiredTokens($user);
+            $this->refreshTokenRepository->removeExpiredTokens();
         }
     }
 
