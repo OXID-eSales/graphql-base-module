@@ -12,14 +12,14 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
 use DateTime;
 use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
-use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
+use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(RefreshTokenRepository::class)]
-class RefreshTokenRepositoryTest extends IntegrationTestCase
+class RefreshTokenRepositoryTest extends TestCase
 {
     public function testGetNewRefreshTokenGivesCorrectlyFilledDataType(): void
     {
