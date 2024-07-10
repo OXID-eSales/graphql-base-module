@@ -26,14 +26,17 @@ class CookieServiceTest extends TestCase
         $sut->setFingerprintCookie($exampleFingerprint);
 
         $currentHeaders = xdebug_get_headers();
-        $this->assertTrue(in_array(
-            sprintf(
-                "Set-Cookie: %s=%s; HttpOnly",
-                FingerprintServiceInterface::COOKIE_KEY,
-                $exampleFingerprint
-            ),
-            $currentHeaders
-        ));
+
+        $expectedPattern = sprintf(
+            "/Set-Cookie: %s=%s; expires=.+; Max-Age=%d; HttpOnly/",
+            FingerprintServiceInterface::COOKIE_KEY,
+            $exampleFingerprint,
+            CookieService::LIFETIME_SECONDS
+        );
+
+        $matches = preg_grep($expectedPattern, $currentHeaders);
+
+        $this->assertNotEmpty($matches, 'Cookie not found in headers');
     }
 
     #[RunInSeparateProcess]

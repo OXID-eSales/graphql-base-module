@@ -13,11 +13,14 @@ use OxidEsales\GraphQL\Base\Exception\FingerprintMissingException;
 
 class CookieService implements CookieServiceInterface
 {
+    public const LIFETIME_SECONDS = 31500000; // about 1 year
+
     public function setFingerprintCookie(string $fingerprint): void
     {
         setcookie(
             name: FingerprintServiceInterface::COOKIE_KEY,
             value: $fingerprint,
+            expires_or_options: time() + self::LIFETIME_SECONDS,
             httponly: true
         );
     }
