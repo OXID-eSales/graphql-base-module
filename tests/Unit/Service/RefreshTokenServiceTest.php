@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\GraphQL\Base\DataType\RefreshTokenInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
@@ -19,6 +20,7 @@ use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use TheCodingMachine\GraphQLite\Types\ID;
 
 #[CoversClass(RefreshTokenService::class)]
 class RefreshTokenServiceTest extends TestCase
@@ -57,6 +59,38 @@ class RefreshTokenServiceTest extends TestCase
             ->method('validateFingerprintHashToCookie')->with($fingerprintHash);
 
         $sut->refreshToken(uniqid(), $fingerprintHash);
+    }
+
+    public function testCreateRefreshTokenForUserTriggersExpiredTokensRemoval(): void
+    {
+        $sut = $this->getSut(
+            refreshTokRepo: $repositorySpy = $this->createMock(RefreshTokenRepositoryInterface::class),
+        );
+
+        $repositorySpy->expects($this->once())->method('removeExpiredTokens');
+
+        $sut->createRefreshTokenForUser($this->createStub(UserInterface::class));
+    }
+
+    public function testCreateRefreshReturnsRepositoryCreatedTokenValue(): void
+    {
+        $sut = $this->getSut(
+            refreshTokRepo: $repositoryMock = $this->createMock(RefreshTokenRepositoryInterface::class),
+            moduleConfiguration: $this->createConfiguredStub(ModuleConfiguration::class, [
+                'getRefreshTokenLifeTime' => $lifetime = uniqid()
+            ]),
+        );
+
+        $userId = uniqid();
+        $userStub = $this->createConfiguredStub(UserInterface::class, ['id' => new ID($userId)]);
+
+        $repositoryMock->method('getNewRefreshToken')->with($userId, $lifetime)->willReturn(
+            $this->createConfiguredStub(RefreshTokenInterface::class, [
+                'token' => $newToken = uniqid()
+            ])
+        );
+
+        $this->assertSame($newToken, $sut->createRefreshTokenForUser($userStub));
     }
 
     public function getSut(

@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use Doctrine\DBAL\ForwardCompatibility\Result;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
+use OxidEsales\GraphQL\Base\DataType\RefreshTokenInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
@@ -27,7 +28,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     ) {
     }
 
-    public function getNewRefreshToken(string $userId, string $lifeTime): RefreshTokenDataType
+    public function getNewRefreshToken(string $userId, string $lifeTime): RefreshTokenInterface
     {
         $model = $this->refreshTokenModelFactory->create();
 
