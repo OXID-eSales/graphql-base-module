@@ -13,6 +13,7 @@ use DateTime;
 use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -79,6 +80,63 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
         $this->assertTrue($this->checkRefreshTokenWithIdExists($notExpiredId));
     }
 
+    public function testGetTokenUserReturnsExistingUserBySpecificToken(): void
+    {
+        $this->addToken(
+            oxid: uniqid(),
+            expires: (new DateTime('+1 day'))->format(DateTime::ATOM),
+            userId: $userId = 'oxdefaultadmin',
+            token: $token = uniqid(),
+        );
+
+        $sut = $this->getSut();
+
+        $user = $sut->getTokenUser($token);
+
+        $this->assertFalse($user->isAnonymous());
+        $this->assertSame($user->id()->val(), $userId);
+    }
+
+    public function testGetTokenUserReturnsAnonymousUserBySpecificToken(): void
+    {
+        $this->addToken(
+            oxid: uniqid(),
+            expires: (new DateTime('+1 day'))->format(DateTime::ATOM),
+            userId: $userId = uniqid(),
+            token: $token = uniqid(),
+        );
+
+        $sut = $this->getSut();
+
+        $user = $sut->getTokenUser($token);
+
+        $this->assertTrue($user->isAnonymous());
+        $this->assertSame($user->id()->val(), $userId);
+    }
+
+    public function testGetTokenUserExplodesOnExpiredToken(): void
+    {
+        $this->addToken(
+            oxid: uniqid(),
+            expires: (new DateTime('-1 day'))->format(DateTime::ATOM),
+            userId: 'oxdefaultadmin',
+            token: $token = uniqid(),
+        );
+
+        $sut = $this->getSut();
+
+        $this->expectException(InvalidToken::class);
+        $sut->getTokenUser($token);
+    }
+
+    public function testGetTokenUserExplodesOnWrongToken(): void
+    {
+        $sut = $this->getSut();
+
+        $this->expectException(InvalidToken::class);
+        $sut->getTokenUser(uniqid());
+    }
+
     private function getDbConnection(): Connection
     {
         return $this->get(ConnectionProviderInterface::class)->get();
@@ -103,12 +161,14 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
         string $oxid,
         string $expires,
         string $userId = null,
+        string $token = null,
     ): void {
-        $insertTokensQuery = "insert into `oegraphqlrefreshtoken` (OXID, OXUSERID, EXPIRES_AT)
-            values (:oxid, :oxuserid, :expires)";
+        $insertTokensQuery = "insert into `oegraphqlrefreshtoken` (OXID, OXUSERID, TOKEN, EXPIRES_AT)
+            values (:oxid, :oxuserid, :token, :expires)";
         $this->getDbConnection()->executeQuery($insertTokensQuery, [
             "oxid" => $oxid,
             "oxuserid" => $userId ?? uniqid(),
+            'token' => $token ?? uniqid(),
             "expires" => $expires,
         ]);
     }

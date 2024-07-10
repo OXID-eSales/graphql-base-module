@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use DateTimeImmutable;
-use Doctrine\DBAL\Result;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
@@ -20,8 +19,6 @@ use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshTokenModelFactoryInterfa
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
-    private ?RefreshTokenDataType $token = null;
-
     public function __construct(
         private QueryBuilderFactoryInterface $queryBuilderFactory,
         private Legacy $legacyInfrastructure,
@@ -65,31 +62,24 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             ->setParameter('token', $refreshToken);
         $result = $queryBuilder->execute();
 
-        if ($result instanceof Result === false) {
+        $userId = (string)$result->fetchOne();
+
+        if (!$userId) {
             throw new InvalidToken('Invalid refresh token');
         }
 
-        return (string)$result->fetchOne();
+        return $userId;
     }
 
-    public function getTokenUser(string $refreshToken): UserDataType
+    public function getTokenUser(string $refreshToken): UserInterface
     {
-        $userId = null;
-
-        if ($this->token) {
-            $userId = (string)$this->token->customerId();
-        }
-
-        if (!$userId) {
-            $userId = $this->getTokenUserId($refreshToken);
-        }
+        $userId = $this->getTokenUserId($refreshToken);
 
         $userModel = $this->legacyInfrastructure->getUserModel($userId);
-
         $isAnonymous = !$userModel->getId();
 
         if ($isAnonymous) {
-            $userModel->setId($this->legacyInfrastructure::createUniqueIdentifier());
+            $userModel->setId($userId);
         }
 
         return new UserDataType($userModel, $isAnonymous);
