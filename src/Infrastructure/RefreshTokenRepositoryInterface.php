@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use OxidEsales\GraphQL\Base\DataType\RefreshTokenInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
 
 interface RefreshTokenRepositoryInterface
 {
