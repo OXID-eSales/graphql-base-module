@@ -101,6 +101,61 @@ HTTP `Authorization` header like this:
 Authorization: Bearer a-very-long-jwt
 ```
 
+### How to use refresh tokens
+
+To login and retrieve a refresh and access token send the following GraphQL query to the server:
+
+```graphql
+query {
+    login (
+        username: "admin@admin.com",
+        password: "admin"
+    ) {
+        refreshToken
+        accessToken
+    }
+}
+```
+
+The response should contain both requested tokens:
+
+```json
+{
+    "data": {
+        "login": {
+            "accessToken": "the-same-long-jwt-token",
+            "refreshToken": "a-255-character-long-string"
+        }
+    }
+}
+```
+
+The request will set an `HttpOnly` cookie with unique fingerprint.
+The `accessToken` claims contain a hashed version of this fingerprint.
+The access token should be sent as Bearer type authorization as described above.
+After the access token's lifetime has elapsed, you will need to refresh it.
+To do this you will need to send the following query:
+
+```graphql
+query {
+    refresh (
+        refreshToken: "your-refresh-token",
+        fingerprintHash: "from-access-token-claims"
+    )
+}
+```
+
+If the token is valid and the hash matches the fingerprint sent as cookie, you will receive a fresh token as a response:
+
+```json
+{
+    "data": {
+        "refresh": "a-new-long-jwt"
+    }
+}
+```
+And along with it, a new fingerprint cookie and `fingerprintHash` claim in the jwt token.
+
 ### How to extend
 
 The information on extending any module can be found in the [OXID eSales documentation](https://docs.oxid-esales.com).
