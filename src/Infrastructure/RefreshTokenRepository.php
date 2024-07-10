@@ -14,6 +14,7 @@ use Doctrine\DBAL\Result;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshTokenModelFactoryInterface;
 
@@ -52,26 +53,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             ->where('EXPIRES_AT <= NOW()');
 
         $queryBuilder->execute();
-    }
-
-    public function canIssueToken(UserDataType $user, int $quota): bool
-    {
-        $return = false;
-
-        $result = $this->queryBuilderFactory->create()
-            ->select('count(oegraphqlrefreshtoken.oxid) as counted')
-            ->from('oegraphqlrefreshtoken')
-            ->where('OXUSERID = :userId')
-            ->setParameters([
-                'userId' => (string)$user->id(),
-            ])
-            ->execute();
-
-        if (is_object($result)) {
-            $return = (int)$result->fetchOne() < $quota;
-        }
-
-        return $return;
     }
 
     private function getTokenUserId(string $refreshToken): string

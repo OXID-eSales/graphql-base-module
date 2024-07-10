@@ -57,8 +57,7 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
         );
         $id = $token->id()->val();
 
-        $result = $this->checkRefreshTokenWithIdExists($id);
-        $this->assertSame(1, $result->fetchOne());
+        $this->assertTrue($this->checkRefreshTokenWithIdExists($id));
     }
 
     public function testRemoveExpiredTokens(): void
@@ -90,11 +89,11 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
         return $this->get(RefreshTokenRepositoryInterface::class);
     }
 
-    private function checkRefreshTokenWithIdExists(string $notExpiredId): bool
+    private function checkRefreshTokenWithIdExists(string $oxid): bool
     {
         $result = $this->getDbConnection()->executeQuery(
             "select count(*) from `oegraphqlrefreshtoken` where OXID=:oxid",
-            ['oxid' => $notExpiredId]
+            ['oxid' => $oxid]
         );
 
         return $result->fetchOne() > 0;
@@ -103,10 +102,13 @@ class RefreshTokenRepositoryTest extends IntegrationTestCase
     public function addToken(
         string $oxid,
         string $expires,
+        string $userId = null,
     ): void {
-        $insertTokensQuery = "insert into `oegraphqlrefreshtoken` (OXID, EXPIRES_AT) values (:oxid, :expires)";
+        $insertTokensQuery = "insert into `oegraphqlrefreshtoken` (OXID, OXUSERID, EXPIRES_AT)
+            values (:oxid, :oxuserid, :expires)";
         $this->getDbConnection()->executeQuery($insertTokensQuery, [
             "oxid" => $oxid,
+            "oxuserid" => $userId ?? uniqid(),
             "expires" => $expires,
         ]);
     }

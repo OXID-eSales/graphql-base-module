@@ -130,13 +130,11 @@ abstract class BaseTestCase extends TestCase
             [
                 'getNewRefreshToken',
                 'removeExpiredTokens',
-                'canIssueToken',
                 'getTokenUser',
             ]
         );
 
         $mock->method('getNewRefreshToken')->willReturn(new RefreshTokenDatatype(new RefreshTokenModel()));
-        $mock->method('canIssueToken')->willReturn(true);
         $mock->method('getTokenUser')->willReturn(new UserDataType(new UserModel()));
 
         return $mock;

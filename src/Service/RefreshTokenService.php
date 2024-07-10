@@ -29,10 +29,6 @@ class RefreshTokenService implements RefreshTokenServiceInterface
     public function createRefreshTokenForUser(UserInterface $user): string
     {
         $this->removeExpiredTokens($user);
-        $this->refreshTokenRepository->canIssueToken(
-            $user,
-            $this->moduleConfiguration->getUserTokenQuota()
-        );
 
         $token = $this->refreshTokenRepository->getNewRefreshToken(
             userId: $user->id()->val(),
