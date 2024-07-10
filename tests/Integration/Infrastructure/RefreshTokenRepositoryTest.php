@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
 use DateTime;
 use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
@@ -125,7 +126,7 @@ class RefreshTokenRepositoryTest extends TestCase
 
         $sut = $this->getSut();
 
-        $this->expectException(InvalidToken::class);
+        $this->expectException(InvalidRefreshToken::class);
         $sut->getTokenUser($token);
     }
 
@@ -133,7 +134,7 @@ class RefreshTokenRepositoryTest extends TestCase
     {
         $sut = $this->getSut();
 
-        $this->expectException(InvalidToken::class);
+        $this->expectException(InvalidRefreshToken::class);
         $sut->getTokenUser(uniqid());
     }
 

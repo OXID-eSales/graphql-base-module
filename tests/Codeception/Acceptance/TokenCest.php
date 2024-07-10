@@ -554,7 +554,7 @@ class TokenCest
         //fails on second call because the token is no longer valid for new signature
         $result = $this->sendRegenerateSignatureKeyMutation($I);
 
-        $I->assertStringStartsWith('The token is invalid', $result['errors'][0]['message']);
+        $I->assertStringStartsWith('The access token is invalid', $result['errors'][0]['message']);
     }
 
     private function sendTokenQuery(AcceptanceTester $I, string $filterPart = ''): array

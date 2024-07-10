@@ -16,7 +16,7 @@ use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
 use OxidEsales\GraphQL\Base\DataType\RefreshTokenInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
+use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshTokenModelFactoryInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
@@ -68,7 +68,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         $userId = (string)$result->fetchOne();
 
         if (!$userId) {
-            throw new InvalidToken('Invalid refresh token');
+            throw new InvalidRefreshToken();
         }
 
         return $userId;

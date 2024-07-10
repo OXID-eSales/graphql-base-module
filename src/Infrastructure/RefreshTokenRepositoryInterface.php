@@ -21,7 +21,7 @@ interface RefreshTokenRepositoryInterface
 
     /**
      * todo: change exception to InvalidRefreshToken
-     * @throws InvalidToken
+     * @throws InvalidRefreshToken
      */
     public function getTokenUser(string $refreshToken): UserInterface;
 }

@@ -9,11 +9,11 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class InvalidToken extends Error
+class InvalidRefreshToken extends Error
 {
-    protected const INVALID_TOKEN_MESSAGE = 'The access token is invalid';
+    protected const INVALID_REFRESH_TOKEN_MESSAGE = 'The refresh token is invalid';
 
-    public function __construct(string $message = self::INVALID_TOKEN_MESSAGE, array $extensions = [])
+    public function __construct(string $message = self::INVALID_REFRESH_TOKEN_MESSAGE, array $extensions = [])
     {
         parent::__construct(
             message: $message,
