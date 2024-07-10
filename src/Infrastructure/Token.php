@@ -13,7 +13,7 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
-use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use PDO;
 
@@ -49,7 +49,7 @@ class Token
         return $storage->isLoaded();
     }
 
-    public function removeExpiredTokens(UserDataType $user): void
+    public function removeExpiredTokens(UserInterface $user): void
     {
         $queryBuilder = $this->queryBuilderFactory->create()
             ->delete('oegraphqltoken')
@@ -82,7 +82,7 @@ class Token
         }
     }
 
-    public function canIssueToken(UserDataType $user, int $quota): bool
+    public function canIssueToken(UserInterface $user, int $quota): bool
     {
         $return = false;
 
@@ -102,7 +102,7 @@ class Token
         return $return;
     }
 
-    public function tokenDelete(?UserDataType $user = null, ?string $tokenId = null, ?int $shopId = null): int
+    public function tokenDelete(?UserInterface $user = null, ?string $tokenId = null, ?int $shopId = null): int
     {
         $parameters = [];
         $condition = 'where';
@@ -133,7 +133,7 @@ class Token
         return is_object($result) ? $result->columnCount() : (int)$result;
     }
 
-    public function userHasToken(UserDataType $user, string $tokenId): bool
+    public function userHasToken(UserInterface $user, string $tokenId): bool
     {
         $queryBuilder = $this->queryBuilderFactory->create();
 

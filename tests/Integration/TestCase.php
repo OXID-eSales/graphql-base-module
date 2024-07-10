@@ -16,7 +16,7 @@ use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInt
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\Facts\Facts;
-use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
@@ -313,7 +313,7 @@ class TokenInfrastructureStub extends TokenInfrastructure
     {
     }
 
-    public function canIssueToken(UserDataType $user, int $quota): bool
+    public function canIssueToken(UserInterface $user, int $quota): bool
     {
         return true;
     }
@@ -327,7 +327,7 @@ class TokenInfrastructureStub extends TokenInfrastructure
     {
     }
 
-    public function removeExpiredTokens(UserDataType $user): void
+    public function removeExpiredTokens(UserInterface $user): void
     {
     }
 }

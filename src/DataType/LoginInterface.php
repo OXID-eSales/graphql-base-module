@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataType;
 
-
 interface LoginInterface
 {
     public function refreshToken(): string;

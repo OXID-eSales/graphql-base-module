@@ -10,14 +10,14 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Event;
 
 use Lcobucci\JWT\Builder;
-use OxidEsales\GraphQL\Base\DataType\User;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class BeforeTokenCreation extends Event
 {
     public function __construct(
         private readonly Builder $builder,
-        private readonly User $user
+        private readonly UserInterface $user
     ) {
     }
 
@@ -26,7 +26,7 @@ class BeforeTokenCreation extends Event
         return $this->builder;
     }
 
-    public function getUser(): User
+    public function getUser(): UserInterface
     {
         return $this->user;
     }

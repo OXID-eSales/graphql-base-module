@@ -22,7 +22,7 @@ class LoginService implements LoginServiceInterface
     ) {
     }
 
-    public function login(string $userName, string $password): UserInterface
+    public function login(?string $userName, ?string $password): UserInterface
     {
         return $this->legacyInfrastructure->login($userName, $password);
     }

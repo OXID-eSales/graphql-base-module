@@ -30,7 +30,7 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         $this->refreshTokenRepository->removeExpiredTokens();
 
         $token = $this->refreshTokenRepository->getNewRefreshToken(
-            userId: $user->id()->val(),
+            userId: (string)$user->id(),
             lifeTime: $this->moduleConfiguration->getRefreshTokenLifeTime()
         );
 

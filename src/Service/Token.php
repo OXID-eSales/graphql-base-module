@@ -121,7 +121,7 @@ class Token
         $this->tokenInfrastructure->tokenDelete(null, $tokenId);
     }
 
-    public function deleteUserToken(UserDataType $user, ID $tokenId): void
+    public function deleteUserToken(UserInterface $user, ID $tokenId): void
     {
         if (!$this->tokenInfrastructure->userHasToken($user, (string)$tokenId)) {
             throw new UnknownToken();
@@ -131,7 +131,7 @@ class Token
     }
 
     private function registerToken(
-        UserDataType $user,
+        UserInterface $user,
         UnencryptedToken $token,
         DateTimeImmutable $time,
         DateTimeImmutable $expire
@@ -141,7 +141,7 @@ class Token
         }
     }
 
-    private function canIssueToken(UserDataType $user): void
+    private function canIssueToken(UserInterface $user): void
     {
         if (
             !$user->isAnonymous() &&
@@ -151,7 +151,7 @@ class Token
         }
     }
 
-    private function removeExpiredTokens(UserDataType $user): void
+    private function removeExpiredTokens(UserInterface $user): void
     {
         if (!$user->isAnonymous()) {
             $this->tokenInfrastructure->removeExpiredTokens($user);
