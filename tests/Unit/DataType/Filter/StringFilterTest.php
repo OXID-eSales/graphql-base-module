@@ -144,4 +144,47 @@ class StringFilterTest extends DataTypeTestCase
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
     }
+
+    /** @dataProvider matchesDataProvider */
+    public function testMatches(
+        string $stringForTrueCase,
+        string $stringForFalseCase,
+        StringFilter $initFilter
+    ): void {
+        $this->assertTrue($initFilter->matches($stringForTrueCase));
+        $this->assertFalse($initFilter->matches($stringForFalseCase));
+    }
+
+    public static function matchesDataProvider(): \Generator
+    {
+        yield "test match equals" => [
+            'stringForTrueCase' => 'test theme 1',
+            'stringForFalseCase' => 'test theme 22',
+            'initFilter' => new StringFilter(equals: 'test theme 1')
+        ];
+
+        yield "test match contains" => [
+            'stringForTrueCase' => 'test abc theme',
+            'stringForFalseCase' => 'test xyz theme',
+            'initFilter' => new StringFilter(contains: 'abc')
+        ];
+
+        yield "test match begins with " => [
+            'stringForTrueCase' => 'this start',
+            'stringForFalseCase' => 'this does not start with',
+            'initFilter' => new StringFilter(beginsWith: 'this start')
+        ];
+
+        yield "test match begins with and contains" => [
+            'stringForTrueCase' => 'this start with abc',
+            'stringForFalseCase' => 'this does not start with abc',
+            'initFilter' => new StringFilter(beginsWith: 'this start', contains: 'abc')
+        ];
+
+        yield "test match equals and contains" => [
+            'stringForTrueCase' => 'this is abc',
+            'stringForFalseCase' => 'this is not abc',
+            'initFilter' => new StringFilter(equals: 'this is abc', contains: 'abc')
+        ];
+    }
 }
