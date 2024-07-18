@@ -171,7 +171,7 @@ class StringFilterTest extends DataTypeTestCase
 
         yield "test match begins with " => [
             'stringForTrueCase' => 'this start',
-            'stringForFalseCase' => 'this deos not start with',
+            'stringForFalseCase' => 'this does not start with',
             'initFilter' => new StringFilter(beginsWith: 'this start')
         ];
     }

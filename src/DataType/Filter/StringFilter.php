@@ -44,11 +44,11 @@ class StringFilter implements FilterInterface
 
     public function matches(string $value): bool
     {
-        if ($this->contains !== null && !str_contains($value, $this->contains)) {
+        if ($this->equals !== null && $value !== $this->equals) {
             return false;
         }
 
-        if ($this->equals !== null && $value !== $this->equals) {
+        if ($this->contains !== null && !str_contains($value, $this->contains)) {
             return false;
         }
 
