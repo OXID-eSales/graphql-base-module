@@ -42,23 +42,6 @@ class StringFilter implements FilterInterface
         return $this->contains;
     }
 
-    public function matches(string $value): bool
-    {
-        if ($this->contains !== null && !str_contains($value, $this->contains)) {
-            return false;
-        }
-
-        if ($this->equals !== null && $value !== $this->equals) {
-            return false;
-        }
-
-        if ($this->beginsWith !== null && !str_starts_with($value, $this->beginsWith)) {
-            return false;
-        }
-
-        return true;
-    }
-
     public function beginsWith(): ?string
     {
         return $this->beginsWith;
