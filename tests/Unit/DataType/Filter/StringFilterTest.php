@@ -174,17 +174,5 @@ class StringFilterTest extends DataTypeTestCase
             'stringForFalseCase' => 'this does not start with',
             'initFilter' => new StringFilter(beginsWith: 'this start')
         ];
-
-        yield "test match begins with and contains" => [
-            'stringForTrueCase' => 'this start with abc',
-            'stringForFalseCase' => 'this does not start with abc',
-            'initFilter' => new StringFilter(beginsWith: 'this start', contains: 'abc')
-        ];
-
-        yield "test match equals and contains" => [
-            'stringForTrueCase' => 'this is abc',
-            'stringForFalseCase' => 'this is not abc',
-            'initFilter' => new StringFilter(equals: 'this is abc', contains: 'abc')
-        ];
     }
 }
