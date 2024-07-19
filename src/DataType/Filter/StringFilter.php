@@ -44,15 +44,15 @@ class StringFilter implements FilterInterface
 
     public function matches(string $value): bool
     {
-        if ($this->equals !== null && $value !== $this->equals) {
+        if ($this->equals !== null && strcasecmp($value, $this->equals) !== 0) {
             return false;
         }
 
-        if ($this->contains !== null && !str_contains($value, $this->contains)) {
+        if ($this->contains !== null && stripos($value, $this->contains) === false) {
             return false;
         }
 
-        if ($this->beginsWith !== null && !str_starts_with($value, $this->beginsWith)) {
+        if ($this->beginsWith !== null && strncasecmp($value, $this->beginsWith, strlen($this->beginsWith)) !== 0) {
             return false;
         }
 

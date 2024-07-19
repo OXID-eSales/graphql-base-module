@@ -160,31 +160,31 @@ class StringFilterTest extends DataTypeTestCase
         yield "test match equals" => [
             'stringForTrueCase' => 'test theme 1',
             'stringForFalseCase' => 'test theme 22',
-            'initFilter' => new StringFilter(equals: 'test theme 1')
+            'initFilter' => new StringFilter(equals: 'TEST theme 1')
         ];
 
         yield "test match contains" => [
             'stringForTrueCase' => 'test abc theme',
             'stringForFalseCase' => 'test xyz theme',
-            'initFilter' => new StringFilter(contains: 'abc')
+            'initFilter' => new StringFilter(contains: 'aBC')
         ];
 
-        yield "test match begins with " => [
+        yield "test match begins with" => [
             'stringForTrueCase' => 'this start',
             'stringForFalseCase' => 'this does not start with',
-            'initFilter' => new StringFilter(beginsWith: 'this start')
+            'initFilter' => new StringFilter(beginsWith: 'this START')
         ];
 
         yield "test match begins with and contains" => [
             'stringForTrueCase' => 'this start with abc',
             'stringForFalseCase' => 'this does not start with abc',
-            'initFilter' => new StringFilter(beginsWith: 'this start', contains: 'abc')
+            'initFilter' => new StringFilter(beginsWith: 'THIS start', contains: 'abc')
         ];
 
         yield "test match equals and contains" => [
             'stringForTrueCase' => 'this is abc',
             'stringForFalseCase' => 'this is not abc',
-            'initFilter' => new StringFilter(equals: 'this is abc', contains: 'abc')
+            'initFilter' => new StringFilter(equals: 'This Is Abc', contains: 'ABC')
         ];
     }
 }
