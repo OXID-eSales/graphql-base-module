@@ -32,9 +32,9 @@ class ModuleConfiguration
 
     public const COOKIE_SETTING_NAME = 'sFingerprintCookieMode';
 
-    public const COOKIE_SETTING_SAME = 'sameSite';
+    public const COOKIE_SETTING_SAME = 'sameOrigin';
 
-    public const COOKIE_SETTING_CROSS = 'crossSite';
+    public const COOKIE_SETTING_CROSS = 'crossOrigin';
 
     /** @var array<string, string> */
     private array $lifetimeMap = [

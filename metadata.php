@@ -71,8 +71,8 @@ $aModule = [
             'group' => 'graphql_base',
             'name'  => 'sFingerprintCookieMode',
             'type'        => 'select',
-            'constraints' => 'sameSite|crossSite',
-            'value' => 'sameSite'
+            'constraints' => 'sameOrigin|crossOrigin',
+            'value' => 'sameOrigin'
         ],
     ],
     'events'      => [

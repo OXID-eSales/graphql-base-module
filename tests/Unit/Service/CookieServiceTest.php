@@ -23,7 +23,7 @@ class CookieServiceTest extends TestCase
     {
         $exampleFingerprint = uniqid();
 
-        $sut = $this->getSut('sameSite');
+        $sut = $this->getSut(ModuleConfiguration::COOKIE_SETTING_SAME);
         $sut->setFingerprintCookie($exampleFingerprint);
 
         $currentHeaders = xdebug_get_headers();
@@ -45,7 +45,7 @@ class CookieServiceTest extends TestCase
     {
         $exampleFingerprint = uniqid();
 
-        $sut = $this->getSut('crossSite');
+        $sut = $this->getSut(ModuleConfiguration::COOKIE_SETTING_CROSS);
         $sut->setFingerprintCookie($exampleFingerprint);
 
         $currentHeaders = xdebug_get_headers();
@@ -79,7 +79,7 @@ class CookieServiceTest extends TestCase
         $sut->getFingerprintCookie();
     }
 
-    protected function getSut(string $option = 'crossSite')
+    protected function getSut(string $option = ModuleConfiguration::COOKIE_SETTING_SAME)
     {
         $configurationMock = $this->createMock(ModuleConfiguration::class);
         $configurationMock->method('getCookieSetting')->willReturn($option);
