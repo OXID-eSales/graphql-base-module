@@ -67,6 +67,13 @@ $aModule = [
             'type'  => 'num',
             'value' => 10000,
         ],
+        [
+            'group' => 'graphql_base',
+            'name'  => 'sFingerprintCookieMode',
+            'type'        => 'select',
+            'constraints' => 'sameSite|crossSite',
+            'value' => 'sameSite'
+        ],
     ],
     'events'      => [
         'onActivate'   => '\OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup::onActivate',

@@ -30,6 +30,12 @@ class ModuleConfiguration
 
     public const QUOTANAME = 'sJsonWebTokenUserQuota';
 
+    public const COOKIE_SETTING_NAME = 'sFingerprintCookieMode';
+
+    public const COOKIE_SETTING_SAME = 'sameSite';
+
+    public const COOKIE_SETTING_CROSS = 'crossSite';
+
     /** @var array<string, string> */
     private array $lifetimeMap = [
         '1min' => '+1 minute',
@@ -107,5 +113,14 @@ class ModuleConfiguration
     public function getUserTokenQuota(): int
     {
         return $this->moduleSettingService->getInteger(static::QUOTANAME, 'oe_graphql_base');
+    }
+
+    public function getCookieSetting(): string
+    {
+        $setting = $this->moduleSettingService
+            ->getString(static::COOKIE_SETTING_NAME, 'oe_graphql_base')
+            ->toString();
+
+        return $setting;
     }
 }
