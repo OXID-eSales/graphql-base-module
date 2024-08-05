@@ -371,4 +371,9 @@ class ModuleConfigurationStub extends \OxidEsales\GraphQL\Base\Service\ModuleCon
     {
         return 1000;
     }
+
+    public function getCookieSetting(): string
+    {
+        return static::COOKIE_SETTING_SAME;
+    }
 }
