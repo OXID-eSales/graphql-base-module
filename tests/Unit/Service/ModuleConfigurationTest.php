@@ -108,4 +108,15 @@ class ModuleConfigurationTest extends TestCase
 
         $this->assertSame(666, $moduleConfiguration->getUserTokenQuota());
     }
+
+    public function testGetCookieSetting(): void
+    {
+        $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();
+        $toReturn = new UnicodeString(ModuleConfiguration::COOKIE_SETTING_SAME);
+        $moduleSettingBridgeMock->method('getString')->willReturn($toReturn);
+
+        $moduleConfiguration = new ModuleConfiguration($moduleSettingBridgeMock);
+
+        $this->assertSame(ModuleConfiguration::COOKIE_SETTING_SAME, $moduleConfiguration->getCookieSetting());
+    }
 }
