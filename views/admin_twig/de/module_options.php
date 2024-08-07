@@ -30,7 +30,7 @@ $aLang = [
     'SHOP_MODULE_sRefreshTokenLifetime_60days'       => '+60 Tage',
     'SHOP_MODULE_sRefreshTokenLifetime_90days'       => '+90 Tage',
     'SHOP_MODULE_sJsonWebTokenUserQuota'             => 'Maximal zulässige Anzahl aktiver JsonWebToken per user',
-    'SHOP_MODULE_sFingerprintCookieMode'             => 'Cookie mode',
+    'SHOP_MODULE_sFingerprintCookieMode'             => 'Cookie-Modus',
     'SHOP_MODULE_sFingerprintCookieMode_sameOrigin'  => 'Same origin',
     'SHOP_MODULE_sFingerprintCookieMode_crossOrigin' => 'Cross origin',
 ];
