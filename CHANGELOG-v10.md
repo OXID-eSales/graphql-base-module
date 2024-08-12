@@ -8,5 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - `DataType\Filter\StringFilter::matches()` to check if string match the filter conditions
+- Refresh token functionality
+  - New queries:
+    - `OxidEsales\GraphQL\Base\Controller\Login::login`
+    - `OxidEsales\GraphQL\Base\Controller\Token::refresh`
+  - New controller:
+    - `OxidEsales\GraphQL\Base\Controller\Login`
+  - New datatypes:
+    - `OxidEsales\GraphQL\Base\DataType\Login` as a return type for `login` query, containing refresh and access token
+    - `OxidEsales\GraphQL\Base\DataType\RefreshToken`
+  - New event:
+    - `OxidEsales\GraphQL\Base\Event\BeforeTokenCreation`
+  - New services:
+    - `OxidEsales\GraphQL\Base\Service\CookieService`
+    - `OxidEsales\GraphQL\Base\Service\FingerprintService`
+    - `OxidEsales\GraphQL\Base\Service\HeaderService`
+    - `OxidEsales\GraphQL\Base\Service\LoginService`
+    - `OxidEsales\GraphQL\Base\Service\RefreshTokenService`
+  - New configuration options:
+    - `sRefreshTokenLifetime` - options for refresh token lifetime, from 24 hours to 90 days
+    - `sFingerprintCookieMode` - option for the authentication fingerprint cookie mode, same or cross origin
 
 [10.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v9.0.0...b-7.2.x
