@@ -62,7 +62,7 @@ class Token
         $queryBuilder->execute();
     }
 
-    public function cleanUpTokens(): void
+    public function deleteOrphanedTokens(): void
     {
         /** @var \Doctrine\DBAL\Driver\Statement $execute */
         $execute = $this->queryBuilderFactory->create()
