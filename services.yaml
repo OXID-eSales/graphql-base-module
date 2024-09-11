@@ -80,6 +80,9 @@ services:
   OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\FingerprintService
 
+  OxidEsales\GraphQL\Base\Service\UserModelService:
+    class: OxidEsales\GraphQL\Base\Service\UserModelService
+
   OxidEsales\GraphQL\Base\Controller\:
     resource: 'src/Controller/'
     public: true
@@ -105,6 +108,10 @@ services:
 
   OxidEsales\GraphQL\Base\Event\Subscriber\UserDeleteSubscriber:
     class: OxidEsales\GraphQL\Base\Event\Subscriber\UserDeleteSubscriber
+    tags: [ 'kernel.event_subscriber' ]
+
+  OxidEsales\GraphQL\Base\Event\Subscriber\PasswordChangeSubscriber:
+    class: OxidEsales\GraphQL\Base\Event\Subscriber\PasswordChangeSubscriber
     tags: [ 'kernel.event_subscriber' ]
 
   OxidEsales\GraphQL\Base\Event\Subscriber\BeforeTokenCreationSubscriber:
