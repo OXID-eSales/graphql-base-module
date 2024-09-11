@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Event\Subscriber;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterModelUpdateEvent;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeModelUpdateEvent;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Service\UserModelService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -25,8 +26,10 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
      */
     protected ?string $userIdWithChangedPwd = null;
 
-    public function __construct(private readonly UserModelService $userModelService)
-    {
+    public function __construct(
+        private readonly UserModelService $userModelService,
+        private readonly RefreshTokenRepository $refreshTokenRepository
+    ) {
     }
 
     /**
@@ -71,7 +74,7 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
             return $event;
         }
 
-        //todo: delete tokens here
+        $this->refreshTokenRepository->invalidateUserTokens($model->getId());
 
         return $event;
     }
