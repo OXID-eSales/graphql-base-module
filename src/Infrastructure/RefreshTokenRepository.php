@@ -95,7 +95,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             ->where('OXUSERID = :userId')
             ->set('EXPIRES_AT', 'NOW()')
             ->setParameters([
-                'userId' => (string)$user->id(),
+                'userId' => $userId,
             ]);
 
         $result = $queryBuilder->execute();
