@@ -9,12 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Base\DataType\UserInterface;
+use OxidEsales\GraphQL\Base\DataType\Login as LoginDatatype;
 
 /**
  * User login service
  */
 interface LoginServiceInterface
 {
-    public function login(?string $userName, ?string $password): UserInterface;
+    public function login(?string $userName, ?string $password): LoginDatatype;
 }
