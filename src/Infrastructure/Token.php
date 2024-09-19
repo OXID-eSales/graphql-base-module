@@ -156,14 +156,14 @@ class Token
         return false;
     }
 
-    public function invalidateUserTokens(UserInterface $user): int
+    public function invalidateUserTokens(string $userId): int
     {
         $queryBuilder = $this->queryBuilderFactory->create()
             ->update('oegraphqltoken')
             ->where('OXUSERID = :userId')
             ->set('EXPIRES_AT', 'NOW()')
             ->setParameters([
-                'userId' => (string)$user->id(),
+                'userId' => $userId,
             ]);
 
         $result = $queryBuilder->execute();
