@@ -13,6 +13,7 @@ use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterModelUpdateEve
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeModelUpdateEvent;
 use OxidEsales\GraphQL\Base\Event\Subscriber\PasswordChangeSubscriber;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
+use OxidEsales\GraphQL\Base\Infrastructure\Token;
 use OxidEsales\GraphQL\Base\Service\UserModelService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 
@@ -51,7 +52,8 @@ class PasswordChangeSubscriberTest extends BaseTestCase
     ): PasswordChangeSubscriber {
         return new PasswordChangeSubscriber(
             userModelService: $userModelService ?? $this->createStub(UserModelService::class),
-            refreshTokenRepository: $refreshTokenRepository ?? $this->createStub(RefreshTokenRepository::class)
+            refreshTokenRepository: $refreshTokenRepository ?? $this->createStub(RefreshTokenRepository::class),
+            tokenInfrastructure: $this->createStub(Token::class)
         );
     }
 }
