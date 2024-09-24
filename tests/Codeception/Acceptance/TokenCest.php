@@ -20,7 +20,7 @@ class TokenCest
 {
     private const TEST_USER_ID = 'e7af1c3b786fd02906ccd75698f4e6b9';
 
-    private const ADMIN_LOGIN = 'admin@admin.com';
+    private const ADMIN_LOGIN = 'noreply@oxid-esales.com';
 
     private const ADMIN_PASSWORD = 'admin';
 

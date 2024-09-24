@@ -19,7 +19,7 @@ use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
 
 class LegacyTest extends TestCase
 {
-    private const ADMIN_LOGIN = 'admin@admin.com';
+    private const ADMIN_LOGIN = 'noreply@oxid-esales.com';
 
     private const ADMIN_PASSWORD = 'admin';
 

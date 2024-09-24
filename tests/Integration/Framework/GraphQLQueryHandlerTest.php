@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class GraphQLQueryHandlerTest extends TestCase
 {
-    private const ADMIN_LOGIN = 'admin@admin.com';
+    private const ADMIN_LOGIN = 'noreply@oxid-esales.com';
 
     private const ADMIN_PASSWORD = 'admin';
 

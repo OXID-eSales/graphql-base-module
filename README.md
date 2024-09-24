@@ -68,7 +68,7 @@ To login and retrieve a token send the following GraphQL query to the server
 ```graphql
 query {
     token (
-        username: "admin@admin.com",
+        username: "noreply@oxid-esales.com",
         password: "admin"
     )
 }
@@ -82,7 +82,7 @@ credentials.
 ```bash
 $ curl http://oxideshop.local/graphql/ \
   -H 'Content-Type: application/json' \
-  --data-binary '{"query":"query {token(username: \"admin@admin.com\", password: \"admin\")}"}'
+  --data-binary '{"query":"query {token(username: \"noreply@oxid-esales.com\", password: \"admin\")}"}'
 ```
 
 You should see a response similar to this:
@@ -109,7 +109,7 @@ To login and retrieve a refresh and access token send the following GraphQL quer
 ```graphql
 query {
     login (
-        username: "admin@admin.com",
+        username: "noreply@oxid-esales.com",
         password: "admin"
     ) {
         refreshToken

@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration;
 abstract class TokenTestCase extends TestCase
 {
     /** @var string */
-    protected const ADMIN_USER = 'admin@admin.com';
+    protected const ADMIN_USER = 'noreply@oxid-esales.com';
 
     /** @var string */
     protected const ADMIN_PASS = 'admin';

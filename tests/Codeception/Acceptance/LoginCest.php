@@ -16,7 +16,7 @@ use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
  */
 class LoginCest
 {
-    private const ADMIN_LOGIN = 'admin@admin.com';
+    private const ADMIN_LOGIN = 'noreply@oxid-esales.com';
 
     private const ADMIN_PASSWORD = 'admin';
 
