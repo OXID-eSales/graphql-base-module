@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Event;
 
 use DateTimeImmutable;
+use Lcobucci\JWT\Token\DataSet;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
@@ -17,6 +19,7 @@ use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 
 class PasswordChangeTest extends IntegrationTestCase
 {
@@ -39,7 +42,10 @@ class PasswordChangeTest extends IntegrationTestCase
     public function testExpireTokenAfterUserPasswordChange(): void
     {
         $userModel = oxNew(User::class);
-        $userModel->load('e7af1c3b786fd02906ccd75698f4e6b9');
+        $userModel->setId('_testUser');
+        $userModel->setPassword('_testPassword');
+        $userModel->assign(['oxusername' => '_testUsername']);
+        $userModel->save();
 
         $issued = new DateTimeImmutable('now');
         $expires = new DateTimeImmutable('+8 hours');
@@ -49,7 +55,7 @@ class PasswordChangeTest extends IntegrationTestCase
             [
                 'OXID' => '_changePwdUserToken',
                 'OXSHOPID' => '1',
-                'OXUSERID' => 'e7af1c3b786fd02906ccd75698f4e6b9',
+                'OXUSERID' => '_testUser',
                 'ISSUED_AT' => $issued->format('Y-m-d H:i:s'),
                 'EXPIRES_AT' => $expires->format('Y-m-d H:i:s'),
                 'USERAGENT' => '',
