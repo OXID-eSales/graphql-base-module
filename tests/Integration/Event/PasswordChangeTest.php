@@ -20,6 +20,7 @@ use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 
 class PasswordChangeTest extends IntegrationTestCase
 {
@@ -39,7 +40,55 @@ class PasswordChangeTest extends IntegrationTestCase
         $this->connection = $container->get(ConnectionProviderInterface::class)->get();
     }
 
+    #[RunInSeparateProcess]
     public function testExpireTokenAfterUserPasswordChange(): void
+    {
+        $userModel = $this->getUserModel();
+        $tokenModel = $this->getTokenModel();
+
+        $expiresAtBeforeChange = new DateTimeImmutable($tokenModel->getRawFieldData('expires_at'));
+        $user = new UserDataType($userModel);
+
+        $this->assertTrue($this->tokenInfrastructure->userHasToken($user, '_changePwdUserToken'));
+        $this->assertFalse($expiresAtBeforeChange <= new DateTimeImmutable('now'));
+
+        $userModel->setPassword('_newPassword');
+        $userModel->save();
+
+        $result = $this->connection->executeQuery(
+            "select expires_at from `oegraphqltoken` where oxid=:tokenId",
+            ['tokenId' => '_changePwdUserToken']
+        );
+        $expiresAtAfterChange = $result->fetchOne();
+
+        $this->assertTrue(new DateTimeImmutable($expiresAtAfterChange) <= new DateTimeImmutable('now'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testKeepTokenAfterUserChangeEventAndNoPwdChange(): void
+    {
+        $userModel = $this->getUserModel();
+        $tokenModel = $this->getTokenModel();
+
+        $expiresAtBeforeChange = new DateTimeImmutable($tokenModel->getRawFieldData('expires_at'));
+        $user = new UserDataType($userModel);
+
+        $this->assertTrue($this->tokenInfrastructure->userHasToken($user, '_changePwdUserToken'));
+        $this->assertFalse($expiresAtBeforeChange <= new DateTimeImmutable('now'));
+
+        $userModel->assign(['oxfname' => 'Test']);
+        $userModel->save();
+
+        $result = $this->connection->executeQuery(
+            "select expires_at from `oegraphqltoken` where oxid=:tokenId",
+            ['tokenId' => '_changePwdUserToken']
+        );
+        $expiresAtAfterChange = $result->fetchOne();
+
+        $this->assertFalse(new DateTimeImmutable($expiresAtAfterChange) <= new DateTimeImmutable('now'));
+    }
+
+    private function getUserModel(): User
     {
         $userModel = oxNew(User::class);
         $userModel->setId('_testUser');
@@ -47,6 +96,11 @@ class PasswordChangeTest extends IntegrationTestCase
         $userModel->assign(['oxusername' => '_testUsername']);
         $userModel->save();
 
+        return $userModel;
+    }
+
+    private function getTokenModel(): TokenModel
+    {
         $issued = new DateTimeImmutable('now');
         $expires = new DateTimeImmutable('+8 hours');
         $tokenModel = oxNew(TokenModel::class);
@@ -65,21 +119,6 @@ class PasswordChangeTest extends IntegrationTestCase
         $tokenModel->save();
         $tokenModel->load('_changePwdUserToken');
 
-        $expiresAtAfterChange = new DateTimeImmutable($tokenModel->getRawFieldData('expires_at'));
-        $user = new UserDataType($userModel);
-
-        $this->assertTrue($this->tokenInfrastructure->userHasToken($user, '_changePwdUserToken'));
-        $this->assertFalse($expiresAtAfterChange <= new DateTimeImmutable('now'));
-
-        $userModel->setPassword('_newPassword');
-        $userModel->save();
-
-        $result = $this->connection->executeQuery(
-            "select expires_at from `oegraphqltoken` where oxid=:tokenId",
-            ['tokenId' => '_changePwdUserToken']
-        );
-        $tokenDateAfterChange = $result->fetchOne();
-
-        $this->assertTrue(new DateTimeImmutable($tokenDateAfterChange) <= new DateTimeImmutable('now'));
+        return $tokenModel;
     }
 }
