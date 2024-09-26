@@ -11,7 +11,6 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
 use Lcobucci\JWT\UnencryptedToken;
-use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;

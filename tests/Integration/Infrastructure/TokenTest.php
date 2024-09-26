@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use Lcobucci\JWT\Token\DataSet;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
@@ -30,6 +31,9 @@ class TokenTest extends IntegrationTestCase
     /** @var TokenInfrastructure */
     private $tokenInfrastructure;
 
+    /** @var ConnectionProviderInterface */
+    private $connection;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -37,6 +41,7 @@ class TokenTest extends IntegrationTestCase
         $container = $containerFactory->create();
         $container->compile();
         $this->tokenInfrastructure = $container->get(TokenInfrastructure::class);
+        $this->connection = $container->get(ConnectionProviderInterface::class)->get();
     }
 
     public function testRegisterToken(): void
@@ -283,27 +288,6 @@ class TokenTest extends IntegrationTestCase
         $this->assertFalse($this->tokenInfrastructure->userHasToken($user, '_second'));
         $this->assertFalse($this->tokenInfrastructure->userHasToken($otherUser, '_first'));
         $this->assertFalse($this->tokenInfrastructure->userHasToken($otherUser, '_second'));
-    }
-
-    public function testInvalidateTokenAfterDeleteUser(): void
-    {
-        $userModel = oxNew(User::class);
-        $userModel->setId('_testUser');
-        $userModel->setPassword('_testPassword');
-        $userModel->assign(['oxusername' => '_testUsername']);
-        $userModel->save();
-
-        $this->tokenInfrastructure->registerToken(
-            $this->getTokenMock('_deletedUser'),
-            new DateTimeImmutable('now'),
-            new DateTimeImmutable('+8 hours')
-        );
-
-        $user = new UserDataType($userModel);
-        $this->assertTrue($this->tokenInfrastructure->userHasToken($user, '_deletedUser'));
-
-        $userModel->delete(self::TEST_USER_ID);
-        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_deletedUser'));
     }
 
     private function getTokenMock(

@@ -62,7 +62,7 @@ class Token
         $queryBuilder->execute();
     }
 
-    public function cleanUpTokens(): void
+    public function deleteOrphanedTokens(): void
     {
         /** @var \Doctrine\DBAL\Driver\Statement $execute */
         $execute = $this->queryBuilderFactory->create()
@@ -154,5 +154,20 @@ class Token
         }
 
         return false;
+    }
+
+    public function invalidateUserTokens(string $userId): int
+    {
+        $queryBuilder = $this->queryBuilderFactory->create()
+            ->update('oegraphqltoken')
+            ->where('OXUSERID = :userId')
+            ->set('EXPIRES_AT', 'NOW()')
+            ->setParameters([
+                'userId' => $userId,
+            ]);
+
+        $result = $queryBuilder->execute();
+
+        return is_object($result) ? $result->columnCount() : (int)$result;
     }
 }

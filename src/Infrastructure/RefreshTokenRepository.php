@@ -87,4 +87,19 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
         return new UserDataType($userModel, $isAnonymous);
     }
+
+    public function invalidateUserTokens(string $userId): int
+    {
+        $queryBuilder = $this->queryBuilderFactory->create()
+            ->update('oegraphqlrefreshtoken')
+            ->where('OXUSERID = :userId')
+            ->set('EXPIRES_AT', 'NOW()')
+            ->setParameters([
+                'userId' => $userId,
+            ]);
+
+        $result = $queryBuilder->execute();
+
+        return is_object($result) ? (int)$result->rowCount() : (int)$result;
+    }
 }
