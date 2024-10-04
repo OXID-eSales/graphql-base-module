@@ -9,10 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
-use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
-use OxidEsales\GraphQL\Base\DataType\Login as LoginDatatype;
+use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
@@ -168,26 +167,19 @@ class LoginTest extends BaseTestCase
         $this->assertNotEmpty($token->claims()->get(TokenService::CLAIM_USERID));
     }
 
-    public function testLoginReturnsLoginDataType(): void
+    public function testLoginReturnsLoginServiceResult(): void
     {
         $loginController = new Login(
-            tokenService: $this->createMock(TokenService::class),
+            tokenService: $this->createStub(TokenService::class),
             loginService: $loginServiceMock = $this->createMock(LoginServiceInterface::class),
         );
 
         $userName = uniqid();
         $password = uniqid();
-        $refreshToken = uniqid();
-        $accessToken = $this->createConfiguredStub(UnencryptedToken::class, [
-            'toString' => uniqid()
-        ]);
 
-        $loginDataType = new LoginDatatype(
-            refreshToken: $refreshToken,
-            accessToken: $accessToken
-        );
+        $loginDataTypeStub = $this->createStub(LoginInterface::class);
+        $loginServiceMock->method('login')->with($userName, $password)->willReturn($loginDataTypeStub);
 
-        $loginServiceMock->method('login')->with($userName, $password)->willReturn($loginDataType);
-        $this->assertSame($loginDataType, $loginController->login($userName, $password));
+        $this->assertSame($loginDataTypeStub, $loginController->login($userName, $password));
     }
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use OxidEsales\GraphQL\Base\DataType\Login as LoginDatatype;
+use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 
 /**
@@ -24,7 +25,7 @@ class LoginService implements LoginServiceInterface
     ) {
     }
 
-    public function login(?string $userName, ?string $password): LoginDatatype
+    public function login(?string $userName, ?string $password): LoginInterface
     {
         $user = $this->legacyInfrastructure->login($userName, $password);
 

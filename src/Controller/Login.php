@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\Login as LoginDatatype;
+use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token;
 use TheCodingMachine\GraphQLite\Annotations\Query;
@@ -42,7 +42,7 @@ class Login
      *
      * @Query
      */
-    public function login(?string $username = null, ?string $password = null): LoginDatatype
+    public function login(?string $username = null, ?string $password = null): LoginInterface
     {
         return $this->loginService->login($username, $password);
     }

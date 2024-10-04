@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\UnencryptedToken;
-use OxidEsales\GraphQL\Base\DataType\Login;
-use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\LoginService;
@@ -41,10 +39,10 @@ class LoginServiceTest extends TestCase
         $refreshToken = uniqid();
         $refreshTokenMock->method('createRefreshTokenForUser')->with($userType)->willReturn($refreshToken);
 
-        $accessTokenStub = $this->createConfiguredStub(UnencryptedToken::class, [
-            'toString' => $accessToken = uniqid()
-        ]);
-        $tokenServiceMock->method('createTokenForUser')->with($userType)->willReturn($accessTokenStub);
+        $accessToken = uniqid();
+        $tokenServiceMock->method('createTokenForUser')->with($userType)->willReturn(
+            $this->createConfiguredStub(UnencryptedToken::class, ['toString' => $accessToken])
+        );
 
         $result = $sut->login($userName, $password);
 
