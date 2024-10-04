@@ -12,8 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - New queries:
     - `OxidEsales\GraphQL\Base\Controller\Login::login`
     - `OxidEsales\GraphQL\Base\Controller\Token::refresh`
-  - New controller:
-    - `OxidEsales\GraphQL\Base\Controller\Login`
   - New datatypes:
     - `OxidEsales\GraphQL\Base\DataType\Login` as a return type for `login` query, containing refresh and access token
     - `OxidEsales\GraphQL\Base\DataType\RefreshToken`
