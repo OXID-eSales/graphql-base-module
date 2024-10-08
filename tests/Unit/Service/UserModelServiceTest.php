@@ -33,7 +33,6 @@ class UserModelServiceTest extends TestCase
         );
 
         $this->assertTrue($sut->isPasswordChanged($userId, $newPassword));
-
     }
 
     public function testIsPasswordChangedOnSamePassword(): void

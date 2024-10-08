@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\Event\Subscriber;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\AfterModelUpdateEvent;
 use OxidEsales\EshopCommunity\Internal\Transition\ShopEvents\BeforeModelUpdateEvent;
-use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
+use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Token;
 use OxidEsales\GraphQL\Base\Service\UserModelService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -23,13 +23,13 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
     /**
      * Whether the password had been changed.
      *
-     * @var string|null
+     * @var array
      */
-    protected ?string $userIdWithChangedPwd = null;
+    protected array $userIdWithChangedPwd = [];
 
     public function __construct(
         private readonly UserModelService $userModelService,
-        private readonly RefreshTokenRepository $refreshTokenRepository,
+        private readonly RefreshTokenRepositoryInterface $refreshTokenRepository,
         private readonly Token $tokenInfrastructure
     ) {
     }
@@ -44,7 +44,7 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
         /** @phpstan-ignore-next-line method.notFound */
         $model = $event->getModel();
 
-        if (!$model instanceof User || !$model->getId()) {
+        if (!$model instanceof User) {
             return $event;
         }
 
@@ -53,7 +53,7 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
             return $event;
         }
 
-        $this->userIdWithChangedPwd = $model->getId();
+        $this->userIdWithChangedPwd[$model->getId()] = true;
 
         return $event;
     }
@@ -68,16 +68,13 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
         /** @phpstan-ignore-next-line method.notFound */
         $model = $event->getModel();
 
-        if (!$model instanceof User) {
-            return $event;
-        }
-
-        if ($model->getId() !== $this->userIdWithChangedPwd || !$this->userIdWithChangedPwd) {
+        if (!$model instanceof User || !isset($this->userIdWithChangedPwd[$model->getId()])) {
             return $event;
         }
 
         $this->refreshTokenRepository->invalidateUserTokens($model->getId());
         $this->tokenInfrastructure->invalidateUserTokens($model->getId());
+        unset($this->userIdWithChangedPwd[$model->getId()]);
 
         return $event;
     }
