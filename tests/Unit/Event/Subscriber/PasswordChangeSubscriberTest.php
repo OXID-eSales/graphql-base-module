@@ -54,10 +54,6 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $userModelService = $this->createPartialMock(UserModelService::class, ['isPasswordChanged']);
         $userModelService->method('isPasswordChanged')->with($userId = uniqid())->willReturn(true);
 
-        $userModelStub = $this->createStub(User::class);
-        $userModelStub->method('getId')
-            ->willReturn($userId);
-
         $refreshTokenRepository = $this->createMock(RefreshTokenRepositoryInterface::class);
         $refreshTokenRepository->expects($this->once())
             ->method('invalidateUserTokens');
@@ -66,12 +62,41 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $tokenInfrastructure->expects($this->once())
             ->method('invalidateUserTokens');
 
+        $userModelStub = $this->getUserModel($userId);
         $beforeUpdateStub = $this->getBeforeUpdateEvent($userModelStub);
         $afterUpdateStub = $this->getAfterUpdateEvent($userModelStub);
 
         $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
         $sut->handleBeforeUpdate($beforeUpdateStub);
         $sut->handleAfterUpdate($afterUpdateStub);
+    }
+
+    public function testSubscriberWithMultipleUserModelsPwdChange(): void
+    {
+        $userModelService = $this->createPartialMock(UserModelService::class, ['isPasswordChanged']);
+        $userModelService->method('isPasswordChanged')->willReturn(true);
+
+        $userModel1 = $this->getUserModel(uniqid());
+        $userModel2 = $this->getUserModel(uniqid());
+
+        $refreshTokenRepository = $this->createMock(RefreshTokenRepositoryInterface::class);
+        $refreshTokenRepository->expects($this->exactly(2))
+            ->method('invalidateUserTokens');
+
+        $tokenInfrastructure = $this->createMock(Token::class);
+        $tokenInfrastructure->expects($this->exactly(2))
+            ->method('invalidateUserTokens');
+
+        $beforeUpdateStub1 = $this->getBeforeUpdateEvent($userModel1);
+        $beforeUpdateStub2 = $this->getBeforeUpdateEvent($userModel2);
+        $afterUpdateStub1 = $this->getAfterUpdateEvent($userModel1);
+        $afterUpdateStub2 = $this->getAfterUpdateEvent($userModel2);
+
+        $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
+        $sut->handleBeforeUpdate($beforeUpdateStub1);
+        $sut->handleBeforeUpdate($beforeUpdateStub2);
+        $sut->handleAfterUpdate($afterUpdateStub1);
+        $sut->handleAfterUpdate($afterUpdateStub2);
     }
 
     public function testSubscriberWithNoUserModel(): void
@@ -101,10 +126,6 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $userModelService = $this->createPartialMock(UserModelService::class, ['isPasswordChanged']);
         $userModelService->method('isPasswordChanged')->with($userId = uniqid())->willReturn(false);
 
-        $userModelStub = $this->createStub(User::class);
-        $userModelStub->method('getId')
-            ->willReturn($userId);
-
         $refreshTokenRepository = $this->createMock(RefreshTokenRepositoryInterface::class);
         $refreshTokenRepository->expects($this->never())
             ->method('invalidateUserTokens');
@@ -113,6 +134,7 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $tokenInfrastructure->expects($this->never())
             ->method('invalidateUserTokens');
 
+        $userModelStub = $this->getUserModel($userId);
         $beforeUpdateStub = $this->getBeforeUpdateEvent($userModelStub);
         $afterUpdateStub = $this->getAfterUpdateEvent($userModelStub);
 
@@ -121,7 +143,7 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $sut->handleAfterUpdate($afterUpdateStub);
     }
 
-    protected function getBeforeUpdateEvent(BaseModel $model)
+    protected function getBeforeUpdateEvent(BaseModel $model): BeforeModelUpdateEvent
     {
         $beforeUpdateStub = $this->createStub(BeforeModelUpdateEvent::class);
         $beforeUpdateStub->method('getModel')
@@ -130,13 +152,22 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         return $beforeUpdateStub;
     }
 
-    protected function getAfterUpdateEvent(BaseModel $model)
+    protected function getAfterUpdateEvent(BaseModel $model): AfterModelUpdateEvent
     {
         $afterUpdateStub = $this->createStub(AfterModelUpdateEvent::class);
         $afterUpdateStub->method('getModel')
             ->willReturn($model);
 
         return $afterUpdateStub;
+    }
+
+    protected function getUserModel(string $userId): User
+    {
+        $userModelStub = $this->createStub(User::class);
+        $userModelStub->method('getId')
+            ->willReturn($userId);
+
+        return $userModelStub;
     }
 
     protected function getSut(
