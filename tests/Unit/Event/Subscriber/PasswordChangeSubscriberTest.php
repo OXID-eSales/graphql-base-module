@@ -76,10 +76,22 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $tokenInfrastructure->expects($this->exactly(2))
             ->method('invalidateUserTokens');
 
-        $beforeUpdateStub1 = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub1]);
-        $beforeUpdateStub2 = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub2]);
-        $afterUpdateStub1 = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub1]);
-        $afterUpdateStub2 = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub2]);
+        $beforeUpdateStub1 = $this->createConfiguredStub(
+            BeforeModelUpdateEvent::class,
+            ['getModel' => $userModelStub1]
+        );
+        $beforeUpdateStub2 = $this->createConfiguredStub(
+            BeforeModelUpdateEvent::class,
+            ['getModel' => $userModelStub2]
+        );
+        $afterUpdateStub1 = $this->createConfiguredStub(
+            AfterModelUpdateEvent::class,
+            ['getModel' => $userModelStub1]
+        );
+        $afterUpdateStub2 = $this->createConfiguredStub(
+            AfterModelUpdateEvent::class,
+            ['getModel' => $userModelStub2]
+        );
 
         $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
         $sut->handleBeforeUpdate($beforeUpdateStub1);
