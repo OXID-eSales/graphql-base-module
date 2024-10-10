@@ -39,23 +39,21 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
      *
      * @param Event $event Event to be handled
      */
-    public function handleBeforeUpdate(Event $event): Event
+    public function handleBeforeUpdate(Event $event): void
     {
         /** @phpstan-ignore-next-line method.notFound */
         $model = $event->getModel();
 
         if (!$model instanceof User) {
-            return $event;
+            return;
         }
 
         $newPassword = $model->getFieldData('oxpassword');
         if (!$this->userModelService->isPasswordChanged($model->getId(), $newPassword)) {
-            return $event;
+            return;
         }
 
         $this->userIdWithChangedPwd[$model->getId()] = true;
-
-        return $event;
     }
 
     /**
@@ -63,20 +61,18 @@ class PasswordChangeSubscriber implements EventSubscriberInterface
      *
      * @param Event $event Event to be handled
      */
-    public function handleAfterUpdate(Event $event): Event
+    public function handleAfterUpdate(Event $event): void
     {
         /** @phpstan-ignore-next-line method.notFound */
         $model = $event->getModel();
 
         if (!$model instanceof User || !isset($this->userIdWithChangedPwd[$model->getId()])) {
-            return $event;
+            return;
         }
 
         $this->refreshTokenRepository->invalidateUserTokens($model->getId());
         $this->tokenInfrastructure->invalidateUserTokens($model->getId());
         unset($this->userIdWithChangedPwd[$model->getId()]);
-
-        return $event;
     }
 
     /**

@@ -33,22 +33,6 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $this->assertTrue($configuration[AfterModelUpdateEvent::class] === 'handleAfterUpdate');
     }
 
-    public function testHandleBeforeUpdateReturnsOriginalEvent(): void
-    {
-        $sut = $this->getSut();
-
-        $eventStub = $this->createStub(BeforeModelUpdateEvent::class);
-        $this->assertSame($eventStub, $sut->handleBeforeUpdate($eventStub));
-    }
-
-    public function testHandleAfterUpdateReturnsOriginalEvent(): void
-    {
-        $sut = $this->getSut();
-
-        $eventStub = $this->createStub(AfterModelUpdateEvent::class);
-        $this->assertSame($eventStub, $sut->handleAfterUpdate($eventStub));
-    }
-
     public function testSubscriberWithUserModelPwdChange(): void
     {
         $userModelService = $this->createPartialMock(UserModelService::class, ['isPasswordChanged']);
@@ -60,11 +44,12 @@ class PasswordChangeSubscriberTest extends BaseTestCase
 
         $tokenInfrastructure = $this->createMock(Token::class);
         $tokenInfrastructure->expects($this->once())
-            ->method('invalidateUserTokens');
+            ->method('invalidateUserTokens')
+            ->with($this->equalTo($userId));
 
-        $userModelStub = $this->getUserModel($userId);
-        $beforeUpdateStub = $this->getBeforeUpdateEvent($userModelStub);
-        $afterUpdateStub = $this->getAfterUpdateEvent($userModelStub);
+        $userModelStub = $this->createConfiguredStub(User::class, ['getId' => $userId]);
+        $beforeUpdateStub = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub]);
+        $afterUpdateStub = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub]);
 
         $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
         $sut->handleBeforeUpdate($beforeUpdateStub);
@@ -76,27 +61,36 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $userModelService = $this->createPartialMock(UserModelService::class, ['isPasswordChanged']);
         $userModelService->method('isPasswordChanged')->willReturn(true);
 
-        $userModel1 = $this->getUserModel(uniqid());
-        $userModel2 = $this->getUserModel(uniqid());
+        $userModelStub1 = $this->createConfiguredStub(User::class, ['getId' => $userId1 = uniqid()]);
+        $userModelStub2 = $this->createConfiguredStub(User::class, ['getId' => $userId2 = uniqid()]);
 
+        $methodArgs = [];
         $refreshTokenRepository = $this->createMock(RefreshTokenRepositoryInterface::class);
         $refreshTokenRepository->expects($this->exactly(2))
-            ->method('invalidateUserTokens');
+            ->method('invalidateUserTokens')
+            ->willReturnCallback(function ($userId) use (&$methodArgs) {
+                $methodArgs[] = $userId;
+            });
 
         $tokenInfrastructure = $this->createMock(Token::class);
         $tokenInfrastructure->expects($this->exactly(2))
             ->method('invalidateUserTokens');
 
-        $beforeUpdateStub1 = $this->getBeforeUpdateEvent($userModel1);
-        $beforeUpdateStub2 = $this->getBeforeUpdateEvent($userModel2);
-        $afterUpdateStub1 = $this->getAfterUpdateEvent($userModel1);
-        $afterUpdateStub2 = $this->getAfterUpdateEvent($userModel2);
+        $beforeUpdateStub1 = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub1]);
+        $beforeUpdateStub2 = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub2]);
+        $afterUpdateStub1 = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub1]);
+        $afterUpdateStub2 = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub2]);
 
         $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
         $sut->handleBeforeUpdate($beforeUpdateStub1);
         $sut->handleBeforeUpdate($beforeUpdateStub2);
         $sut->handleAfterUpdate($afterUpdateStub1);
         $sut->handleAfterUpdate($afterUpdateStub2);
+
+        // Ensure that invalidateUserTokens was called with the correct parameters
+        $this->assertCount(2, $methodArgs);
+        $this->assertSame($userId1, $methodArgs[0]);
+        $this->assertSame($userId2, $methodArgs[1]);
     }
 
     public function testSubscriberWithNoUserModel(): void
@@ -113,8 +107,8 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $tokenInfrastructure->expects($this->never())
             ->method('invalidateUserTokens');
 
-        $beforeUpdateStub = $this->getBeforeUpdateEvent(new Article());
-        $afterUpdateStub = $this->getAfterUpdateEvent(new Article());
+        $beforeUpdateStub = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => new Article()]);
+        $afterUpdateStub = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => new Article()]);
 
         $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
         $sut->handleBeforeUpdate($beforeUpdateStub);
@@ -134,40 +128,13 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $tokenInfrastructure->expects($this->never())
             ->method('invalidateUserTokens');
 
-        $userModelStub = $this->getUserModel($userId);
-        $beforeUpdateStub = $this->getBeforeUpdateEvent($userModelStub);
-        $afterUpdateStub = $this->getAfterUpdateEvent($userModelStub);
+        $userModelStub = $this->createConfiguredStub(User::class, ['getId' => $userId]);
+        $beforeUpdateStub = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub]);
+        $afterUpdateStub = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub]);
 
         $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
         $sut->handleBeforeUpdate($beforeUpdateStub);
         $sut->handleAfterUpdate($afterUpdateStub);
-    }
-
-    protected function getBeforeUpdateEvent(BaseModel $model): BeforeModelUpdateEvent
-    {
-        $beforeUpdateStub = $this->createStub(BeforeModelUpdateEvent::class);
-        $beforeUpdateStub->method('getModel')
-            ->willReturn($model);
-
-        return $beforeUpdateStub;
-    }
-
-    protected function getAfterUpdateEvent(BaseModel $model): AfterModelUpdateEvent
-    {
-        $afterUpdateStub = $this->createStub(AfterModelUpdateEvent::class);
-        $afterUpdateStub->method('getModel')
-            ->willReturn($model);
-
-        return $afterUpdateStub;
-    }
-
-    protected function getUserModel(string $userId): User
-    {
-        $userModelStub = $this->createStub(User::class);
-        $userModelStub->method('getId')
-            ->willReturn($userId);
-
-        return $userModelStub;
     }
 
     protected function getSut(

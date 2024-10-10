@@ -88,7 +88,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         return new UserDataType($userModel, $isAnonymous);
     }
 
-    public function invalidateUserTokens(string $userId): int
+    public function invalidateUserTokens(string $userId): void
     {
         $queryBuilder = $this->queryBuilderFactory->create()
             ->update('oegraphqlrefreshtoken')
@@ -98,8 +98,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
                 'userId' => $userId,
             ]);
 
-        $result = $queryBuilder->execute();
-
-        return is_object($result) ? (int)$result->rowCount() : (int)$result;
+        $queryBuilder->execute();
     }
 }

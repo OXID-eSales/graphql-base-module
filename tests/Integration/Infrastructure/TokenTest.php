@@ -322,9 +322,7 @@ class TokenTest extends IntegrationTestCase
             new DateTimeImmutable('+8 hours')
         );
 
-        $result = $this->tokenInfrastructure->invalidateUserTokens($userId);
-        $this->assertTrue($result !== 0);
-
+        $this->tokenInfrastructure->invalidateUserTokens($userId);
         $result = $this->connection->executeQuery(
             "select expires_at from `oegraphqltoken` where oxid=:tokenId",
             ['tokenId' => $token]
@@ -345,9 +343,7 @@ class TokenTest extends IntegrationTestCase
             new DateTimeImmutable('+8 hours')
         );
 
-        $result = $this->tokenInfrastructure->invalidateUserTokens('wrong_user_id');
-        $this->assertTrue($result == 0);
-
+        $this->tokenInfrastructure->invalidateUserTokens('wrong_user_id');
         $result = $this->connection->executeQuery(
             "select expires_at from `oegraphqltoken` where oxid=:tokenId",
             ['tokenId' => $token]

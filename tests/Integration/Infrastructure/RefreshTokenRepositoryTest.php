@@ -150,8 +150,7 @@ class RefreshTokenRepositoryTest extends TestCase
         );
 
         $sut = $this->getSut();
-        $result = $sut->invalidateUserTokens($userId);
-        $this->assertTrue($result !== 0);
+        $sut->invalidateUserTokens($userId);
 
         $this->expectException(InvalidRefreshToken::class);
         $sut->getTokenUser($token);
@@ -168,8 +167,7 @@ class RefreshTokenRepositoryTest extends TestCase
         );
 
         $sut = $this->getSut();
-        $result = $sut->invalidateUserTokens('some_user_id');
-        $this->assertTrue($result == 0);
+        $sut->invalidateUserTokens('some_user_id');
 
         $this->assertTrue($sut->getTokenUser($token) instanceof UserInterface);
     }

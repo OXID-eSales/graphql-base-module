@@ -156,7 +156,7 @@ class Token
         return false;
     }
 
-    public function invalidateUserTokens(string $userId): int
+    public function invalidateUserTokens(string $userId): void
     {
         $queryBuilder = $this->queryBuilderFactory->create()
             ->update('oegraphqltoken')
@@ -166,8 +166,6 @@ class Token
                 'userId' => $userId,
             ]);
 
-        $result = $queryBuilder->execute();
-
-        return is_object($result) ? $result->columnCount() : (int)$result;
+        $queryBuilder->execute();
     }
 }
