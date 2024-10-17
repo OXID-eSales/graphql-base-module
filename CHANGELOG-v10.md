@@ -26,5 +26,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - New configuration options:
     - `sRefreshTokenLifetime` - options for refresh token lifetime, from 24 hours to 90 days
     - `sFingerprintCookieMode` - option for the authentication fingerprint cookie mode, same or cross origin
+- Access and refresh tokens are now invalidated when the user's password is changed
+  - New methods:
+    - `OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface::invalidateUserTokens`
+    - `OxidEsales\GraphQL\Base\Infrastructure\Token::invalidateUserTokens`
+  - New event subscriber:
+    - `OxidEsales\GraphQL\Base\Event\Subscriber\PasswordChangeSubscriber`
+
+## Changed
+- Renamed OxidEsales\GraphQL\Base\Infrastructure\Token::cleanUpTokens() to deleteOrphanedTokens()
 
 [10.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v9.0.0...b-7.2.x

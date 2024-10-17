@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use Lcobucci\JWT\Token\DataSet;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
@@ -30,6 +31,9 @@ class TokenTest extends IntegrationTestCase
     /** @var TokenInfrastructure */
     private $tokenInfrastructure;
 
+    /** @var ConnectionProviderInterface */
+    private $connection;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -37,6 +41,7 @@ class TokenTest extends IntegrationTestCase
         $container = $containerFactory->create();
         $container->compile();
         $this->tokenInfrastructure = $container->get(TokenInfrastructure::class);
+        $this->connection = $container->get(ConnectionProviderInterface::class)->get();
     }
 
     public function testRegisterToken(): void
@@ -304,6 +309,48 @@ class TokenTest extends IntegrationTestCase
 
         $userModel->delete(self::TEST_USER_ID);
         $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_deletedUser'));
+    }
+
+    public function testInvalidateAccessTokens(): void
+    {
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock(
+                $token = 'pwd_change_token',
+                $userId = '_testUser'
+            ),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+
+        $this->tokenInfrastructure->invalidateUserTokens($userId);
+        $result = $this->connection->executeQuery(
+            "select expires_at from `oegraphqltoken` where oxid=:tokenId",
+            ['tokenId' => $token]
+        );
+        $expiresAtAfterChange = $result->fetchOne();
+
+        $this->assertTrue(new DateTimeImmutable($expiresAtAfterChange) <= new DateTimeImmutable('now'));
+    }
+
+    public function testInvalidateAccessTokensWrongUserId(): void
+    {
+        $this->tokenInfrastructure->registerToken(
+            $this->getTokenMock(
+                tokenId: $token = 'pwd_change_token',
+                userId: '_testUser'
+            ),
+            new DateTimeImmutable('now'),
+            new DateTimeImmutable('+8 hours')
+        );
+
+        $this->tokenInfrastructure->invalidateUserTokens('wrong_user_id');
+        $result = $this->connection->executeQuery(
+            "select expires_at from `oegraphqltoken` where oxid=:tokenId",
+            ['tokenId' => $token]
+        );
+        $expiresAtAfterChange = $result->fetchOne();
+
+        $this->assertFalse(new DateTimeImmutable($expiresAtAfterChange) <= new DateTimeImmutable('now'));
     }
 
     private function getTokenMock(

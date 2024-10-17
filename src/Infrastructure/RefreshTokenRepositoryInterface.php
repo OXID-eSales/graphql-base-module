@@ -24,4 +24,6 @@ interface RefreshTokenRepositoryInterface
      * @throws InvalidRefreshToken
      */
     public function getTokenUser(string $refreshToken): UserInterface;
+
+    public function invalidateUserTokens(string $user): void;
 }

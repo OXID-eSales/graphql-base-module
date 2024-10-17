@@ -9,16 +9,14 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
-use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
+use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\DataType\User;
-use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
-use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -60,7 +58,6 @@ class LoginTest extends BaseTestCase
             new EventDispatcher(),
             $this->getModuleConfigurationMock(),
             $this->tokenInfrastructure,
-            $this->getRefreshRepositoryMock()
         );
     }
 
@@ -79,7 +76,6 @@ class LoginTest extends BaseTestCase
         $loginController = new Login(
             $this->tokenService,
             $this->getLoginService($this->legacy),
-            $this->createStub(RefreshTokenServiceInterface::class),
         );
 
         $jwt = $loginController->token($username, $password);
@@ -103,7 +99,6 @@ class LoginTest extends BaseTestCase
         $loginController = new Login(
             $this->tokenService,
             $this->getLoginService($this->legacy),
-            $this->createStub(RefreshTokenServiceInterface::class),
         );
 
         $jwt = $loginController->token('none');
@@ -132,7 +127,6 @@ class LoginTest extends BaseTestCase
         $loginController = new Login(
             $this->tokenService,
             $this->getLoginService($this->legacy),
-            $this->createStub(RefreshTokenServiceInterface::class),
         );
 
         $jwt = $loginController->token(null, 'none');
@@ -161,7 +155,6 @@ class LoginTest extends BaseTestCase
         $loginController = new Login(
             $this->tokenService,
             $this->getLoginService($this->legacy),
-            $this->createStub(RefreshTokenServiceInterface::class),
         );
 
         $jwt = $loginController->token();
@@ -174,31 +167,19 @@ class LoginTest extends BaseTestCase
         $this->assertNotEmpty($token->claims()->get(TokenService::CLAIM_USERID));
     }
 
-    public function testLoginCreatesLoginInputTypeResult(): void
+    public function testLoginReturnsLoginServiceResult(): void
     {
         $loginController = new Login(
-            tokenService: $tokenServiceMock = $this->createMock(TokenService::class),
+            tokenService: $this->createStub(TokenService::class),
             loginService: $loginServiceMock = $this->createMock(LoginServiceInterface::class),
-            refreshTokenService: $refreshTokenMock = $this->createMock(RefreshTokenServiceInterface::class),
         );
 
         $userName = uniqid();
         $password = uniqid();
-        $userStub = $this->createStub(UserInterface::class);
 
-        $loginServiceMock->method('login')->with($userName, $password)->willReturn($userStub);
+        $loginDataTypeStub = $this->createStub(LoginInterface::class);
+        $loginServiceMock->method('login')->with($userName, $password)->willReturn($loginDataTypeStub);
 
-        $refreshToken = uniqid();
-        $refreshTokenMock->method('createRefreshTokenForUser')->with($userStub)->willReturn($refreshToken);
-
-        $accessTokenStub = $this->createConfiguredStub(UnencryptedToken::class, [
-            'toString' => $accessToken = uniqid()
-        ]);
-        $tokenServiceMock->method('createTokenForUser')->with($userStub)->willReturn($accessTokenStub);
-
-        $result = $loginController->login($userName, $password);
-
-        $this->assertSame($refreshToken, $result->refreshToken());
-        $this->assertSame($accessToken, $result->accessToken());
+        $this->assertSame($loginDataTypeStub, $loginController->login($userName, $password));
     }
 }

@@ -9,9 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\Login as LoginDatatype;
+use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
-use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
@@ -20,7 +19,6 @@ class Login
     public function __construct(
         protected Token $tokenService,
         protected LoginServiceInterface $loginService,
-        protected RefreshTokenServiceInterface $refreshTokenService,
     ) {
     }
 
@@ -44,13 +42,8 @@ class Login
      *
      * @Query
      */
-    public function login(?string $username = null, ?string $password = null): LoginDatatype
+    public function login(?string $username = null, ?string $password = null): LoginInterface
     {
-        $user = $this->loginService->login($username, $password);
-
-        return new LoginDatatype(
-            refreshToken: $this->refreshTokenService->createRefreshTokenForUser($user),
-            accessToken: $this->tokenService->createTokenForUser($user),
-        );
+        return $this->loginService->login($username, $password);
     }
 }

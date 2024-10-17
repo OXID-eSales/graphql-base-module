@@ -10,10 +10,11 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
-use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
@@ -136,6 +137,39 @@ class RefreshTokenRepositoryTest extends TestCase
 
         $this->expectException(InvalidRefreshToken::class);
         $sut->getTokenUser(uniqid());
+    }
+
+    public function testInvalidateRefreshTokens(): void
+    {
+        $expires = new DateTimeImmutable('+8 hours');
+        $this->addToken(
+            oxid: 'pwd_change_token',
+            expires: $expires->format('Y-m-d H:i:s'),
+            userId: $userId = '_testUser',
+            token: $token = uniqid(),
+        );
+
+        $sut = $this->getSut();
+        $sut->invalidateUserTokens($userId);
+
+        $this->expectException(InvalidRefreshToken::class);
+        $sut->getTokenUser($token);
+    }
+
+    public function testInvalidateRefreshTokensWrongUserId(): void
+    {
+        $expires = new DateTimeImmutable('+8 hours');
+        $this->addToken(
+            oxid: 'pwd_change_token',
+            expires: $expires->format('Y-m-d H:i:s'),
+            userId: '_testUser',
+            token: $token = uniqid(),
+        );
+
+        $sut = $this->getSut();
+        $sut->invalidateUserTokens('some_user_id');
+
+        $this->assertTrue($sut->getTokenUser($token) instanceof UserInterface);
     }
 
     private function getDbConnection(): Connection
