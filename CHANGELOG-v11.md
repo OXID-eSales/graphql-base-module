@@ -11,5 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced `TokenFilterList::fromUserInput` and `TokenSorting::fromUserInput` with direct object instantiation
 - Removed static access for `Legacy::createUniqueIdentifier()` and made it an instance method
 - Updated `MissingSignatureKey` exception to use a constructor instead of a static factory method
+- Upgrade GraphQLite to 7.0
 
 [11.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v10.0.0...b-7.3.x

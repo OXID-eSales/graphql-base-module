@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Framework;
 
-use Mouf\Composer\ClassNameMapper;
+use Kcs\ClassFinder\Finder\Psr4Finder;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use Psr\SimpleCache\CacheInterface;
@@ -60,27 +60,23 @@ class SchemaFactory
             $this->container
         );
 
-        $classNameMapper = new ClassNameMapper();
+        $finder = new Psr4AggregatedFinder();
 
         foreach ($this->namespaceMappers as $namespaceMapper) {
             foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace => $path) {
-                $classNameMapper->registerPsr4Namespace(
-                    $namespace,
-                    $path
-                );
+                $namespace = $this->trimNamespace($namespace);
+                $finder->addFinder(new Psr4Finder($namespace, $path));
                 $factory->addControllerNameSpace($namespace);
             }
 
             foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace => $path) {
-                $classNameMapper->registerPsr4Namespace(
-                    $namespace,
-                    $path
-                );
+                $namespace = $this->trimNamespace($namespace);
+                $finder->addFinder(new Psr4Finder($namespace, $path));
                 $factory->addTypeNameSpace($namespace);
             }
         }
 
-        $factory->setClassNameMapper($classNameMapper);
+        $factory->setFinder($finder);
 
         $factory->setAuthenticationService($this->authentication)
             ->setAuthorizationService($this->authorization);
@@ -89,5 +85,13 @@ class SchemaFactory
         $queryTimer->stop();
 
         return $this->schema;
+    }
+
+    /**
+     * @deprecated The leading backslash is unnecessary and not recommended. It will not be supported in the future.
+     */
+    private function trimNamespace(string $namespace): string
+    {
+        return ltrim($namespace, '\\');
     }
 }
