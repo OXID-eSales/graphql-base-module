@@ -43,7 +43,7 @@ $SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/developer-tools" -v"dev-b-7.
 $SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/oxideshop-doctrine-migration-wrapper" -v"dev-b-7.3.x"
 $SCRIPT_PATH/parts/shared/require_theme_dev.sh -t"apex" -b"b-7.3.x"
 
-git clone https://github.com/OXID-eSales/oxapi-documentation source/documentation/oxapi-documentation
+git clone -b 11.0-en https://github.com/OXID-eSales/oxapi-documentation source/documentation/oxapi-documentation
 make docpath=./source/documentation/oxapi-documentation addsphinxservice
 
 make up
