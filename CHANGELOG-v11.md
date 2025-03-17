@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [11.0.0] - unreleased
 
+### Added
+- FilesystemAdapter as schema caching solution
+- CacheClearCommand allowing to manually clear schema cache
+
 ### Changed
 - Update module to work with OXID eShop 7.3
 - Replaced `TokenFilterList::fromUserInput` and `TokenSorting::fromUserInput` with direct object instantiation

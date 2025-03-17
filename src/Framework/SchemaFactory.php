@@ -60,7 +60,7 @@ class SchemaFactory
             $this->container
         );
 
-        $finder = new Psr4AggregatedFinder();
+        $finder = new AggregatedFinder();
 
         foreach ($this->namespaceMappers as $namespaceMapper) {
             foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace => $path) {
@@ -80,6 +80,8 @@ class SchemaFactory
 
         $factory->setAuthenticationService($this->authentication)
             ->setAuthorizationService($this->authorization);
+
+        $factory->prodMode();
 
         $this->schema = $factory->createSchema();
         $queryTimer->stop();

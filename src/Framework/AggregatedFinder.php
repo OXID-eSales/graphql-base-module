@@ -10,15 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Framework;
 
 use AppendIterator;
+use IteratorIterator;
 use Kcs\ClassFinder\Finder\FinderInterface;
-use Kcs\ClassFinder\Finder\Psr4Finder;
 use Kcs\ClassFinder\Finder\ReflectionFilterTrait;
 use Traversable;
 
-/**
- * @internal This class is not covered by the backward compatibility promise
- */
-class Psr4AggregatedFinder implements FinderInterface
+class AggregatedFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
 
@@ -29,9 +26,9 @@ class Psr4AggregatedFinder implements FinderInterface
         $this->iterator = new AppendIterator();
     }
 
-    public function addFinder(Psr4Finder $finder): void
+    public function addFinder(FinderInterface $finder): void
     {
-        $this->iterator->append($finder->getIterator());
+        $this->iterator->append(new IteratorIterator($finder->getIterator()));
     }
 
     public function getIterator(): Traversable

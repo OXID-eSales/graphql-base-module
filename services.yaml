@@ -118,7 +118,10 @@ services:
     tags: [ 'kernel.event_subscriber' ]
 
   oxidesales.graphqlbase.cacheadapter:
-    class: Symfony\Component\Cache\Adapter\NullAdapter
+    class: Symfony\Component\Cache\Adapter\FilesystemAdapter
+    arguments:
+      $namespace: 'oe_graphql_base-schema'
+      $directory: '@=service("OxidEsales\\EshopCommunity\\Internal\\Transition\\Utility\\ContextInterface").getCacheDirectory()'
 
   oxidesales.graphqlbase.cache:
     class: Symfony\Component\Cache\Psr16Cache
@@ -128,3 +131,10 @@ services:
   OxidEsales\GraphQL\Base\Service\PermissionProvider:
     class: OxidEsales\GraphQL\Base\Service\PermissionProvider
     tags: [ 'graphql_permission_provider' ]
+
+  OxidEsales\GraphQL\Base\Command\CacheClearCommand:
+    class: OxidEsales\GraphQL\Base\Command\CacheClearCommand
+    arguments:
+      $cache: '@oxidesales.graphqlbase.cache'
+    tags:
+      - { name: 'console.command', command: 'oe:graphql:cache-clear' }
