@@ -17,6 +17,7 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\GraphQL\Base\Exception\UnableToParseToken;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
+use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 
 use function apache_request_headers;
@@ -41,7 +42,7 @@ class RequestReader
      */
     public function getAuthToken(): ?UnencryptedToken
     {
-        $authHeader = $this->getAuthorizationHeader();
+        $authHeader = $this->getAuthorizationHeader() ?: $this->getAuthCookie();
 
         if ($authHeader === null) {
             return null;
@@ -63,6 +64,11 @@ class RequestReader
         } catch (Exception) {
             throw new UnableToParseToken();
         }
+
+        // using refresh token might not be necessary
+//        if ($authHeader === $this->getAuthCookie()) {
+//            $token = $this->refreshTokenService->refreshTokenCookie($token);
+//        }
 
         $this->tokenValidator->validateToken($token);
 
@@ -146,10 +152,6 @@ class RequestReader
             return $value;
         }
 
-        if ($authCookie = $this->getAuthCookie()) {
-            return 'Bearer ' . $authCookie;
-        }
-
         if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
 
@@ -167,7 +169,9 @@ class RequestReader
 
     private function getAuthCookie(): ?string
     {
-        return (string) Registry::getUtilsServer()->getOxCookie('oxapi_jwt');
+        $authCookie = (string) Registry::getUtilsServer()->getOxCookie('oxapi_jwt');
+//        var_dump($authCookie);
+        return $authCookie ? 'Bearer ' . $authCookie : null;
     }
 
     private function getRegularHeaderValue(): ?string

@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 
@@ -45,5 +47,21 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         $newToken = $this->tokenService->createTokenForUser($user);
 
         return $newToken->toString();
+    }
+
+    public function refreshTokenCookie(UnencryptedToken $token): UnencryptedToken
+    {
+        $expTime = $token->claims()->get('exp')->getTimestamp();
+        if ($expTime > time()) {
+            return $token;
+        }
+
+        $refreshToken = (string) Registry::getUtilsServer()->getOxCookie('oxapi_refresh');
+        $user = $this->refreshTokenRepository->getTokenUser($refreshToken);
+        $newToken = $this->tokenService->createTokenForUser($user);
+        $newExpTime = $newToken->claims()->get('exp')->getTimestamp();
+        Registry::getUtilsServer()->setOxCookie('oxapi_jwt', $newToken->toString(), $newExpTime,null, null, false);
+
+        return $newToken;
     }
 }

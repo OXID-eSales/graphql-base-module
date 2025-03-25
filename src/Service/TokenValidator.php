@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Service;
 
 use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\EshopCommunity\Core\Registry;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenUserBlocked;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
