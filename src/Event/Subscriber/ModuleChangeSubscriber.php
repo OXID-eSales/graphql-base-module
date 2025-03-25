@@ -18,6 +18,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 class ModuleChangeSubscriber implements EventSubscriberInterface
 {
+    /** @phpstan-ignore property.onlyWritten */
     public function __construct(private readonly CacheInterface $cache)
     {
     }
@@ -29,9 +30,6 @@ class ModuleChangeSubscriber implements EventSubscriberInterface
      */
     public function handle(Event $event): Event
     {
-        //clear entire cache
-        $this->cache->clear();
-
         return $event;
     }
 

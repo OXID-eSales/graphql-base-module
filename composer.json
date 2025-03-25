@@ -8,7 +8,7 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "thecodingmachine/graphqlite": "^6.2",
+        "thecodingmachine/graphqlite": "^7.0",
         "lcobucci/jwt": "^4.1",
         "symfony/cache": "*",
         "ecodev/graphql-upload": "^7.0.0",
