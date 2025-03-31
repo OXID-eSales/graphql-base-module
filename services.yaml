@@ -117,11 +117,12 @@ services:
   OxidEsales\GraphQL\Base\Event\Subscriber\BeforeTokenCreationSubscriber:
     tags: [ 'kernel.event_subscriber' ]
 
+  OxidEsales\GraphQL\Base\Framework\FilesystemAdapterFactory:
+    class: OxidEsales\GraphQL\Base\Framework\FilesystemAdapterFactory
+
   oxidesales.graphqlbase.cacheadapter:
     class: Symfony\Component\Cache\Adapter\FilesystemAdapter
-    arguments:
-      $namespace: 'oe_graphql_base-schema'
-      $directory: '@=service("OxidEsales\\EshopCommunity\\Internal\\Transition\\Utility\\ContextInterface").getCacheDirectory()'
+    factory: ['@OxidEsales\GraphQL\Base\Framework\FilesystemAdapterFactory', 'create']
 
   oxidesales.graphqlbase.cache:
     class: Symfony\Component\Cache\Psr16Cache
