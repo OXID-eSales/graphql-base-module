@@ -22,15 +22,15 @@ readonly class OxapiController
     {
     }
 
-    #[Route('/oxapi/{name}/{shp}/', requirements: ['shp' => Requirement::DIGITS], methods: ['GET'])]
-    public function foo(string $name, int $shp): Response
+    #[Route('/oxapi/{shp}/{lang}/', requirements: ['lang' => Requirement::DIGITS], methods: ['GET'])]
+    public function foo(int $shp, int $lang): Response
     {
-        Registry::getConfig()->saveShopConfVar('string', 'testControllers', 'hello');
+        #Registry::getConfig()->saveShopConfVar('string', 'testControllers', 'hello');
         return new JsonResponse(
             [
-                'name' => $name,
                 'shp' => $shp,
-                'configParameter' => Registry::getConfig()->getShopConfVar('testControllers'),
+                'lang' => $lang,
+                'bla' => 'foo'
             ]
         );
     }

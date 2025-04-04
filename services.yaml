@@ -140,8 +140,8 @@ services:
     tags:
       - { name: 'console.command', command: 'oe:graphql:cache-clear' }
 
- # OxidEsales\GraphQL\Base\Api\Controller\ApiTestController:
- #   public: true
+  OxidEsales\GraphQL\Base\Api\Controller\ApiTestController:
+    public: true
 
   OxidEsales\GraphQL\Base\Api\Controller\OxapiController:
     public: true
