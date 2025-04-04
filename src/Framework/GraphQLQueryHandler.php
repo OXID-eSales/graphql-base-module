@@ -31,15 +31,14 @@ class GraphQLQueryHandler
     ) {
     }
 
-    public function executeGraphQLQuery(): void
+    public function executeGraphQLQuery(): array
     {
         $result = $this->executeQuery(
             $this->requestReader->getGraphQLRequestData()
         );
         $result->setErrorFormatter($this->getErrorFormatter());
-        $this->responseWriter->renderJsonResponse(
-            $result->toArray()
-        );
+
+        return $result->toArray();
     }
 
     /**

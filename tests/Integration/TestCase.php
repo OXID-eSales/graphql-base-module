@@ -199,7 +199,7 @@ abstract class TestCase extends IntegrationTestCase
         $boundary = '-------------' . uniqid();
         $postData = $this->buildFileUpload($boundary, $fields, $map, $files);
 
-        $ch = curl_init(getenv('OXID_SHOP_BASE_URL') . '/graphql?lang=0&shp=1');
+        $ch = curl_init(getenv('OXID_SHOP_BASE_URL') . '/oxapi/1/0/');
 
         $headers = [
             'Connection: keep-alive',
