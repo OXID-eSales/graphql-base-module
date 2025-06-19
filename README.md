@@ -20,7 +20,7 @@ This module provides:
 
 ## Usage
 
-This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.4.0` component, which is part of the `7.4.0` compilation) up and running.
+This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: b-8.0.x` component, which is part of the `8.0.0` compilation) up and running.
 
 ## Branch Compatibility
 
@@ -212,7 +212,7 @@ echo MyProject && git clone https://github.com/OXID-eSales/docker-eshop-sdk.git 
 
 2. Clone the repository to the source directory
 ```shell
-git clone --recurse-submodules https://github.com/OXID-eSales/graphql-base-module.git --branch=b-7.4.x ./source
+git clone --recurse-submodules https://github.com/OXID-eSales/graphql-base-module.git --branch=b-8.0.x-alpha2 ./source
 ```
 
 3. Run the recipe to setup the development environment, you can decide which shop edition to install. Omitting the flag installs EE.
