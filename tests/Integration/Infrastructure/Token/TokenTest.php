@@ -7,22 +7,23 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure\Token;
 
 use DateTimeImmutable;
 use Lcobucci\JWT\Token\DataSet;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User;
-use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionFactoryInterface;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
-use OxidEsales\GraphQL\Base\Service\Token;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use PHPUnit\Framework\TestCase;
 
-class TokenTest extends IntegrationTestCase
+class TokenTest extends TestCase
 {
     private const TEST_TOKEN_ID = '_my_test_token';
 
@@ -36,9 +37,27 @@ class TokenTest extends IntegrationTestCase
         parent::setUp();
         $containerFactory = new TestContainerFactory();
         $container = $containerFactory->create();
+
+        $container->setParameter(
+            'oxid_esales.db.replicate',
+            false
+        );
+        $container->setParameter(
+            'oxid_esales.db.replicas',
+            []
+        );
+
         $container->compile();
         $this->tokenInfrastructure = $container->get(TokenInfrastructure::class);
     }
+
+    public function tearDown(): void
+    {
+        $this->cleanUp();
+
+        parent::tearDown();
+    }
+
 
     public function testRegisterToken(): void
     {
@@ -310,23 +329,26 @@ class TokenTest extends IntegrationTestCase
 
     public function testInvalidateTokenAfterDeleteUser(): void
     {
+        $tokenId = uniqid();
+
         $userModel = oxNew(User::class);
-        $userModel->setId('_testUser');
         $userModel->setPassword('_testPassword');
         $userModel->assign(['oxusername' => '_testUsername']);
-        $userModel->save();
+        $userId = (string) $userModel->save();
+        $this->assertNotEmpty($userId);
 
         $this->tokenInfrastructure->registerToken(
-            $this->getTokenMock('_deletedUser'),
+            $this->getTokenMock($tokenId, $userId),
             new DateTimeImmutable('now'),
             new DateTimeImmutable('+8 hours')
         );
+        $this->assertTrue($this->tokenInfrastructure->isTokenRegistered($tokenId));
 
         $user = new UserDataType($userModel);
-        $this->assertTrue($this->tokenInfrastructure->userHasToken($user, '_deletedUser'));
+        $this->assertTrue($this->tokenInfrastructure->userHasToken($user, $tokenId));
 
-        $userModel->delete(self::TEST_USER_ID);
-        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered('_deletedUser'));
+        $userModel->delete($userId);
+        $this->assertFalse($this->tokenInfrastructure->isTokenRegistered($tokenId));
     }
 
     public function testInvalidateAccessTokens(): void
@@ -378,5 +400,14 @@ class TokenTest extends IntegrationTestCase
         $token->method('toString')->willReturn('here_is_the_string_token');
 
         return $token;
+    }
+
+    private function cleanUp(): void
+    {
+        ContainerFacade::get(ConnectionFactoryInterface::class)
+            ->create()
+            ->executeQuery(
+                'truncate table `oegraphqltoken`'
+            );
     }
 }

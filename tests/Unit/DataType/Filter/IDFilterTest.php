@@ -32,50 +32,41 @@ class IDFilterTest extends DataTypeTestCase
 
     public function testAddQueryPartWithNoFrom(): void
     {
-        $connectionMock = $this
-            ->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $queryBuilder = new QueryBuilder($connectionMock);
+        $queryBuilder = $this->createQueryBuilderMock();
         $filter = IDFilter::fromUserInput(new ID('106d2528c6a9796fbd13cd30de6decf1'));
 
         $this->expectException(InvalidArgumentException::class);
-        $filter->addToQuery($queryBuilder, 'db_field');
+        $filter->addToQuery($queryBuilder, 'db_field', '');
     }
 
     public function testAddQueryPart(): void
     {
-        $connectionMock = $this
-            ->getMockBuilder(Connection::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $queryBuilder = new QueryBuilder($connectionMock);
+        $queryBuilder = $this->createQueryBuilderMock();
 
         $id = '106d2528c6a9796fbd13cd30de6decf1';
         $filter = IDFilter::fromUserInput(new ID($id));
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD = :db_field', (string)$where);
-        $this->assertEquals($id, $queryBuilder->getParameter(':db_field'));
+        $this->assertStringContainsString('db_table.DB_FIELD = :db_field', $query);
+        $this->assertSame($id, (string) $queryBuilder->getParameter('db_field'));
     }
 
     public function testAddQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
         $filter = IDFilter::fromUserInput(new ID('106d2528c6a9796fbd13cd30de6decf1'));
+        $filter->setFrom('db_table_alias');
 
-        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $queryBuilder->select('*')->from('db_table', 'db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals('db_table_alias.DB_FIELD = :db_field', (string)$where);
+        $this->assertStringContainsString('db_table_alias.DB_FIELD = :db_field', $query);
     }
 }

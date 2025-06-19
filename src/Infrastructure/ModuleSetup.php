@@ -9,10 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
-use OxidEsales\DoctrineMigrationWrapper\MigrationsBuilder;
-use OxidEsales\EshopCommunity\Internal\Container\ContainerBuilderFactory;
+use OxidEsales\EshopCommunity\Core\Di\ContainerFacade;
+use OxidEsales\EshopCommunity\Internal\Container\ContainerFactory;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * @codeCoverageIgnore
@@ -31,14 +30,15 @@ class ModuleSetup
 
     /**
      * Activation function for the module
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function onActivate(): void
     {
-        $container = (new ContainerBuilderFactory())->create()->getContainer();
-        $container->compile();
+        ContainerFactory::resetContainer();
 
         /** @var ModuleSetup $moduleSetup */
-        $moduleSetup = $container->get(self::class);
+        $moduleSetup = ContainerFacade::get(self::class);
         $moduleSetup->runSetup();
     }
 

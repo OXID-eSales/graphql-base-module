@@ -56,16 +56,15 @@ class BoolFilterTest extends DataTypeTestCase
     {
         $queryBuilder = $this->createQueryBuilderMock();
         $filter = BoolFilter::fromUserInput($filterValue);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD = :db_field', (string)$where);
-        $this->assertEquals((int)$filterValue, $queryBuilder->getParameter(':db_field'));
+        $this->assertStringContainsString('db_table.DB_FIELD = :db_field', $query);
+        $this->assertEquals((int)$filterValue, $queryBuilder->getParameter('db_field'));
     }
 
     public static function addQueryPartProvider(): array
@@ -77,13 +76,14 @@ class BoolFilterTest extends DataTypeTestCase
     {
         $queryBuilder = $this->createQueryBuilderMock();
         $filter = BoolFilter::fromUserInput(true);
+        $filter->setFrom('db_table_alias');
 
-        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $queryBuilder->select('*')->from('db_table', 'db_table_alias');
+        $filter->setFrom('db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals('db_table_alias.DB_FIELD = :db_field', (string)$where);
+        $this->assertStringContainsString('db_table_alias.DB_FIELD = :db_field', $query);
     }
 }

@@ -30,7 +30,11 @@ perl -pi\
   containers/httpd/project.conf
 
 perl -pi\
-  -e 's#PHP_VERSION=.*#PHP_VERSION=8.2#g;'\
+  -e 's#PHP_VERSION=.*#PHP_VERSION=8.4#g;'\
+  .env
+
+perl -pi\
+  -e 's#MYSQL_VERSION=.*#MYSQL_VERSION=8.0#g;'\
   .env
 
 docker compose up --build -d php

@@ -131,7 +131,7 @@ class FloatFilterTest extends DataTypeTestCase
         $filter = FloatFilter::fromUserInput(608.8077);
 
         $this->expectException(InvalidArgumentException::class);
-        $filter->addToQuery($queryBuilder, 'db_field');
+        $filter->addToQuery($queryBuilder, 'db_field', '');
     }
 
     public function testAddQueryPartEquals(): void
@@ -140,16 +140,15 @@ class FloatFilterTest extends DataTypeTestCase
 
         $number = 608.8077;
         $filter = FloatFilter::fromUserInput($number);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string)$where);
-        $this->assertEquals($number, $queryBuilder->getParameter(':db_field_eq'));
+        $this->assertStringContainsString('db_table.DB_FIELD = :db_field_eq', $query);
+        $this->assertEquals($number, $queryBuilder->getParameter('db_field_eq'));
     }
 
     public function testAddQueryPartLowerThan(): void
@@ -158,16 +157,15 @@ class FloatFilterTest extends DataTypeTestCase
 
         $number = 608.8077;
         $filter = FloatFilter::fromUserInput(null, $number);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD < :db_field_lt', (string)$where);
-        $this->assertEquals($number, $queryBuilder->getParameter(':db_field_lt'));
+        $this->assertStringContainsString('db_table.DB_FIELD < :db_field_lt', $query);
+        $this->assertEquals($number, $queryBuilder->getParameter('db_field_lt'));
     }
 
     public function testAddQueryPartGreaterThan(): void
@@ -176,16 +174,15 @@ class FloatFilterTest extends DataTypeTestCase
 
         $number = 608.8077;
         $filter = FloatFilter::fromUserInput(null, null, $number);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD > :db_field_gt', (string)$where);
-        $this->assertEquals($number, $queryBuilder->getParameter(':db_field_gt'));
+        $this->assertStringContainsString('db_table.DB_FIELD > :db_field_gt', $query);
+        $this->assertEquals($number, $queryBuilder->getParameter('db_field_gt'));
     }
 
     public function testAddQueryPartBetween(): void
@@ -197,33 +194,32 @@ class FloatFilterTest extends DataTypeTestCase
             3469.01,
         ];
         $filter = FloatFilter::fromUserInput(null, null, null, $numbers);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals(
+        $this->assertStringContainsString(
             'db_table.DB_FIELD BETWEEN :db_field_less AND :db_field_upper',
-            (string)$where
+            $query
         );
-        $this->assertEquals($numbers[0], $queryBuilder->getParameter(':db_field_less'));
-        $this->assertEquals($numbers[1], $queryBuilder->getParameter(':db_field_upper'));
+        $this->assertEquals($numbers[0], $queryBuilder->getParameter('db_field_less'));
+        $this->assertEquals($numbers[1], $queryBuilder->getParameter('db_field_upper'));
     }
 
     public function testAddQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
         $filter = FloatFilter::fromUserInput(608.8077);
+        $filter->setFrom('db_table_alias');
 
-        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $queryBuilder->select('*')->from('db_table', 'db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
+        $this->assertStringContainsString('db_table_alias.DB_FIELD = :db_field_eq', $query);
     }
 }

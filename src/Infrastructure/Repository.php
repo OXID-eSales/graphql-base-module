@@ -12,6 +12,7 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 use Doctrine\DBAL\Result;
 use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
+use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\FilterListInterface as FilterList;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
@@ -100,15 +101,20 @@ class Repository
 
         $filters = array_filter($filter->getFilters());
         foreach ($filters as $field => $fieldFilter) {
+            $fieldFilter->setFrom($model->getViewName());
             $fieldFilter->addToQuery($queryBuilder, $field);
         }
 
         $pagination->addPaginationToQuery($queryBuilder);
 
+        $sorting->setFrom($model->getViewName());
         $sorting->addToQuery($queryBuilder);
 
+        Registry::getLogger()->error($queryBuilder->getSQL());
+        Registry::getLogger()->error(serialize($queryBuilder->getParameters()));
+
         /** @var Result $result */
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         foreach ($result->fetchAllAssociative() as $row) {
             $newModel = clone $model;
             $newModel->assign($row);

@@ -13,5 +13,9 @@ use Doctrine\DBAL\Query\QueryBuilder;
 
 interface FilterInterface
 {
+    public function setFrom(string $from): void;
+
+    public function getFrom(): ?string;
+
     public function addToQuery(QueryBuilder $builder, string $field): void;
 }

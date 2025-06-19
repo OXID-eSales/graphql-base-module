@@ -119,7 +119,7 @@ class DateFilterTest extends DataTypeTestCase
         $filter = DateFilter::fromUserInput('2020-01-30 12:37:21');
 
         $this->expectException(InvalidArgumentException::class);
-        $filter->addToQuery($queryBuilder, 'db_field');
+        $filter->addToQuery($queryBuilder, 'db_field', '');
     }
 
     public function testAddQueryPartEquals(): void
@@ -127,16 +127,15 @@ class DateFilterTest extends DataTypeTestCase
         $queryBuilder = $this->createQueryBuilderMock();
         $date = '2020-01-30 12:37:21';
         $filter = DateFilter::fromUserInput($date);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select("*")->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string)$where);
-        $this->assertEquals($date, $queryBuilder->getParameter(':db_field_eq'));
+        $this->assertStringContainsString('db_table.DB_FIELD = :db_field_eq', $query);
+        $this->assertEquals($date, $queryBuilder->getParameter('db_field_eq'));
     }
 
     public function testAddQueryPartBetween(): void
@@ -148,33 +147,32 @@ class DateFilterTest extends DataTypeTestCase
             '2020-01-30 12:37:22',
         ];
         $filter = DateFilter::fromUserInput(null, $dates);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table', 'db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals(
+        $this->assertStringContainsString(
             'db_table.DB_FIELD BETWEEN :db_field_lower AND :db_field_upper',
-            (string)$where
+            $query
         );
-        $this->assertEquals($dates[0], $queryBuilder->getParameter(':db_field_lower'));
-        $this->assertEquals($dates[1], $queryBuilder->getParameter(':db_field_upper'));
+        $this->assertEquals($dates[0], $queryBuilder->getParameter('db_field_lower'));
+        $this->assertEquals($dates[1], $queryBuilder->getParameter('db_field_upper'));
     }
 
     public function testAddQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
         $filter = DateFilter::fromUserInput('2020-01-30 12:37:21');
+        $filter->setFrom('db_table_alias');
 
-        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $queryBuilder->select("*")->from('db_table', 'db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
+        $this->assertStringContainsString('db_table_alias.DB_FIELD = :db_field_eq', $query);
     }
 }

@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure\Repository;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\BoolFilter;

@@ -12,6 +12,8 @@ namespace OxidEsales\GraphQL\Base\Infrastructure;
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Lcobucci\JWT\UnencryptedToken;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\ArrayParameterType;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
@@ -60,13 +62,9 @@ class Token
                 'tokenId' => $tokenId,
             ]);
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
-        if (is_object($result)) {
-            return $result->fetchOne() > 0;
-        }
-
-        return false;
+        return $result->fetchOne() > 0;
     }
 
     public function removeExpiredTokens(UserInterface $user): void
@@ -79,33 +77,21 @@ class Token
                 'userId' => (string)$user->id(),
             ]);
 
-        $queryBuilder->execute();
+        $queryBuilder->executeQuery();
     }
 
-    public function deleteOrphanedTokens(): void
+    public function deleteOrphanedTokens(string $userId): void
     {
-        /** @var \Doctrine\DBAL\Driver\Statement $execute */
-        $execute = $this->queryBuilderFactory->create()
-            ->select('t.oxid')
-            ->from('oegraphqltoken', 't')
-            ->leftJoin('t', 'oxuser', 'u', 't.oxuserid = u.oxid')
-            ->where('u.oxid is NULL')
-            ->execute();
-        $tokenIds = $execute->fetchAll(PDO::FETCH_COLUMN);
+        $builder = $this->queryBuilderFactory->create()
+            ->delete('oegraphqltoken')
+            ->where("oxuserid = :userid")
+            ->setParameters(['userid' => $userId]);
 
-        if (!empty($tokenIds)) {
-            $queryBuilder = $this->queryBuilderFactory->create();
-            $queryBuilder->delete('oegraphqltoken')
-                ->where($queryBuilder->expr()->in('oxid', ':ids'))
-                ->setParameter('ids', $tokenIds, Connection::PARAM_STR_ARRAY);
-            $queryBuilder->execute();
-        }
+        $builder->executeStatement();
     }
 
     public function canIssueToken(UserInterface $user, int $quota): bool
     {
-        $return = false;
-
         $result = $this->queryBuilderFactory->create()
             ->select('count(oegraphqltoken.oxid) as counted')
             ->from('oegraphqltoken')
@@ -113,13 +99,9 @@ class Token
             ->setParameters([
                 'userId' => (string)$user->id(),
             ])
-            ->execute();
+            ->fetchOne();
 
-        if (is_object($result)) {
-            $return = (int)$result->fetch(PDO::FETCH_ASSOC)['counted'] < $quota;
-        }
-
-        return $return;
+        return (int)$result < $quota;
     }
 
     public function tokenDelete(?UserInterface $user = null, ?string $tokenId = null, ?int $shopId = null): int
@@ -148,9 +130,7 @@ class Token
 
         $queryBuilder->setParameters($parameters);
 
-        $result = $queryBuilder->execute();
-
-        return is_object($result) ? $result->columnCount() : (int)$result;
+        return (int) $queryBuilder->executeStatement();
     }
 
     public function userHasToken(UserInterface $user, string $tokenId): bool
@@ -167,13 +147,9 @@ class Token
                 'userId' => (string)$user->id(),
             ]);
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
-        if (is_object($result)) {
-            return $result->fetchOne() > 0;
-        }
-
-        return false;
+        return $result->fetchOne() > 0;
     }
 
     public function invalidateUserTokens(string $userId): void
@@ -186,6 +162,6 @@ class Token
                 'userId' => $userId,
             ]);
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 }

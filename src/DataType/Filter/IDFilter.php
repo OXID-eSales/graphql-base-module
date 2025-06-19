@@ -18,6 +18,8 @@ use function strtoupper;
 
 class IDFilter implements FilterInterface
 {
+    protected ?string $from = null;
+
     public function __construct(private readonly ID $equals)
     {
     }
@@ -27,18 +29,25 @@ class IDFilter implements FilterInterface
         return $this->equals;
     }
 
+    public function setFrom(string $from): void
+    {
+        $this->from = $from;
+    }
+
+    public function getFrom(): ?string
+    {
+        return $this->from;
+    }
+
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
-
-        if ($from === []) {
+        $table = $this->getFrom();
+        if (empty($table)) {
             throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
         }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
 
         $builder->andWhere(sprintf('%s.%s = :%s', $table, strtoupper($field), $field))
-            ->setParameter(':' . $field, $this->equals);
+            ->setParameter($field, $this->equals);
     }
 
     /**

@@ -4,19 +4,25 @@ path: Acceptance
 modules:
   enabled:
     - Asserts
+    - \OxidEsales\Codeception\Module\ShopSetup:
+        dump: '%DUMP_PATH%'
+        fixtures: '%FIXTURES_PATH%'
+        license: '%license_key%'
+        mysql_config: '%MYSQL_CONFIG_PATH%'
+        db_name: '%DB_NAME%'
     - Db:
           dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%;charset=utf8'
           user: '%DB_USERNAME%'
           password: '%DB_PASSWORD%'
           port: '%DB_PORT%'
           module_dump: '%MODULE_DUMP_PATH%'
+          dump: '%DUMP_PATH%'
           mysql_config: '%MYSQL_CONFIG_PATH%'
           populate: true # run populator before all tests
-          cleanup: false # run populator before each test
-          populator: 'mysql --defaults-file=$mysql_config --default-character-set=utf8 $dbname < $module_dump'
-    - \OxidEsales\Codeception\Module\Database:
-          config_key: 'fq45QS09_fqyx09239QQ'
-          depends: Db
+          cleanup: true # run populator before each test
+          populator: >
+            mysql --defaults-file=$mysql_config --default-character-set=utf8 $dbname < $dump &&
+            mysql --defaults-file=$mysql_config --default-character-set=utf8 $dbname < $module_dump
     - REST:
         url: '%SHOP_URL%'
         depends: PhpBrowser

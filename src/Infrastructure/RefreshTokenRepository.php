@@ -51,7 +51,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             ->delete('oegraphqlrefreshtoken')
             ->where('EXPIRES_AT <= NOW()');
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
     private function getTokenUserId(string $refreshToken): string
@@ -62,8 +62,8 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             ->where('TOKEN = :token')
             ->andWhere('EXPIRES_AT > NOW()')
             ->setParameter('token', $refreshToken);
-        /** @var Result $result */
-        $result = $queryBuilder->execute();
+
+        $result = $queryBuilder->executeQuery();
 
         $userId = (string)$result->fetchOne();
 
@@ -98,6 +98,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
                 'userId' => $userId,
             ]);
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 }

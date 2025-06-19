@@ -31,15 +31,15 @@ class SortingTest extends DataTypeTestCase
         $sort = new class (['foo' => 'ASC']) extends Sorting {
         };
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
+        $sort->setFrom('db_table');
         $sort->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
-        $orderBy = $queryBuilder->getQueryPart('orderBy');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertSame(
+        $this->assertStringContainsString(
             'db_table.foo ASC',
-            $orderBy[0]
+            $query
         );
     }
 
@@ -49,15 +49,15 @@ class SortingTest extends DataTypeTestCase
         $sort = new class (['foo' => 'ASC']) extends Sorting {
         };
 
-        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $queryBuilder->select('*')->from('db_table', 'db_table_alias');
+        $sort->setFrom('db_table_alias');
         $sort->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
-        $orderBy = $queryBuilder->getQueryPart('orderBy');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertSame(
+        $this->assertStringContainsString(
             'db_table_alias.foo ASC',
-            $orderBy[0]
+            $query
         );
     }
 
@@ -67,23 +67,19 @@ class SortingTest extends DataTypeTestCase
         $sort = new class (['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
         };
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
+        $sort->setFrom('db_table');
         $sort->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
-        $orderBy = $queryBuilder->getQueryPart('orderBy');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertCount(
-            2,
-            $orderBy
-        );
-        $this->assertSame(
+        $this->assertStringContainsString(
             'db_table.foo ASC',
-            $orderBy[0]
+            $query
         );
-        $this->assertSame(
+        $this->assertStringContainsString(
             'db_table.bar DESC',
-            $orderBy[1]
+            $query
         );
     }
 
@@ -95,7 +91,7 @@ class SortingTest extends DataTypeTestCase
         };
 
         $this->expectException(InvalidArgumentException::class);
-        $sort->addToQuery($queryBuilder);
+        $sort->addToQuery($queryBuilder, '');
     }
 
     public function testFailOnWrongSortingConfiguration(): void

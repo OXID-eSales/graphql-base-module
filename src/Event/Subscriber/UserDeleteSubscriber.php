@@ -35,7 +35,7 @@ class UserDeleteSubscriber implements EventSubscriberInterface
             return $event;
         }
 
-        $this->tokenInfrastructure->deleteOrphanedTokens();
+        $this->tokenInfrastructure->deleteOrphanedTokens((string) $model->getId());
 
         return $event;
     }

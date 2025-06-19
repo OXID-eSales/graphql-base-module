@@ -7,9 +7,8 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure\Legacy;
 
-use oxField;
 use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;

@@ -22,6 +22,8 @@ abstract class Sorting
     /** @var array<string, null|string> */
     private array $sorting;
 
+    protected ?string $from = null;
+
     /**
      * @param array<string, null|string> $sorting
      */
@@ -39,15 +41,23 @@ abstract class Sorting
         }
     }
 
+    public function setFrom(string $from): void
+    {
+        $this->from = $from;
+    }
+
+    public function getFrom(): ?string
+    {
+        return $this->from;
+    }
+
     public function addToQuery(QueryBuilder $builder): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
+        $table = $this->getFrom();
 
-        if ($from === []) {
+        if (empty($table)) {
             throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
         }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
 
         foreach ($this->sorting as $field => $dir) {
             $builder->addOrderBy($table . '.' . $field, $dir);

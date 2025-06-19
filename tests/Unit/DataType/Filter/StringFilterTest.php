@@ -77,16 +77,15 @@ class StringFilterTest extends DataTypeTestCase
 
         $string = 'equals';
         $filter = StringFilter::fromUserInput($string);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string)$where);
-        $this->assertEquals($string, $queryBuilder->getParameter(':db_field_eq'));
+        $this->assertStringContainsString('db_table.DB_FIELD = :db_field_eq', $query);
+        $this->assertEquals($string, $queryBuilder->getParameter('db_field_eq'));
     }
 
     public function testAddQueryPartContains(): void
@@ -95,19 +94,18 @@ class StringFilterTest extends DataTypeTestCase
 
         $string = 'contains';
         $filter = StringFilter::fromUserInput(null, $string);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals(
+        $this->assertStringContainsString(
             'db_table.DB_FIELD LIKE :db_field_contain',
-            (string)$where
+            $query
         );
-        $this->assertEquals('%' . $string . '%', $queryBuilder->getParameter(':db_field_contain'));
+        $this->assertEquals('%' . $string . '%', $queryBuilder->getParameter('db_field_contain'));
     }
 
     public function testAddQueryPartBegins(): void
@@ -116,33 +114,32 @@ class StringFilterTest extends DataTypeTestCase
 
         $string = 'begins';
         $filter = StringFilter::fromUserInput(null, null, $string);
+        $filter->setFrom('db_table');
 
-        $queryBuilder->select()->from('db_table');
+        $queryBuilder->select('*')->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
-        $this->assertEquals(
+        $this->assertStringContainsString(
             'db_table.DB_FIELD LIKE :db_field_begins',
-            (string)$where
+            $query
         );
-        $this->assertEquals($string . '%', $queryBuilder->getParameter(':db_field_begins'));
+        $this->assertEquals($string . '%', $queryBuilder->getParameter('db_field_begins'));
     }
 
     public function testAddQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
         $filter = StringFilter::fromUserInput('with_alias');
+        $filter->setFrom('db_table_alias');
 
-        $queryBuilder->select()->from('db_table', 'db_table_alias');
+        $queryBuilder->select('*')->from('db_table', 'db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $query = $queryBuilder->getSQL();
 
-        $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
+        $this->assertStringContainsString('db_table_alias.DB_FIELD = :db_field_eq', $query);
     }
 
     /** @dataProvider matchesDataProvider */

@@ -24,6 +24,8 @@ class DateFilter implements FilterInterface
 {
     public const SQL_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
+    protected ?string $from = null;
+
     /**
      * @param null|array{0: DateTimeInterface, 1: DateTimeInterface} $between
      */
@@ -39,6 +41,15 @@ class DateFilter implements FilterInterface
         }
     }
 
+    public function setFrom(string $from): void
+    {
+        $this->from = $from;
+    }
+
+    public function getFrom(): ?string
+    {
+        return $this->from;
+    }
     public function equals(): ?DateTimeInterface
     {
         return $this->equals;
@@ -54,17 +65,14 @@ class DateFilter implements FilterInterface
 
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
-
-        if ($from === []) {
+        $table = $this->getFrom();
+        if (empty($table)) {
             throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
         }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
 
         if ($this->equals) {
             $builder->andWhere($table . '.' . strtoupper($field) . ' = :' . $field . '_eq')
-                ->setParameter(':' . $field . '_eq', $this->equals->format(self::SQL_DATETIME_FORMAT));
+                ->setParameter($field . '_eq', $this->equals->format(self::SQL_DATETIME_FORMAT));
             // if equals is set, then no other conditions may apply
             return;
         }
@@ -72,8 +80,8 @@ class DateFilter implements FilterInterface
         if ($this->between) {
             $where = sprintf('%s.%s BETWEEN :%s_lower AND :%s_upper', $table, strtoupper($field), $field, $field);
             $builder->andWhere($where)
-                ->setParameter(':' . $field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
-                ->setParameter(':' . $field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));
+                ->setParameter($field . '_lower', $this->between[0]->format(self::SQL_DATETIME_FORMAT))
+                ->setParameter($field . '_upper', $this->between[1]->format(self::SQL_DATETIME_FORMAT));
         }
     }
 
