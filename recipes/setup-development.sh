@@ -37,11 +37,11 @@ docker compose up --build -d php
 
 docker compose exec -T php git config --global --add safe.directory /var/www
 
-$SCRIPT_PATH/parts/shared/require_shop_edition_packages.sh -e"${edition}" -v"dev-b-7.4.x"
-$SCRIPT_PATH/parts/shared/require_twig_components.sh -e"${edition}" -b"b-7.4.x"
-$SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/developer-tools" -v"dev-b-7.4.x"
-$SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/oxideshop-doctrine-migration-wrapper" -v"dev-b-7.4.x"
-$SCRIPT_PATH/parts/shared/require_theme.sh -t"apex" -b"b-7.4.x"
+$SCRIPT_PATH/parts/shared/require_shop_edition_packages.sh -e"${edition}" -v"dev-b-8.0.x"
+$SCRIPT_PATH/parts/shared/require_twig_components.sh -e"${edition}" -b"b-8.0.x"
+$SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/developer-tools" -v"dev-b-8.0.x"
+$SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/oxideshop-doctrine-migration-wrapper" -v"dev-b-8.0.x"
+$SCRIPT_PATH/parts/shared/require_theme.sh -t"apex" -b"b-8.0.x"
 
 git clone -b 11.0-en https://github.com/OXID-eSales/oxapi-documentation source/documentation/oxapi-documentation
 make docpath=./source/documentation/oxapi-documentation addsphinxservice
@@ -54,7 +54,7 @@ perl -pi\
   -e 'print "SetEnvIf Authorization \"(.*)\" HTTP_AUTHORIZATION=\$1\n\n" if $. == 1'\
   source/source/.htaccess
 
-$SCRIPT_PATH/parts/shared/setup_database.sh --no-demodata
+docker compose exec -T php vendor/bin/oe-console oe:database:reset --force
 
 docker compose exec -T php vendor/bin/oe-console oe:module:install ./
 docker compose exec -T php vendor/bin/oe-eshop-doctrine_migration migrations:migrate

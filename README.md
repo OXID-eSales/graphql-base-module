@@ -24,6 +24,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.4.0` co
 
 ## Branch Compatibility
 
+* b-8.0.x-alpha2 branch is compatible with b-8.0.x shop compilation branches
 * b-7.4.x branch is compatible with b-7.4.x shop compilation branches
 * 11.0.x versions (or b-7.3.x branch) are compatible with latest shop compilation 7.3.x resp. b-7.3.x shop compilation branches
 * 10.0.x versions (or b-7.2.x branch) are compatible with latest shop compilation 7.2.x resp. b-7.2.x shop compilation branches
