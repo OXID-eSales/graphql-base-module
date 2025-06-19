@@ -68,7 +68,7 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $refreshTokenRepository = $this->createMock(RefreshTokenRepositoryInterface::class);
         $refreshTokenRepository->expects($this->exactly(2))
             ->method('invalidateUserTokens')
-            ->willReturnCallback(function ($userId) use (&$methodArgs) {
+            ->willReturnCallback(function ($userId) use (&$methodArgs): void {
                 $methodArgs[] = $userId;
             });
 

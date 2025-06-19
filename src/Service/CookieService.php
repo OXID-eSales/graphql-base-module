@@ -41,7 +41,7 @@ class CookieService implements CookieServiceInterface
 
     public function getFingerprintCookie(): string
     {
-        if (!key_exists(FingerprintServiceInterface::COOKIE_KEY, $_COOKIE)) {
+        if (!array_key_exists(FingerprintServiceInterface::COOKIE_KEY, $_COOKIE)) {
             throw new FingerprintMissingException("Fingerprint missing");
         }
 
