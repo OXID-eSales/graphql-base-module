@@ -31,7 +31,7 @@ class CacheClearCommand extends Command
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln('<info>Clearing schema cache...</info>');
         $this->cache->clear();
