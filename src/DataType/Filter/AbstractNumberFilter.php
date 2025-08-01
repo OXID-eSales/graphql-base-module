@@ -64,6 +64,28 @@ abstract class AbstractNumberFilter
         return false;
     }
 
+    protected function matches(mixed $value): bool
+    {
+        if ($this->equals() !== null && $value !== $this->equals()) {
+            return false;
+        }
+
+        if ($this->lessThan() !== null && $value >= $this->lessThan()) {
+            return false;
+        }
+
+        if ($this->greaterThan() !== null && $value <= $this->greaterThan()) {
+            return false;
+        }
+
+        if ($this->between() !== null && !($value >= $this->between()[0] && $value <= $this->between()[1])) {
+            return false;
+        }
+
+        return true;
+
+    }
+
     protected static function checkRangeOfBetween(?array $between, callable $checkMethod): void
     {
         if (

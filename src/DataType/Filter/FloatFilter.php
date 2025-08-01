@@ -75,6 +75,10 @@ class FloatFilter extends AbstractNumberFilter implements FilterInterface
 
     public function matches(mixed $value): bool
     {
-        // TODO: Implement matches() method.
+        if (!is_float($value)) {
+            return false;
+        }
+
+        return parent::matches($value);
     }
 }

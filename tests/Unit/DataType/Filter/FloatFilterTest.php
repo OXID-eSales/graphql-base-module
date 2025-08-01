@@ -226,4 +226,59 @@ class FloatFilterTest extends DataTypeTestCase
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
     }
+
+    /** @dataProvider matchesDataProvider */
+    public function testMatches(
+        float $stringForTrueCase,
+        mixed $stringForFalseCase,
+        FloatFilter $filter
+    ): void {
+        $this->assertTrue($filter->matches($stringForTrueCase));
+        $this->assertFalse($filter->matches($stringForFalseCase));
+    }
+
+    public static function matchesDataProvider(): \Generator
+    {
+        yield "test match equals" => [
+            'stringForTrueCase' => 1.0,
+            'stringForFalseCase' => 2.0,
+            'filter' => new FloatFilter(equals: 1.0)
+        ];
+
+        yield "test match less than" => [
+            'stringForTrueCase' => 1.3,
+            'stringForFalseCase' => 5.4,
+            'filter' => new FloatFilter(lessThan: 3.0)
+        ];
+
+        yield "test match greater than" => [
+            'stringForTrueCase' => 6.6,
+            'stringForFalseCase' => 2.3,
+            'filter' => new FloatFilter(greaterThan: 4.5)
+        ];
+
+        yield "test match between" => [
+            'stringForTrueCase' => 5.3,
+            'stringForFalseCase' => 2.7,
+            'filter' => new FloatFilter(between: [3.1, 5.3])
+        ];
+
+        yield "test match less and greater than" => [
+            'stringForTrueCase' => 7.8,
+            'stringForFalseCase' => 3.3,
+            'filter' => new FloatFilter(lessThan: 10.5, greaterThan: 4.5)
+        ];
+
+        yield "test not matches with float" => [
+            'stringForTrueCase' => 2.5,
+            'stringForFalseCase' => 2,
+            'filter' => new FloatFilter(equals: 2.5)
+        ];
+
+        yield "test not matches with string" => [
+            'stringForTrueCase' => 3.6,
+            'stringForFalseCase' => '3,6',
+            'filter' => new FloatFilter(equals: 3.6)
+        ];
+    }
 }
