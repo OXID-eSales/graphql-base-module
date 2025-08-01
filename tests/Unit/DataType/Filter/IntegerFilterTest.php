@@ -193,56 +193,56 @@ class IntegerFilterTest extends DataTypeTestCase
 
     /** @dataProvider matchesDataProvider */
     public function testMatches(
-        int $stringForTrueCase,
-        mixed $stringForFalseCase,
-        IntegerFilter $initFilter
+        int $trueCase,
+        mixed $falseCase,
+        IntegerFilter $filter
     ): void {
-        $this->assertTrue($initFilter->matches($stringForTrueCase));
-        $this->assertFalse($initFilter->matches($stringForFalseCase));
+        $this->assertTrue($filter->matches($trueCase));
+        $this->assertFalse($filter->matches($falseCase));
     }
 
     public static function matchesDataProvider(): \Generator
     {
         yield "test match equals" => [
-            'stringForTrueCase' => 1,
-            'stringForFalseCase' => 2,
-            'initFilter' => new IntegerFilter(equals: 1)
+            'trueCase' => 1,
+            'falseCase' => 2,
+            'filter' => new IntegerFilter(equals: 1)
         ];
 
         yield "test match less than" => [
-            'stringForTrueCase' => 1,
-            'stringForFalseCase' => 5,
-            'initFilter' => new IntegerFilter(lessThan: 3)
+            'trueCase' => 1,
+            'falseCase' => 5,
+            'filter' => new IntegerFilter(lessThan: 3)
         ];
 
         yield "test match greater than" => [
-            'stringForTrueCase' => 6,
-            'stringForFalseCase' => 2,
-            'initFilter' => new IntegerFilter(greaterThan: 4)
+            'trueCase' => 6,
+            'falseCase' => 2,
+            'filter' => new IntegerFilter(greaterThan: 4)
         ];
 
         yield "test match between" => [
-            'stringForTrueCase' => 5,
-            'stringForFalseCase' => 2,
-            'initFilter' => new IntegerFilter(between: [3, 5])
+            'trueCase' => 5,
+            'falseCase' => 2,
+            'filter' => new IntegerFilter(between: [3, 5])
         ];
 
         yield "test match less and greater than" => [
-            'stringForTrueCase' => 7,
-            'stringForFalseCase' => 3,
-            'initFilter' => new IntegerFilter(lessThan: 10, greaterThan: 4)
+            'trueCase' => 7,
+            'falseCase' => 3,
+            'filter' => new IntegerFilter(lessThan: 10, greaterThan: 4)
         ];
 
         yield "test not matches with float" => [
-            'stringForTrueCase' => 2,
-            'stringForFalseCase' => 2.1,
-            'initFilter' => new IntegerFilter(equals: 2)
+            'trueCase' => 2,
+            'falseCase' => 2.1,
+            'filter' => new IntegerFilter(equals: 2)
         ];
 
         yield "test not matches with string" => [
-            'stringForTrueCase' => 3,
-            'stringForFalseCase' => '3',
-            'initFilter' => new IntegerFilter(equals: 3)
+            'trueCase' => 3,
+            'falseCase' => '3',
+            'filter' => new IntegerFilter(equals: 3)
         ];
     }
 }

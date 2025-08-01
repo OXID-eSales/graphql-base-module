@@ -118,6 +118,18 @@ class DateFilter implements FilterInterface
 
     public function matches(mixed $value): bool
     {
-        // TODO: Implement matches() method.
+        if (!$value instanceof DateTimeInterface) {
+            return false;
+        }
+
+        if ($this->equals !== null && $value != $this->equals) {
+            return false;
+        }
+
+        if ($this->between !== null && !($value >= $this->between[0] && $value <= $this->between[1])) {
+            return false;
+        }
+
+        return true;
     }
 }

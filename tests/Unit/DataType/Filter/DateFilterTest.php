@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Filter;
 
 use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
 use InvalidArgumentException;
@@ -176,5 +178,51 @@ class DateFilterTest extends DataTypeTestCase
         $where = $queryBuilder->getQueryPart('where');
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
+    }
+
+    /** @dataProvider matchesDataProvider */
+    public function testMatches(
+        DateTimeInterface $trueCase,
+        mixed $falseCase,
+        DateFilter $filter
+    ): void {
+        $this->assertTrue($filter->matches($trueCase));
+        $this->assertFalse($filter->matches($falseCase));
+    }
+
+    public static function matchesDataProvider(): \Generator
+    {
+        yield "test match equals" => [
+            'trueCase' => new DateTimeImmutable('2020-01-30 12:37:21'),
+            'falseCase' => new DateTimeImmutable('2020-01-30 13:47:31'),
+            'filter' => new DateFilter(equals: new DateTimeImmutable('2020-01-30 12:37:21'))
+        ];
+
+        yield "test match between" => [
+            'trueCase' => new DateTimeImmutable('2020-02-10 12:37:21'),
+            'falseCase' => new DateTimeImmutable('2020-04-10 12:37:21'),
+            'filter' => new DateFilter(between: [
+                new DateTimeImmutable('2020-01-30 12:37:21'),
+                new DateTimeImmutable('2020-02-30 12:37:22')
+            ])
+        ];
+
+        yield "test match equals and between" => [
+            'trueCase' => new DateTimeImmutable('2020-03-20 12:37:21'),
+            'falseCase' => new DateTimeImmutable('2020-04-20 12:37:21'),
+            'filter' => new DateFilter(
+                equals: new DateTimeImmutable('2020-03-20 12:37:21'),
+                between: [
+                    new DateTimeImmutable('2020-01-30 12:37:21'),
+                    new DateTimeImmutable('2020-05-30 12:37:22')
+                ]
+            )
+        ];
+
+        yield "test match is DateTime instance" => [
+            'trueCase' => new DateTimeImmutable('2020-03-20 12:37:21'),
+            'falseCase' => '2020-03-20 12:37:21',
+            'filter' => new DateFilter(equals: new DateTimeImmutable('2020-03-20 12:37:21'))
+        ];
     }
 }

@@ -147,50 +147,50 @@ class StringFilterTest extends DataTypeTestCase
 
     /** @dataProvider matchesDataProvider */
     public function testMatches(
-        string $stringForTrueCase,
-        mixed $stringForFalseCase,
-        StringFilter $initFilter
+        string $trueCase,
+        mixed $falseCase,
+        StringFilter $filter
     ): void {
-        $this->assertTrue($initFilter->matches($stringForTrueCase));
-        $this->assertFalse($initFilter->matches($stringForFalseCase));
+        $this->assertTrue($filter->matches($trueCase));
+        $this->assertFalse($filter->matches($falseCase));
     }
 
     public static function matchesDataProvider(): \Generator
     {
         yield "test match equals" => [
-            'stringForTrueCase' => 'test theme 1',
-            'stringForFalseCase' => 'test theme 22',
-            'initFilter' => new StringFilter(equals: 'TEST theme 1')
+            'trueCase' => 'test theme 1',
+            'falseCase' => 'test theme 22',
+            'filter' => new StringFilter(equals: 'TEST theme 1')
         ];
 
         yield "test match contains" => [
-            'stringForTrueCase' => 'test abc theme',
-            'stringForFalseCase' => 'test xyz theme',
-            'initFilter' => new StringFilter(contains: 'aBC')
+            'trueCase' => 'test abc theme',
+            'falseCase' => 'test xyz theme',
+            'filter' => new StringFilter(contains: 'aBC')
         ];
 
         yield "test match begins with" => [
-            'stringForTrueCase' => 'this start',
-            'stringForFalseCase' => 'this does not start with',
-            'initFilter' => new StringFilter(beginsWith: 'this START')
+            'trueCase' => 'this start',
+            'falseCase' => 'this does not start with',
+            'filter' => new StringFilter(beginsWith: 'this START')
         ];
 
         yield "test match begins with and contains" => [
-            'stringForTrueCase' => 'this start with abc',
-            'stringForFalseCase' => 'this does not start with abc',
-            'initFilter' => new StringFilter(contains: 'abc', beginsWith: 'THIS start')
+            'trueCase' => 'this start with abc',
+            'falseCase' => 'this does not start with abc',
+            'filter' => new StringFilter(contains: 'abc', beginsWith: 'THIS start')
         ];
 
         yield "test match equals and contains" => [
-            'stringForTrueCase' => 'this is abc',
-            'stringForFalseCase' => 'this is not abc',
-            'initFilter' => new StringFilter(equals: 'This Is Abc', contains: 'ABC')
+            'trueCase' => 'this is abc',
+            'falseCase' => 'this is not abc',
+            'filter' => new StringFilter(equals: 'This Is Abc', contains: 'ABC')
         ];
 
         yield "test is and is not string" => [
-            'stringForTrueCase' => '23',
-            'stringForFalseCase' => 23,
-            'initFilter' => new StringFilter(equals: '23')
+            'trueCase' => '23',
+            'falseCase' => 23,
+            'filter' => new StringFilter(equals: '23')
         ];
     }
 }
