@@ -86,4 +86,12 @@ class BoolFilterTest extends DataTypeTestCase
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field', (string)$where);
     }
+
+    public function testMatches(): void
+    {
+        $filter = new BoolFilter(false);
+        $this->assertTrue($filter->matches(false));
+        $this->assertFalse($filter->matches(true));
+        $this->assertFalse($filter->matches('false string'));
+    }
 }

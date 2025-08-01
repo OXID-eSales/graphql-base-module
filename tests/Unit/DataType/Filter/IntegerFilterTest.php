@@ -190,4 +190,59 @@ class IntegerFilterTest extends DataTypeTestCase
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
     }
+
+    /** @dataProvider matchesDataProvider */
+    public function testMatches(
+        int $stringForTrueCase,
+        mixed $stringForFalseCase,
+        IntegerFilter $initFilter
+    ): void {
+        $this->assertTrue($initFilter->matches($stringForTrueCase));
+        $this->assertFalse($initFilter->matches($stringForFalseCase));
+    }
+
+    public static function matchesDataProvider(): \Generator
+    {
+        yield "test match equals" => [
+            'stringForTrueCase' => 1,
+            'stringForFalseCase' => 2,
+            'initFilter' => new IntegerFilter(equals: 1)
+        ];
+
+        yield "test match contains" => [
+            'stringForTrueCase' => 1,
+            'stringForFalseCase' => 5,
+            'initFilter' => new IntegerFilter(lessThan: 3)
+        ];
+
+        yield "test match begins with" => [
+            'stringForTrueCase' => 6,
+            'stringForFalseCase' => 2,
+            'initFilter' => new IntegerFilter(greaterThan: 4)
+        ];
+
+        yield "test match begins with and contains" => [
+            'stringForTrueCase' => 5,
+            'stringForFalseCase' => 2,
+            'initFilter' => new IntegerFilter(between: [3, 5])
+        ];
+
+        yield "test match equals and contains" => [
+            'stringForTrueCase' => 7,
+            'stringForFalseCase' => 3,
+            'initFilter' => new IntegerFilter(lessThan: 10, greaterThan: 4)
+        ];
+
+        yield "test is and is not integer" => [
+            'stringForTrueCase' => 2,
+            'stringForFalseCase' => 2.1,
+            'initFilter' => new IntegerFilter(equals: 2)
+        ];
+
+        yield "test is and is not integer with string" => [
+            'stringForTrueCase' => 3,
+            'stringForFalseCase' => '3',
+            'initFilter' => new IntegerFilter(equals: 3)
+        ];
+    }
 }

@@ -51,6 +51,31 @@ class IntegerFilter extends AbstractNumberFilter implements FilterInterface
         return $this->between;
     }
 
+    public function matches(mixed $value): bool
+    {
+        if (!is_int($value)) {
+            return false;
+        }
+
+        if ($this->equals !== null && $value !== $this->equals) {
+            return false;
+        }
+
+        if ($this->lessThan !== null && $value >= $this->lessThan) {
+            return false;
+        }
+
+        if ($this->greaterThan !== null && $value <= $this->greaterThan) {
+            return false;
+        }
+
+        if ($this->between !== null && ($value <= $this->between[0] || $value >= $this->between[1])) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * @Factory(name="IntegerFilterInput", default=true)
      *

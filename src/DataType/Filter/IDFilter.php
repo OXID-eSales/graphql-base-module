@@ -27,6 +27,15 @@ class IDFilter implements FilterInterface
         return $this->equals;
     }
 
+    public function matches(mixed $value): bool
+    {
+        if ($value instanceof ID) {
+            $value = $value->val();
+        }
+
+        return (is_string($value) && $this->equals->val() === $value);
+    }
+
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
         /** @var array $from */

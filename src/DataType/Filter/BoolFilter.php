@@ -29,6 +29,11 @@ class BoolFilter implements FilterInterface
         return $this->equals;
     }
 
+    public function matches(mixed $value): bool
+    {
+        return (is_bool($value) || $value === $this->equals);
+    }
+
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
         /** @var array $from */

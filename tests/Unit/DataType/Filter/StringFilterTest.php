@@ -148,7 +148,7 @@ class StringFilterTest extends DataTypeTestCase
     /** @dataProvider matchesDataProvider */
     public function testMatches(
         string $stringForTrueCase,
-        string $stringForFalseCase,
+        mixed $stringForFalseCase,
         StringFilter $initFilter
     ): void {
         $this->assertTrue($initFilter->matches($stringForTrueCase));
@@ -185,6 +185,12 @@ class StringFilterTest extends DataTypeTestCase
             'stringForTrueCase' => 'this is abc',
             'stringForFalseCase' => 'this is not abc',
             'initFilter' => new StringFilter(equals: 'This Is Abc', contains: 'ABC')
+        ];
+
+        yield "test is and is not string" => [
+            'stringForTrueCase' => 'This is abc',
+            'stringForFalseCase' => 23,
+            'initFilter' => new StringFilter(equals: '23')
         ];
     }
 }

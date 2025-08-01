@@ -42,8 +42,12 @@ class StringFilter implements FilterInterface
         return $this->contains;
     }
 
-    public function matches(string $value): bool
+    public function matches(mixed $value): bool
     {
+        if (!is_string($value)) {
+            return false;
+        }
+
         if ($this->equals !== null && strcasecmp($value, $this->equals) !== 0) {
             return false;
         }

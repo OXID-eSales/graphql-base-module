@@ -14,4 +14,6 @@ use Doctrine\DBAL\Query\QueryBuilder;
 interface FilterInterface
 {
     public function addToQuery(QueryBuilder $builder, string $field): void;
+
+    public function matches(mixed $value): bool;
 }

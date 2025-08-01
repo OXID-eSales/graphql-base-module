@@ -78,4 +78,46 @@ class IDFilterTest extends DataTypeTestCase
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field', (string)$where);
     }
+
+    /** @dataProvider matchesDataProvider */
+    public function testMatches(mixed $value, IDFilter $filter, bool $expected): void
+    {
+        $this->assertSame(
+            $expected,
+            $filter->matches($value)
+        );
+    }
+
+    public static function matchesDataProvider(): \Generator
+    {
+        yield "test string is matching" => [
+            'value' => '1abc',
+            'initFilter' => new IDFilter(equals: new ID('1abc')),
+            'result' => true,
+        ];
+
+        yield "test id class is matching" => [
+            'value' => new ID('id_text'),
+            'initFilter' => new IDFilter(equals: new ID('id_text')),
+            'result' => true,
+        ];
+
+        yield "test no string or no ID-class is not matching" => [
+            'value' => 123,
+            'initFilter' => new IDFilter(equals: new ID('123')),
+            'result' => false,
+        ];
+
+        yield "test wrong string is not matching" => [
+            'value' => 'wrong1abc',
+            'initFilter' => new IDFilter(equals: new ID('1abc')),
+            'result' => false,
+        ];
+
+        yield "test wrong ID-class is not matching" => [
+            'value' => new ID('wrong_id_text'),
+            'initFilter' => new IDFilter(equals: new ID('id_text')),
+            'result' => false,
+        ];
+    }
 }
