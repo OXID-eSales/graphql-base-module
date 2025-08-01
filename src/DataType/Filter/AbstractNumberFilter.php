@@ -64,6 +64,7 @@ abstract class AbstractNumberFilter
         return false;
     }
 
+    /** @SuppressWarnings(PHPMD.CyclomaticComplexity) */
     protected function matches(mixed $value): bool
     {
         if ($this->equals() !== null && $value !== $this->equals()) {
@@ -83,7 +84,6 @@ abstract class AbstractNumberFilter
         }
 
         return true;
-
     }
 
     protected static function checkRangeOfBetween(?array $between, callable $checkMethod): void
