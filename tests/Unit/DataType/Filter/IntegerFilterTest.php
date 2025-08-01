@@ -209,37 +209,37 @@ class IntegerFilterTest extends DataTypeTestCase
             'initFilter' => new IntegerFilter(equals: 1)
         ];
 
-        yield "test match contains" => [
+        yield "test match less than" => [
             'stringForTrueCase' => 1,
             'stringForFalseCase' => 5,
             'initFilter' => new IntegerFilter(lessThan: 3)
         ];
 
-        yield "test match begins with" => [
+        yield "test match greater than" => [
             'stringForTrueCase' => 6,
             'stringForFalseCase' => 2,
             'initFilter' => new IntegerFilter(greaterThan: 4)
         ];
 
-        yield "test match begins with and contains" => [
+        yield "test match between" => [
             'stringForTrueCase' => 5,
             'stringForFalseCase' => 2,
             'initFilter' => new IntegerFilter(between: [3, 5])
         ];
 
-        yield "test match equals and contains" => [
+        yield "test match less and greater than" => [
             'stringForTrueCase' => 7,
             'stringForFalseCase' => 3,
             'initFilter' => new IntegerFilter(lessThan: 10, greaterThan: 4)
         ];
 
-        yield "test is and is not integer" => [
+        yield "test not matches with float" => [
             'stringForTrueCase' => 2,
             'stringForFalseCase' => 2.1,
             'initFilter' => new IntegerFilter(equals: 2)
         ];
 
-        yield "test is and is not integer with string" => [
+        yield "test not matches with string" => [
             'stringForTrueCase' => 3,
             'stringForFalseCase' => '3',
             'initFilter' => new IntegerFilter(equals: 3)

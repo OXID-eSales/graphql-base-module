@@ -178,7 +178,7 @@ class StringFilterTest extends DataTypeTestCase
         yield "test match begins with and contains" => [
             'stringForTrueCase' => 'this start with abc',
             'stringForFalseCase' => 'this does not start with abc',
-            'initFilter' => new StringFilter(beginsWith: 'THIS start', contains: 'abc')
+            'initFilter' => new StringFilter(contains: 'abc', beginsWith: 'THIS start')
         ];
 
         yield "test match equals and contains" => [
@@ -188,7 +188,7 @@ class StringFilterTest extends DataTypeTestCase
         ];
 
         yield "test is and is not string" => [
-            'stringForTrueCase' => 'This is abc',
+            'stringForTrueCase' => '23',
             'stringForFalseCase' => 23,
             'initFilter' => new StringFilter(equals: '23')
         ];

@@ -69,7 +69,7 @@ class IntegerFilter extends AbstractNumberFilter implements FilterInterface
             return false;
         }
 
-        if ($this->between !== null && ($value <= $this->between[0] || $value >= $this->between[1])) {
+        if ($this->between !== null && !($value >= $this->between[0] && $value <= $this->between[1])) {
             return false;
         }
 

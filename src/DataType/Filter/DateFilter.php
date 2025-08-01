@@ -115,4 +115,9 @@ class DateFilter implements FilterInterface
             $between
         );
     }
+
+    public function matches(mixed $value): bool
+    {
+        // TODO: Implement matches() method.
+    }
 }
