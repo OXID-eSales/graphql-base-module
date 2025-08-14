@@ -9,8 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Codeception\Config;
 
-use OxidEsales\Codeception\Module\Database\DatabaseDefaultsFileGenerator;
-use OxidEsales\Facts\Config\ConfigFile;
+use OxidEsales\Codeception\Module\Database;
 use OxidEsales\Facts\Facts;
 use Symfony\Component\Filesystem\Path;
 
@@ -34,25 +33,37 @@ class CodeceptionParametersProvider {
             'DB_PASSWORD' => $facts->getDatabasePassword(),
             'DB_HOST' => $facts->getDatabaseHost(),
             'DB_PORT' => $facts->getDatabasePort(),
+            'DUMP_PATH' => $this->getTestDataDumpFilePath(),
             'MODULE_DUMP_PATH' => $this->getModuleTestDataDumpFilePath(),
-            'MYSQL_CONFIG_PATH' => $this->getMysqlConfigPath(),
+            'MYSQL_CONFIG_PATH' => $this->generateMysqlStarUpConfigurationFile($facts),
             'PHP_BIN' => $php,
+            'FIXTURES_PATH' => $this->getFixturesFilePath()
         ];
     }
 
-    private function getModuleTestDataDumpFilePath()
+    private function getModuleTestDataDumpFilePath(): string
     {
         return Path::join(__DIR__, '..', 'Support', 'Data', 'dump.sql');
     }
 
-    private function getMysqlConfigPath()
+    private function getFixturesFilePath(): string
     {
-        $facts = new Facts();
-        $configFile = new ConfigFile($facts->getSourcePath() . '/config.inc.php');
+        return Path::join(__DIR__, '..', 'Support', 'Data', 'fixtures.sql');
+    }
 
-        $generator = new DatabaseDefaultsFileGenerator($configFile);
+    private function getTestDataDumpFilePath(): string
+    {
+        return Path::join(__DIR__, '..', 'Support', '_generated', 'shop-dump.sql');
+    }
 
-        return $generator->generate();
+    private function generateMysqlStarUpConfigurationFile(Facts $facts): string
+    {
+        return Database::generateStartupOptionsFile(
+            user: $facts->getDatabaseUserName(),
+            pass: $facts->getDatabasePassword(),
+            host: $facts->getDatabaseHost(),
+            port: (int) $facts->getDatabasePort()
+        );
     }
 }
 
