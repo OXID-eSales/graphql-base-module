@@ -6,20 +6,16 @@
 install:
     cache:
         prepared_shop: false
-    git:
-        repository: '{{ $repo }}'
-        ref: &ref '{{ .Github.RefName }}'
-        shop_url: 'https://github.com/OXID-eSales/graphql-base-module.git'
-        shop_ref: *ref
     composer:
+        root_url: ''
         transform: |
             {
                 "require": {
-                    "oxid-esales/oxideshop-ce": "{{ .Data.global.composer.dev_ref }}",
-                    "oxid-esales/twig-component": "{{ .Data.global.composer.dev_ref }}",
-                    "oxid-esales/twig-admin-theme": "{{ .Data.global.composer.dev_ref }}",
-                    "oxid-esales/apex-theme": "{{ .Data.global.composer.dev_ref }}",
-                    "oxid-esales/developer-tools": "{{ .Data.global.composer.dev_ref }}"
+                    "oxid-esales/oxideshop-ce": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/twig-component": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/twig-admin-theme": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/apex-theme": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/developer-tools": "{{ .Data.install.composer.dev_ref }}"
                 }
             }
     custom_script_container: |
@@ -34,44 +30,43 @@ install:
         vendor/bin/oe-console oe:module:activate "{{ $ids }}"
         vendor/bin/oe-console oe:theme:activate apex
 
-install_shop_with_modules:
-    composer:
-        root_url: ''
-
 runscript: &runscript
     matrix:
         script: |
             [
-              "graphql_base:tests-unit",
-              "graphql_base:tests-integration",
-              "graphql_base:tests-codeception"
+              "report:tests-unit",
+              "report:tests-integration",
+              "no_report:tests-codeception",
             ]
-    composer:
-        early: true
-    graphql_base:
+    report:
         path: ''
+    no_report:
+        path: ''
+        coverage_prefix: ''
 
 runslim:
     <<: *runscript
     matrix:
         script: |
             [
-              "graphql_base:phpcs",
-              "graphql_base:phpstan",
-              "graphql_base:phpmd"
+              "report:phpstan-report",
+              "no_report:phpmd",
+              "no_report:phpcs",
             ]
 
 sonarcloud:
     matrix:
         testplan: '["-"]'
     strip_path: '/var/www/'
+    organization: 'oxid-esales'
     project_key: 'OXID-eSales_graphql-base-module'
     project_name: '{{ $org}}/{{ $name }}'
-    parameters: |
-        -Dsonar.language=php \
-        -Dsonar.scm.provider=git \
-        -Dsonar.sources=src \
+    target_branch: 'b-7.4.x'
+    parameters: >
+        -Dsonar.language=php
+        -Dsonar.scm.provider=git
+        -Dsonar.sources=src
         -Dsonar.tests=tests
 
 finish:
-    slack_title: '{{ print $name }} ({{ .Data.global.git.shop_ref }}) by {{ .Github.Actor }}'
+    slack_title: '{{ print $name }} ({{ .Data.install.git.ref }}) by {{ .Github.Actor }}'

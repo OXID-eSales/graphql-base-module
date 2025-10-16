@@ -6,18 +6,20 @@ on:
 
 jobs:
     call_matrix:
-        uses: OXID-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v4
+        uses: OXID-eSales/github-actions/.github/workflows/universal_workflow_light.yaml@v5
         with:
-            testplan: '~/defaults/7.4.x.yaml,~/defaults/php8.3_mysql8.0_only.yaml,~/graphql-base.yaml'
+            testplan: '~/defaults/7.4.x.yaml,~/defaults/php8.3_mysql8.0_only.yaml,~/graphql-base.yaml,~/_custom.yaml'
             runs_on: '"ubuntu-latest"'
-            defaults: 'v4'
+            defaults: 'v5'
             plan_folder: '.github/oxid-esales'
+            custom_testplan_yaml: |
+              finish:
+                slack_title: 'GraphQL Base Module ({{ .Github.EventName }}-{{ .Github.RefName }})'
         secrets:
             DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
             DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
             CACHE_ENDPOINT: ${{ secrets.CACHE_ENDPOINT }}
             CACHE_ACCESS_KEY: ${{ secrets.CACHE_ACCESS_KEY }}
             CACHE_SECRET_KEY: ${{ secrets.CACHE_SECRET_KEY }}
-            enterprise_github_token: ${{ secrets.enterprise_github_token }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
