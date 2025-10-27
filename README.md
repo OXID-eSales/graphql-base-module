@@ -24,7 +24,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.4.0` co
 
 ## Branch Compatibility
 
-* b-7.4.x branch is compatible with b-7.4.x shop compilation branches
+* 11.1.x versions (or b-7.4.x branch) are compatible with latest shop compilation 7.4.x resp. b-7.4.x shop compilation branches
 * 11.0.x versions (or b-7.3.x branch) are compatible with latest shop compilation 7.3.x resp. b-7.3.x shop compilation branches
 * 10.0.x versions (or b-7.2.x branch) are compatible with latest shop compilation 7.2.x resp. b-7.2.x shop compilation branches
 * 9.x versions (or b-7.1.x branch) are compatible with latest shop compilation 7.1.x resp. b-7.1.x shop compilation branches
@@ -37,7 +37,7 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.4.0` co
 
 ```bash
 # Install desired version of oxid-esales/graphql-base module, in this case - latest released 11.x version, While updating the version you should add additional flag --with-all-dependencies with below command.
-$ composer require oxid-esales/graphql-base ^11.0.0 --with-all-dependencies
+$ composer require oxid-esales/graphql-base ^11.1.0 --with-all-dependencies
 ```
 
 You should run migrations both after installing the module and after each module update:
