@@ -11,11 +11,11 @@ install:
         transform: |
             {
                 "require": {
-                    "oxid-esales/oxideshop-ce": "v7.4.0",
-                    "oxid-esales/twig-component": "v2.7.0",
-                    "oxid-esales/twig-admin-theme": "v3.0.0",
-                    "oxid-esales/apex-theme": "v3.0.0",
-                    "oxid-esales/developer-tools": "v2.5.0"
+                    "oxid-esales/oxideshop-ce": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/twig-component": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/twig-admin-theme": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/apex-theme": "{{ .Data.install.composer.dev_ref }}",
+                    "oxid-esales/developer-tools": "{{ .Data.install.composer.dev_ref }}"
                 }
             }
     custom_script_container: |
