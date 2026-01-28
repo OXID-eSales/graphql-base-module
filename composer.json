@@ -6,7 +6,7 @@
     "homepage": "https://www.oxid-esales.com",
     "license": ["proprietary"],
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "ext-json": "*",
         "thecodingmachine/graphqlite": "^7.0",
         "lcobucci/jwt": "^4.1",

@@ -30,7 +30,7 @@ perl -pi\
   containers/httpd/project.conf
 
 perl -pi\
-  -e 's#PHP_VERSION=.*#PHP_VERSION=8.2#g;'\
+  -e 's#PHP_VERSION=.*#PHP_VERSION=8.3#g;'\
   .env
 
 docker compose up --build -d php
@@ -43,7 +43,7 @@ $SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/developer-tools" -v"dev-b-7.
 $SCRIPT_PATH/parts/shared/require.sh -n"oxid-esales/oxideshop-doctrine-migration-wrapper" -v"dev-b-7.5.x"
 $SCRIPT_PATH/parts/shared/require_theme.sh -t"apex" -b"b-7.5.x"
 
-git clone -b 12.0-en https://github.com/OXID-eSales/oxapi-documentation source/documentation/oxapi-documentation
+git clone -b 13.0-en https://github.com/OXID-eSales/oxapi-documentation source/documentation/oxapi-documentation
 make docpath=./source/documentation/oxapi-documentation addsphinxservice
 
 make up
