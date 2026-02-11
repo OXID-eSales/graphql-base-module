@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Filter;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
@@ -57,10 +56,8 @@ class IDFilterTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $where = $this->getQueryPart($queryBuilder, 'where');
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
         $this->assertEquals('db_table.DB_FIELD = :db_field', (string)$where);
         $this->assertEquals($id, $queryBuilder->getParameter(':db_field'));
     }
@@ -73,8 +70,7 @@ class IDFilterTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table', 'db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $where = $this->getQueryPart($queryBuilder, 'where');
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field', (string)$where);
     }

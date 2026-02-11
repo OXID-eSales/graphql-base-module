@@ -10,11 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataType\Sorting;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use InvalidArgumentException;
+use OxidEsales\GraphQL\Base\DataType\Filter\QueryBuilderHelper;
 use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
 
 abstract class Sorting
 {
+    use QueryBuilderHelper;
     public const SORTING_DESC = 'DESC';
 
     public const SORTING_ASC = 'ASC';
@@ -41,13 +42,7 @@ abstract class Sorting
 
     public function addToQuery(QueryBuilder $builder): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
-
-        if ($from === []) {
-            throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
-        }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
+        $table = $this->getFromTableAlias($builder);
 
         foreach ($this->sorting as $field => $dir) {
             $builder->addOrderBy($table . '.' . $field, $dir);

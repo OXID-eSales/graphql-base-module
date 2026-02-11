@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Filter;
 use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Exception;
 use InvalidArgumentException;
 use OutOfBoundsException;
@@ -133,10 +132,8 @@ class DateFilterTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $where = $this->getQueryPart($queryBuilder, 'where');
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
         $this->assertEquals('db_table.DB_FIELD = :db_field_eq', (string)$where);
         $this->assertEquals($date, $queryBuilder->getParameter(':db_field_eq'));
     }
@@ -154,10 +151,8 @@ class DateFilterTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $where = $this->getQueryPart($queryBuilder, 'where');
 
-        $this->assertEquals($where::TYPE_AND, $where->getType());
         $this->assertEquals(
             'db_table.DB_FIELD BETWEEN :db_field_lower AND :db_field_upper',
             (string)$where
@@ -174,8 +169,7 @@ class DateFilterTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table', 'db_table_alias');
         $filter->addToQuery($queryBuilder, 'db_field');
 
-        /** @var CompositeExpression $where */
-        $where = $queryBuilder->getQueryPart('where');
+        $where = $this->getQueryPart($queryBuilder, 'where');
 
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
     }

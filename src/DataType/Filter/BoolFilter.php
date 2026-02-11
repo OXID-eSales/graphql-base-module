@@ -10,13 +10,13 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataType\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use InvalidArgumentException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function strtoupper;
 
 class BoolFilter implements FilterInterface
 {
+    use QueryBuilderHelper;
     /**
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
@@ -36,13 +36,7 @@ class BoolFilter implements FilterInterface
 
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
-
-        if ($from === []) {
-            throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
-        }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
+        $table = $this->getFromTableAlias($builder);
 
         $builder->andWhere(sprintf('%s.%s = :%s', $table, strtoupper($field), $field))
             ->setParameter(':' . $field, $this->equals ? '1' : '0');

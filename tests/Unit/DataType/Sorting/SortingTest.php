@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Sorting;
 
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
@@ -34,8 +33,7 @@ class SortingTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table');
         $sort->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
-        $orderBy = $queryBuilder->getQueryPart('orderBy');
+        $orderBy = $this->getQueryPart($queryBuilder, 'orderBy');
 
         $this->assertSame(
             'db_table.foo ASC',
@@ -52,8 +50,7 @@ class SortingTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table', 'db_table_alias');
         $sort->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
-        $orderBy = $queryBuilder->getQueryPart('orderBy');
+        $orderBy = $this->getQueryPart($queryBuilder, 'orderBy');
 
         $this->assertSame(
             'db_table_alias.foo ASC',
@@ -70,8 +67,7 @@ class SortingTest extends DataTypeTestCase
         $queryBuilder->select()->from('db_table');
         $sort->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
-        $orderBy = $queryBuilder->getQueryPart('orderBy');
+        $orderBy = $this->getQueryPart($queryBuilder, 'orderBy');
 
         $this->assertCount(
             2,

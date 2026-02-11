@@ -14,7 +14,6 @@ use DateTimeInterface;
 use DateTimeZone;
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
-use InvalidArgumentException;
 use OutOfBoundsException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
@@ -22,6 +21,7 @@ use function strtoupper;
 
 class DateFilter implements FilterInterface
 {
+    use QueryBuilderHelper;
     public const SQL_DATETIME_FORMAT = 'Y-m-d H:i:s';
 
     /**
@@ -54,13 +54,7 @@ class DateFilter implements FilterInterface
 
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
-
-        if ($from === []) {
-            throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
-        }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
+        $table = $this->getFromTableAlias($builder);
 
         if ($this->equals) {
             $builder->andWhere($table . '.' . strtoupper($field) . ' = :' . $field . '_eq')

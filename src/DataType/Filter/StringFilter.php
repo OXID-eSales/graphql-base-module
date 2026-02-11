@@ -11,13 +11,13 @@ namespace OxidEsales\GraphQL\Base\DataType\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use GraphQL\Error\Error;
-use InvalidArgumentException;
 use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 use function strtoupper;
 
 class StringFilter implements FilterInterface
 {
+    use QueryBuilderHelper;
     public function __construct(
         private readonly ?string $equals = null,
         private readonly ?string $contains = null,
@@ -70,13 +70,7 @@ class StringFilter implements FilterInterface
 
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
-
-        if ($from === []) {
-            throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
-        }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
+        $table = $this->getFromTableAlias($builder);
 
         if ($this->equals) {
             $builder->andWhere(sprintf('%s.%s = :%s_eq', $table, strtoupper($field), $field))

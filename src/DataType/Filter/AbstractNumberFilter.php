@@ -10,11 +10,11 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\DataType\Filter;
 
 use Doctrine\DBAL\Query\QueryBuilder;
-use InvalidArgumentException;
 use OutOfBoundsException;
 
 abstract class AbstractNumberFilter
 {
+    use QueryBuilderHelper;
     abstract public function equals(): mixed;
     abstract public function lessThan(): mixed;
     abstract public function greaterThan(): mixed;
@@ -22,13 +22,7 @@ abstract class AbstractNumberFilter
 
     public function addToQuery(QueryBuilder $builder, string $field): void
     {
-        /** @var array $from */
-        $from = $builder->getQueryPart('from');
-
-        if ($from === []) {
-            throw new InvalidArgumentException('QueryBuilder is missing "from" SQL part');
-        }
-        $table = $from[0]['alias'] ?? $from[0]['table'];
+        $table = $this->getFromTableAlias($builder);
 
         if ($this->equals()) {
             $builder->andWhere(sprintf('%s.%s = :%s_eq', $table, strtoupper($field), $field))
