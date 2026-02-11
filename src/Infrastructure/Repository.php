@@ -18,7 +18,6 @@ use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\ShopModelAwareInterface;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
-use PDO;
 use RuntimeException;
 
 class Repository
@@ -108,7 +107,7 @@ class Repository
         $sorting->addToQuery($queryBuilder);
 
         /** @var Result $result */
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
         foreach ($result->fetchAllAssociative() as $row) {
             $newModel = clone $model;
             $newModel->assign($row);

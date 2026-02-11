@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Infrastructure;
 
 use DateTimeImmutable;
-use Doctrine\DBAL\ForwardCompatibility\Result;
+use Doctrine\DBAL\Result;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\RefreshToken as RefreshTokenDataType;
 use OxidEsales\GraphQL\Base\DataType\RefreshTokenInterface;
@@ -51,7 +51,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             ->delete('oegraphqlrefreshtoken')
             ->where('EXPIRES_AT <= NOW()');
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
     private function getTokenUserId(string $refreshToken): string
@@ -63,7 +63,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
             ->andWhere('EXPIRES_AT > NOW()')
             ->setParameter('token', $refreshToken);
         /** @var Result $result */
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
         $userId = (string)$result->fetchOne();
 
@@ -98,6 +98,6 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
                 'userId' => $userId,
             ]);
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 }

@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
-use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionProviderInterface;
+use OxidEsales\EshopCommunity\Internal\Framework\Database\ConnectionFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
@@ -174,7 +174,7 @@ class RefreshTokenRepositoryTest extends TestCase
 
     private function getDbConnection(): Connection
     {
-        return $this->get(ConnectionProviderInterface::class)->get();
+        return $this->get(ConnectionFactoryInterface::class)->create();
     }
 
     public function getSut(): RefreshTokenRepositoryInterface

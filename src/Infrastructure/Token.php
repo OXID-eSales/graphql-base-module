@@ -15,7 +15,6 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
-use PDO;
 
 class Token
 {
@@ -60,7 +59,7 @@ class Token
                 'tokenId' => $tokenId,
             ]);
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
         if (is_object($result)) {
             return $result->fetchOne() > 0;
@@ -79,26 +78,26 @@ class Token
                 'userId' => (string)$user->id(),
             ]);
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 
     public function deleteOrphanedTokens(): void
     {
-        /** @var \Doctrine\DBAL\Driver\Statement $execute */
+        /** @var \Doctrine\DBAL\Result $execute */
         $execute = $this->queryBuilderFactory->create()
             ->select('t.oxid')
             ->from('oegraphqltoken', 't')
             ->leftJoin('t', 'oxuser', 'u', 't.oxuserid = u.oxid')
             ->where('u.oxid is NULL')
-            ->execute();
-        $tokenIds = $execute->fetchAll(PDO::FETCH_COLUMN);
+            ->executeQuery();
+        $tokenIds = $execute->fetchFirstColumn();
 
         if (!empty($tokenIds)) {
             $queryBuilder = $this->queryBuilderFactory->create();
             $queryBuilder->delete('oegraphqltoken')
                 ->where($queryBuilder->expr()->in('oxid', ':ids'))
-                ->setParameter('ids', $tokenIds, Connection::PARAM_STR_ARRAY);
-            $queryBuilder->execute();
+                ->setParameter('ids', $tokenIds, \Doctrine\DBAL\ArrayParameterType::STRING);
+            $queryBuilder->executeStatement();
         }
     }
 
@@ -113,10 +112,10 @@ class Token
             ->setParameters([
                 'userId' => (string)$user->id(),
             ])
-            ->execute();
+            ->executeQuery();
 
         if (is_object($result)) {
-            $return = (int)$result->fetch(PDO::FETCH_ASSOC)['counted'] < $quota;
+            $return = (int)$result->fetchAssociative()['counted'] < $quota;
         }
 
         return $return;
@@ -148,7 +147,7 @@ class Token
 
         $queryBuilder->setParameters($parameters);
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeStatement();
 
         return is_object($result) ? $result->columnCount() : (int)$result;
     }
@@ -167,7 +166,7 @@ class Token
                 'userId' => (string)$user->id(),
             ]);
 
-        $result = $queryBuilder->execute();
+        $result = $queryBuilder->executeQuery();
 
         if (is_object($result)) {
             return $result->fetchOne() > 0;
@@ -186,6 +185,6 @@ class Token
                 'userId' => $userId,
             ]);
 
-        $queryBuilder->execute();
+        $queryBuilder->executeStatement();
     }
 }
