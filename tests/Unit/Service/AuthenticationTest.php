@@ -19,6 +19,7 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -74,9 +75,7 @@ class AuthenticationTest extends BaseTestCase
         $this->assertFalse($authenticationService->isLogged());
     }
 
-    /**
-     * @dataProvider providerValidCredentials
-     */
+    #[DataProvider('providerValidCredentials')]
     public function testIsLoggedWithValidToken(string $username, string $password): void
     {
         $token = $this->createToken($username, $password);
@@ -109,12 +108,7 @@ class AuthenticationTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider providerValidCredentials
-     *
-     * @param mixed $username
-     * @param mixed $password
-     */
+    #[DataProvider('providerValidCredentials')]
     public function testGetUser($username, $password): void
     {
         $token = $this->createToken($username, $password);
@@ -123,12 +117,7 @@ class AuthenticationTest extends BaseTestCase
         $this->assertInstanceOf(User::class, $authenticationService->getUser());
     }
 
-    /**
-     * @dataProvider providerInvalidCredentials
-     *
-     * @param mixed $username
-     * @param mixed $password
-     */
+    #[DataProvider('providerInvalidCredentials')]
     public function testGetUserNameWithInvalidCredentials($username, $password): void
     {
         $this->expectException(InvalidLogin::class);
@@ -149,12 +138,7 @@ class AuthenticationTest extends BaseTestCase
         $this->assertEmpty($authenticationService->getUser()->email());
     }
 
-    /**
-     * @dataProvider providerValidCredentials
-     *
-     * @param mixed $username
-     * @param mixed $password
-     */
+    #[DataProvider('providerValidCredentials')]
     public function testGetUserNameWithValidCredentials($username, $password): void
     {
         $token = $this->createToken($username, $password);
@@ -258,9 +242,7 @@ class AuthenticationTest extends BaseTestCase
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
     }
 
-    /**
-     * @dataProvider providerValidCredentials
-     */
+    #[DataProvider('providerValidCredentials')]
     public function testLoggedUserIsNotAnonymous(string $username, string $password): void
     {
         $token = $this->createToken($username, $password);
@@ -276,9 +258,7 @@ class AuthenticationTest extends BaseTestCase
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
     }
 
-    /**
-     * @dataProvider providerInvalidCredentials
-     */
+    #[DataProvider('providerInvalidCredentials')]
     public function testIsAnonymousWithWrongCredentials(string $username, string $password): void
     {
         $this->expectException(InvalidLogin::class);

@@ -13,6 +13,7 @@ use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\BoolFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class BoolFilterTest extends DataTypeTestCase
 {
@@ -21,9 +22,7 @@ class BoolFilterTest extends DataTypeTestCase
         $this->assertTrue((new BoolFilter())->equals());
     }
 
-    /**
-     * @dataProvider boolDataProvider
-     */
+    #[DataProvider('boolDataProvider')]
     public function testReturnsGivenEqualValue(bool $userInput, bool $returnValue): void
     {
         $this->assertSame(
@@ -49,9 +48,7 @@ class BoolFilterTest extends DataTypeTestCase
         $filter->addToQuery($queryBuilder, 'db_field');
     }
 
-    /**
-     * @dataProvider addQueryPartProvider
-     */
+    #[DataProvider('addQueryPartProvider')]
     public function testAddQueryPart(bool $filterValue): void
     {
         $queryBuilder = $this->createQueryBuilderMock();

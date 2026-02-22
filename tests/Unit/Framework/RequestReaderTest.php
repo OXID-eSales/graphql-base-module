@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\TokenValidator;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class RequestReaderTest extends BaseTestCase
 {
@@ -51,11 +52,7 @@ class RequestReaderTest extends BaseTestCase
         }
     }
 
-    /**
-     * @dataProvider headerNamesDataProvider
-     *
-     * @param mixed $headerName
-     */
+    #[DataProvider('headerNamesDataProvider')]
     public function testGetAuthTokenWithCorrectFormattedHeaderButInvalidJWT($headerName): void
     {
         $requestReader = new RequestReader(
@@ -76,11 +73,7 @@ class RequestReaderTest extends BaseTestCase
         ];
     }
 
-    /**
-     * @dataProvider headerNamesDataProvider
-     *
-     * @param mixed $headerName
-     */
+    #[DataProvider('headerNamesDataProvider')]
     public function testGetAuthTokenWithCorrectFormatCallsTokenValidation($headerName): void
     {
         $tokenValidator = $this->createPartialMock(TokenValidator::class, ['validateToken']);

@@ -15,6 +15,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 class IDFilterTest extends DataTypeTestCase
@@ -79,7 +80,7 @@ class IDFilterTest extends DataTypeTestCase
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field', (string)$where);
     }
 
-    /** @dataProvider matchesDataProvider */
+    #[DataProvider('matchesDataProvider')]
     public function testMatches(mixed $value, IDFilter $filter, bool $result): void
     {
         $this->assertSame(

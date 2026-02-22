@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Pagination;
 
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class PaginationTest extends DataTypeTestCase
 {
@@ -55,12 +56,7 @@ class PaginationTest extends DataTypeTestCase
         );
     }
 
-    /**
-     * @dataProvider paginationDataProvider
-     *
-     * @param mixed $offset
-     * @param mixed $limit
-     */
+    #[DataProvider('paginationDataProvider')]
     public function testInvalidValuesOnPaginationFilter($offset, $limit): void
     {
         $this->expectExceptionMessage('PaginationFilter fields must be positive.');
@@ -80,9 +76,7 @@ class PaginationTest extends DataTypeTestCase
         ];
     }
 
-    /**
-     * @dataProvider addPaginationToQueryProvider
-     */
+    #[DataProvider('addPaginationToQueryProvider')]
     public function testAddPaginationToQuery(int $offset, ?int $limit): void
     {
         $queryBuilder = $this->createQueryBuilderMock();

@@ -14,6 +14,7 @@ use Exception;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\StringFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class StringFilterTest extends DataTypeTestCase
 {
@@ -145,7 +146,7 @@ class StringFilterTest extends DataTypeTestCase
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
     }
 
-    /** @dataProvider matchesDataProvider */
+    #[DataProvider('matchesDataProvider')]
     public function testMatches(
         string $trueCase,
         mixed $falseCase,
