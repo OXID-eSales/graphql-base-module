@@ -19,7 +19,9 @@ use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Token;
 use OxidEsales\GraphQL\Base\Service\UserModelService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class PasswordChangeSubscriberTest extends BaseTestCase
 {
     public function testSubscribedEventsConfiguration(): void
@@ -150,9 +152,9 @@ class PasswordChangeSubscriberTest extends BaseTestCase
     }
 
     protected function getSut(
-        UserModelService $userModelService = null,
-        RefreshTokenRepositoryInterface $refreshTokenRepository = null,
-        Token $tokenInfrastructure = null,
+        ?UserModelService $userModelService = null,
+        ?RefreshTokenRepositoryInterface $refreshTokenRepository = null,
+        ?Token $tokenInfrastructure = null,
     ): PasswordChangeSubscriber {
         return new PasswordChangeSubscriber(
             userModelService: $userModelService ?? $this->createStub(UserModelService::class),

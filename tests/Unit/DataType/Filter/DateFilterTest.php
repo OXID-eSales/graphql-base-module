@@ -18,8 +18,10 @@ use InvalidArgumentException;
 use OutOfBoundsException;
 use OxidEsales\GraphQL\Base\DataType\Filter\DateFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+#[AllowMockObjectsWithoutExpectations]
 class DateFilterTest extends DataTypeTestCase
 {
     public function testThrowsExceptionOnNoInput(): void

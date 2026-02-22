@@ -27,10 +27,12 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+#[AllowMockObjectsWithoutExpectations]
 abstract class TestCase extends IntegrationTestCase
 {
     protected static $queryResult;

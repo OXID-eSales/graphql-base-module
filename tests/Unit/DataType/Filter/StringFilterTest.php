@@ -14,8 +14,10 @@ use Exception;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\StringFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+#[AllowMockObjectsWithoutExpectations]
 class StringFilterTest extends DataTypeTestCase
 {
     public function testThrowsExceptionOnNoInput(): void

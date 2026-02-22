@@ -13,9 +13,11 @@ use OxidEsales\GraphQL\Base\Exception\FingerprintMissingException;
 use OxidEsales\GraphQL\Base\Service\CookieService;
 use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class CookieServiceTest extends TestCase
 {
     #[RunInSeparateProcess]

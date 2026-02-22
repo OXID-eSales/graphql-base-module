@@ -14,7 +14,9 @@ use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class SortingTest extends DataTypeTestCase
 {
     public function testThrowsExceptionOnInvalidInput(): void

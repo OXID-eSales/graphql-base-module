@@ -19,8 +19,10 @@ use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepository;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use TheCodingMachine\GraphQLite\Types\ID;
 
+#[AllowMockObjectsWithoutExpectations]
 class TokenTest extends BaseTestCase
 {
     public function testCreateTokenWithInvalidCredentials(): void

@@ -11,8 +11,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Framework\Timer;
 use OxidEsales\GraphQL\Base\Framework\TimerHandler;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class TimerHandlerTest extends TestCase
 {
     public function testTimerHandler(): void

@@ -13,7 +13,9 @@ use Lcobucci\JWT\Builder;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class BeforeTokenCreationTest extends BaseTestCase
 {
     public function testBasicGetters(): void

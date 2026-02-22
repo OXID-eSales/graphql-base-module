@@ -14,8 +14,10 @@ use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Event\Subscriber\BeforeTokenCreationSubscriber;
 use OxidEsales\GraphQL\Base\Service\CookieServiceInterface;
 use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class BeforeTokenCreationSubscriberTest extends TestCase
 {
     public function testSubscribedEventsConfiguration(): void
@@ -78,8 +80,8 @@ class BeforeTokenCreationSubscriberTest extends TestCase
     }
 
     public function getSut(
-        FingerprintServiceInterface $fingerprintService = null,
-        CookieServiceInterface $cookieService = null,
+        ?FingerprintServiceInterface $fingerprintService = null,
+        ?CookieServiceInterface $cookieService = null,
     ): BeforeTokenCreationSubscriber {
         return new BeforeTokenCreationSubscriber(
             fingerprintService: $fingerprintService ?? $this->createStub(FingerprintServiceInterface::class),

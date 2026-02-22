@@ -11,8 +11,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
 use OxidEsales\GraphQL\Base\Service\HeaderService;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class HeaderServiceTest extends TestCase
 {
     public function testCleanHeaders(): void

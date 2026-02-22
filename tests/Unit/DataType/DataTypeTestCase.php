@@ -11,8 +11,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 abstract class DataTypeTestCase extends TestCase
 {
     protected function createQueryBuilderMock(): QueryBuilder

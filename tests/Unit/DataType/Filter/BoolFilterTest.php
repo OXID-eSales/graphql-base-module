@@ -13,8 +13,10 @@ use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\BoolFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+#[AllowMockObjectsWithoutExpectations]
 class BoolFilterTest extends DataTypeTestCase
 {
     public function testReturnsTrueOnEmptyInitialization(): void

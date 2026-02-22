@@ -195,8 +195,8 @@ class RefreshTokenRepositoryTest extends TestCase
     public function addToken(
         string $oxid,
         string $expires,
-        string $userId = null,
-        string $token = null,
+        ?string $userId = null,
+        ?string $token = null,
     ): void {
         $insertTokensQuery = "insert into `oegraphqlrefreshtoken` (OXID, OXUSERID, TOKEN, EXPIRES_AT)
             values (:oxid, :oxuserid, :token, :expires)";

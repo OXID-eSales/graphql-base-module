@@ -12,8 +12,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 use Codeception\PHPUnit\TestCase;
 use OxidEsales\GraphQL\Base\DataType\RefreshToken;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken as RefreshTokenModel;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+#[AllowMockObjectsWithoutExpectations]
 #[CoversClass(RefreshToken::class)]
 class RefreshTokenTest extends TestCase
 {

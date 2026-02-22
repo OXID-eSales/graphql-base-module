@@ -23,8 +23,10 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use TheCodingMachine\GraphQLite\Types\ID;
 
+#[AllowMockObjectsWithoutExpectations]
 class TokenAdministrationTest extends BaseTestCase
 {
     public function testQueryTokensNotAuthorizedFilterOnNotOwnUserId(): void

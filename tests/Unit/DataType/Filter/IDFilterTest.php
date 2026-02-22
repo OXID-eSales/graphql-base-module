@@ -15,9 +15,11 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use TheCodingMachine\GraphQLite\Types\ID;
 
+#[AllowMockObjectsWithoutExpectations]
 class IDFilterTest extends DataTypeTestCase
 {
     public function testBasicIDFilter(): void

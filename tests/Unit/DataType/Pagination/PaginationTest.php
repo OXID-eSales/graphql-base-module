@@ -11,8 +11,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Pagination;
 
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 
+#[AllowMockObjectsWithoutExpectations]
 class PaginationTest extends DataTypeTestCase
 {
     public function testReturnOnEmptyInitialization(): void

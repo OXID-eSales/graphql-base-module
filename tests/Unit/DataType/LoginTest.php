@@ -12,8 +12,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
 use Codeception\PHPUnit\TestCase;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Login;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 
+#[AllowMockObjectsWithoutExpectations]
 #[CoversClass(Login::class)]
 class LoginTest extends TestCase
 {

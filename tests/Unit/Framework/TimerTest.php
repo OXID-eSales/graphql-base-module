@@ -10,10 +10,12 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
 use OxidEsales\GraphQL\Base\Framework\Timer;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 use function usleep;
 
+#[AllowMockObjectsWithoutExpectations]
 class TimerTest extends TestCase
 {
     public function testTimer(): void
