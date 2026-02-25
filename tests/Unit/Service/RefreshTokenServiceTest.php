@@ -18,12 +18,13 @@ use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenService;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token;
-use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 #[AllowMockObjectsWithoutExpectations]
+#[CoversClass(RefreshTokenService::class)]
 class RefreshTokenServiceTest extends TestCase
 {
     public function testRefreshTokenMethodGeneratesNewTokenByRefreshToken(): void
