@@ -11,8 +11,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Event;
 
 use Lcobucci\JWT\Token;
 use OxidEsales\GraphQL\Base\Event\BeforeAuthorization;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class BeforeAuthorizationTest extends TestCase
 {
     public function testBasicGetters(): void

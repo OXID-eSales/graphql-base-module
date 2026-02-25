@@ -27,10 +27,12 @@ use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\Token;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
+#[AllowMockObjectsWithoutExpectations]
 abstract class TestCase extends IntegrationTestCase
 {
     protected static $queryResult;
@@ -126,25 +128,21 @@ abstract class TestCase extends IntegrationTestCase
         $tokenService = static::$container->get(Token::class);
         $refClass = new ReflectionClass(Token::class);
         $prop = $refClass->getProperty('token');
-        $prop->setAccessible(true);
         $prop->setValue($tokenService, $authToken);
 
         $authentication = static::$container->get(Authentication::class);
         $refClass = new ReflectionClass(Authentication::class);
         $prop = $refClass->getProperty('tokenService');
-        $prop->setAccessible(true);
         $prop->setValue($authentication, $tokenService);
 
         $authorization = static::$container->get(Authorization::class);
         $refClass = new ReflectionClass(Authorization::class);
         $prop = $refClass->getProperty('tokenService');
-        $prop->setAccessible(true);
         $prop->setValue($authorization, $tokenService);
 
         $schema = static::$container->get(SchemaFactory::class);
         $refClass = new ReflectionClass(SchemaFactory::class);
         $prop = $refClass->getProperty('schema');
-        $prop->setAccessible(true);
         $prop->setValue($schema, null);
     }
 
@@ -217,7 +215,6 @@ abstract class TestCase extends IntegrationTestCase
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
-        curl_close($ch);
 
         return json_decode($response, true) ?: [];
     }

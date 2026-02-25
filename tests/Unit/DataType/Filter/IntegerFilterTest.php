@@ -14,7 +14,10 @@ use Exception;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Filter\IntegerFilter;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 
+#[AllowMockObjectsWithoutExpectations]
 class IntegerFilterTest extends DataTypeTestCase
 {
     public function testThrowsExceptionOnNoInput(): void
@@ -110,9 +113,7 @@ class IntegerFilterTest extends DataTypeTestCase
         ];
     }
 
-    /**
-     * @dataProvider invalidBetweens
-     */
+    #[DataProvider('invalidBetweens')]
     public function testThrowsExceptionOnInvalidBetween(
         array $between
     ): void {
@@ -191,7 +192,7 @@ class IntegerFilterTest extends DataTypeTestCase
         $this->assertEquals('db_table_alias.DB_FIELD = :db_field_eq', (string)$where);
     }
 
-    /** @dataProvider matchesDataProvider */
+    #[DataProvider('matchesDataProvider')]
     public function testMatches(
         int $trueCase,
         mixed $falseCase,

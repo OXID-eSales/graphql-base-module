@@ -23,9 +23,11 @@ use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration as TokenAdministration;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 //todo: tests do not do any assertions, fix it.
+#[AllowMockObjectsWithoutExpectations]
 class TokenTest extends BaseTestCase
 {
     public function testTokensQueryWithDefaultFilters(): void
@@ -123,11 +125,11 @@ class TokenTest extends BaseTestCase
     }
 
     private function getTokenController(
-        TokenAdministration $tokenAdministration = null,
-        Authentication $authentication = null,
-        Authorization $authorization = null,
-        TokenService $tokenService = null,
-        RefreshTokenServiceInterface $refreshTokenService = null,
+        ?TokenAdministration $tokenAdministration = null,
+        ?Authentication $authentication = null,
+        ?Authorization $authorization = null,
+        ?TokenService $tokenService = null,
+        ?RefreshTokenServiceInterface $refreshTokenService = null,
     ): TokenController {
         return new TokenController(
             tokenAdministration: $tokenAdministration ?? $this->createStub(TokenAdministration::class),

@@ -12,9 +12,12 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 use OxidEsales\EshopCommunity\Internal\Framework\Module\Facade\ModuleSettingServiceInterface;
 use OxidEsales\GraphQL\Base\Exception\MissingSignatureKey;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\String\UnicodeString;
 
+#[AllowMockObjectsWithoutExpectations]
 class ModuleConfigurationTest extends TestCase
 {
     public function testGenerateSignatureKeyCreatesRandom64BytesKeys(): void
@@ -50,11 +53,7 @@ class ModuleConfigurationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider shortSignatureKeyProvider
-     *
-     * @param string $signature
-     */
+    #[DataProvider('shortSignatureKeyProvider')]
     public function testGetShortSignatureKey(string $signature): void
     {
         $moduleSettingBridgeMock = $this->getMockBuilder(ModuleSettingServiceInterface::class)->getMock();

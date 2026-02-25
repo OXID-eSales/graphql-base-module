@@ -12,8 +12,10 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\Validation\ConstraintViolation;
 use OxidEsales\GraphQL\Base\Framework\Constraint\BelongsToShop;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class BelongsToShopTest extends TestCase
 {
     public function testTypeException(): void

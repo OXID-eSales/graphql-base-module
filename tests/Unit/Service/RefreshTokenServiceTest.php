@@ -17,11 +17,13 @@ use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
 use OxidEsales\GraphQL\Base\Service\ModuleConfiguration;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenService;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
-use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use OxidEsales\GraphQL\Base\Service\Token;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 
+#[AllowMockObjectsWithoutExpectations]
 #[CoversClass(RefreshTokenService::class)]
 class RefreshTokenServiceTest extends TestCase
 {
@@ -29,7 +31,7 @@ class RefreshTokenServiceTest extends TestCase
     {
         $sut = $this->getSut(
             refreshTokRepo: $repositoryMock = $this->createMock(RefreshTokenRepositoryInterface::class),
-            tokenService: $tokenServiceMock = $this->createMock(TokenService::class)
+            tokenService: $tokenServiceMock = $this->createMock(Token::class)
         );
 
         $refreshToken = uniqid();
@@ -94,15 +96,15 @@ class RefreshTokenServiceTest extends TestCase
     }
 
     public function getSut(
-        RefreshTokenRepositoryInterface $refreshTokRepo = null,
-        ModuleConfiguration $moduleConfiguration = null,
-        TokenService $tokenService = null,
-        FingerprintServiceInterface $fingerprintService = null,
+        ?RefreshTokenRepositoryInterface $refreshTokRepo = null,
+        ?ModuleConfiguration $moduleConfiguration = null,
+        ?Token $tokenService = null,
+        ?FingerprintServiceInterface $fingerprintService = null,
     ): RefreshTokenServiceInterface {
         return new RefreshTokenService(
             refreshTokenRepository: $refreshTokRepo ?? $this->createStub(RefreshTokenRepositoryInterface::class),
             moduleConfiguration: $moduleConfiguration ?? $this->createStub(ModuleConfiguration::class),
-            tokenService: $tokenService ?? $this->createStub(TokenService::class),
+            tokenService: $tokenService ?? $this->createStub(Token::class),
             fingerprintService: $fingerprintService ?? $this->createStub(FingerprintServiceInterface::class),
         );
     }

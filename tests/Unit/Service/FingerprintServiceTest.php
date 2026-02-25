@@ -14,8 +14,10 @@ use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
 use OxidEsales\GraphQL\Base\Service\CookieServiceInterface;
 use OxidEsales\GraphQL\Base\Service\FingerprintService;
 use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
+#[AllowMockObjectsWithoutExpectations]
 class FingerprintServiceTest extends TestCase
 {
     public function testGetFingerprintGeneratesRandomStrings(): void
@@ -108,7 +110,7 @@ class FingerprintServiceTest extends TestCase
     }
 
     public function getSut(
-        CookieServiceInterface $cookieService = null,
+        ?CookieServiceInterface $cookieService = null,
     ): FingerprintServiceInterface {
         return new FingerprintService(
             cookieService: $cookieService ?? $this->createStub(CookieServiceInterface::class)

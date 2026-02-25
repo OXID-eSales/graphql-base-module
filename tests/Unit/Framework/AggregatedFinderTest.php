@@ -13,7 +13,9 @@ use ArrayIterator;
 use Kcs\ClassFinder\Finder\FinderInterface;
 use OxidEsales\GraphQL\Base\Framework\AggregatedFinder;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
+#[AllowMockObjectsWithoutExpectations]
 class AggregatedFinderTest extends BaseTestCase
 {
     public function testGetIterator(): void

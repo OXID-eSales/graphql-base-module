@@ -16,6 +16,7 @@ use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Tests\Integration\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class LegacyTest extends TestCase
 {
@@ -50,9 +51,7 @@ class LegacyTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider loginResponseTestDataProvider
-     */
+    #[DataProvider('loginResponseTestDataProvider')]
     public function testLoginResponseIsAnonymousOnLoginMissing(
         ?string $login,
         ?string $password,
