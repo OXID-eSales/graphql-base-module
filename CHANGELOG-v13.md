@@ -10,3 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update module to work with OXID eShop 7.5
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
 - Upgraded PHPUnit from 11 to 12
+
+### Fixed
+- Graphqlite is incompatible with webonyx/graphql-php v15.31
+
+
+[13.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v12.0.1...v13.0.0
