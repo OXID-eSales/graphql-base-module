@@ -45,5 +45,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Migration trigger on module activation
 
+[9.0.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v9.0.0...v9.0.1
 [9.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v9.0.0-rc.1...9.0.0
 [9.0.0-rc.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v8.1.1...9.0.0-rc.1
