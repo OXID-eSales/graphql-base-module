@@ -11,9 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Minimum PHP version is now 8.3, tested up to PHP 8.5
 - Upgraded PHPUnit from 11 to 12
 
-### Added
-- `SeoEncoderArticle` with `oeGetCategoryUri` and `oeIsFixed` method, including `SeoEncoderArticleFactory`
-
 ### Fixed
 - Graphqlite is incompatible with webonyx/graphql-php v15.31
 

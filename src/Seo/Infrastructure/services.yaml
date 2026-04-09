@@ -1,2 +1,0 @@
-imports:
-  - { resource: Factory/services.yaml }

@@ -31,7 +31,6 @@ $aModule = [
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => [
-        \OxidEsales\Eshop\Application\Model\SeoEncoderArticle::class => \OxidEsales\GraphQL\Base\Seo\Infrastructure\Model\SeoEncoderArticle::class,
     ],
     'controllers' => [
         // Widget Controller

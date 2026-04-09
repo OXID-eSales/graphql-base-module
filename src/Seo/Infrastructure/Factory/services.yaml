@@ -1,7 +1,0 @@
-services:
-  _defaults:
-    autowire: true
-    public: false
-
-  OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactoryInterface:
-    class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactory
