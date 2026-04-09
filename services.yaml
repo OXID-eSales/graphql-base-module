@@ -1,5 +1,6 @@
 imports:
   - { resource: src/Infrastructure/services.yaml }
+  - { resource: src/Seo/services.yaml }
 
 services:
 
