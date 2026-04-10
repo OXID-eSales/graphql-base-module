@@ -11,3 +11,4 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     excludePaths:
         - *Component/Widget/GraphQL.php
+        - *Seo/Infrastructure/Model/SeoEncoderArticle.php
