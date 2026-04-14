@@ -8,7 +8,6 @@
     "require": {
         "php": "^8.2",
         "ext-json": "*",
-        "webonyx/graphql-php": "~15.30.2",
         "thecodingmachine/graphqlite": "^7.0",
         "lcobucci/jwt": "^4.1",
         "symfony/cache": "*",
