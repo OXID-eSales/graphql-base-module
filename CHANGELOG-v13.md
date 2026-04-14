@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Graphqlite is incompatible with webonyx/graphql-php v15.31
+- Composer throws security issues for concrete graphl-version
 
 
 [13.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v12.0.1...v13.0.0
