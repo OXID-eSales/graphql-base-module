@@ -44,6 +44,9 @@ class Token
     ) {
     }
 
+    /**
+     * @param non-empty-string $claim
+     */
     public function getTokenClaim(string $claim, mixed $default = null): mixed
     {
         if (!$this->token instanceof UnencryptedToken) {
@@ -81,10 +84,13 @@ class Token
         $expire = new DateTimeImmutable($this->moduleConfiguration->getTokenLifeTime());
         $config = $this->jwtConfigBuilder->getConfiguration();
 
+        /** @var non-empty-string $shopUrl */
+        $shopUrl = $this->legacyInfrastructure->getShopUrl();
+
         $builder = $config->builder()
-            ->issuedBy($this->legacyInfrastructure->getShopUrl())
-            ->withHeader('iss', $this->legacyInfrastructure->getShopUrl())
-            ->permittedFor($this->legacyInfrastructure->getShopUrl())
+            ->issuedBy($shopUrl)
+            ->withHeader('iss', $shopUrl)
+            ->permittedFor($shopUrl)
             ->issuedAt($time)
             ->canOnlyBeUsedAfter($time)
             ->expiresAt($expire)

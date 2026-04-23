@@ -35,9 +35,12 @@ class JwtConfigurationBuilder
             InMemory::plainText($this->moduleConfiguration->getSignatureKey())
         );
 
+        /** @var non-empty-string $shopUrl */
+        $shopUrl = $this->legacyService->getShopUrl();
+
         $strictValidAt = new StrictValidAt(SystemClock::fromSystemTimezone());
-        $issuedBy = new IssuedBy($this->legacyService->getShopUrl());
-        $permittedFor = new PermittedFor($this->legacyService->getShopUrl());
+        $issuedBy = new IssuedBy($shopUrl);
+        $permittedFor = new PermittedFor($shopUrl);
         $signedWith = new SignedWith($config->signer(), $config->verificationKey());
         $belongsToShop = new BelongsToShop($this->legacyService->getShopId());
 

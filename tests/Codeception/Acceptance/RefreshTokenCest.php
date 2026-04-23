@@ -16,6 +16,7 @@ use OxidEsales\GraphQL\Base\Tests\Codeception\AcceptanceTester;
 
 #[Group("oe_graphql_base")]
 #[Group("oe_graphql_base_token")]
+#[Group("oe_graphql_base_token_refresh")]
 class RefreshTokenCest
 {
     private const ADMIN_LOGIN = 'noreply@oxid-esales.com';

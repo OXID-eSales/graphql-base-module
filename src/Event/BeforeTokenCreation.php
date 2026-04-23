@@ -16,7 +16,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 class BeforeTokenCreation extends Event
 {
     public function __construct(
-        private readonly Builder $builder,
+        private Builder $builder,
         private readonly UserInterface $user
     ) {
     }
@@ -24,6 +24,16 @@ class BeforeTokenCreation extends Event
     public function getBuilder(): Builder
     {
         return $this->builder;
+    }
+
+    /**
+     * lcobucci/jwt v5 made Builder immutable — `withClaim()`/`withHeader()` return
+     * a new instance. Subscribers that add claims must push the updated builder
+     * back onto the event via this setter.
+     */
+    public function setBuilder(Builder $builder): void
+    {
+        $this->builder = $builder;
     }
 
     public function getUser(): UserInterface

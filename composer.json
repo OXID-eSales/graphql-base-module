@@ -9,7 +9,8 @@
         "php": "^8.3",
         "ext-json": "*",
         "thecodingmachine/graphqlite": "^7.0",
-        "lcobucci/jwt": "^4.1",
+        "lcobucci/jwt": "^5.0",
+        "lcobucci/clock": "^3.0",
         "symfony/cache": "*",
         "ecodev/graphql-upload": "^7.0.0",
         "laminas/laminas-diactoros": "^3.5",
@@ -78,6 +79,11 @@
             "infection/extension-installer": true,
             "oxid-esales/oxideshop-unified-namespace-generator": true,
             "oxid-esales/oxideshop-composer-plugin": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-b-7.5.x-lcobucci": "dev-b-7.5.x"
         }
     },
   "autoload-dev": {
