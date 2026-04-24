@@ -23,6 +23,8 @@ class BeforeTokenCreation extends Event
 
     /**
      * Handles Builder immutability internally (lcobucci/jwt v5+).
+     *
+     * @param non-empty-string $name
      */
     public function withClaim(string $name, mixed $value): self
     {
@@ -32,6 +34,8 @@ class BeforeTokenCreation extends Event
 
     /**
      * Handles Builder immutability internally (lcobucci/jwt v5+).
+     *
+     * @param non-empty-string $name
      */
     public function withHeader(string $name, mixed $value): self
     {
