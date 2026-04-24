@@ -11,14 +11,14 @@ services:
     class: OxidEsales\GraphQL\Base\Infrastructure\ModuleSetup
     public: true
 
-  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler:
+  OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface:
     class: OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler
     public: true
 
-  OxidEsales\GraphQL\Base\Framework\RequestReader:
+  OxidEsales\GraphQL\Base\Framework\RequestReaderInterface:
     class: OxidEsales\GraphQL\Base\Framework\RequestReader
 
-  OxidEsales\GraphQL\Base\Framework\ResponseWriter:
+  OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface:
     class: OxidEsales\GraphQL\Base\Framework\ResponseWriter
 
   OxidEsales\GraphQL\Base\Framework\TimerHandler:
@@ -34,7 +34,7 @@ services:
     public: true
 
   Lcobucci\JWT\UnencryptedToken:
-    factory: [ '@OxidEsales\GraphQL\Base\Framework\RequestReader', 'getAuthToken' ]
+    factory: ['@OxidEsales\GraphQL\Base\Framework\RequestReaderInterface', 'getAuthToken']
 
   OxidEsales\GraphQL\Base\Service\Authentication:
     class: OxidEsales\GraphQL\Base\Service\Authentication
@@ -91,7 +91,7 @@ services:
     class: OxidEsales\GraphQL\Base\Service\NamespaceMapper
     tags: [ 'graphql_namespace_mapper' ]
 
-  OxidEsales\GraphQL\Base\Framework\SchemaFactory:
+  OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface:
     class: OxidEsales\GraphQL\Base\Framework\SchemaFactory
     arguments:
       $namespaceMappers: !tagged graphql_namespace_mapper

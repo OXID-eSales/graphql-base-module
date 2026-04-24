@@ -17,10 +17,13 @@ use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\EshopCommunity\Tests\TestContainerFactory;
 use OxidEsales\Facts\Facts;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
-use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
+use OxidEsales\GraphQL\Base\Framework\RequestReaderInterface;
 use OxidEsales\GraphQL\Base\Framework\ResponseWriter;
+use OxidEsales\GraphQL\Base\Framework\ResponseWriterInterface;
 use OxidEsales\GraphQL\Base\Framework\SchemaFactory;
+use OxidEsales\GraphQL\Base\Framework\SchemaFactoryInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\Authentication;
@@ -68,10 +71,10 @@ abstract class TestCase extends IntegrationTestCase
         $containerFactory = new TestContainerFactory();
         static::$container = $containerFactory->create();
 
-        $responseWriterDefinition = static::$container->getDefinition(ResponseWriter::class);
+        $responseWriterDefinition = static::$container->getDefinition(ResponseWriterInterface::class);
         $responseWriterDefinition->setClass(ResponseWriterStub::class);
 
-        $requestReaderDefinition = static::$container->getDefinition(RequestReader::class);
+        $requestReaderDefinition = static::$container->getDefinition(RequestReaderInterface::class);
         $requestReaderDefinition->setClass(RequestReaderStub::class);
 
         $legacyServiceDefinition = static::$container->getDefinition(Legacy::class);
@@ -123,7 +126,7 @@ abstract class TestCase extends IntegrationTestCase
     protected function setAuthToken(string $token): void
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
-        $authToken = static::$container->get(RequestReader::class)->getAuthToken();
+        $authToken = static::$container->get(RequestReaderInterface::class)->getAuthToken();
 
         $tokenService = static::$container->get(Token::class);
         $refClass = new ReflectionClass(Token::class);
@@ -140,7 +143,7 @@ abstract class TestCase extends IntegrationTestCase
         $prop = $refClass->getProperty('tokenService');
         $prop->setValue($authorization, $tokenService);
 
-        $schema = static::$container->get(SchemaFactory::class);
+        $schema = static::$container->get(SchemaFactoryInterface::class);
         $refClass = new ReflectionClass(SchemaFactory::class);
         $prop = $refClass->getProperty('schema');
         $prop->setValue($schema, null);
@@ -153,7 +156,7 @@ abstract class TestCase extends IntegrationTestCase
             'variables' => $variables,
             'operationName' => $operationName,
         ];
-        static::$container->get(GraphQLQueryHandler::class)
+        static::$container->get(GraphQLQueryHandlerInterface::class)
             ->executeGraphQLQuery();
 
         return static::$queryResult;
@@ -215,6 +218,7 @@ abstract class TestCase extends IntegrationTestCase
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
+        curl_close($ch);
 
         return json_decode($response, true) ?: [];
     }

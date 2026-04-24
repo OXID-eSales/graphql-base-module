@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgraded `lcobucci/jwt` from v4 to v5, added `lcobucci/clock` dependency
 - `BeforeTokenCreation` event now provides `withClaim()` and `withHeader()` methods for adding custom token data. This abstracts the JWT library's immutable Builder pattern. The `getBuilder()` method is now marked as `@internal`.
 
+### Added
+- `RequestReaderInterface`
+- `ResponseWriterInterface`
+- `GraphQLQueryHandlerInterface`
+- `SchemaFactoryInterface`
+
 ### Fixed
 - Graphqlite is incompatible with webonyx/graphql-php v15.31
 - Composer throws security issues for concrete graphl-version

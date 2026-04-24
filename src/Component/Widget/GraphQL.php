@@ -18,7 +18,7 @@ use OxidEsales\GraphQL\Base\Exception\ErrorCategories;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidRequest;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
-use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandler;
+use OxidEsales\GraphQL\Base\Framework\GraphQLQueryHandlerInterface;
 use OxidEsales\GraphQL\Base\Framework\TimerHandler;
 use OxidEsales\GraphQL\Base\Service\Authentication as GraphQLAuthenticationService;
 use Throwable;
@@ -41,7 +41,7 @@ class GraphQL extends WidgetController
 
         try {
             $this->handleShopSession();
-            ContainerFacade::get(GraphQLQueryHandler::class)->executeGraphQLQuery();
+            ContainerFacade::get(GraphQLQueryHandlerInterface::class)->executeGraphQLQuery();
         } catch (Error $e) {
             $message = FormattedError::createFromException($e);
             if ($this->isAuthenticated($e)) {

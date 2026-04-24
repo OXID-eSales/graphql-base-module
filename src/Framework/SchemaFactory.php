@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use TheCodingMachine\GraphQLite\Schema;
 use TheCodingMachine\GraphQLite\SchemaFactory as GraphQLiteSchemaFactory;
 
-class SchemaFactory
+class SchemaFactory implements SchemaFactoryInterface
 {
     private ?Schema $schema = null;
 

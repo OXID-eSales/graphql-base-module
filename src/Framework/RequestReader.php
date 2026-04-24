@@ -25,7 +25,7 @@ use function json_decode;
 use function sscanf;
 use function trim;
 
-class RequestReader
+class RequestReader implements RequestReaderInterface
 {
     public function __construct(
         private readonly TokenValidator $tokenValidator,

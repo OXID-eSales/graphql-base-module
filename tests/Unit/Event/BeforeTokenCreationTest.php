@@ -14,9 +14,11 @@ use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
+#[AllowMockObjectsWithoutExpectations]
 #[CoversClass(BeforeTokenCreation::class)]
 class BeforeTokenCreationTest extends BaseTestCase
 {
