@@ -9,18 +9,19 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Event\Subscriber;
 
-use Lcobucci\JWT\Builder;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Event\Subscriber\BeforeTokenCreationSubscriber;
 use OxidEsales\GraphQL\Base\Service\CookieServiceInterface;
 use OxidEsales\GraphQL\Base\Service\FingerprintServiceInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[AllowMockObjectsWithoutExpectations]
 class BeforeTokenCreationSubscriberTest extends TestCase
 {
-    public function testSubscribedEventsConfiguration(): void
+    #[Test]
+    public function subscribedEventsConfiguration(): void
     {
         $sut = $this->getSut();
         $configuration = $sut->getSubscribedEvents();
@@ -29,7 +30,8 @@ class BeforeTokenCreationSubscriberTest extends TestCase
         $this->assertTrue($configuration[BeforeTokenCreation::class] === 'handle');
     }
 
-    public function testHandleReturnsOriginalEvent(): void
+    #[Test]
+    public function handleReturnsOriginalEvent(): void
     {
         $sut = $this->getSut();
 
@@ -37,7 +39,8 @@ class BeforeTokenCreationSubscriberTest extends TestCase
         $this->assertSame($eventStub, $sut->handle($eventStub));
     }
 
-    public function testHandleConfiguresHookedJwtBuilderWithFingerprintHashClaim(): void
+    #[Test]
+    public function handleAddsFingerprinthashClaimToEvent(): void
     {
         $sut = $this->getSut(
             fingerprintService: $fingerprintServiceMock = $this->createMock(FingerprintServiceInterface::class)
@@ -51,15 +54,15 @@ class BeforeTokenCreationSubscriberTest extends TestCase
             ->with($exampleFingerprint)->willReturn($exampleFingerprintHash);
 
         $eventMock = $this->createMock(BeforeTokenCreation::class);
-        $eventMock->method('getBuilder')
-            ->willReturn($jwtConfigBuilderSpy = $this->createMock(Builder::class));
-        $jwtConfigBuilderSpy->expects($this->once())->method('withClaim')
+        $eventMock->expects($this->once())
+            ->method('withClaim')
             ->with(FingerprintServiceInterface::TOKEN_KEY, $exampleFingerprintHash);
 
         $sut->handle($eventMock);
     }
 
-    public function testHandleTriggersFingerprintCookieSetup(): void
+    #[Test]
+    public function handleTriggersFingerprintCookieSetup(): void
     {
         $sut = $this->getSut(
             fingerprintService: $fingerprintServiceMock = $this->createMock(FingerprintServiceInterface::class),

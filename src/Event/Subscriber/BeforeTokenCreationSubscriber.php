@@ -26,11 +26,9 @@ class BeforeTokenCreationSubscriber implements EventSubscriberInterface
     {
         $fingerprint = $this->fingerprintService->getFingerprint();
 
-        $event->setBuilder(
-            $event->getBuilder()->withClaim(
-                name: FingerprintServiceInterface::TOKEN_KEY,
-                value: $this->fingerprintService->hashFingerprint($fingerprint)
-            )
+        $event->withClaim(
+            name: FingerprintServiceInterface::TOKEN_KEY,
+            value: $this->fingerprintService->hashFingerprint($fingerprint)
         );
 
         $this->cookieService->setFingerprintCookie($fingerprint);

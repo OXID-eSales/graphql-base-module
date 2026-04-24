@@ -21,19 +21,30 @@ class BeforeTokenCreation extends Event
     ) {
     }
 
-    public function getBuilder(): Builder
+    /**
+     * Handles Builder immutability internally (lcobucci/jwt v5+).
+     */
+    public function withClaim(string $name, mixed $value): self
     {
-        return $this->builder;
+        $this->builder = $this->builder->withClaim($name, $value);
+        return $this;
     }
 
     /**
-     * lcobucci/jwt v5 made Builder immutable — `withClaim()`/`withHeader()` return
-     * a new instance. Subscribers that add claims must push the updated builder
-     * back onto the event via this setter.
+     * Handles Builder immutability internally (lcobucci/jwt v5+).
      */
-    public function setBuilder(Builder $builder): void
+    public function withHeader(string $name, mixed $value): self
     {
-        $this->builder = $builder;
+        $this->builder = $this->builder->withHeader($name, $value);
+        return $this;
+    }
+
+    /**
+     * @internal For internal use only. Prefer withClaim()/withHeader() in event subscribers.
+     */
+    public function getBuilder(): Builder
+    {
+        return $this->builder;
     }
 
     public function getUser(): UserInterface
