@@ -34,33 +34,4 @@ final class SeoEncoderArticleTest extends IntegrationTestCase
 
         $this->assertSame($expectedUri, $sut->oeGetCategoryUri($articleStub, $categoryStub, $languageId));
     }
-
-    #[Test]
-    public function isOeFixed(): void
-    {
-        $objectId = uniqid();
-        $languageId = rand(0, 3);
-        $params = uniqid();
-
-        $sut = $this->createPartialMock(SeoEncoderArticle::class, ['isFixed']);
-        $sut->method('isFixed')
-            ->with('oxarticle', $objectId, $languageId, null, $params)
-            ->willReturn($isFixed = (bool)rand(0, 1));
-
-        $this->assertSame($isFixed, $sut->oeIsFixed($objectId, $languageId, $params));
-    }
-
-    #[Test]
-    public function isOeFixedWithNullAsParams(): void
-    {
-        $objectId = uniqid();
-        $languageId = rand(0, 3);
-
-        $sut = $this->createPartialMock(SeoEncoderArticle::class, ['isFixed']);
-        $sut->method('isFixed')
-            ->with('oxarticle', $objectId, $languageId, null, null)
-            ->willReturn($isFixed = (bool)rand(0, 1));
-
-        $this->assertSame($isFixed, $sut->oeIsFixed($objectId, $languageId));
-    }
 }

@@ -25,10 +25,4 @@ class SeoEncoderArticle extends SeoEncoderArticle_parent
         /** @phpstan-ignore method.notFound */
         return $this->createArticleCategoryUri($article, $category, $languageId);
     }
-
-    public function oeIsFixed(string $objectId, int $languageId, ?string $params = null): bool
-    {
-        /** @phpstan-ignore method.notFound */
-        return $this->isFixed('oxarticle', $objectId, $languageId, null, $params);
-    }
 }
