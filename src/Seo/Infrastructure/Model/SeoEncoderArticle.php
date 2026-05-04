@@ -26,9 +26,9 @@ class SeoEncoderArticle extends SeoEncoderArticle_parent
         return $this->createArticleCategoryUri($article, $category, $languageId);
     }
 
-    public function oeLoadFromDb(string $id, int $languageId, ?string $params = null): string|false
+    public function oeLoadFromDb(string $productId, int $languageId, ?string $params = null): string|false
     {
         /** @phpstan-ignore method.notFound */
-        return $this->loadFromDb('oxarticle', $id, $languageId, null, $params);
+        return $this->loadFromDb('oxarticle', $productId, $languageId, null, $params);
     }
 }

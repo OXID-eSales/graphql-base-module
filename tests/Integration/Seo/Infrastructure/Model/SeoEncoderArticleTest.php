@@ -38,31 +38,31 @@ final class SeoEncoderArticleTest extends IntegrationTestCase
     #[Test]
     public function oeLoadFromDb(): void
     {
-        $id = uniqid();
+        $productId = uniqid();
         $languageId = rand(0, 3);
         $params = uniqid();
         $expectedUrl = uniqid();
 
         $sut = $this->createPartialMock(SeoEncoderArticle::class, ['loadFromDb']);
         $sut->method('loadFromDb')
-            ->with('oxarticle', $id, $languageId, null, $params)
+            ->with('oxarticle', $productId, $languageId, null, $params)
             ->willReturn($expectedUrl);
 
-        $this->assertSame($expectedUrl, $sut->oeLoadFromDb($id, $languageId, $params));
+        $this->assertSame($expectedUrl, $sut->oeLoadFromDb($productId, $languageId, $params));
     }
 
     #[Test]
     public function oeLoadFromDbWithNullParams(): void
     {
-        $id = uniqid();
+        $productId = uniqid();
         $languageId = rand(0, 3);
         $expectedUrl = uniqid();
 
         $sut = $this->createPartialMock(SeoEncoderArticle::class, ['loadFromDb']);
         $sut->method('loadFromDb')
-            ->with('oxarticle', $id, $languageId, null, null)
+            ->with('oxarticle', $productId, $languageId, null, null)
             ->willReturn($expectedUrl);
 
-        $this->assertSame($expectedUrl, $sut->oeLoadFromDb($id, $languageId));
+        $this->assertSame($expectedUrl, $sut->oeLoadFromDb($productId, $languageId));
     }
 }
