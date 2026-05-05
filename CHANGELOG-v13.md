@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [13.0.0] - unreleased
+## [13.0.0] - 2026-05-05
 
 ### Changed
 - Update module to work with OXID eShop 7.5
@@ -18,8 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `ResponseWriterInterface`
 - `GraphQLQueryHandlerInterface`
 - `SchemaFactoryInterface`
-
-### Added
 - `SeoEncoderArticle` with `oegbGetCategoryUri` and `oegbLoadFromDb` method, including `SeoEncoderArticleFactory`
 
 ### Fixed
@@ -27,4 +25,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Composer throws security issues for concrete graphl-version
 
 
-[13.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v12.0.1...v13.0.0
+[13.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v12.0.2...v13.0.0
