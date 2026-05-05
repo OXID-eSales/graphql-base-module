@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
 final class SeoEncoderArticleTest extends IntegrationTestCase
 {
     #[Test]
-    public function getOegbCategoryUri(): void
+    public function oegbGetCategoryUri(): void
     {
         $languageId = rand(0, 3);
         $expectedUri = uniqid();
