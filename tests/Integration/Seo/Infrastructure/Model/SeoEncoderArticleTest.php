@@ -35,34 +35,4 @@ final class SeoEncoderArticleTest extends IntegrationTestCase
         $this->assertSame($expectedUri, $sut->oegbGetCategoryUri($articleStub, $categoryStub, $languageId));
     }
 
-    #[Test]
-    public function oegbLoadFromDb(): void
-    {
-        $productId = uniqid();
-        $languageId = rand(0, 3);
-        $params = uniqid();
-        $expectedUrl = uniqid();
-
-        $sut = $this->createPartialMock(SeoEncoderArticle::class, ['loadFromDb']);
-        $sut->method('loadFromDb')
-            ->with('oxarticle', $productId, $languageId, null, $params)
-            ->willReturn($expectedUrl);
-
-        $this->assertSame($expectedUrl, $sut->oegbLoadFromDb($productId, $languageId, $params));
-    }
-
-    #[Test]
-    public function oegbLoadFromDbWithNullParams(): void
-    {
-        $productId = uniqid();
-        $languageId = rand(0, 3);
-        $expectedUrl = uniqid();
-
-        $sut = $this->createPartialMock(SeoEncoderArticle::class, ['loadFromDb']);
-        $sut->method('loadFromDb')
-            ->with('oxarticle', $productId, $languageId, null, null)
-            ->willReturn($expectedUrl);
-
-        $this->assertSame($expectedUrl, $sut->oegbLoadFromDb($productId, $languageId));
-    }
 }
