@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgraded PHPUnit from 11 to 12
 
 ### Added
-- `SeoEncoderArticle` with `oeGetCategoryUri` and `oeLoadFromDb` method, including `SeoEncoderArticleFactory`
+- `SeoEncoderArticle` with `oegbGetCategoryUri` and `oegbLoadFromDb` method, including `SeoEncoderArticleFactory`
 
 ### Fixed
 - Graphqlite is incompatible with webonyx/graphql-php v15.31

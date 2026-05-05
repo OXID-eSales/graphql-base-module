@@ -20,13 +20,13 @@ use OxidEsales\Eshop\Application\Model\Category;
 
 class SeoEncoderArticle extends SeoEncoderArticle_parent
 {
-    public function oeGetCategoryUri(Article $article, Category $category, int $languageId): string
+    public function oegbGetCategoryUri(Article $article, Category $category, int $languageId): string
     {
         /** @phpstan-ignore method.notFound */
         return $this->createArticleCategoryUri($article, $category, $languageId);
     }
 
-    public function oeLoadFromDb(string $productId, int $languageId, ?string $params = null): string|false
+    public function oegbLoadFromDb(string $productId, int $languageId, ?string $params = null): string|false
     {
         /** @phpstan-ignore method.notFound */
         return $this->loadFromDb('oxarticle', $productId, $languageId, null, $params);

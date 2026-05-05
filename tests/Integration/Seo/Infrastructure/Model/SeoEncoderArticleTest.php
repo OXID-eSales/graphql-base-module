@@ -20,7 +20,7 @@ use PHPUnit\Framework\Attributes\Test;
 final class SeoEncoderArticleTest extends IntegrationTestCase
 {
     #[Test]
-    public function getOeCategoryUri(): void
+    public function getOegbCategoryUri(): void
     {
         $languageId = rand(0, 3);
         $expectedUri = uniqid();
@@ -32,11 +32,11 @@ final class SeoEncoderArticleTest extends IntegrationTestCase
             ->with($articleStub, $categoryStub, $languageId)
             ->willReturn($expectedUri);
 
-        $this->assertSame($expectedUri, $sut->oeGetCategoryUri($articleStub, $categoryStub, $languageId));
+        $this->assertSame($expectedUri, $sut->oegbGetCategoryUri($articleStub, $categoryStub, $languageId));
     }
 
     #[Test]
-    public function oeLoadFromDb(): void
+    public function oegbLoadFromDb(): void
     {
         $productId = uniqid();
         $languageId = rand(0, 3);
@@ -48,11 +48,11 @@ final class SeoEncoderArticleTest extends IntegrationTestCase
             ->with('oxarticle', $productId, $languageId, null, $params)
             ->willReturn($expectedUrl);
 
-        $this->assertSame($expectedUrl, $sut->oeLoadFromDb($productId, $languageId, $params));
+        $this->assertSame($expectedUrl, $sut->oegbLoadFromDb($productId, $languageId, $params));
     }
 
     #[Test]
-    public function oeLoadFromDbWithNullParams(): void
+    public function oegbLoadFromDbWithNullParams(): void
     {
         $productId = uniqid();
         $languageId = rand(0, 3);
@@ -63,6 +63,6 @@ final class SeoEncoderArticleTest extends IntegrationTestCase
             ->with('oxarticle', $productId, $languageId, null, null)
             ->willReturn($expectedUrl);
 
-        $this->assertSame($expectedUrl, $sut->oeLoadFromDb($productId, $languageId));
+        $this->assertSame($expectedUrl, $sut->oegbLoadFromDb($productId, $languageId));
     }
 }
