@@ -34,5 +34,4 @@ final class SeoEncoderArticleTest extends IntegrationTestCase
 
         $this->assertSame($expectedUri, $sut->oegbGetCategoryUri($articleStub, $categoryStub, $languageId));
     }
-
 }
