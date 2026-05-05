@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `SchemaFactoryInterface`
 
 ### Added
-- `SeoEncoderArticle` with `oegbGetCategoryUri` and `oegbLoadFromDb` method, including `SeoEncoderArticleFactory`
+- `SeoEncoderArticle` with `oegbGetCategoryUri` method, including `SeoEncoderArticleFactory`
 
 ### Fixed
 - Graphqlite is incompatible with webonyx/graphql-php v15.31
