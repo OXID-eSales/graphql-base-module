@@ -15,7 +15,8 @@ install:
                     "oxid-esales/twig-component": "v2.8.0",
                     "oxid-esales/twig-admin-theme": "v3.1.0",
                     "oxid-esales/apex-theme": "v3.1.0",
-                    "oxid-esales/developer-tools": "v2.6.0"
+                    "oxid-esales/developer-tools": "v2.6.0",
+                    "symfony/filesystem": "v6.4.34"
                 }
             }
     custom_script_container: |
