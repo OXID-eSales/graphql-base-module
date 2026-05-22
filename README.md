@@ -20,10 +20,11 @@ This module provides:
 
 ## Usage
 
-This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.5.0` component, which is part of the `7.5.0` compilation) up and running.
+This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.6.0` component, which is part of the `7.6.0` compilation) up and running.
 
 ## Branch Compatibility
 
+* 14.0.x versions (or b-7.6.x branch) are compatible with latest shop compilation 7.6.x resp. b-7.6.x shop compilation branches
 * 13.0.x versions (or b-7.5.x branch) are compatible with latest shop compilation 7.5.x resp. b-7.5.x shop compilation branches
 * 12.0.x versions (or b-7.4.x branch) are compatible with latest shop compilation 7.4.x resp. b-7.4.x shop compilation branches
 * 11.0.x versions (or b-7.3.x branch) are compatible with latest shop compilation 7.3.x resp. b-7.3.x shop compilation branches
