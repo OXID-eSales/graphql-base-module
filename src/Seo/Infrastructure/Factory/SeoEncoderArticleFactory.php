@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory;
 
 use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
 
+/** @inheritDoc */
 class SeoEncoderArticleFactory implements SeoEncoderArticleFactoryInterface
 {
     public function create(): SeoEncoderArticle

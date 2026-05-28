@@ -11,6 +11,9 @@ namespace OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory;
 
 use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
 
+/**
+ * @deprecated Use SeoEncoderFactoryInterface instead.
+ */
 interface SeoEncoderArticleFactoryInterface
 {
     public function create(): SeoEncoderArticle;
