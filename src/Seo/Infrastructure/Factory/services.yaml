@@ -5,3 +5,6 @@ services:
 
   OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactoryInterface:
     class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactory
+
+  OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderFactory
