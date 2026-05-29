@@ -5,3 +5,18 @@ services:
 
   OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactoryInterface:
     class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactory
+
+  OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderCategoryFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderCategoryFactory
+
+  OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderManufacturerFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderManufacturerFactory
+
+  OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderVendorFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderVendorFactory
+
+  OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderContentFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderContentFactory
+
+  OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderFactory
