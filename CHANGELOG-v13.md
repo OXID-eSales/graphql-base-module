@@ -7,10 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [13.1.0] - Unreleased
 
 ### Added
-- `SeoEncoderFactory` and `SeoEncoderFactoryInterface` for creating type-specific SEO encoders based on `SeoType` enum
-
-### Deprecated
-- `SeoEncoderArticleFactoryInterface` – use `SeoEncoderFactoryInterface` instead
+- `SeoEncoderFactory` and `SeoEncoderFactoryInterface` for creating SEO encoders by type, with a default `SeoEncoder` when no type is provided
+- Typed factories for each SEO encoder: `SeoEncoderCategoryFactory`, `SeoEncoderManufacturerFactory`, `SeoEncoderVendorFactory`, `SeoEncoderContentFactory`
 
 ## [13.0.0] - 2026-05-06
 

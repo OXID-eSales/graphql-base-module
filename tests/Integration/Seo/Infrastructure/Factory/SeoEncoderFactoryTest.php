@@ -14,10 +14,16 @@ use OxidEsales\Eshop\Application\Model\SeoEncoderCategory;
 use OxidEsales\Eshop\Application\Model\SeoEncoderContent;
 use OxidEsales\Eshop\Application\Model\SeoEncoderManufacturer;
 use OxidEsales\Eshop\Application\Model\SeoEncoderVendor;
+use OxidEsales\Eshop\Core\SeoEncoder;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
 use OxidEsales\GraphQL\Base\Seo\Enum\SeoType;
+use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactoryInterface;
+use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderCategoryFactoryInterface;
+use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderContentFactoryInterface;
 use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderFactory;
 use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderFactoryInterface;
+use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderManufacturerFactoryInterface;
+use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderVendorFactoryInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -25,6 +31,14 @@ use PHPUnit\Framework\Attributes\Test;
 #[CoversClass(SeoEncoderFactory::class)]
 final class SeoEncoderFactoryTest extends IntegrationTestCase
 {
+    #[Test]
+    public function createWithoutTypeReturnsSeoEncoder(): void
+    {
+        $result = $this->getSut()->create();
+
+        $this->assertInstanceOf(SeoEncoder::class, $result);
+    }
+
     #[Test]
     #[DataProvider('seoTypeToExpectedClassProvider')]
     public function createReturnsCorrectSeoEncoderTypeAndNewInstance(SeoType $seoType, string $expectedClass): void
@@ -51,6 +65,12 @@ final class SeoEncoderFactoryTest extends IntegrationTestCase
 
     private function getSut(): SeoEncoderFactoryInterface
     {
-        return new SeoEncoderFactory();
+        return new SeoEncoderFactory(
+            $this->get(SeoEncoderArticleFactoryInterface::class),
+            $this->get(SeoEncoderCategoryFactoryInterface::class),
+            $this->get(SeoEncoderManufacturerFactoryInterface::class),
+            $this->get(SeoEncoderVendorFactoryInterface::class),
+            $this->get(SeoEncoderContentFactoryInterface::class),
+        );
     }
 }

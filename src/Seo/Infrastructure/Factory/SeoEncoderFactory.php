@@ -9,24 +9,32 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory;
 
-use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
-use OxidEsales\Eshop\Application\Model\SeoEncoderCategory;
-use OxidEsales\Eshop\Application\Model\SeoEncoderContent;
-use OxidEsales\Eshop\Application\Model\SeoEncoderManufacturer;
-use OxidEsales\Eshop\Application\Model\SeoEncoderVendor;
 use OxidEsales\Eshop\Core\SeoEncoder;
 use OxidEsales\GraphQL\Base\Seo\Enum\SeoType;
 
 readonly class SeoEncoderFactory implements SeoEncoderFactoryInterface
 {
-    public function create(SeoType $seoType): SeoEncoder
+    public function __construct(
+        private SeoEncoderArticleFactoryInterface $articleFactory,
+        private SeoEncoderCategoryFactoryInterface $categoryFactory,
+        private SeoEncoderManufacturerFactoryInterface $manufacturerFactory,
+        private SeoEncoderVendorFactoryInterface $vendorFactory,
+        private SeoEncoderContentFactoryInterface $contentFactory,
+    ) {
+    }
+
+    public function create(?SeoType $seoType = null): SeoEncoder
     {
+        if ($seoType === null) {
+            return oxNew(SeoEncoder::class);
+        }
+
         return match ($seoType) {
-            SeoType::Article => oxNew(SeoEncoderArticle::class),
-            SeoType::Category => oxNew(SeoEncoderCategory::class),
-            SeoType::Manufacturer => oxNew(SeoEncoderManufacturer::class),
-            SeoType::Vendor => oxNew(SeoEncoderVendor::class),
-            SeoType::Content => oxNew(SeoEncoderContent::class),
+            SeoType::Article => $this->articleFactory->create(),
+            SeoType::Category => $this->categoryFactory->create(),
+            SeoType::Manufacturer => $this->manufacturerFactory->create(),
+            SeoType::Vendor => $this->vendorFactory->create(),
+            SeoType::Content => $this->contentFactory->create(),
         };
     }
 }

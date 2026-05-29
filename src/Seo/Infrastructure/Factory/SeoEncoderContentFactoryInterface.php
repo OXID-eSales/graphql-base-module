@@ -5,13 +5,11 @@
  * See LICENSE file for license details.
  */
 
-declare(strict_types=1);
-
 namespace OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory;
 
-use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
+use OxidEsales\Eshop\Application\Model\SeoEncoderContent;
 
-interface SeoEncoderArticleFactoryInterface
+interface SeoEncoderContentFactoryInterface
 {
-    public function create(): SeoEncoderArticle;
+    public function create(): SeoEncoderContent;
 }
