@@ -42,11 +42,11 @@ class Token
      * Query a customer's active JWT.
      * User with right 'VIEW_ANY_TOKEN' can query any customer's tokens.
      *
-     * @Query
-     * @Logged
      *
      * @return TokenDataType[]
      */
+    #[Query]
+    #[Logged]
     public function tokens(
         ?TokenFilterList $filter = null,
         ?Pagination $pagination = null,
@@ -63,9 +63,8 @@ class Token
 
     /**
      * retrieve a new JWT for authentication by refresh token data
-     *
-     * @Query
      */
+    #[Query]
     public function refresh(string $refreshToken, string $fingerprintHash): string
     {
         return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
@@ -77,10 +76,9 @@ class Token
      *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate tokens for any customer Id.
      *  - Customer without special rights can invalidate only own tokens.
      * If no customerId is supplied, own Id is taken.
-     *
-     * @Mutation
-     * @Logged
      */
+    #[Mutation]
+    #[Logged]
     public function customerTokensDelete(?ID $customerId): int
     {
         return $this->tokenAdministration->customerTokensDelete($customerId);
@@ -91,10 +89,9 @@ class Token
      * Invalidate specific token.
      *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate any token.
      *  - Customer without special rights can invalidate only own token.
-     *
-     * @Mutation
-     * @Logged
      */
+    #[Mutation]
+    #[Logged]
     public function tokenDelete(ID $tokenId): bool
     {
         if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
@@ -110,11 +107,10 @@ class Token
      * Mutation of Base Module.
      * Invalidate all tokens for current shop.
      * INVALIDATE_ANY_TOKEN right is required.
-     *
-     * @Mutation
-     * @Logged
-     * @Right("INVALIDATE_ANY_TOKEN")
      */
+    #[Mutation]
+    #[Logged]
+    #[Right('INVALIDATE_ANY_TOKEN')]
     public function shopTokensDelete(): int
     {
         return $this->tokenAdministration->shopTokensDelete();
@@ -126,11 +122,10 @@ class Token
      * This will invalidate all issued tokens for the current shop.
      * Only use if no other option is left.
      * REGENERATE_SIGNATURE_KEY right is required.
-     *
-     * @Mutation
-     * @Logged
-     * @Right("REGENERATE_SIGNATURE_KEY")
      */
+    #[Mutation]
+    #[Logged]
+    #[Right('REGENERATE_SIGNATURE_KEY')]
     public function regenerateSignatureKey(): bool
     {
         return $this->tokenAdministration->regenerateSignatureKey();

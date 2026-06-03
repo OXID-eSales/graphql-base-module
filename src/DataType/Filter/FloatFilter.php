@@ -52,10 +52,9 @@ class FloatFilter extends AbstractNumberFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="FloatFilterInput", default=true)
-     *
      * @param null|float[] $between
      */
+    #[Factory(name: 'FloatFilterInput', default: true)]
     public static function fromUserInput(
         ?float $equals = null,
         ?float $lessThan = null,

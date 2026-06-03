@@ -8,7 +8,7 @@
     "require": {
         "php": "^8.3",
         "ext-json": "*",
-        "thecodingmachine/graphqlite": "^7.0",
+        "thecodingmachine/graphqlite": "^8.3",
         "lcobucci/jwt": "^5.0",
         "lcobucci/clock": "^3.0",
         "symfony/cache": "*",

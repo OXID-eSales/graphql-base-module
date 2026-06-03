@@ -50,9 +50,7 @@ class IDFilter implements FilterInterface
             ->setParameter(':' . $field, $this->equals);
     }
 
-    /**
-     * @Factory(name="IDFilterInput", default=true)
-     */
+    #[Factory(name: 'IDFilterInput', default: true)]
     public static function fromUserInput(
         ID $equals
     ): self {

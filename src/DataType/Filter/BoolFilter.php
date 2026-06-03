@@ -49,9 +49,7 @@ class BoolFilter implements FilterInterface
         // if equals is set, then no other conditions may apply
     }
 
-    /**
-     * @Factory(name="BoolFilterInput", default=true)
-     */
+    #[Factory(name: 'BoolFilterInput', default: true)]
     public static function fromUserInput(
         bool $equals
     ): self {

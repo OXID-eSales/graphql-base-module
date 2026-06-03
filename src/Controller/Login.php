@@ -25,9 +25,8 @@ class Login
     /**
      * Query of Base Module.
      * Retrieve a JWT for authentication of further requests
-     *
-     * @Query
      */
+    #[Query]
     public function token(?string $username = null, ?string $password = null): string
     {
         return $this->tokenService->createToken(
@@ -39,9 +38,8 @@ class Login
     /**
      * Query of Base Module.
      * Retrieve a refresh token and access token
-     *
-     * @Query
      */
+    #[Query]
     public function login(?string $username = null, ?string $password = null): LoginInterface
     {
         return $this->loginService->login($username, $password);

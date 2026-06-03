@@ -14,9 +14,7 @@ use TheCodingMachine\GraphQLite\Annotations\Factory;
 
 class TestSorting extends Sorting
 {
-    /**
-     * @Factory
-     */
+    #[Factory]
     public static function fromUserInput(
         ?string $title = Sorting::SORTING_DESC,
         ?string $price = Sorting::SORTING_ASC

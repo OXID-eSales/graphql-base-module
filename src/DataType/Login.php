@@ -13,9 +13,7 @@ use Lcobucci\JWT\UnencryptedToken;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class Login implements LoginInterface
 {
     public function __construct(
@@ -24,17 +22,13 @@ final class Login implements LoginInterface
     ) {
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function refreshToken(): string
     {
         return $this->refreshToken;
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function accessToken(): string
     {
         return $this->accessToken->toString();

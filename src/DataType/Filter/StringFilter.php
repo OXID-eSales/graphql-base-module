@@ -96,9 +96,7 @@ class StringFilter implements FilterInterface
         }
     }
 
-    /**
-     * @Factory(name="StringFilterInput", default=true)
-     */
+    #[Factory(name: 'StringFilterInput', default: true)]
     public static function fromUserInput(
         ?string $equals = null,
         ?string $contains = null,

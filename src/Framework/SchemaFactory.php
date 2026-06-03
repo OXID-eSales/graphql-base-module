@@ -66,13 +66,13 @@ class SchemaFactory implements SchemaFactoryInterface
             foreach ($namespaceMapper->getControllerNamespaceMapping() as $namespace => $path) {
                 $namespace = $this->trimNamespace($namespace);
                 $finder->addFinder(new Psr4Finder($namespace, $path));
-                $factory->addControllerNameSpace($namespace);
+                $factory->addNamespace($namespace);
             }
 
             foreach ($namespaceMapper->getTypeNamespaceMapping() as $namespace => $path) {
                 $namespace = $this->trimNamespace($namespace);
                 $finder->addFinder(new Psr4Finder($namespace, $path));
-                $factory->addTypeNameSpace($namespace);
+                $factory->addNamespace($namespace);
             }
         }
 

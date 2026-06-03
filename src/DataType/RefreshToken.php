@@ -15,9 +15,7 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-/**
- * @Type()
- */
+#[Type]
 final class RefreshToken implements ShopModelAwareInterface, RefreshTokenInterface
 {
     /** @var GraphQLTokenModel */
@@ -34,25 +32,21 @@ final class RefreshToken implements ShopModelAwareInterface, RefreshTokenInterfa
     }
 
     /**
-     * @Field()
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
+    #[Field]
     public function id(): ID
     {
         return new ID((string)$this->tokenModel->getId());
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function token(): string
     {
         return (string)$this->tokenModel->getRawFieldData('token');
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function createdAt(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
@@ -60,9 +54,7 @@ final class RefreshToken implements ShopModelAwareInterface, RefreshTokenInterfa
         );
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function expiresAt(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
@@ -70,17 +62,13 @@ final class RefreshToken implements ShopModelAwareInterface, RefreshTokenInterfa
         );
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function customerId(): ID
     {
         return new ID((string)$this->tokenModel->getRawFieldData('oxuserid'));
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function shopId(): ID
     {
         return new ID((string)$this->tokenModel->getRawFieldData('oxshopid'));

@@ -24,95 +24,73 @@ use TheCodingMachine\GraphQLite\Annotations\Right;
 
 class TestController
 {
-    /**
-     * @Query
-     */
+    #[Query]
     public function testQuery(string $foo): string
     {
         return $foo;
     }
 
-    /**
-     * @Query
-     * @Logged
-     */
+    #[Query]
+    #[Logged]
     public function testLoggedQuery(string $foo): string
     {
         return $foo;
     }
 
-    /**
-     * @Query
-     * @Logged
-     * @Right("FOOBAR")
-     */
+    #[Query]
+    #[Logged]
+    #[Right('FOOBAR')]
     public function testLoggedRightQuery(string $foo): string
     {
         return $foo;
     }
 
-    /**
-     * @Query
-     * @Logged
-     * @Right("BARFOO")
-     */
+    #[Query]
+    #[Logged]
+    #[Right('BARFOO')]
     public function testLoggedButNoRightQuery(string $foo): string
     {
         return $foo;
     }
 
-    /**
-     * @Query
-     * @Right("FOOBARBAZ")
-     */
+    #[Query]
+    #[Right('FOOBARBAZ')]
     public function testOnlyRightQuery(string $foo): string
     {
         return $foo;
     }
 
-    /**
-     * @Query
-     */
+    #[Query]
     public function exceptionQuery(string $foo): string
     {
         throw new Exception();
     }
 
-    /**
-     * @Query
-     */
+    #[Query]
     public function clientAwareExceptionQuery(string $foo): string
     {
         throw new InvalidToken('invalid token message');
     }
 
-    /**
-     * @Query
-     */
+    #[Query]
     public function notFoundExceptionQuery(string $foo): string
     {
         throw new NotFound('Foo does not exist');
     }
 
-    /**
-     * @Query
-     */
+    #[Query]
     public function basicInputFilterQuery(TestFilter $filter): string
     {
         return (string)$filter;
     }
 
-    /**
-     * @Query
-     */
+    #[Query]
     public function basicSortingQuery(?TestSorting $sort = null): bool
     {
         return true;
     }
 
-    /**
-     * @Query
-     */
+    #[Query]
     public function resultWithError(): bool
     {
         GraphQLQueryHandler::addError(
@@ -124,9 +102,7 @@ class TestController
         return true;
     }
 
-    /**
-     * @Mutation
-     */
+    #[Mutation]
     public function uploadedFileContent(UploadedFileInterface $file): string
     {
         return file_get_contents($file->getStream()->getMetadata('uri'));

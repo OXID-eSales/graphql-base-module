@@ -61,10 +61,9 @@ class IntegerFilter extends AbstractNumberFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="IntegerFilterInput", default=true)
-     *
      * @param null|int[] $between
      */
+    #[Factory(name: 'IntegerFilterInput', default: true)]
     public static function fromUserInput(
         ?int $equals = null,
         ?int $lessThan = null,

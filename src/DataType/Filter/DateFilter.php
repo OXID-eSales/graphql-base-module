@@ -78,10 +78,9 @@ class DateFilter implements FilterInterface
     }
 
     /**
-     * @Factory(name="DateFilterInput", default=true)
-     *
      * @param null|string[] $between
      */
+    #[Factory(name: 'DateFilterInput', default: true)]
     public static function fromUserInput(
         ?string $equals = null,
         ?array $between = null

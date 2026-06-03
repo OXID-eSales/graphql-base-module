@@ -14,9 +14,7 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-/**
- * @Type()
- */
+#[Type]
 final class User implements ShopModelAwareInterface, UserInterface
 {
     /**
@@ -35,8 +33,8 @@ final class User implements ShopModelAwareInterface, UserInterface
 
     /**
      * Field of Base module's User-Type.
-     * @Field()
      */
+    #[Field]
     public function email(): string
     {
         return (string)$this->userModel->getRawFieldData('oxusername');
@@ -44,9 +42,9 @@ final class User implements ShopModelAwareInterface, UserInterface
 
     /**
      * Field of Base module's User-Type.
-     * @Field()
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
+    #[Field]
     public function id(): ID
     {
         return new ID((string)$this->userModel->getId());

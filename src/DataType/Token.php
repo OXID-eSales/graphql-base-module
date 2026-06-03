@@ -15,9 +15,7 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-/**
- * @Type()
- */
+#[Type]
 final class Token implements ShopModelAwareInterface
 {
     public function __construct(private readonly GraphQLTokenModel $tokenModel)
@@ -31,8 +29,8 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * Field of Base module's Token-Type.
-     * @Field()
      */
+    #[Field]
     public function createdAt(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
@@ -42,8 +40,8 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * Field of Base module's Token-Type.
-     * @Field()
      */
+    #[Field]
     public function customerId(): ID
     {
         return new ID((string)$this->tokenModel->getRawFieldData('oxuserid'));
@@ -51,8 +49,8 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * Field of Base module's Token-Type.
-     * @Field()
      */
+    #[Field]
     public function expiresAt(): ?DateTimeInterface
     {
         return DateTimeImmutableFactory::fromString(
@@ -62,9 +60,9 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * Field of Base module's Token-Type.
-     * @Field()
      * @SuppressWarnings(PHPMD.ShortMethodName)
      */
+    #[Field]
     public function id(): ID
     {
         return new ID((string)$this->tokenModel->getId());
@@ -72,8 +70,8 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * Field of Base module's Token-Type.
-     * @Field()
      */
+    #[Field]
     public function shopId(): ID
     {
         return new ID((string)$this->tokenModel->getRawFieldData('oxshopid'));
@@ -81,8 +79,8 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * Field of Base module's Token-Type
-     * @Field()
      */
+    #[Field]
     public function token(): string
     {
         return (string)$this->tokenModel->getRawFieldData('token');
@@ -90,8 +88,8 @@ final class Token implements ShopModelAwareInterface
 
     /**
      * Field of Base module's Token-Type.
-     * @Field()
      */
+    #[Field]
     public function userAgent(): string
     {
         return $this->tokenModel->getRawFieldData('useragent');
