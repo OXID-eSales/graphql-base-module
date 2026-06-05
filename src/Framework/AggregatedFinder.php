@@ -19,20 +19,20 @@ class AggregatedFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
 
-    private AppendIterator $iterator;
-
-    public function __construct()
-    {
-        $this->iterator = new AppendIterator();
-    }
+    /** @var FinderInterface[] */
+    private array $finders = [];
 
     public function addFinder(FinderInterface $finder): void
     {
-        $this->iterator->append(new IteratorIterator($finder->getIterator()));
+        $this->finders[] = $finder;
     }
 
     public function getIterator(): Traversable
     {
-        return $this->iterator;
+        $iterator = new AppendIterator();
+        foreach ($this->finders as $finder) {
+            $iterator->append(new IteratorIterator($finder->getIterator()));
+        }
+        return $this->applyFilters($iterator);
     }
 }
