@@ -12,12 +12,12 @@ namespace OxidEsales\GraphQL\Base\Framework;
 use AppendIterator;
 use IteratorIterator;
 use Kcs\ClassFinder\Finder\FinderInterface;
-use Kcs\ClassFinder\Finder\ReflectionFilterTrait;
+use Kcs\ClassFinder\Finder\FinderTrait;
 use Traversable;
 
 class AggregatedFinder implements FinderInterface
 {
-    use ReflectionFilterTrait;
+    use FinderTrait;
 
     /** @var FinderInterface[] */
     private array $finders = [];
@@ -33,6 +33,7 @@ class AggregatedFinder implements FinderInterface
         foreach ($this->finders as $finder) {
             $iterator->append(new IteratorIterator($finder->getIterator()));
         }
-        return $this->applyFilters($iterator);
+
+        return $iterator;
     }
 }
