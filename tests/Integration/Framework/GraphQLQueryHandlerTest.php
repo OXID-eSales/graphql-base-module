@@ -102,9 +102,8 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testLoggedQuery(): void
     {
-        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
-        $result = $this->query($query);
-        $this->setAuthToken($result['body']['data']['token']);
+        $result = $this->query($this->getAdminTokenQuery());
+        $this->setAuthToken($result['body']['data']['token']['token']);
 
         $result = $this->query('query { testLoggedQuery(foo: "bar") }');
         $this->assertEquals(
@@ -121,9 +120,8 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testLoggedRightQuery(): void
     {
-        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
-        $result = $this->query($query);
-        $this->setAuthToken($result['body']['data']['token']);
+        $result = $this->query($this->getAdminTokenQuery());
+        $this->setAuthToken($result['body']['data']['token']['token']);
 
         $result = $this->query('query { testLoggedRightQuery(foo: "bar") }');
         $this->assertEquals(
@@ -140,9 +138,8 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testLoggedButNoRightQuery(): void
     {
-        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
-        $result = $this->query($query);
-        $this->setAuthToken($result['body']['data']['token']);
+        $result = $this->query($this->getAdminTokenQuery());
+        $this->setAuthToken($result['body']['data']['token']['token']);
 
         $result = $this->query('query { testLoggedButNoRightQuery(foo: "bar") }');
         $this->assertNotEmpty($result['body']['errors']);
@@ -156,9 +153,8 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testRightOnlyQueryWithUserToken(): void
     {
-        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
-        $result = $this->query($query);
-        $this->setAuthToken($result['body']['data']['token']);
+        $result = $this->query($this->getAdminTokenQuery());
+        $this->setAuthToken($result['body']['data']['token']['token']);
 
         $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
         $this->assertNotEmpty($result['body']['errors']);
@@ -167,8 +163,8 @@ class GraphQLQueryHandlerTest extends TestCase
 
     public function testRightOnlyQueryWithAnonymousToken(): void
     {
-        $result = $this->query('query { token }');
-        $this->setAuthToken($result['body']['data']['token']);
+        $result = $this->query('query { token { token } }');
+        $this->setAuthToken($result['body']['data']['token']['token']);
 
         $result = $this->query('query { testOnlyRightQuery(foo: "bar") }');
 
@@ -243,6 +239,15 @@ class GraphQLQueryHandlerTest extends TestCase
                 ],
             ],
             $result
+        );
+    }
+
+    private function getAdminTokenQuery(): string
+    {
+        return sprintf(
+            'query { token (username: "%s", password: "%s") { token } }',
+            self::ADMIN_LOGIN,
+            self::ADMIN_PASSWORD
         );
     }
 

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Controller;
 
 use OxidEsales\GraphQL\Base\DataType\LoginInterface;
+use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token;
 use TheCodingMachine\GraphQLite\Annotations\Query;
@@ -26,14 +27,11 @@ class Login
      * Query of Base Module.
      * Retrieve a JWT for authentication of further requests
      *
-     * @Query
+     * @Query(outputType="TokenPayload")
      */
-    public function token(?string $username = null, ?string $password = null): string
+    public function token(?string $username = null, ?string $password = null): TokenPayloadInterface
     {
-        return $this->tokenService->createToken(
-            $username,
-            $password
-        )->toString();
+        return $this->tokenService->createToken($username, $password);
     }
 
     /**
