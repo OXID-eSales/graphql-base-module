@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use Lcobucci\JWT\Token;
+use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Framework\RequestReader;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
@@ -28,11 +28,13 @@ class InvalidSignatureTest extends BaseTestCase
     {
         $legacy = $this->createPartialMock(LegacyService::class, ['login', 'getShopId', 'getShopUrl']);
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
-        $token = $this->getTokenService($legacy, null)->createToken('admin', 'admin');
+        $payload = $this->getTokenService($legacy, null)->createToken('admin', 'admin');
 
-        $this->assertInstanceOf(Token::class, $token);
+        $this->assertInstanceOf(TokenPayloadInterface::class, $payload);
+        $this->assertNotNull($payload->token());
+        $this->assertEmpty($payload->userErrors());
 
-        $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . substr($token->toString(), 0, -10);
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Bearer ' . substr($payload->token(), 0, -10);
 
         $requestReader = new RequestReader(
             $this->getTokenValidator($legacy),

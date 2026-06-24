@@ -52,9 +52,9 @@ class TokenCest
     {
         $I->wantToTest('cannot query tokens with anonymous token');
 
-        $I->sendGQLQuery('query { token }'); // anonymous token
+        $I->sendGQLQuery('query { token { token } }'); // anonymous token
         $result = $I->grabJsonResponseAsArray();
-        $I->amBearerAuthenticated($result['data']['token']);
+        $I->amBearerAuthenticated($result['data']['token']['token']);
 
         $result = $this->sendTokenQuery($I);
 
@@ -275,8 +275,8 @@ class TokenCest
     {
         $I->wantToTest('calling customerTokenDelete with anonymous token');
 
-        $I->sendGQLQuery('query { token }');
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->sendGQLQuery('query { token { token } }');
+        $token = $I->grabJsonResponseAsArray()['data']['token']['token'];
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendCustomerTokenDeleteMutation($I);
@@ -458,8 +458,8 @@ class TokenCest
     {
         $I->wantToTest('calling shopTokenDelete with anonymous token');
 
-        $I->sendGQLQuery('query { token }');
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->sendGQLQuery('query { token { token } }');
+        $token = $I->grabJsonResponseAsArray()['data']['token']['token'];
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendShopTokensDeleteMutation($I);
@@ -513,8 +513,8 @@ class TokenCest
     {
         $I->wantToTest('calling regenerateSignatureKey with anonymous token');
 
-        $I->sendGQLQuery('query { token }');
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->sendGQLQuery('query { token { token } }');
+        $token = $I->grabJsonResponseAsArray()['data']['token']['token'];
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendRegenerateSignatureKeyMutation($I);
@@ -665,7 +665,7 @@ class TokenCest
     private function generateToken(AcceptanceTester $I, $username = null, $password = null): string
     {
         $query = 'query ($username: String, $password: String) {
-            token (username: $username, password: $password)
+            token (username: $username, password: $password) { token }
         }';
 
         $I->sendGQLQuery($query, [
@@ -673,7 +673,7 @@ class TokenCest
             'password' => $password,
         ]);
 
-        return $I->grabJsonResponseAsArray()['data']['token'];
+        return $I->grabJsonResponseAsArray()['data']['token']['token'];
     }
 
     private function getUserPassword(): string

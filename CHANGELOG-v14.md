@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [14.0.0] - unreleased
 
 ### Added
+- New Error-handling with payload which contains result and possible errors (including message and unique code) (https://docs.oxid-esales.com/interfaces/graphql/en/latest/exceptions/Error%20Handling.html)
 - Clear the GraphQL schema cache when the shop cache is cleared (e.g. via `oe:cache:clear`)
 
 ### Changed
 - Update module to work with OXID eShop 7.6
+- Queries and Mutations are now using the new payload
 - Upgrade GraphQLite v7 -> v8
 - Move SEO encoder and refresh token model factories to the `Shared` namespace for reuse outside their original domains
 - Align the `oe:graphql:cache-clear` command with the streamlined 7.6 console conventions
