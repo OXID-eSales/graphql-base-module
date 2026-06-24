@@ -27,8 +27,10 @@ class RefreshTokenCest
         $I->sendGQLQuery(
             'query ($username: String!, $password: String!) { login (username: $username, password: $password)
                 {
-                    accessToken
-                    refreshToken
+                    login {
+                        accessToken
+                        refreshToken
+                    }
                 }
             }',
             [
@@ -38,10 +40,10 @@ class RefreshTokenCest
         );
 
         $result = $I->grabJsonResponseAsArray();
-        $I->assertNotEmpty($result['data']['login']['accessToken']);
-        $I->assertNotEmpty($result['data']['login']['refreshToken']);
+        $I->assertNotEmpty($result['data']['login']['login']['accessToken']);
+        $I->assertNotEmpty($result['data']['login']['login']['refreshToken']);
 
-        $accessToken = $I->parseJwt($result['data']['login']['accessToken']);
+        $accessToken = $I->parseJwt($result['data']['login']['login']['accessToken']);
         $fingerprintHash = $accessToken->claims()->get(FingerprintService::TOKEN_KEY);
         $cookie = $I->grabCookies()->get(FingerprintService::COOKIE_KEY)->getRawValue();
 
@@ -50,7 +52,7 @@ class RefreshTokenCest
         $I->assertEquals(128, strlen($cookie));
         $I->assertFalse($accessToken->claims()->get(Token::CLAIM_USER_ANONYMOUS));
 
-        $refreshToken = $result['data']['login']['refreshToken'];
+        $refreshToken = $result['data']['login']['login']['refreshToken'];
 
         $I->sendGQLQuery(
             'query ($refreshToken: String!, $fingerprintHash: String!) {

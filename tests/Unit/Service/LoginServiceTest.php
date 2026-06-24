@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Service\LoginService;
@@ -48,7 +49,8 @@ class LoginServiceTest extends TestCase
 
         $result = $sut->login($userName, $password);
 
-        $this->assertSame($refreshToken, $result->refreshToken());
-        $this->assertSame($accessToken, $result->accessToken());
+        $this->assertEmpty($result->userErrors());
+        $this->assertSame($refreshToken, $result->login()->refreshToken());
+        $this->assertSame($accessToken, $result->login()->accessToken());
     }
 }

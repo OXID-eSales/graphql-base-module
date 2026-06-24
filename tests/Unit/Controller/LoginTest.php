@@ -11,7 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
-use OxidEsales\GraphQL\Base\DataType\LoginInterface;
+use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
@@ -197,9 +197,9 @@ class LoginTest extends BaseTestCase
         $userName = uniqid();
         $password = uniqid();
 
-        $loginDataTypeStub = $this->createStub(LoginInterface::class);
-        $loginServiceMock->method('login')->with($userName, $password)->willReturn($loginDataTypeStub);
+        $loginPayloadStub = $this->createStub(LoginPayloadInterface::class);
+        $loginServiceMock->method('login')->with($userName, $password)->willReturn($loginPayloadStub);
 
-        $this->assertSame($loginDataTypeStub, $loginController->login($userName, $password));
+        $this->assertSame($loginPayloadStub, $loginController->login($userName, $password));
     }
 }
