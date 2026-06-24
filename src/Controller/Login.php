@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\LoginInterface;
+use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token;
@@ -37,8 +37,8 @@ class Login
      * Query of Base Module.
      * Retrieve a refresh token and access token
      */
-    #[Query]
-    public function login(?string $username = null, ?string $password = null): LoginInterface
+    #[Query(outputType: 'LoginPayload')]
+    public function login(?string $username = null, ?string $password = null): LoginPayloadInterface
     {
         return $this->loginService->login($username, $password);
     }
