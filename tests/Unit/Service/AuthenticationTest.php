@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\Eshop\Application\Model\User as UserModel;
+use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy as LegacyService;
@@ -134,7 +135,7 @@ class AuthenticationTest extends BaseTestCase
             ->method('getShopId')
             ->willReturn(1);
 
-        $token = $this->tokenService->createToken($username, $password);
+        $token = $this->parseToken($this->tokenService->createToken($username, $password));
         $authenticationService = $this->getSut($token);
 
         $this->assertEmpty($authenticationService->getUser()->email());
@@ -163,7 +164,7 @@ class AuthenticationTest extends BaseTestCase
         $this->legacy->method('login')->willReturn(new User($userModel));
         $this->legacy->method('getUserModel')->with('the_admin_oxid')->willReturn($userModel);
 
-        $token = $this->tokenService->createToken('admin', 'admin');
+        $token = $this->parseToken($this->tokenService->createToken('admin', 'admin'));
         $authenticationService = $this->getSut($token);
 
         $this->assertSame('the_admin_oxid', $authenticationService->getUser()->id()->val());
@@ -192,7 +193,7 @@ class AuthenticationTest extends BaseTestCase
 
         $this->legacy->method('getUserModel')->willReturn($someRandomModelStub);
 
-        $anonymousToken = $this->tokenService->createToken();
+        $anonymousToken = $this->parseToken($this->tokenService->createToken());
         $authenticationService = $this->getSut($anonymousToken);
 
         $this->assertNotEmpty($authenticationService->getUser()->id()->val());
@@ -215,7 +216,7 @@ class AuthenticationTest extends BaseTestCase
             ->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $anonymousToken = $this->tokenService->createToken();
+        $anonymousToken = $this->parseToken($this->tokenService->createToken());
         $authenticationService = $this->getSut($anonymousToken);
 
         $this->assertFalse($authenticationService->isLogged());
@@ -238,7 +239,7 @@ class AuthenticationTest extends BaseTestCase
             ->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $anonymousToken = $this->tokenService->createToken();
+        $anonymousToken = $this->parseToken($this->tokenService->createToken());
         $authenticationService = $this->getSut($anonymousToken);
 
         $this->assertTrue($authenticationService->getUser()->isAnonymous());
@@ -275,7 +276,7 @@ class AuthenticationTest extends BaseTestCase
             ->method('getShopId')
             ->willReturn(1);
 
-        $token = $this->tokenService->createToken($username, $password);
+        $token = $this->parseToken($this->tokenService->createToken($username, $password));
         $authenticationService = $this->getSut($token);
 
         $this->assertFalse($authenticationService->getUser()->isAnonymous());
@@ -298,7 +299,7 @@ class AuthenticationTest extends BaseTestCase
             ->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $anonymousToken = $this->tokenService->createToken();
+        $anonymousToken = $this->parseToken($this->tokenService->createToken());
         $authenticationService = $this->getSut($anonymousToken);
 
         $this->assertEmpty($authenticationService->getUser()->email());
@@ -313,7 +314,7 @@ class AuthenticationTest extends BaseTestCase
         $this->legacy->method('getUserGroupIds')
             ->willReturn(['oxidanonymous']);
 
-        $token = $this->tokenService->createToken('admin', 'admin');
+        $token = $this->parseToken($this->tokenService->createToken('admin', 'admin'));
 
         $authenticationService = $this->getSut($token);
 
@@ -367,6 +368,13 @@ class AuthenticationTest extends BaseTestCase
             ->method('getUserModel')
             ->willReturn($userModel);
 
-        return $this->tokenService->createToken($username, $password);
+        return $this->parseToken($this->tokenService->createToken($username, $password));
+    }
+
+    private function parseToken(TokenPayloadInterface $payload): UnencryptedToken
+    {
+        $config = $this->jwtConfigurationBuilder->getConfiguration();
+
+        return $config->parser()->parse($payload->token());
     }
 }

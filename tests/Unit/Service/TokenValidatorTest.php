@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Framework;
 
+use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidToken;
 use OxidEsales\GraphQL\Base\Exception\TokenUserBlocked;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
@@ -33,7 +35,10 @@ class TokenValidatorTest extends BaseTestCase
         $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
         $tokenInfrastructure->method('canIssueToken')->willReturn(true);
 
-        $token = $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
+        $token = $this->parseToken(
+            $legacy,
+            $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin')
+        );
 
         // token is valid
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
@@ -61,7 +66,10 @@ class TokenValidatorTest extends BaseTestCase
         $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
         $tokenInfrastructure->method('canIssueToken')->willReturn(true);
 
-        $token = $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
+        $token = $this->parseToken(
+            $legacy,
+            $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin')
+        );
 
         // token is valid
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
@@ -92,7 +100,10 @@ class TokenValidatorTest extends BaseTestCase
         $tokenInfrastructure->method('isTokenRegistered')->willReturn(true);
         $tokenInfrastructure->method('canIssueToken')->willReturn(true);
 
-        $token = $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin');
+        $token = $this->parseToken(
+            $legacy,
+            $this->getTokenService($legacy, $tokenInfrastructure)->createToken('admin', 'admin')
+        );
 
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
         $this->expectException(TokenUserBlocked::class);
@@ -117,10 +128,16 @@ class TokenValidatorTest extends BaseTestCase
 
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
 
-        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken('admin', 'admin');
+        $token = $this->parseToken(
+            $legacy,
+            $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken('admin', 'admin')
+        );
         $validator->validateToken($token);
 
-        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '-1 hours')->createToken('admin', 'admin');
+        $token = $this->parseToken(
+            $legacy,
+            $this->getTokenService($legacy, $tokenInfrastructure, null, '-1 hours')->createToken('admin', 'admin')
+        );
         $this->expectException(InvalidToken::class);
         $validator->validateToken($token);
     }
@@ -143,7 +160,10 @@ class TokenValidatorTest extends BaseTestCase
 
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
 
-        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken('admin', 'admin');
+        $token = $this->parseToken(
+            $legacy,
+            $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken('admin', 'admin')
+        );
         $this->expectException(UnknownToken::class);
         $validator->validateToken($token);
     }
@@ -165,7 +185,17 @@ class TokenValidatorTest extends BaseTestCase
         $validator = $this->getTokenValidator($legacy, $tokenInfrastructure);
 
         // token is valid
-        $token = $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken();
+        $token = $this->parseToken(
+            $legacy,
+            $this->getTokenService($legacy, $tokenInfrastructure, null, '+1 hours')->createToken()
+        );
         $validator->validateToken($token);
+    }
+
+    private function parseToken(LegacyService $legacy, TokenPayloadInterface $payload): UnencryptedToken
+    {
+        $config = $this->getJwtConfigurationBuilder($legacy)->getConfiguration();
+
+        return $config->parser()->parse($payload->token());
     }
 }

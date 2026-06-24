@@ -27,9 +27,9 @@ abstract class TokenTestCase extends TestCase
                 token (
                     username: "' . $username . '",
                     password: "' . $password . '"
-                )
+                ) { token }
             }'
-        )['body']['data']['token'];
+        )['body']['data']['token']['token'];
 
         $this->setAuthToken($token);
     }
