@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use OxidEsales\GraphQL\Base\DataType\TokenPayload;
+use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 
@@ -37,13 +39,13 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         return $token->token();
     }
 
-    public function refreshToken(string $refreshToken, string $fingerprintHash): string
+    public function refreshToken(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
         $this->fingerprintService->validateFingerprintHashToCookie($fingerprintHash);
 
         $user = $this->refreshTokenRepository->getTokenUser($refreshToken);
         $newToken = $this->tokenService->createTokenForUser($user);
 
-        return $newToken->toString();
+        return new TokenPayload($newToken->toString());
     }
 }

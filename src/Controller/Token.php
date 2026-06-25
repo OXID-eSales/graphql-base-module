@@ -64,8 +64,8 @@ class Token
     /**
      * retrieve a new JWT for authentication by refresh token data
      */
-    #[Query]
-    public function refresh(string $refreshToken, string $fingerprintHash): string
+    #[Query(outputType: 'TokenPayload')]
+    public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
         return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
     }
