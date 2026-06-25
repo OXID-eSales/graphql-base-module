@@ -16,6 +16,7 @@ use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
@@ -108,7 +109,7 @@ class TokenTest extends BaseTestCase
         $tokenController->tokenDelete(new ID('someTokenId'));
     }
 
-    public function testRefreshGivesStringValueOfNewToken(): void
+    public function testRefreshReturnsTokenPayload(): void
     {
         $sut = $this->getTokenController(
             refreshTokenService: $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class),
@@ -116,12 +117,12 @@ class TokenTest extends BaseTestCase
 
         $refreshToken = uniqid();
         $fingerprintHash = uniqid();
-        $newRefreshToken = uniqid();
+        $payloadStub = $this->createStub(TokenPayloadInterface::class);
 
         $refreshTokenServiceMock->method('refreshToken')
-            ->with($refreshToken, $fingerprintHash)->willReturn($newRefreshToken);
+            ->with($refreshToken, $fingerprintHash)->willReturn($payloadStub);
 
-        $this->assertSame($newRefreshToken, $sut->refresh($refreshToken, $fingerprintHash));
+        $this->assertSame($payloadStub, $sut->refresh($refreshToken, $fingerprintHash));
     }
 
     private function getTokenController(

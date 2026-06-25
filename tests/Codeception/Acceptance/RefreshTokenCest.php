@@ -56,7 +56,7 @@ class RefreshTokenCest
 
         $I->sendGQLQuery(
             'query ($refreshToken: String!, $fingerprintHash: String!) {
-                refresh (refreshToken: $refreshToken, fingerprintHash: $fingerprintHash)
+                refresh (refreshToken: $refreshToken, fingerprintHash: $fingerprintHash) { token }
             }',
             [
                 'refreshToken' => $refreshToken,
@@ -65,9 +65,9 @@ class RefreshTokenCest
         );
         $result = $I->grabJsonResponseAsArray();
 
-        $I->assertNotEmpty($result['data']['refresh']);
+        $I->assertNotEmpty($result['data']['refresh']['token']);
 
-        $accessToken = $I->parseJwt($result['data']['refresh']);
+        $accessToken = $I->parseJwt($result['data']['refresh']['token']);
         $newFingerprint = $accessToken->claims()->get(FingerprintService::TOKEN_KEY);
         $newCookie = $I->grabCookies()->get(FingerprintService::COOKIE_KEY)->getRawValue();
 
