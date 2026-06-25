@@ -46,7 +46,10 @@ class RefreshTokenServiceTest extends TestCase
             ])
         );
 
-        $this->assertSame($tokenValue, $sut->refreshToken($refreshToken, uniqid()));
+        $result = $sut->refreshToken($refreshToken, uniqid());
+
+        $this->assertEmpty($result->userErrors());
+        $this->assertSame($tokenValue, $result->token());
     }
 
     public function testRefreshTokenMethodTriggersTokenValidation(): void
