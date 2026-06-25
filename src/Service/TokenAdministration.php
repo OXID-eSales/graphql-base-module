@@ -9,11 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\TokensPayload;
+use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\NotFound;
@@ -41,23 +42,22 @@ class TokenAdministration
     ) {
     }
 
-    /**
-     * @return TokenDataType[]
-     */
     public function tokens(
         TokenFilterList $filterList,
         Pagination $pagination,
         TokenSorting $sort
-    ): array {
+    ): TokensPayloadInterface {
         if (!$this->canSeeTokens($filterList)) {
             throw new InvalidLogin('Unauthorized');
         }
 
-        return $this->repository->getList(
-            TokenDataType::class,
-            $filterList,
-            $pagination,
-            $sort
+        return new TokensPayload(
+            $this->repository->getList(
+                TokenDataType::class,
+                $filterList,
+                $pagination,
+                $sort
+            )
         );
     }
 

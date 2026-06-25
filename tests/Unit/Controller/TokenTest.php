@@ -17,6 +17,7 @@ use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
@@ -44,13 +45,13 @@ class TokenTest extends BaseTestCase
                 new Pagination(),
                 new TokenSorting(TokenSorting::SORTING_ASC),
             )
-            ->willReturn([]);
+            ->willReturn($payloadStub = $this->createStub(TokensPayloadInterface::class));
 
         $tokenController = $this->getTokenController(
             tokenAdministration: $tokenAdministration,
             authentication: $authentication
         );
-        $tokenController->tokens();
+        $this->assertSame($payloadStub, $tokenController->tokens());
     }
 
     public function testTokensQueryWithCustomFilters(): void
@@ -74,13 +75,13 @@ class TokenTest extends BaseTestCase
                 $pagination,
                 $sort
             )
-            ->willReturn([]);
+            ->willReturn($payloadStub = $this->createStub(TokensPayloadInterface::class));
 
         $tokenController = $this->getTokenController(
             tokenAdministration: $tokenAdministration,
             authentication: $authentication
         );
-        $tokenController->tokens($filterList, $pagination, $sort);
+        $this->assertSame($payloadStub, $tokenController->tokens($filterList, $pagination, $sort));
     }
 
     public function testCustomerTokensDelete(): void
