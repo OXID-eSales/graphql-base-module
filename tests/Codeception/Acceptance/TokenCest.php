@@ -72,13 +72,13 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see three more user tokens
         $I->assertEquals($tokenCountBefore + 3, $tokenCountAfter);
@@ -92,17 +92,17 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see two more user tokens because without explicit filter userid filter will be added by default
         $I->assertEquals($tokenCountBefore + 2, $tokenCountAfter);
-        $I->assertNotEquals(self::TEST_USER_ID, $result['data']['tokens'][0]['customerId']); //admin user
+        $I->assertNotEquals(self::TEST_USER_ID, $result['data']['tokens']['tokens'][0]['customerId']); //admin user
     }
 
     public function testQueryTokensWithAdminTokenAndUserFilterOnNotExistingUserId(AcceptanceTester $I): void
@@ -119,7 +119,7 @@ class TokenCest
         $I->amBearerAuthenticated($token);
         $result = $this->sendTokenQuery($I, $filterPart);
 
-        $I->assertEmpty($result['data']['tokens']);
+        $I->assertEmpty($result['data']['tokens']['tokens']);
     }
 
     public function testQueryTokensWithUserTokenAndUserFilterOnNotOwnId(AcceptanceTester $I): void
@@ -154,16 +154,16 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see three more user tokens for this customer
-        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens'][0]['customerId']);
+        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens']['tokens'][0]['customerId']);
         $I->assertEquals($tokenCountBefore + 3, $tokenCountAfter);
     }
 
@@ -181,16 +181,16 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see three more user tokens because of userid filter
-        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens'][0]['customerId']);
+        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens']['tokens'][0]['customerId']);
         $I->assertEquals($tokenCountBefore + 3, $tokenCountAfter);
     }
 
@@ -237,10 +237,10 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, '(filter:{shopId:{equals: "1"}})');
-        $I->assertNotEmpty($result['data']['tokens']);
+        $I->assertNotEmpty($result['data']['tokens']['tokens']);
 
         $result = $this->sendTokenQuery($I, '(filter:{shopId:{equals: "666"}})');
-        $I->assertEmpty($result['data']['tokens']);
+        $I->assertEmpty($result['data']['tokens']['tokens']);
     }
 
     public function testQueryTokensWithDateFilter(AcceptanceTester $I): void
@@ -254,12 +254,12 @@ class TokenCest
             $I,
             '(filter:{expiresAt:{between: ["2020-12-01 12:12:12", "2021-12-01 12:12:12"]}})'
         );
-        $I->assertEmpty($result['data']['tokens']);
+        $I->assertEmpty($result['data']['tokens']['tokens']);
 
         $filterPart = '(filter:{expiresAt:{between: ["2020-12-01 12:12:12", "' .
             (new DateTimeImmutable('+48 hours'))->format('Y-m-d H:i:s') . '"]}})';
         $result = $this->sendTokenQuery($I, $filterPart);
-        $I->assertNotEmpty($result['data']['tokens']);
+        $I->assertNotEmpty($result['data']['tokens']['tokens']);
     }
 
     public function testCustomerTokensDeleteWithoutToken(AcceptanceTester $I): void
@@ -561,10 +561,12 @@ class TokenCest
     {
         $query = ' query {
                tokens ' . $filterPart . ' {
-                 id
-                 customerId
-                 expiresAt
-                 shopId
+                 tokens {
+                   id
+                   customerId
+                   expiresAt
+                   shopId
+                 }
               }
             }
         ';
