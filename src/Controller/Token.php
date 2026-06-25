@@ -13,9 +13,9 @@ use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
-use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
@@ -42,17 +42,14 @@ class Token
      * Query of Base Module.
      * Query a customer's active JWT.
      * User with right 'VIEW_ANY_TOKEN' can query any customer's tokens.
-     *
-     *
-     * @return TokenDataType[]
      */
-    #[Query]
+    #[Query(outputType: 'TokensPayload')]
     #[Logged]
     public function tokens(
         ?TokenFilterList $filter = null,
         ?Pagination $pagination = null,
         ?TokenSorting $sort = null
-    ): array {
+    ): TokensPayloadInterface {
         return $this->tokenAdministration->tokens(
             $filter ?? new TokenFilterList(
                 new IDFilter($this->authentication->getUser()->id())
