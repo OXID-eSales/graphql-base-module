@@ -9,8 +9,12 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
+use OxidEsales\GraphQL\Base\DataType\Error\LoginError;
 use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token;
 use TheCodingMachine\GraphQLite\Annotations\Query;
@@ -31,7 +35,13 @@ class Login
      */
     public function token(?string $username = null, ?string $password = null): TokenPayloadInterface
     {
-        return $this->tokenService->createToken($username, $password);
+        try {
+            return $this->tokenService->createToken($username, $password);
+        } catch (InvalidLogin) {
+            return new TokenPayload(null, [LoginError::fromCode(LoginError::INVALID_CREDENTIALS)]);
+        } catch (TokenQuota) {
+            return new TokenPayload(null, [LoginError::fromCode(LoginError::TOKEN_QUOTA_EXCEEDED)]);
+        }
     }
 
     /**
