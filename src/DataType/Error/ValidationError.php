@@ -15,14 +15,16 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class LoginError implements ErrorInterface
+final class ValidationError implements ErrorInterface
 {
-    public const INVALID_CREDENTIALS = 'oegqlb.login.invalid_credentials';
-    public const TOKEN_QUOTA_EXCEEDED = 'oegqlb.login.token_quota_exceeded';
+    public const INVALID_CREDENTIALS = 'oegqlb.validation.invalid_credentials';
+    public const INVALID_FINGERPRINT = 'oegqlb.validation.invalid_fingerprint';
+    public const INVALID_REFRESH_TOKEN = 'oegqlb.validation.invalid_refresh_token';
 
     private const MESSAGES = [
         self::INVALID_CREDENTIALS => 'The provided credentials are invalid.',
-        self::TOKEN_QUOTA_EXCEEDED => 'The token quota for this user has been exceeded.',
+        self::INVALID_FINGERPRINT => 'The fingerprint validation failed.',
+        self::INVALID_REFRESH_TOKEN => 'The provided refresh token is invalid.',
     ];
 
     public function __construct(

@@ -9,13 +9,21 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
+use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
+use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\TokensPayload;
 use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
+use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
+use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
@@ -51,13 +59,17 @@ class Token
         ?Pagination $pagination = null,
         ?TokenSorting $sort = null
     ): TokensPayloadInterface {
-        return $this->tokenAdministration->tokens(
-            $filter ?? new TokenFilterList(
-                new IDFilter($this->authentication->getUser()->id())
-            ),
-            $pagination ?? new Pagination(),
-            $sort ?? new TokenSorting(Sorting::SORTING_ASC),
-        );
+        try {
+            return $this->tokenAdministration->tokens(
+                $filter ?? new TokenFilterList(
+                    new IDFilter($this->authentication->getUser()->id())
+                ),
+                $pagination ?? new Pagination(),
+                $sort ?? new TokenSorting(Sorting::SORTING_ASC),
+            );
+        } catch (InvalidLogin) {
+            return new TokensPayload([], [ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS)]);
+        }
     }
 
     /**
@@ -67,7 +79,15 @@ class Token
      */
     public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
-        return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
+        try {
+            return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
+        } catch (FingerprintValidationException) {
+            return new TokenPayload(null, [ValidationError::fromCode(ValidationError::INVALID_FINGERPRINT)]);
+        } catch (InvalidRefreshToken) {
+            return new TokenPayload(null, [ValidationError::fromCode(ValidationError::INVALID_REFRESH_TOKEN)]);
+        } catch (TokenQuota) {
+            return new TokenPayload(null, [AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED)]);
+        }
     }
 
     /**
