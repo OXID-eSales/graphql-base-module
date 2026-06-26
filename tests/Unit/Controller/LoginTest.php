@@ -11,7 +11,8 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
-use OxidEsales\GraphQL\Base\DataType\Error\LoginError;
+use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
+use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User;
@@ -197,7 +198,7 @@ class LoginTest extends BaseTestCase
 
         $sut = new Login($tokenServiceStub, $this->createStub(LoginServiceInterface::class));
         $payload = $sut->token(uniqid(), uniqid());
-        $expectedError = LoginError::fromCode(LoginError::INVALID_CREDENTIALS);
+        $expectedError = ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS);
 
         $this->assertNull($payload->token());
         $this->assertCount(1, $payload->userErrors());
@@ -211,7 +212,7 @@ class LoginTest extends BaseTestCase
 
         $sut = new Login($tokenServiceStub, $this->createStub(LoginServiceInterface::class));
         $payload = $sut->token(uniqid(), uniqid());
-        $expectedError = LoginError::fromCode(LoginError::TOKEN_QUOTA_EXCEEDED);
+        $expectedError = AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
 
         $this->assertNull($payload->token());
         $this->assertCount(1, $payload->userErrors());

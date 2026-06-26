@@ -9,8 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
-use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Controller\Token as TokenController;
+use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
+use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\Filter\DateFilter;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
@@ -19,6 +20,10 @@ use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
+use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
@@ -124,6 +129,70 @@ class TokenTest extends BaseTestCase
             ->with($refreshToken, $fingerprintHash)->willReturn($payloadStub);
 
         $this->assertSame($payloadStub, $sut->refresh($refreshToken, $fingerprintHash));
+    }
+
+    public function testTokensWithInvalidLoginException(): void
+    {
+        $authenticationStub = $this->createPartialMock(Authentication::class, ['getUser']);
+        $authenticationStub->method('getUser')->willReturn(new UserDataType($this->getUserModelStub(uniqid())));
+
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('tokens')->willThrowException(new InvalidLogin(uniqid()));
+
+        $sut = $this->getTokenController(
+            tokenAdministration: $tokenAdministrationStub,
+            authentication: $authenticationStub
+        );
+        $payload = $sut->tokens();
+        $expectedError = ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS);
+
+        $this->assertEmpty($payload->tokens());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
+    }
+
+    public function testRefreshWithFingerprintValidationException(): void
+    {
+        $refreshTokenServiceStub = $this->createStub(RefreshTokenServiceInterface::class);
+        $refreshTokenServiceStub->method('refreshToken')->willThrowException(
+            new FingerprintValidationException(uniqid())
+        );
+
+        $sut = $this->getTokenController(refreshTokenService: $refreshTokenServiceStub);
+        $payload = $sut->refresh(uniqid(), uniqid());
+        $expectedError = ValidationError::fromCode(ValidationError::INVALID_FINGERPRINT);
+
+        $this->assertNull($payload->token());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
+    }
+
+    public function testRefreshWithInvalidRefreshTokenException(): void
+    {
+        $refreshTokenServiceStub = $this->createStub(RefreshTokenServiceInterface::class);
+        $refreshTokenServiceStub->method('refreshToken')->willThrowException(new InvalidRefreshToken(uniqid()));
+
+        $sut = $this->getTokenController(refreshTokenService: $refreshTokenServiceStub);
+        $payload = $sut->refresh(uniqid(), uniqid());
+        $expectedError = ValidationError::fromCode(ValidationError::INVALID_REFRESH_TOKEN);
+
+        $this->assertNull($payload->token());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
+    }
+
+    public function testRefreshWithTokenQuotaExceededException(): void
+    {
+        $refreshTokenServiceStub = $this->createStub(RefreshTokenServiceInterface::class);
+        $refreshTokenServiceStub->method('refreshToken')->willThrowException(new TokenQuota(uniqid()));
+
+        $sut = $this->getTokenController(refreshTokenService: $refreshTokenServiceStub);
+        $payload = $sut->refresh(uniqid(), uniqid());
+        $expectedError = AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+
+        $this->assertNull($payload->token());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
     }
 
     private function getTokenController(
