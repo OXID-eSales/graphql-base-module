@@ -11,9 +11,12 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
+use OxidEsales\GraphQL\Base\DataType\Error\LoginError;
 use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Infrastructure\Legacy;
 use OxidEsales\GraphQL\Base\Infrastructure\Token as TokenInfrastructure;
 use OxidEsales\GraphQL\Base\Service\JwtConfigurationBuilder;
@@ -185,6 +188,34 @@ class LoginTest extends BaseTestCase
         $this->assertTrue($validator->validate($token, ...$config->validationConstraints()));
         $this->assertEquals($shop['id'], $token->claims()->get(TokenService::CLAIM_SHOPID));
         $this->assertNotEmpty($token->claims()->get(TokenService::CLAIM_USERID));
+    }
+
+    public function testTokenWithInvalidCredentialsException(): void
+    {
+        $tokenServiceStub = $this->createStub(TokenService::class);
+        $tokenServiceStub->method('createToken')->willThrowException(new InvalidLogin(uniqid()));
+
+        $sut = new Login($tokenServiceStub, $this->createStub(LoginServiceInterface::class));
+        $payload = $sut->token(uniqid(), uniqid());
+        $expectedError = LoginError::fromCode(LoginError::INVALID_CREDENTIALS);
+
+        $this->assertNull($payload->token());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
+    }
+
+    public function testTokenWithQuotaExceededException(): void
+    {
+        $tokenServiceStub = $this->createStub(TokenService::class);
+        $tokenServiceStub->method('createToken')->willThrowException(new TokenQuota(uniqid()));
+
+        $sut = new Login($tokenServiceStub, $this->createStub(LoginServiceInterface::class));
+        $payload = $sut->token(uniqid(), uniqid());
+        $expectedError = LoginError::fromCode(LoginError::TOKEN_QUOTA_EXCEEDED);
+
+        $this->assertNull($payload->token());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
     }
 
     public function testLoginReturnsLoginServiceResult(): void

@@ -14,7 +14,8 @@
         <properties>
             <property name="exceptions">
                 <value>
-                    \OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory
+                    \OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory,
+                    \OxidEsales\GraphQL\Base\DataType\Error\LoginError
                 </value>
             </property>
         </properties>
