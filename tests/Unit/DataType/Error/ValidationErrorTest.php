@@ -9,21 +9,21 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
-use OxidEsales\GraphQL\Base\DataType\Error\LoginError;
+use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-#[CoversClass(LoginError::class)]
-class LoginErrorTest extends TestCase
+#[CoversClass(ValidationError::class)]
+class ValidationErrorTest extends TestCase
 {
     #[Test]
     public function fields(): void
     {
         $code = uniqid();
         $message = uniqid();
-        $sut = new LoginError($code, $message);
+        $sut = new ValidationError($code, $message);
 
         $this->assertSame($code, $sut->code());
         $this->assertSame($message, $sut->message());
@@ -33,7 +33,7 @@ class LoginErrorTest extends TestCase
     #[DataProvider('validCodesProvider')]
     public function fromCodeReturnsCorrectCodeAndMessage(string $code, string $expectedMessage): void
     {
-        $sut = LoginError::fromCode($code);
+        $sut = ValidationError::fromCode($code);
 
         $this->assertSame($code, $sut->code());
         $this->assertSame($expectedMessage, $sut->message());
@@ -42,8 +42,9 @@ class LoginErrorTest extends TestCase
     public static function validCodesProvider(): array
     {
         return [
-            [LoginError::INVALID_CREDENTIALS, 'The provided credentials are invalid.'],
-            [LoginError::TOKEN_QUOTA_EXCEEDED, 'The token quota for this user has been exceeded.'],
+            [ValidationError::INVALID_CREDENTIALS, 'The provided credentials are invalid.'],
+            [ValidationError::INVALID_FINGERPRINT, 'The fingerprint validation failed.'],
+            [ValidationError::INVALID_REFRESH_TOKEN, 'The provided refresh token is invalid.'],
         ];
     }
 }
