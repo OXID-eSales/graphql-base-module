@@ -20,6 +20,8 @@ use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\CreationPayload;
+use OxidEsales\GraphQL\Base\DataType\CreationPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenDeletePayload;
 use OxidEsales\GraphQL\Base\DataType\TokenDeletePayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokensPayload;
@@ -171,11 +173,11 @@ class Token
      * Only use if no other option is left.
      * REGENERATE_SIGNATURE_KEY right is required.
      */
-    #[Mutation]
+    #[Mutation(outputType: 'CreationPayload')]
     #[Logged]
     #[Right('REGENERATE_SIGNATURE_KEY')]
-    public function regenerateSignatureKey(): bool
+    public function regenerateSignatureKey(): CreationPayloadInterface
     {
-        return $this->tokenAdministration->regenerateSignatureKey();
+        return new CreationPayload($this->tokenAdministration->regenerateSignatureKey());
     }
 }

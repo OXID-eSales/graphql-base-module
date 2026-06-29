@@ -573,7 +573,7 @@ class TokenCest
 
         $result = $this->sendRegenerateSignatureKeyMutation($I);
 
-        $I->assertTrue($result['data']['regenerateSignatureKey']);
+        $I->assertTrue($result['data']['regenerateSignatureKey']['success']);
 
         //fails on second call because the token is no longer valid for new signature
         $result = $this->sendRegenerateSignatureKeyMutation($I);
@@ -630,7 +630,7 @@ class TokenCest
     private function sendRegenerateSignatureKeyMutation(AcceptanceTester $I): array
     {
         $query = ' mutation {
-                       regenerateSignatureKey
+                       regenerateSignatureKey { success userErrors { code message } }
                    }';
 
         $I->sendGQLQuery($query);
