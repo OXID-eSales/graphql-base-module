@@ -76,7 +76,7 @@ class Token
                 $sort ?? new TokenSorting(Sorting::SORTING_ASC),
             );
         } catch (InvalidLogin) {
-            return new TokensPayload([], [ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS)]);
+            return new TokensPayload([], [AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN)]);
         }
     }
 
