@@ -220,7 +220,7 @@ class TokenTest extends BaseTestCase
         $payload = $sut->tokens();
         $expectedError = AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN);
 
-        $this->assertEmpty($payload->tokens());
+        $this->assertNull($payload->tokens());
         $this->assertCount(1, $payload->userErrors());
         $this->assertEquals($expectedError, $payload->userErrors()[0]);
     }

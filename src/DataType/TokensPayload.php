@@ -20,11 +20,11 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 final class TokensPayload extends AbstractPayload implements TokensPayloadInterface
 {
     /**
-     * @param Token[] $tokens
+     * @param Token[]|null $tokens
      * @param ErrorInterface[] $userErrors
      */
     public function __construct(
-        private readonly array $tokens,
+        private readonly ?array $tokens,
         array $userErrors = []
     ) {
         parent::__construct($userErrors);
@@ -32,9 +32,9 @@ final class TokensPayload extends AbstractPayload implements TokensPayloadInterf
 
     /**
      * @Field()
-     * @return Token[]
+     * @return Token[]|null
      */
-    public function tokens(): array
+    public function tokens(): ?array
     {
         return $this->tokens;
     }
