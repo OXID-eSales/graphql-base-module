@@ -78,7 +78,7 @@ class Token
                 $sort ?? new TokenSorting(Sorting::SORTING_ASC),
             );
         } catch (InvalidLogin) {
-            return new TokensPayload([], [AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN)]);
+            return new TokensPayload(null, [AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN)]);
         }
     }
 
