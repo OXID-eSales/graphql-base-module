@@ -609,7 +609,7 @@ class TokenCest
         $query = ' mutation {
                customerTokensDelete ';
         !$userId ?: $query .= '(customerId: "' . $userId . '")';
-        $query .= '{ deletedCount userErrors { code message } }';
+        $query .= '{ deletedCount userErrors { code message } } }';
 
         $I->sendGQLQuery($query);
 
