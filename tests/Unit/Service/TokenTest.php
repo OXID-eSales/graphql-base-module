@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
 
-use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
@@ -42,11 +42,9 @@ class TokenTest extends BaseTestCase
         );
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
 
-        $payload = $this->getTokenService($legacy)->createToken('admin', 'admin');
+        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
 
-        $this->assertInstanceOf(TokenPayloadInterface::class, $payload);
-        $this->assertNotNull($payload->token());
-        $this->assertEmpty($payload->userErrors());
+        $this->assertInstanceOf(UnencryptedToken::class, $token);
     }
 
     public function testCreateTokenWithValidCredentialsForBlockedUser(): void
@@ -58,11 +56,9 @@ class TokenTest extends BaseTestCase
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub('the_admin_oxid')));
         $legacy->method('getUserGroupIds')->willReturn(['foo', 'oxidblocked', 'bar']);
 
-        $payload = $this->getTokenService($legacy)->createToken('admin', 'admin');
+        $token = $this->getTokenService($legacy)->createToken('admin', 'admin');
 
-        $this->assertInstanceOf(TokenPayloadInterface::class, $payload);
-        $this->assertNotNull($payload->token());
-        $this->assertEmpty($payload->userErrors());
+        $this->assertInstanceOf(UnencryptedToken::class, $token);
     }
 
     public function testCreateAnonymousToken(): void
@@ -73,15 +69,10 @@ class TokenTest extends BaseTestCase
         );
         $legacy->method('login')->willReturn($this->getUserDataStub($this->getUserModelStub()));
 
-        $payload = $this->getTokenService($legacy)->createToken();
+        $token = $this->getTokenService($legacy)->createToken();
 
-        $this->assertInstanceOf(TokenPayloadInterface::class, $payload);
-        $this->assertNotNull($payload->token());
-        $this->assertEmpty($payload->userErrors());
-
-        $config = $this->getJwtConfigurationBuilder($legacy)->getConfiguration();
-        $jwt = $config->parser()->parse($payload->token());
-        $this->assertEmpty($jwt->claims()->get(TokenService::CLAIM_USERNAME));
+        $this->assertInstanceOf(UnencryptedToken::class, $token);
+        $this->assertEmpty($token->claims()->get(TokenService::CLAIM_USERNAME));
     }
 
     public function testTokenQuotaExceeded(): void

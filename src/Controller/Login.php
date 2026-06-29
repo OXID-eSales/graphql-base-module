@@ -37,7 +37,7 @@ class Login
     public function token(?string $username = null, ?string $password = null): TokenPayloadInterface
     {
         try {
-            return $this->tokenService->createToken($username, $password);
+            return new TokenPayload($this->tokenService->createToken($username, $password)->toString());
         } catch (InvalidLogin) {
             return new TokenPayload(null, [ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS)]);
         } catch (TokenQuota) {
