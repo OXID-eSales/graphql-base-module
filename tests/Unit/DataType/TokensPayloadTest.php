@@ -28,8 +28,16 @@ class TokensPayloadTest extends AbstractPayloadTestCase
         $this->assertSame([$token], $sut->tokens());
     }
 
+    #[Test]
+    public function nullTokens(): void
+    {
+        $sut = new TokensPayload(null);
+
+        $this->assertNull($sut->tokens());
+    }
+
     protected function createPayload(array $userErrors = []): PayloadInterface
     {
-        return new TokensPayload([], $userErrors);
+        return new TokensPayload(null, $userErrors);
     }
 }

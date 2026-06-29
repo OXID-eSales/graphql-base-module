@@ -11,6 +11,6 @@ use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
 
 interface TokensPayloadInterface extends PayloadInterface
 {
-    /** @return Token[] */
-    public function tokens(): array;
+    /** @return Token[]|null */
+    public function tokens(): ?array;
 }
