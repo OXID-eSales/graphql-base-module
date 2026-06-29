@@ -168,13 +168,13 @@ class Token
      * Invalidate all tokens for current shop.
      * INVALIDATE_ANY_TOKEN right is required.
      *
-     * @Mutation
+     * @Mutation(outputType="TokenDeletePayload")
      * @Logged
      * @Right("INVALIDATE_ANY_TOKEN")
      */
-    public function shopTokensDelete(): int
+    public function shopTokensDelete(): TokenDeletePayloadInterface
     {
-        return $this->tokenAdministration->shopTokensDelete();
+        return new TokenDeletePayload($this->tokenAdministration->shopTokensDelete());
     }
 
     /**
