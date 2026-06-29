@@ -13,6 +13,7 @@ use OxidEsales\Eshop\Application\Model\User as UserModel;
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
 use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
+use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\User;
@@ -219,19 +220,48 @@ class LoginTest extends BaseTestCase
         $this->assertEquals($expectedError, $payload->userErrors()[0]);
     }
 
-    public function testLoginReturnsLoginServiceResult(): void
+    public function testLoginReturnsLoginPayload(): void
     {
-        $loginController = new Login(
-            tokenService: $this->createStub(TokenService::class),
-            loginService: $loginServiceMock = $this->createMock(LoginServiceInterface::class),
-        );
+        $loginServiceMock = $this->createMock(LoginServiceInterface::class);
+        $loginDataStub = $this->createStub(LoginInterface::class);
 
         $userName = uniqid();
         $password = uniqid();
+        $loginServiceMock->method('login')->with($userName, $password)->willReturn($loginDataStub);
 
-        $loginPayloadStub = $this->createStub(LoginPayloadInterface::class);
-        $loginServiceMock->method('login')->with($userName, $password)->willReturn($loginPayloadStub);
+        $sut = new Login($this->createStub(TokenService::class), $loginServiceMock);
+        $payload = $sut->login($userName, $password);
 
-        $this->assertSame($loginPayloadStub, $loginController->login($userName, $password));
+        $this->assertInstanceOf(LoginPayloadInterface::class, $payload);
+        $this->assertSame($loginDataStub, $payload->login());
+        $this->assertEmpty($payload->userErrors());
+    }
+
+    public function testLoginWithInvalidCredentialsException(): void
+    {
+        $loginServiceStub = $this->createStub(LoginServiceInterface::class);
+        $loginServiceStub->method('login')->willThrowException(new InvalidLogin(uniqid()));
+
+        $sut = new Login($this->createStub(TokenService::class), $loginServiceStub);
+        $payload = $sut->login(uniqid(), uniqid());
+        $expectedError = ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS);
+
+        $this->assertNull($payload->login());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
+    }
+
+    public function testLoginWithTokenQuotaException(): void
+    {
+        $loginServiceStub = $this->createStub(LoginServiceInterface::class);
+        $loginServiceStub->method('login')->willThrowException(new TokenQuota(uniqid()));
+
+        $sut = new Login($this->createStub(TokenService::class), $loginServiceStub);
+        $payload = $sut->login(uniqid(), uniqid());
+        $expectedError = AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+
+        $this->assertNull($payload->login());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
     }
 }
