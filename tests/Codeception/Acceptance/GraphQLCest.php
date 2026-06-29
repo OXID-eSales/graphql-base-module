@@ -19,14 +19,13 @@ class GraphQLCest
 {
     public function testLoginWithInvalidCredentials(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query {token(username:"wrong", password:"wrong") { token }}');
+        $I->sendGQLQuery('query {token(username:"wrong", password:"wrong") { token userErrors { code message } }}');
         $I->seeResponseIsJson();
 //        $I->seeResponseContains('{"category":"permissionerror"}');
         $I->canSeeHttpHeader('Server-Timing');
-        $I->seeResponseContains('errors');
 
         $result = $I->grabJsonResponseAsArray();
-        $I->assertEquals('Username/password combination is invalid', $result['errors'][0]['message']);
+        $I->assertEquals('The provided credentials are invalid.', $result['data']['token']['userErrors'][0]['message']);
     }
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
