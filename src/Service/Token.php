@@ -11,8 +11,6 @@ namespace OxidEsales\GraphQL\Base\Service;
 
 use DateTimeImmutable;
 use Lcobucci\JWT\UnencryptedToken;
-use OxidEsales\GraphQL\Base\DataType\TokenPayload;
-use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Event\BeforeTokenCreation;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
@@ -67,12 +65,11 @@ class Token
      * @throws InvalidLogin
      * @throws TokenQuota
      */
-    public function createToken(?string $username = null, ?string $password = null): TokenPayloadInterface
+    public function createToken(?string $username = null, ?string $password = null): UnencryptedToken
     {
         $user = $this->legacyInfrastructure->login($username, $password);
-        $token = $this->createTokenForUser($user);
 
-        return new TokenPayload($token->toString());
+        return $this->createTokenForUser($user);
     }
 
     /**
