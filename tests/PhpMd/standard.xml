@@ -16,7 +16,9 @@
                 <value>
                     \OxidEsales\GraphQL\Base\DataType\DateTimeImmutableFactory,
                     \OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError,
-                    \OxidEsales\GraphQL\Base\DataType\Error\ValidationError
+                    \OxidEsales\GraphQL\Base\DataType\Error\ValidationError,
+                    \OxidEsales\GraphQL\Base\DataType\Error\NotFoundError,
+                    \OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError
                 </value>
             </property>
         </properties>

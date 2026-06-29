@@ -11,6 +11,8 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use OxidEsales\GraphQL\Base\Controller\Token as TokenController;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
+use OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError;
+use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
 use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\Filter\DateFilter;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
@@ -24,6 +26,8 @@ use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
+use OxidEsales\GraphQL\Base\Exception\UnknownToken;
+use OxidEsales\GraphQL\Base\Exception\UserNotFound;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
@@ -103,6 +107,35 @@ class TokenTest extends BaseTestCase
         $tokenController->customerTokensDelete(new ID('someUserId'));
     }
 
+    public function testCustomerTokensDeleteWithInvalidLoginException(): void
+    {
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('customerTokensDelete')->willThrowException(new InvalidLogin(uniqid()));
+
+        $sut = $this->getTokenController(tokenAdministration: $tokenAdministrationStub);
+        $payload = $sut->customerTokensDelete(new ID(uniqid()));
+        $expectedError = AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN);
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
+    }
+
+    public function testCustomerTokensDeleteWithUserNotFoundException(): void
+    {
+        $customerId = uniqid();
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('customerTokensDelete')->willThrowException(new UserNotFound($customerId));
+
+        $sut = $this->getTokenController(tokenAdministration: $tokenAdministrationStub);
+        $payload = $sut->customerTokensDelete(new ID($customerId));
+        $expectedError = NotFoundError::fromCode(NotFoundError::NOT_FOUND_USER, $customerId);
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
+    }
+
     public function testTokenDelete(): void
     {
         $authorization = $this->createPartialMock(Authorization::class, ['isAllowed']);
@@ -113,6 +146,25 @@ class TokenTest extends BaseTestCase
             authorization: $authorization
         );
         $tokenController->tokenDelete(new ID('someTokenId'));
+    }
+
+    public function testTokenDeleteWithUnknownTokenException(): void
+    {
+        $tokenId = uniqid();
+
+        $tokenServiceStub = $this->createStub(TokenService::class);
+        $tokenServiceStub->method('deleteToken')->willThrowException(new UnknownToken());
+
+        $authorizationStub = $this->createPartialMock(Authorization::class, ['isAllowed']);
+        $authorizationStub->method('isAllowed')->willReturn(true);
+
+        $sut = $this->getTokenController(tokenService: $tokenServiceStub, authorization: $authorizationStub);
+        $payload = $sut->tokenDelete(new ID($tokenId));
+        $expectedError = NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, $tokenId);
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertEquals($expectedError, $payload->userErrors()[0]);
     }
 
     public function testRefreshReturnsTokenPayload(): void
