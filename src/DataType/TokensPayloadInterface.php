@@ -14,4 +14,3 @@ interface TokensPayloadInterface extends PayloadInterface
     /** @return Token[] */
     public function tokens(): array;
 }
-
