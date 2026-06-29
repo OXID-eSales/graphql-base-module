@@ -20,8 +20,6 @@ use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\CustomerTokensDeletePayload;
-use OxidEsales\GraphQL\Base\DataType\CustomerTokensDeletePayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenDeletePayload;
 use OxidEsales\GraphQL\Base\DataType\TokenDeletePayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokensPayload;
@@ -106,21 +104,21 @@ class Token
      *  - Customer without special rights can invalidate only own tokens.
      * If no customerId is supplied, own Id is taken.
      */
-    #[Mutation(outputType: 'CustomerTokensDeletePayload')]
+    #[Mutation(outputType: 'TokenDeletePayload')]
     #[Logged]
-    public function customerTokensDelete(?ID $customerId): CustomerTokensDeletePayloadInterface
+    public function customerTokensDelete(?ID $customerId): TokenDeletePayloadInterface
     {
         try {
-            return new CustomerTokensDeletePayload(
+            return new TokenDeletePayload(
                 $this->tokenAdministration->customerTokensDelete($customerId)
             );
         } catch (InvalidLogin) {
-            return new CustomerTokensDeletePayload(
+            return new TokenDeletePayload(
                 null,
                 [AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN)]
             );
         } catch (UserNotFound) {
-            return new CustomerTokensDeletePayload(
+            return new TokenDeletePayload(
                 null,
                 [NotFoundError::fromCode(NotFoundError::NOT_FOUND_USER, (string)$customerId)]
             );

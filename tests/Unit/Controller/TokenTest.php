@@ -95,16 +95,14 @@ class TokenTest extends BaseTestCase
 
     public function testCustomerTokensDelete(): void
     {
-        $authentication = $this->createPartialMock(Authentication::class, []);
-        $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['customerTokensDelete']);
-        $tokenAdministration->method('customerTokensDelete')
-            ->willReturn(5);
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('customerTokensDelete')->willReturn($deleteCount = rand());
 
-        $tokenController = $this->getTokenController(
-            tokenAdministration: $tokenAdministration,
-            authentication: $authentication
-        );
-        $tokenController->customerTokensDelete(new ID('someUserId'));
+        $sut = $this->getTokenController(tokenAdministration: $tokenAdministrationStub);
+        $payload = $sut->customerTokensDelete(new ID('someUserId'));
+
+        $this->assertSame($deleteCount, $payload->deletedCount());
+        $this->assertEmpty($payload->userErrors());
     }
 
     public function testCustomerTokensDeleteWithInvalidLoginException(): void
