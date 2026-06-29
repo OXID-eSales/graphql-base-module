@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\Controller;
 
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
 use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
+use OxidEsales\GraphQL\Base\DataType\LoginPayload;
 use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
@@ -53,6 +54,12 @@ class Login
      */
     public function login(?string $username = null, ?string $password = null): LoginPayloadInterface
     {
-        return $this->loginService->login($username, $password);
+        try {
+            return new LoginPayload($this->loginService->login($username, $password));
+        } catch (InvalidLogin) {
+            return new LoginPayload(null, [ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS)]);
+        } catch (TokenQuota) {
+            return new LoginPayload(null, [AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED)]);
+        }
     }
 }
