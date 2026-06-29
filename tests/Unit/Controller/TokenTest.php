@@ -146,6 +146,18 @@ class TokenTest extends BaseTestCase
         $this->assertEmpty($payload->userErrors());
     }
 
+    public function testRegenerateSignatureKey(): void
+    {
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('regenerateSignatureKey')->willReturn($success = (bool)rand(0, 1));
+
+        $sut = $this->getTokenController(tokenAdministration: $tokenAdministrationStub);
+        $payload = $sut->regenerateSignatureKey();
+
+        $this->assertSame($success, $payload->success());
+        $this->assertEmpty($payload->userErrors());
+    }
+
     public function testTokenDelete(): void
     {
         $authorization = $this->createPartialMock(Authorization::class, ['isAllowed']);
