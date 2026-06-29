@@ -518,7 +518,7 @@ class TokenCest
 
         $result = $this->sendShopTokensDeleteMutation($I);
 
-        $I->assertEquals(5, $result['data']['shopTokensDelete']);
+        $I->assertEquals(5, $result['data']['shopTokensDelete']['deletedCount']);
     }
 
     public function testRegenerateSignatureKeyWithoutToken(AcceptanceTester $I): void
@@ -619,7 +619,7 @@ class TokenCest
     private function sendShopTokensDeleteMutation(AcceptanceTester $I): array
     {
         $query = ' mutation {
-                       shopTokensDelete
+                       shopTokensDelete { deletedCount userErrors { code message } }
                    }';
 
         $I->sendGQLQuery($query);

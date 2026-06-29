@@ -134,6 +134,18 @@ class TokenTest extends BaseTestCase
         $this->assertEquals($expectedError, $payload->userErrors()[0]);
     }
 
+    public function testShopTokensDelete(): void
+    {
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('shopTokensDelete')->willReturn($deleteCount = rand());
+
+        $sut = $this->getTokenController(tokenAdministration: $tokenAdministrationStub);
+        $payload = $sut->shopTokensDelete();
+
+        $this->assertSame($deleteCount, $payload->deletedCount());
+        $this->assertEmpty($payload->userErrors());
+    }
+
     public function testTokenDelete(): void
     {
         $authorization = $this->createPartialMock(Authorization::class, ['isAllowed']);
