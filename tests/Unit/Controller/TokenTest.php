@@ -196,7 +196,7 @@ class TokenTest extends BaseTestCase
             authentication: $authenticationStub
         );
         $payload = $sut->tokens();
-        $expectedError = ValidationError::fromCode(ValidationError::INVALID_CREDENTIALS);
+        $expectedError = AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN);
 
         $this->assertEmpty($payload->tokens());
         $this->assertCount(1, $payload->userErrors());
