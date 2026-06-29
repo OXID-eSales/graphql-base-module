@@ -18,9 +18,11 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 final class AuthorizationError implements ErrorInterface
 {
     public const UNAUTHORIZED_DELETE_TOKEN = 'oegqlb.authorized.delete_token';
+    public const UNAUTHORIZED_VIEW_TOKEN = 'oegqlb.authorized.view_token';
 
     private const MESSAGES = [
         self::UNAUTHORIZED_DELETE_TOKEN => 'You are not authorized to delete this token.',
+        self::UNAUTHORIZED_VIEW_TOKEN => 'You are not authorized to view this token.',
     ];
 
     public function __construct(

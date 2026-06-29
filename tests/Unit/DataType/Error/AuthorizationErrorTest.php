@@ -43,6 +43,7 @@ class AuthorizationErrorTest extends TestCase
     {
         return [
             [AuthorizationError::UNAUTHORIZED_DELETE_TOKEN, 'You are not authorized to delete this token.'],
+            [AuthorizationError::UNAUTHORIZED_VIEW_TOKEN, 'You are not authorized to view this token.'],
         ];
     }
 }

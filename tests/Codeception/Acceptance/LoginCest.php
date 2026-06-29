@@ -46,10 +46,10 @@ class LoginCest
 
     public function testLoginWithWrongCredentials(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query { token (username: "foo", password: "bar") { token } }');
+        $I->sendGQLQuery('query { token (username: "foo", password: "bar") { token userErrors { code message } } }');
         $result = $I->grabJsonResponseAsArray();
 
-        $I->assertEquals('Username/password combination is invalid', $result['errors'][0]['message']);
+        $I->assertEquals('The provided credentials are invalid.', $result['data']['token']['userErrors'][0]['message']);
     }
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
