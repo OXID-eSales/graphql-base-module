@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Controller\Token as TokenController;
+use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError;
 use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
@@ -47,6 +50,7 @@ class TokenTest extends BaseTestCase
         $authentication->method('getUser')
             ->willReturn(new UserDataType($this->getUserModelStub('_testuserid')));
 
+        $tokenDataType = new TokenDataType($this->createStub(TokenModel::class));
         $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['tokens']);
         $tokenAdministration->method('tokens')
             ->with(
@@ -54,13 +58,16 @@ class TokenTest extends BaseTestCase
                 new Pagination(),
                 new TokenSorting(TokenSorting::SORTING_ASC),
             )
-            ->willReturn($payloadStub = $this->createStub(TokensPayloadInterface::class));
+            ->willReturn($tokenList = [$tokenDataType]);
 
         $tokenController = $this->getTokenController(
             tokenAdministration: $tokenAdministration,
             authentication: $authentication
         );
-        $this->assertSame($payloadStub, $tokenController->tokens());
+        $payload = $tokenController->tokens();
+
+        $this->assertSame($tokenList, $payload->tokens());
+        $this->assertEmpty($payload->userErrors());
     }
 
     public function testTokensQueryWithCustomFilters(): void
@@ -77,20 +84,21 @@ class TokenTest extends BaseTestCase
         $sort = new TokenSorting(TokenSorting::SORTING_DESC);
         $pagination = Pagination::fromUserInput(10, 20);
 
+        $tokenDataType = new TokenDataType($this->createStub(TokenModel::class));
         $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['tokens']);
         $tokenAdministration->method('tokens')
-            ->with(
-                $filterList,
-                $pagination,
-                $sort
-            )
-            ->willReturn($payloadStub = $this->createStub(TokensPayloadInterface::class));
+            ->with($filterList, $pagination, $sort)
+            ->willReturn($tokenList = [$tokenDataType]);
 
         $tokenController = $this->getTokenController(
             tokenAdministration: $tokenAdministration,
             authentication: $authentication
         );
-        $this->assertSame($payloadStub, $tokenController->tokens($filterList, $pagination, $sort));
+        $payload = $tokenController->tokens($filterList, $pagination, $sort);
+
+        $this->assertInstanceOf(TokensPayloadInterface::class, $payload);
+        $this->assertSame($tokenList, $payload->tokens());
+        $this->assertEmpty($payload->userErrors());
     }
 
     public function testCustomerTokensDelete(): void
@@ -191,18 +199,21 @@ class TokenTest extends BaseTestCase
 
     public function testRefreshReturnsTokenPayload(): void
     {
-        $sut = $this->getTokenController(
-            refreshTokenService: $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class),
-        );
-
         $refreshToken = uniqid();
         $fingerprintHash = uniqid();
-        $payloadStub = $this->createStub(TokenPayloadInterface::class);
+        $tokenValue = uniqid();
 
+        $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class);
         $refreshTokenServiceMock->method('refreshToken')
-            ->with($refreshToken, $fingerprintHash)->willReturn($payloadStub);
+            ->with($refreshToken, $fingerprintHash)
+            ->willReturn($this->createConfiguredStub(UnencryptedToken::class, ['toString' => $tokenValue]));
 
-        $this->assertSame($payloadStub, $sut->refresh($refreshToken, $fingerprintHash));
+        $sut = $this->getTokenController(refreshTokenService: $refreshTokenServiceMock);
+        $payload = $sut->refresh($refreshToken, $fingerprintHash);
+
+        $this->assertInstanceOf(TokenPayloadInterface::class, $payload);
+        $this->assertSame($tokenValue, $payload->token());
+        $this->assertEmpty($payload->userErrors());
     }
 
     public function testTokensWithInvalidLoginException(): void
