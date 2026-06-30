@@ -71,13 +71,13 @@ class Token
         ?TokenSorting $sort = null
     ): TokensPayloadInterface {
         try {
-            return $this->tokenAdministration->tokens(
+            return new TokensPayload($this->tokenAdministration->tokens(
                 $filter ?? new TokenFilterList(
                     new IDFilter($this->authentication->getUser()->id())
                 ),
                 $pagination ?? new Pagination(),
                 $sort ?? new TokenSorting(Sorting::SORTING_ASC),
-            );
+            ));
         } catch (InvalidLogin) {
             return new TokensPayload(null, [AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN)]);
         }
@@ -91,7 +91,9 @@ class Token
     public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
         try {
-            return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
+            return new TokenPayload(
+                $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash)->toString()
+            );
         } catch (FingerprintValidationException) {
             return new TokenPayload(null, [ValidationError::fromCode(ValidationError::INVALID_FINGERPRINT)]);
         } catch (InvalidRefreshToken) {
