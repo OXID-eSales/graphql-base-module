@@ -33,6 +33,9 @@ use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Right;
 use TheCodingMachine\GraphQLite\Types\ID;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects.
+ */
 class Token
 {
     public function __construct(
