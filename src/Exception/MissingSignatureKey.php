@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Exception;
 
-class MissingSignatureKey extends Error
+use Exception;
+
+class MissingSignatureKey extends Exception
 {
     protected const WRONG_SIZE_MESSAGE = 'Signature key is too short';
 
