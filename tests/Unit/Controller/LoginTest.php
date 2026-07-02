@@ -28,12 +28,12 @@ class LoginTest extends TestCase
         $password = uniqid();
         $tokenValue = uniqid();
 
-        $converterMock = $this->createMock(LoginExceptionConverterInterface::class);
-        $converterMock->method('createToken')
+        $exceptionConverterMock = $this->createMock(LoginExceptionConverterInterface::class);
+        $exceptionConverterMock->method('createToken')
             ->with($username, $password)
             ->willReturn($this->createConfiguredStub(UnencryptedToken::class, ['toString' => $tokenValue]));
 
-        $sut = $this->getSut(loginExceptionConverter: $converterMock);
+        $sut = $this->getSut(loginExceptionConverter: $exceptionConverterMock);
         $payload = $sut->token($username, $password);
 
         $this->assertSame($tokenValue, $payload->token());
@@ -47,12 +47,12 @@ class LoginTest extends TestCase
         $password = uniqid();
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $converterMock = $this->createMock(LoginExceptionConverterInterface::class);
-        $converterMock->method('createToken')
+        $exceptionConverterMock = $this->createMock(LoginExceptionConverterInterface::class);
+        $exceptionConverterMock->method('createToken')
             ->with($username, $password)
             ->willReturn($errorStub);
 
-        $sut = $this->getSut(loginExceptionConverter: $converterMock);
+        $sut = $this->getSut(loginExceptionConverter: $exceptionConverterMock);
         $payload = $sut->token($username, $password);
 
         $this->assertNull($payload->token());
@@ -66,12 +66,12 @@ class LoginTest extends TestCase
         $password = uniqid();
         $loginStub = $this->createStub(LoginInterface::class);
 
-        $converterMock = $this->createMock(LoginExceptionConverterInterface::class);
-        $converterMock->method('login')
+        $exceptionConverterMock = $this->createMock(LoginExceptionConverterInterface::class);
+        $exceptionConverterMock->method('login')
             ->with($username, $password)
             ->willReturn($loginStub);
 
-        $sut = $this->getSut(loginExceptionConverter: $converterMock);
+        $sut = $this->getSut(loginExceptionConverter: $exceptionConverterMock);
         $payload = $sut->login($username, $password);
 
         $this->assertSame($loginStub, $payload->login());
@@ -85,12 +85,12 @@ class LoginTest extends TestCase
         $password = uniqid();
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $converterMock = $this->createMock(LoginExceptionConverterInterface::class);
-        $converterMock->method('login')
+        $exceptionConverterMock = $this->createMock(LoginExceptionConverterInterface::class);
+        $exceptionConverterMock->method('login')
             ->with($username, $password)
             ->willReturn($errorStub);
 
-        $sut = $this->getSut(loginExceptionConverter: $converterMock);
+        $sut = $this->getSut(loginExceptionConverter: $exceptionConverterMock);
         $payload = $sut->login($username, $password);
 
         $this->assertNull($payload->login());

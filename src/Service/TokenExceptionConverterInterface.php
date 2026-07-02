@@ -34,4 +34,8 @@ interface TokenExceptionConverterInterface
     public function deleteToken(ID $tokenId): true|ErrorInterface;
 
     public function deleteUserToken(UserInterface $user, ID $tokenId): true|ErrorInterface;
+
+    public function shopTokensDelete(): int;
+
+    public function regenerateSignatureKey(): bool;
 }

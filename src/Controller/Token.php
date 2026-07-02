@@ -25,7 +25,6 @@ use OxidEsales\GraphQL\Base\DataType\TokensPayload;
 use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use OxidEsales\GraphQL\Base\Service\TokenExceptionConverterInterface;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
@@ -39,7 +38,6 @@ use TheCodingMachine\GraphQLite\Types\ID;
 class Token
 {
     public function __construct(
-        private readonly TokenAdministration $tokenAdministration,
         private readonly Authentication $authentication,
         private readonly Authorization $authorization,
         private readonly TokenExceptionConverterInterface $tokenExceptionConverter,
@@ -149,7 +147,7 @@ class Token
      */
     public function shopTokensDelete(): TokenDeletePayloadInterface
     {
-        return new TokenDeletePayload($this->tokenAdministration->shopTokensDelete());
+        return new TokenDeletePayload($this->tokenExceptionConverter->shopTokensDelete());
     }
 
     /**
@@ -165,6 +163,6 @@ class Token
      */
     public function regenerateSignatureKey(): CreationPayloadInterface
     {
-        return new CreationPayload($this->tokenAdministration->regenerateSignatureKey());
+        return new CreationPayload($this->tokenExceptionConverter->regenerateSignatureKey());
     }
 }

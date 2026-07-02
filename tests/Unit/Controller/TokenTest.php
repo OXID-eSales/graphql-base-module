@@ -21,7 +21,6 @@ use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use OxidEsales\GraphQL\Base\Service\TokenExceptionConverterInterface;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -277,10 +276,10 @@ class TokenTest extends BaseTestCase
     {
         $deleteCount = rand();
 
-        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
-        $tokenAdministrationStub->method('shopTokensDelete')->willReturn($deleteCount);
+        $exceptionConverterStub = $this->createStub(TokenExceptionConverterInterface::class);
+        $exceptionConverterStub->method('shopTokensDelete')->willReturn($deleteCount);
 
-        $sut = $this->getSut(tokenAdministration: $tokenAdministrationStub);
+        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterStub);
         $payload = $sut->shopTokensDelete();
 
         $this->assertSame($deleteCount, $payload->deletedCount());
@@ -292,10 +291,10 @@ class TokenTest extends BaseTestCase
     {
         $success = (bool)rand(0, 1);
 
-        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
-        $tokenAdministrationStub->method('regenerateSignatureKey')->willReturn($success);
+        $exceptionConverterStub = $this->createStub(TokenExceptionConverterInterface::class);
+        $exceptionConverterStub->method('regenerateSignatureKey')->willReturn($success);
 
-        $sut = $this->getSut(tokenAdministration: $tokenAdministrationStub);
+        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterStub);
         $payload = $sut->regenerateSignatureKey();
 
         $this->assertSame($success, $payload->success());
@@ -303,13 +302,11 @@ class TokenTest extends BaseTestCase
     }
 
     private function getSut(
-        ?TokenAdministration $tokenAdministration = null,
         ?Authentication $authentication = null,
         ?Authorization $authorization = null,
         ?TokenExceptionConverterInterface $tokenExceptionConverter = null,
     ): TokenController {
         return new TokenController(
-            tokenAdministration: $tokenAdministration ?? $this->createStub(TokenAdministration::class),
             authentication: $authentication ?? $this->createStub(Authentication::class),
             authorization: $authorization ?? $this->createStub(Authorization::class),
             tokenExceptionConverter: $tokenExceptionConverter ?? $this->createStub(

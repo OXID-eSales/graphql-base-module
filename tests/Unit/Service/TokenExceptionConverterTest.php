@@ -259,6 +259,32 @@ class TokenExceptionConverterTest extends TestCase
         );
     }
 
+    #[Test]
+    public function shopTokensDeleteReturnsDeleteCount(): void
+    {
+        $deleteCount = rand();
+
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('shopTokensDelete')->willReturn($deleteCount);
+
+        $sut = $this->getSut(tokenAdministration: $tokenAdministrationStub);
+
+        $this->assertSame($deleteCount, $sut->shopTokensDelete());
+    }
+
+    #[Test]
+    public function regenerateSignatureKeyReturnsSuccessFlag(): void
+    {
+        $success = (bool)rand(0, 1);
+
+        $tokenAdministrationStub = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationStub->method('regenerateSignatureKey')->willReturn($success);
+
+        $sut = $this->getSut(tokenAdministration: $tokenAdministrationStub);
+
+        $this->assertSame($success, $sut->regenerateSignatureKey());
+    }
+
     private function getSut(
         ?TokenAdministration $tokenAdministration = null,
         ?TokenService $tokenService = null,
