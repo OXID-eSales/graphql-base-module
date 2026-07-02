@@ -52,6 +52,12 @@ services:
   OxidEsales\GraphQL\Base\Service\LoginServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\LoginService
 
+  OxidEsales\GraphQL\Base\Service\LoginExceptionConverterInterface:
+    class: OxidEsales\GraphQL\Base\Service\LoginExceptionConverter
+
+  OxidEsales\GraphQL\Base\Service\TokenExceptionConverterInterface:
+    class: OxidEsales\GraphQL\Base\Service\TokenExceptionConverter
+
   OxidEsales\GraphQL\Base\Service\TokenValidator:
     class: OxidEsales\GraphQL\Base\Service\TokenValidator
 

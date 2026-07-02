@@ -9,51 +9,37 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
-use OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError;
-use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
-use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
+use OxidEsales\GraphQL\Base\DataType\CreationPayload;
+use OxidEsales\GraphQL\Base\DataType\CreationPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
+use OxidEsales\GraphQL\Base\DataType\TokenDeletePayload;
+use OxidEsales\GraphQL\Base\DataType\TokenDeletePayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\CreationPayload;
-use OxidEsales\GraphQL\Base\DataType\CreationPayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\TokenDeletePayload;
-use OxidEsales\GraphQL\Base\DataType\TokenDeletePayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokensPayload;
 use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
-use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
-use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
-use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
-use OxidEsales\GraphQL\Base\Exception\TokenQuota;
-use OxidEsales\GraphQL\Base\Exception\UnknownToken;
-use OxidEsales\GraphQL\Base\Exception\UserNotFound;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
-use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration;
+use OxidEsales\GraphQL\Base\Service\TokenExceptionConverterInterface;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Right;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-/**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- */
 class Token
 {
     public function __construct(
         private readonly TokenAdministration $tokenAdministration,
         private readonly Authentication $authentication,
         private readonly Authorization $authorization,
-        private readonly TokenService $tokenService,
-        private readonly RefreshTokenServiceInterface $refreshTokenService,
+        private readonly TokenExceptionConverterInterface $tokenExceptionConverter,
     ) {
     }
 
@@ -70,17 +56,19 @@ class Token
         ?Pagination $pagination = null,
         ?TokenSorting $sort = null
     ): TokensPayloadInterface {
-        try {
-            return new TokensPayload($this->tokenAdministration->tokens(
-                $filter ?? new TokenFilterList(
-                    new IDFilter($this->authentication->getUser()->id())
-                ),
-                $pagination ?? new Pagination(),
-                $sort ?? new TokenSorting(Sorting::SORTING_ASC),
-            ));
-        } catch (InvalidLogin) {
-            return new TokensPayload(null, [AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN)]);
+        $result = $this->tokenExceptionConverter->tokens(
+            $filter ?? new TokenFilterList(
+                new IDFilter($this->authentication->getUser()->id())
+            ),
+            $pagination ?? new Pagination(),
+            $sort ?? new TokenSorting(Sorting::SORTING_ASC),
+        );
+
+        if ($result instanceof ErrorInterface) {
+            return new TokensPayload(null, [$result]);
         }
+
+        return new TokensPayload($result);
     }
 
     /**
@@ -90,17 +78,13 @@ class Token
      */
     public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
-        try {
-            return new TokenPayload(
-                $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash)->toString()
-            );
-        } catch (FingerprintValidationException) {
-            return new TokenPayload(null, [ValidationError::fromCode(ValidationError::INVALID_FINGERPRINT)]);
-        } catch (InvalidRefreshToken) {
-            return new TokenPayload(null, [ValidationError::fromCode(ValidationError::INVALID_REFRESH_TOKEN)]);
-        } catch (TokenQuota) {
-            return new TokenPayload(null, [AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED)]);
+        $result = $this->tokenExceptionConverter->refresh($refreshToken, $fingerprintHash);
+
+        if ($result instanceof ErrorInterface) {
+            return new TokenPayload(null, [$result]);
         }
+
+        return new TokenPayload($result->toString());
     }
 
     /**
@@ -110,30 +94,18 @@ class Token
      *  - Customer without special rights can invalidate only own tokens.
      * If no customerId is supplied, own Id is taken.
      *
-     * @Mutation
-     * @Logged
-     */
-    /**
      * @Mutation(outputType="TokenDeletePayload")
      * @Logged
      */
     public function customerTokensDelete(?ID $customerId): TokenDeletePayloadInterface
     {
-        try {
-            return new TokenDeletePayload(
-                $this->tokenAdministration->customerTokensDelete($customerId)
-            );
-        } catch (InvalidLogin) {
-            return new TokenDeletePayload(
-                null,
-                [AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN)]
-            );
-        } catch (UserNotFound) {
-            return new TokenDeletePayload(
-                null,
-                [NotFoundError::fromCode(NotFoundError::NOT_FOUND_USER, (string)$customerId)]
-            );
+        $result = $this->tokenExceptionConverter->customerTokensDelete($customerId);
+
+        if ($result instanceof ErrorInterface) {
+            return new TokenDeletePayload(null, [$result]);
         }
+
+        return new TokenDeletePayload($result);
     }
 
     /**
@@ -142,29 +114,25 @@ class Token
      *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate any token.
      *  - Customer without special rights can invalidate only own token.
      *
-     * @Mutation
-     * @Logged
-     */
-    /**
      * @Mutation(outputType="TokenDeletePayload")
      * @Logged
      */
     public function tokenDelete(ID $tokenId): TokenDeletePayloadInterface
     {
-        try {
-            if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
-                $this->tokenService->deleteToken($tokenId);
-            } else {
-                $this->tokenService->deleteUserToken($this->authentication->getUser(), $tokenId);
-            }
-
-            return new TokenDeletePayload(1);
-        } catch (UnknownToken) {
-            return new TokenDeletePayload(
-                null,
-                [NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId)]
+        if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
+            $result = $this->tokenExceptionConverter->deleteToken($tokenId);
+        } else {
+            $result = $this->tokenExceptionConverter->deleteUserToken(
+                $this->authentication->getUser(),
+                $tokenId
             );
         }
+
+        if ($result instanceof ErrorInterface) {
+            return new TokenDeletePayload(null, [$result]);
+        }
+
+        return new TokenDeletePayload(1);
     }
 
     /**
