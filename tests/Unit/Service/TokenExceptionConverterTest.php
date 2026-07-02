@@ -16,8 +16,9 @@ use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
 use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
-use OxidEsales\GraphQL\Base\DataType\Token;
+use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
@@ -38,12 +39,12 @@ class TokenExceptionConverterTest extends TestCase
     #[Test]
     public function tokensReturnsTokenListOnSuccess(): void
     {
-        $tokenList = [$this->createStub(Token::class)];
+        $tokenList = [new TokenDataType($this->createStub(TokenModel::class))];
         $filterList = new TokenFilterList();
         $pagination = new Pagination();
         $sort = new TokenSorting(TokenSorting::SORTING_ASC);
 
-        $tokenAdministrationMock = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationMock = $this->createMock(TokenAdministration::class);
         $tokenAdministrationMock->method('tokens')->with($filterList, $pagination, $sort)->willReturn($tokenList);
 
         $sut = $this->getSut(tokenAdministration: $tokenAdministrationMock);
@@ -74,7 +75,7 @@ class TokenExceptionConverterTest extends TestCase
         $fingerprintHash = uniqid();
         $tokenStub = $this->createStub(UnencryptedToken::class);
 
-        $refreshTokenServiceMock = $this->createStub(RefreshTokenServiceInterface::class);
+        $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class);
         $refreshTokenServiceMock->method('refreshToken')->with($refreshToken, $fingerprintHash)->willReturn($tokenStub);
 
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
@@ -88,7 +89,7 @@ class TokenExceptionConverterTest extends TestCase
         $refreshToken = uniqid();
         $fingerprintHash = uniqid();
 
-        $refreshTokenServiceMock = $this->createStub(RefreshTokenServiceInterface::class);
+        $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class);
         $refreshTokenServiceMock->method('refreshToken')
             ->with($refreshToken, $fingerprintHash)
             ->willThrowException(new FingerprintValidationException(uniqid()));
@@ -105,7 +106,7 @@ class TokenExceptionConverterTest extends TestCase
         $refreshToken = uniqid();
         $fingerprintHash = uniqid();
 
-        $refreshTokenServiceMock = $this->createStub(RefreshTokenServiceInterface::class);
+        $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class);
         $refreshTokenServiceMock->method('refreshToken')
             ->with($refreshToken, $fingerprintHash)
             ->willThrowException(new InvalidRefreshToken(uniqid()));
@@ -122,7 +123,7 @@ class TokenExceptionConverterTest extends TestCase
         $refreshToken = uniqid();
         $fingerprintHash = uniqid();
 
-        $refreshTokenServiceMock = $this->createStub(RefreshTokenServiceInterface::class);
+        $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class);
         $refreshTokenServiceMock->method('refreshToken')
             ->with($refreshToken, $fingerprintHash)
             ->willThrowException(new TokenQuota(uniqid()));
@@ -139,7 +140,7 @@ class TokenExceptionConverterTest extends TestCase
         $deleteCount = rand();
         $customerId = new ID(uniqid());
 
-        $tokenAdministrationMock = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationMock = $this->createMock(TokenAdministration::class);
         $tokenAdministrationMock->method('customerTokensDelete')->with($customerId)->willReturn($deleteCount);
 
         $sut = $this->getSut(tokenAdministration: $tokenAdministrationMock);
@@ -153,7 +154,7 @@ class TokenExceptionConverterTest extends TestCase
         $deleteCount = rand();
         $customerId = null;
 
-        $tokenAdministrationMock = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationMock = $this->createMock(TokenAdministration::class);
         $tokenAdministrationMock->method('customerTokensDelete')->with($customerId)->willReturn($deleteCount);
 
         $sut = $this->getSut(tokenAdministration: $tokenAdministrationMock);
@@ -166,7 +167,7 @@ class TokenExceptionConverterTest extends TestCase
     {
         $customerId = new ID(uniqid());
 
-        $tokenAdministrationMock = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationMock = $this->createMock(TokenAdministration::class);
         $tokenAdministrationMock->method('customerTokensDelete')
             ->with($customerId)
             ->willThrowException(new InvalidLogin(uniqid()));
@@ -182,7 +183,7 @@ class TokenExceptionConverterTest extends TestCase
     {
         $customerId = new ID(uniqid());
 
-        $tokenAdministrationMock = $this->createStub(TokenAdministration::class);
+        $tokenAdministrationMock = $this->createMock(TokenAdministration::class);
         $tokenAdministrationMock->method('customerTokensDelete')
             ->with($customerId)
             ->willThrowException(new UserNotFound((string)$customerId));
@@ -214,10 +215,10 @@ class TokenExceptionConverterTest extends TestCase
     {
         $tokenId = new ID(uniqid());
 
-        $tokenServiceStub = $this->createStub(TokenService::class);
-        $tokenServiceStub->method('deleteToken')->with($tokenId)->willThrowException(new UnknownToken());
+        $tokenServiceMock = $this->createMock(TokenService::class);
+        $tokenServiceMock->method('deleteToken')->with($tokenId)->willThrowException(new UnknownToken());
 
-        $sut = $this->getSut(tokenService: $tokenServiceStub);
+        $sut = $this->getSut(tokenService: $tokenServiceMock);
         $result = $sut->deleteToken($tokenId);
 
         $this->assertEquals(
@@ -246,7 +247,7 @@ class TokenExceptionConverterTest extends TestCase
         $userStub = $this->createStub(UserInterface::class);
         $tokenId = new ID(uniqid());
 
-        $tokenServiceMock = $this->createStub(TokenService::class);
+        $tokenServiceMock = $this->createMock(TokenService::class);
         $tokenServiceMock->method('deleteUserToken')->with($userStub, $tokenId)->willThrowException(new UnknownToken());
 
         $sut = $this->getSut(tokenService: $tokenServiceMock);

@@ -16,8 +16,9 @@ use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
-use OxidEsales\GraphQL\Base\DataType\Token;
+use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\TokenAdministration;
@@ -35,7 +36,7 @@ class TokenTest extends BaseTestCase
     {
         $userId = uniqid();
         $userDataType = $this->getUserDataStub($this->getUserModelStub($userId));
-        $tokenList = [$this->createStub(Token::class)];
+        $tokenList = [new TokenDataType($this->createStub(TokenModel::class))];
 
         $authenticationStub = $this->createStub(Authentication::class);
         $authenticationStub->method('getUser')->willReturn($userDataType);
@@ -59,7 +60,7 @@ class TokenTest extends BaseTestCase
     #[Test]
     public function tokensWithCustomParametersReturnsPayloadWithTokenList(): void
     {
-        $tokenList = [$this->createStub(Token::class)];
+        $tokenList = [new TokenDataType($this->createStub(TokenModel::class))];
         $filter = new TokenFilterList(new IDFilter(new ID(uniqid())));
         $pagination = Pagination::fromUserInput(10, 20);
         $sort = new TokenSorting(Sorting::SORTING_DESC);
@@ -177,15 +178,15 @@ class TokenTest extends BaseTestCase
     {
         $tokenId = new ID(uniqid());
 
-        $authorizationStub = $this->createStub(Authorization::class);
-        $authorizationStub->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
 
         $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
         $converterMock->method('deleteToken')
             ->with($tokenId)
             ->willReturn(true);
 
-        $sut = $this->getSut(authorization: $authorizationStub, tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(authorization: $authorizationMock, tokenExceptionConverter: $converterMock);
         $payload = $sut->tokenDelete($tokenId);
 
         $this->assertSame(1, $payload->deletedCount());
@@ -198,15 +199,15 @@ class TokenTest extends BaseTestCase
         $tokenId = new ID(uniqid());
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $authorizationStub = $this->createStub(Authorization::class);
-        $authorizationStub->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
 
         $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
         $converterMock->method('deleteToken')
             ->with($tokenId)
             ->willReturn($errorStub);
 
-        $sut = $this->getSut(authorization: $authorizationStub, tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(authorization: $authorizationMock, tokenExceptionConverter: $converterMock);
         $payload = $sut->tokenDelete($tokenId);
 
         $this->assertNull($payload->deletedCount());
@@ -220,8 +221,8 @@ class TokenTest extends BaseTestCase
         $tokenId = new ID(uniqid());
         $userDataType = $this->getUserDataStub($this->getUserModelStub(uniqid()));
 
-        $authorizationStub = $this->createStub(Authorization::class);
-        $authorizationStub->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(false);
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(false);
 
         $authenticationStub = $this->createStub(Authentication::class);
         $authenticationStub->method('getUser')->willReturn($userDataType);
@@ -233,7 +234,7 @@ class TokenTest extends BaseTestCase
 
         $sut = $this->getSut(
             authentication: $authenticationStub,
-            authorization: $authorizationStub,
+            authorization: $authorizationMock,
             tokenExceptionConverter: $converterMock
         );
         $payload = $sut->tokenDelete($tokenId);
@@ -249,8 +250,8 @@ class TokenTest extends BaseTestCase
         $userDataType = $this->getUserDataStub($this->getUserModelStub(uniqid()));
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $authorizationStub = $this->createStub(Authorization::class);
-        $authorizationStub->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(false);
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(false);
 
         $authenticationStub = $this->createStub(Authentication::class);
         $authenticationStub->method('getUser')->willReturn($userDataType);
@@ -262,7 +263,7 @@ class TokenTest extends BaseTestCase
 
         $sut = $this->getSut(
             authentication: $authenticationStub,
-            authorization: $authorizationStub,
+            authorization: $authorizationMock,
             tokenExceptionConverter: $converterMock
         );
         $payload = $sut->tokenDelete($tokenId);
