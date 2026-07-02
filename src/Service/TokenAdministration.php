@@ -73,6 +73,7 @@ class TokenAdministration
 
     /**
      * @throws \OxidEsales\GraphQL\Base\Exception\NotFound
+     * @throws InvalidLogin
      */
     public function customerTokensDelete(?ID $customerId): int
     {

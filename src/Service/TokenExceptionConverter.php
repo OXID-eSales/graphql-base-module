@@ -28,7 +28,7 @@ use OxidEsales\GraphQL\Base\Exception\UserNotFound;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects.
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class TokenExceptionConverter implements TokenExceptionConverterInterface
 {
