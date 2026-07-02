@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory;
+namespace OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo;
 
 use OxidEsales\Eshop\Application\Model\SeoEncoderManufacturer;
 

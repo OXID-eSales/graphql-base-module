@@ -7,13 +7,12 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Integration\Seo\Infrastructure\Factory;
+namespace OxidEsales\GraphQL\Base\Tests\Integration\Shared\Infrastructure\Factory\Seo;
 
 use OxidEsales\Eshop\Application\Model\SeoEncoderArticle;
 use OxidEsales\EshopCommunity\Tests\Integration\IntegrationTestCase;
-use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactory;
-use OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory\SeoEncoderArticleFactoryInterface;
 use OxidEsales\GraphQL\Base\Seo\Infrastructure\Model\SeoEncoderArticle as ExtendedSeoEncoderArticle;
+use OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderArticleFactory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
@@ -21,31 +20,10 @@ use PHPUnit\Framework\Attributes\Test;
 final class SeoEncoderArticleFactoryTest extends IntegrationTestCase
 {
     #[Test]
-    public function createReturnsSeoEncoderArticle(): void
-    {
-        $sut = $this->getSut();
-
-        $this->assertInstanceOf(SeoEncoderArticle::class, $sut->create());
-    }
-
-    #[Test]
-    public function createProducesDifferentObjectsOnEveryCall(): void
-    {
-        $sut = $this->getSut();
-
-        $this->assertNotSame($sut->create(), $sut->create());
-    }
-
-    #[Test]
     public function oxNewResolvesToOurSeoEncoderArticle(): void
     {
         $result = oxNew(SeoEncoderArticle::class);
 
         $this->assertInstanceOf(ExtendedSeoEncoderArticle::class, $result);
-    }
-
-    private function getSut(): SeoEncoderArticleFactoryInterface
-    {
-        return new SeoEncoderArticleFactory();
     }
 }

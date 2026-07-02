@@ -17,7 +17,7 @@ use OxidEsales\GraphQL\Base\DataType\RefreshTokenInterface;
 use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
-use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshTokenModelFactoryInterface;
+use OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\RefreshTokenModelFactoryInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {

@@ -1,0 +1,25 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\RefreshTokenModelFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\RefreshTokenModelFactory
+
+  OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderDefaultFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderDefaultFactory
+
+  OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderArticleFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderArticleFactory
+
+  OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderCategoryFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderCategoryFactory
+
+  OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderManufacturerFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderManufacturerFactory
+
+  OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderVendorFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderVendorFactory
+
+  OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderContentFactoryInterface:
+    class: OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo\SeoEncoderContentFactory

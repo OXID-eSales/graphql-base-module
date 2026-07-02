@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Seo\Infrastructure\Factory;
+namespace OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory\Seo;
 
 use OxidEsales\Eshop\Application\Model\SeoEncoderVendor;
 

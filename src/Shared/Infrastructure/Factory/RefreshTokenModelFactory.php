@@ -7,7 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Infrastructure\Model;
+namespace OxidEsales\GraphQL\Base\Shared\Infrastructure\Factory;
+
+use OxidEsales\GraphQL\Base\Infrastructure\Model\RefreshToken;
 
 class RefreshTokenModelFactory implements RefreshTokenModelFactoryInterface
 {
