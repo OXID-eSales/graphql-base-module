@@ -17,7 +17,6 @@ use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
 use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
-use OxidEsales\GraphQL\Base\DataType\Token as TokenAlias;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
@@ -28,6 +27,9 @@ use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Exception\UserNotFound;
 use TheCodingMachine\GraphQLite\Types\ID;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects.
+ */
 class TokenExceptionConverter implements TokenExceptionConverterInterface
 {
     public function __construct(
