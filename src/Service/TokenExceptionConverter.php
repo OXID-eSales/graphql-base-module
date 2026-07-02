@@ -97,4 +97,14 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
             return NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId);
         }
     }
+
+    public function shopTokensDelete(): int
+    {
+        return $this->tokenAdministration->shopTokensDelete();
+    }
+
+    public function regenerateSignatureKey(): bool
+    {
+        return $this->tokenAdministration->regenerateSignatureKey();
+    }
 }
