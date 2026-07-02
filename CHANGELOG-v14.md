@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - New Error-handling with payload which contains result and possible errors (including message and unique code) (https://docs.oxid-esales.com/interfaces/graphql/en/latest/exceptions/Error%20Handling.html)
+- New Exception-converter between controller and service which converts exceptions into GraphQL-Errors
 - Clear the GraphQL schema cache when the shop cache is cleared (e.g. via `oe:cache:clear`)
 
 ### Changed

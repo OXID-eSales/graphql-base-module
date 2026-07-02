@@ -1,0 +1,98 @@
+<?php
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+declare(strict_types=1);
+
+namespace OxidEsales\GraphQL\Base\Service;
+
+use Lcobucci\JWT\UnencryptedToken;
+use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
+use OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
+use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
+use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
+use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
+use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
+use OxidEsales\GraphQL\Base\DataType\Token as TokenAlias;
+use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
+use OxidEsales\GraphQL\Base\DataType\UserInterface;
+use OxidEsales\GraphQL\Base\Exception\FingerprintValidationException;
+use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
+use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
+use OxidEsales\GraphQL\Base\Exception\TokenQuota;
+use OxidEsales\GraphQL\Base\Exception\UnknownToken;
+use OxidEsales\GraphQL\Base\Exception\UserNotFound;
+use TheCodingMachine\GraphQLite\Types\ID;
+
+class TokenExceptionConverter implements TokenExceptionConverterInterface
+{
+    public function __construct(
+        private readonly TokenAdministration $tokenAdministration,
+        private readonly Token $tokenService,
+        private readonly RefreshTokenServiceInterface $refreshTokenService,
+    ) {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function tokens(
+        TokenFilterList $filterList,
+        Pagination $pagination,
+        TokenSorting $sort
+    ): array|ErrorInterface {
+        try {
+            return $this->tokenAdministration->tokens($filterList, $pagination, $sort);
+        } catch (InvalidLogin) {
+            return AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN);
+        }
+    }
+
+    public function refresh(string $refreshToken, string $fingerprintHash): UnencryptedToken|ErrorInterface
+    {
+        try {
+            return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
+        } catch (FingerprintValidationException) {
+            return ValidationError::fromCode(ValidationError::INVALID_FINGERPRINT);
+        } catch (InvalidRefreshToken) {
+            return ValidationError::fromCode(ValidationError::INVALID_REFRESH_TOKEN);
+        } catch (TokenQuota) {
+            return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+        }
+    }
+
+    public function customerTokensDelete(?ID $customerId): int|ErrorInterface
+    {
+        try {
+            return $this->tokenAdministration->customerTokensDelete($customerId);
+        } catch (InvalidLogin) {
+            return AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN);
+        } catch (UserNotFound) {
+            return NotFoundError::fromCode(NotFoundError::NOT_FOUND_USER, (string)$customerId);
+        }
+    }
+
+    public function deleteToken(ID $tokenId): true|ErrorInterface
+    {
+        try {
+            $this->tokenService->deleteToken($tokenId);
+            return true;
+        } catch (UnknownToken) {
+            return NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId);
+        }
+    }
+
+    public function deleteUserToken(UserInterface $user, ID $tokenId): true|ErrorInterface
+    {
+        try {
+            $this->tokenService->deleteUserToken($user, $tokenId);
+            return true;
+        } catch (UnknownToken) {
+            return NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId);
+        }
+    }
+}
