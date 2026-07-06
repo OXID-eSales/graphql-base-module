@@ -9,34 +9,20 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(AuthenticationError::class)]
-class AuthenticationErrorTest extends TestCase
+class AuthenticationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function fields(): void
+    public function extendsAbstractError(): void
     {
-        $code = uniqid();
-        $message = uniqid();
-        $sut = new AuthenticationError($code, $message);
+        $sut = new AuthenticationError(uniqid(), uniqid());
 
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
-    }
-
-    #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCodeReturnsCorrectCodeAndMessage(string $code, string $expectedMessage): void
-    {
-        $sut = AuthenticationError::fromCode($code);
-
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
+        $this->assertInstanceOf(AbstractError::class, $sut);
     }
 
     public static function validCodesProvider(): array
@@ -44,5 +30,10 @@ class AuthenticationErrorTest extends TestCase
         return [
             [AuthenticationError::TOKEN_QUOTA_EXCEEDED, 'The token quota for this user has been exceeded.'],
         ];
+    }
+
+    protected function getConcreteError(): string
+    {
+        return AuthenticationError::class;
     }
 }

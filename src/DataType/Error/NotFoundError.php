@@ -15,44 +15,32 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class NotFoundError implements ErrorInterface
+class NotFoundError extends AbstractError
 {
     public const NOT_FOUND = 'oegqlb.not_found';
     public const NOT_FOUND_TOKEN = 'oegqlb.not_found.token';
     public const NOT_FOUND_USER = 'oegqlb.not_found.user';
 
-    private const MESSAGES = [
-        self::NOT_FOUND => 'The requested resource was not found.',
-        self::NOT_FOUND_TOKEN => 'The requested token was not found.',
-        self::NOT_FOUND_USER => 'The requested user was not found.',
-    ];
-
     public function __construct(
-        private readonly string $code,
-        private readonly string $message,
+        string $code,
+        string $message,
         private readonly string $identifier
     ) {
+        parent::__construct($code, $message);
     }
 
-    public static function fromCode(string $code, string $identifier): self
+    protected static function messages(): array
     {
-        return new self($code, self::MESSAGES[$code], $identifier);
+        return [
+            self::NOT_FOUND => 'The requested resource was not found.',
+            self::NOT_FOUND_TOKEN => 'The requested token was not found.',
+            self::NOT_FOUND_USER => 'The requested user was not found.',
+        ];
     }
 
-    /**
-     * @Field()
-     */
-    public function code(): string
+    public static function fromCode(string $code, string $identifier = ''): static
     {
-        return $this->code;
-    }
-
-    /**
-     * @Field()
-     */
-    public function message(): string
-    {
-        return $this->message;
+        return new static($code, static::messages()[$code], $identifier);
     }
 
     /**

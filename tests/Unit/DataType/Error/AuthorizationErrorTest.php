@@ -9,34 +9,20 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(AuthorizationError::class)]
-class AuthorizationErrorTest extends TestCase
+class AuthorizationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function fields(): void
+    public function extendsAbstractError(): void
     {
-        $code = uniqid();
-        $message = uniqid();
-        $sut = new AuthorizationError($code, $message);
+        $sut = new AuthorizationError(uniqid(), uniqid());
 
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
-    }
-
-    #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCodeReturnsCorrectCodeAndMessage(string $code, string $expectedMessage): void
-    {
-        $sut = AuthorizationError::fromCode($code);
-
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
+        $this->assertInstanceOf(AbstractError::class, $sut);
     }
 
     public static function validCodesProvider(): array
@@ -45,5 +31,10 @@ class AuthorizationErrorTest extends TestCase
             [AuthorizationError::UNAUTHORIZED_DELETE_TOKEN, 'You are not authorized to delete this token.'],
             [AuthorizationError::UNAUTHORIZED_VIEW_TOKEN, 'You are not authorized to view this token.'],
         ];
+    }
+
+    protected function getConcreteError(): string
+    {
+        return AuthorizationError::class;
     }
 }
