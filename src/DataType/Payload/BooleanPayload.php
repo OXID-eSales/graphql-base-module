@@ -17,7 +17,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class CreationPayload extends AbstractPayload implements CreationPayloadInterface
+final class BooleanPayload extends AbstractPayload implements BooleanPayloadInterface
 {
     /**
      * @param ErrorInterface[] $userErrors
