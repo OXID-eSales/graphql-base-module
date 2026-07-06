@@ -10,18 +10,18 @@ declare(strict_types=1);
 namespace DataType\Payload;
 
 use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\Payload\CreationPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\BooleanPayload;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\AbstractPayloadTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(CreationPayload::class)]
-class CreationPayloadTest extends AbstractPayloadTestCase
+#[CoversClass(BooleanPayload::class)]
+class BooleanPayloadTest extends AbstractPayloadTestCase
 {
     #[Test]
     public function fields(): void
     {
-        $sut = new CreationPayload(true);
+        $sut = new BooleanPayload(true);
 
         $this->assertTrue($sut->success());
     }
@@ -29,13 +29,13 @@ class CreationPayloadTest extends AbstractPayloadTestCase
     #[Test]
     public function nullSuccess(): void
     {
-        $sut = new CreationPayload(null);
+        $sut = new BooleanPayload(null);
 
         $this->assertNull($sut->success());
     }
 
     protected function createPayload(array $userErrors = []): PayloadInterface
     {
-        return new CreationPayload(null, $userErrors);
+        return new BooleanPayload(null, $userErrors);
     }
 }
