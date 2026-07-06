@@ -9,31 +9,35 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
 use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NotFoundError::class)]
-class NotFoundErrorTest extends TestCase
+class NotFoundErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function fields(): void
+    public function extendsAbstractError(): void
     {
-        $code = uniqid();
-        $identifier = uniqid();
-        $message = uniqid();
-        $sut = new NotFoundError($code, $message, $identifier);
+        $sut = new NotFoundError(uniqid(), uniqid(), uniqid());
 
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertInstanceOf(AbstractError::class, $sut);
+    }
+
+    #[Test]
+    public function identifierField(): void
+    {
+        $identifier = uniqid();
+        $sut = new NotFoundError(uniqid(), uniqid(), $identifier);
+
         $this->assertSame($identifier, $sut->identifier());
     }
 
     #[Test]
     #[DataProvider('validCodesProvider')]
-    public function fromCodeReturnsCorrectCodeAndMessage(string $code, string $expectedMessage): void
+    public function fromCodeReturnsCorrectCodeAndMessageAndIdentifier(string $code, string $expectedMessage): void
     {
         $identifier = uniqid();
         $sut = NotFoundError::fromCode($code, $identifier);
@@ -50,5 +54,10 @@ class NotFoundErrorTest extends TestCase
             [NotFoundError::NOT_FOUND_TOKEN, 'The requested token was not found.'],
             [NotFoundError::NOT_FOUND_USER, 'The requested user was not found.'],
         ];
+    }
+
+    protected function getConcreteError(): string
+    {
+        return NotFoundError::class;
     }
 }

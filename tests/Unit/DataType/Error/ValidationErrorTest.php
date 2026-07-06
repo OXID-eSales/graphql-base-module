@@ -9,34 +9,20 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
 use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ValidationError::class)]
-class ValidationErrorTest extends TestCase
+class ValidationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function fields(): void
+    public function extendsAbstractError(): void
     {
-        $code = uniqid();
-        $message = uniqid();
-        $sut = new ValidationError($code, $message);
+        $sut = new ValidationError(uniqid(), uniqid());
 
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
-    }
-
-    #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCodeReturnsCorrectCodeAndMessage(string $code, string $expectedMessage): void
-    {
-        $sut = ValidationError::fromCode($code);
-
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
+        $this->assertInstanceOf(AbstractError::class, $sut);
     }
 
     public static function validCodesProvider(): array
@@ -46,5 +32,10 @@ class ValidationErrorTest extends TestCase
             [ValidationError::INVALID_FINGERPRINT, 'The fingerprint validation failed.'],
             [ValidationError::INVALID_REFRESH_TOKEN, 'The provided refresh token is invalid.'],
         ];
+    }
+
+    protected function getConcreteError(): string
+    {
+        return ValidationError::class;
     }
 }
