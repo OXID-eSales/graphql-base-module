@@ -287,6 +287,22 @@ class TokenTest extends BaseTestCase
     }
 
     #[Test]
+    public function shopTokensDeleteReturnsPayloadWithError(): void
+    {
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $exceptionConverterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $exceptionConverterMock->method('shopTokensDelete')->willReturn($errorStub);
+
+        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterMock);
+        $payload = $sut->shopTokensDelete();
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
+    }
+
+    #[Test]
     public function regenerateSignatureKeyReturnsPayload(): void
     {
         $success = (bool)rand(0, 1);
@@ -299,6 +315,22 @@ class TokenTest extends BaseTestCase
 
         $this->assertSame($success, $payload->success());
         $this->assertEmpty($payload->userErrors());
+    }
+
+    #[Test]
+    public function regenerateSignatureKeyReturnsPayloadWithError(): void
+    {
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $exceptionConverterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $exceptionConverterMock->method('regenerateSignatureKey')->willReturn($errorStub);
+
+        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterMock);
+        $payload = $sut->regenerateSignatureKey();
+
+        $this->assertNull($payload->success());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
     }
 
     private function getSut(
