@@ -7,23 +7,25 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataType;
+namespace OxidEsales\GraphQL\Base\DataType\Payload;
 
 use OxidEsales\GraphQL\Base\DataType\Error\AbstractPayload;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
+use OxidEsales\GraphQL\Base\DataType\Token;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
  * @Type()
  */
-final class LoginPayload extends AbstractPayload implements LoginPayloadInterface
+final class TokensPayload extends AbstractPayload implements TokensPayloadInterface
 {
     /**
+     * @param Token[]|null $tokens
      * @param ErrorInterface[] $userErrors
      */
     public function __construct(
-        private readonly ?LoginInterface $login,
+        private readonly ?array $tokens,
         array $userErrors = []
     ) {
         parent::__construct($userErrors);
@@ -31,9 +33,10 @@ final class LoginPayload extends AbstractPayload implements LoginPayloadInterfac
 
     /**
      * @Field()
+     * @return Token[]|null
      */
-    public function login(): ?LoginInterface
+    public function tokens(): ?array
     {
-        return $this->login;
+        return $this->tokens;
     }
 }
