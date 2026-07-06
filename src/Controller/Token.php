@@ -147,7 +147,13 @@ class Token
      */
     public function shopTokensDelete(): TokenDeletePayloadInterface
     {
-        return new TokenDeletePayload($this->tokenExceptionConverter->shopTokensDelete());
+        $result = $this->tokenExceptionConverter->shopTokensDelete();
+
+        if ($result instanceof ErrorInterface) {
+            return new TokenDeletePayload(null, [$result]);
+        }
+
+        return new TokenDeletePayload($result);
     }
 
     /**
@@ -163,6 +169,12 @@ class Token
      */
     public function regenerateSignatureKey(): BooleanPayloadInterface
     {
-        return new BooleanPayload($this->tokenExceptionConverter->regenerateSignatureKey());
+        $result = $this->tokenExceptionConverter->regenerateSignatureKey();
+
+        if ($result instanceof ErrorInterface) {
+            return new BooleanPayload(null, [$result]);
+        }
+
+        return new BooleanPayload($result);
     }
 }
