@@ -9,20 +9,20 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\CreationPayload;
-use OxidEsales\GraphQL\Base\DataType\CreationPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
+use OxidEsales\GraphQL\Base\DataType\Payload\CreationPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\CreationPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenDeletePayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenDeletePayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokensPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
-use OxidEsales\GraphQL\Base\DataType\TokenDeletePayload;
-use OxidEsales\GraphQL\Base\DataType\TokenDeletePayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
-use OxidEsales\GraphQL\Base\DataType\TokenPayload;
-use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\TokensPayload;
-use OxidEsales\GraphQL\Base\DataType\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use OxidEsales\GraphQL\Base\Service\TokenExceptionConverterInterface;
