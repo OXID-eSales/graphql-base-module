@@ -11,6 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
+/** @phpstan-consistent-constructor */
 abstract class AbstractError implements ErrorInterface
 {
     public function __construct(
