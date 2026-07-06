@@ -12,8 +12,8 @@ namespace OxidEsales\GraphQL\Base\Controller;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
-use OxidEsales\GraphQL\Base\DataType\Payload\CreationPayload;
-use OxidEsales\GraphQL\Base\DataType\Payload\CreationPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\BooleanPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\BooleanPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenDeletePayload;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenDeletePayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
@@ -161,8 +161,8 @@ class Token
      * @Logged
      * @Right("REGENERATE_SIGNATURE_KEY")
      */
-    public function regenerateSignatureKey(): CreationPayloadInterface
+    public function regenerateSignatureKey(): BooleanPayloadInterface
     {
-        return new CreationPayload($this->tokenExceptionConverter->regenerateSignatureKey());
+        return new BooleanPayload($this->tokenExceptionConverter->regenerateSignatureKey());
     }
 }
