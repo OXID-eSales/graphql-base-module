@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataType;
+namespace OxidEsales\GraphQL\Base\DataType\Payload;
 
 use OxidEsales\GraphQL\Base\DataType\Error\AbstractPayload;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;

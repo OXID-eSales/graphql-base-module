@@ -7,10 +7,11 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType;
+namespace DataType\Payload;
 
 use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\TokenPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
+use OxidEsales\GraphQL\Base\Tests\Unit\DataType\AbstractPayloadTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 

@@ -10,10 +10,10 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Controller;
 
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
-use OxidEsales\GraphQL\Base\DataType\LoginPayload;
-use OxidEsales\GraphQL\Base\DataType\LoginPayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\TokenPayload;
-use OxidEsales\GraphQL\Base\DataType\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayloadInterface;
 use OxidEsales\GraphQL\Base\Service\LoginExceptionConverterInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
