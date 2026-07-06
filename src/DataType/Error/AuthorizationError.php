@@ -9,46 +9,21 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataType\Error;
 
-use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
  * @Type()
  */
-final class AuthorizationError implements ErrorInterface
+final class AuthorizationError extends AbstractError
 {
     public const UNAUTHORIZED_DELETE_TOKEN = 'oegqlb.authorized.delete_token';
     public const UNAUTHORIZED_VIEW_TOKEN = 'oegqlb.authorized.view_token';
 
-    private const MESSAGES = [
-        self::UNAUTHORIZED_DELETE_TOKEN => 'You are not authorized to delete this token.',
-        self::UNAUTHORIZED_VIEW_TOKEN => 'You are not authorized to view this token.',
-    ];
-
-    public function __construct(
-        private readonly string $code,
-        private readonly string $message
-    ) {
-    }
-
-    public static function fromCode(string $code): self
+    protected static function messages(): array
     {
-        return new self($code, self::MESSAGES[$code]);
-    }
-
-    /**
-     * @Field()
-     */
-    public function code(): string
-    {
-        return $this->code;
-    }
-
-    /**
-     * @Field()
-     */
-    public function message(): string
-    {
-        return $this->message;
+        return [
+            self::UNAUTHORIZED_DELETE_TOKEN => 'You are not authorized to delete this token.',
+            self::UNAUTHORIZED_VIEW_TOKEN => 'You are not authorized to view this token.',
+        ];
     }
 }
