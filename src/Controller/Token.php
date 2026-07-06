@@ -163,7 +163,7 @@ class Token
      * Only use if no other option is left.
      * REGENERATE_SIGNATURE_KEY right is required.
      *
-     * @Mutation(outputType="CreationPayload")
+     * @Mutation(outputType="BooleanPayload")
      * @Logged
      * @Right("REGENERATE_SIGNATURE_KEY")
      */
