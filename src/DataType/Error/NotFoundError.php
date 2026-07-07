@@ -14,8 +14,8 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
  * @Type()
+ * @phpstan-consistent-constructor
  */
-/** @phpstan-consistent-constructor */
 class NotFoundError extends AbstractError
 {
     public const NOT_FOUND = 'oegqlb.not_found';

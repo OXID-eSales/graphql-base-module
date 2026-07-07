@@ -365,12 +365,17 @@ class TokenCest
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
+        $userId = 'unknown_user';
 
-        $result = $this->sendCustomerTokenDeleteMutation($I, 'unknown_user');
+        $result = $this->sendCustomerTokenDeleteMutation($I, $userId);
 
-        $I->assertEquals(
+        $I->assertSame(
             'The requested user was not found.',
             $result['data']['customerTokensDelete']['userErrors'][0]['message']
+        );
+        $I->assertSame(
+            $userId,
+            $result['data']['customerTokensDelete']['userErrors'][0]['identifier']
         );
     }
 
@@ -390,10 +395,15 @@ class TokenCest
     public function testShopAdminCannotDeleteNotExistingToken(AcceptanceTester $I): void
     {
         $I->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
-        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
+        $tokenId = 'not_existing_token';
+        $response = $this->sendTokenDeleteMutation($I, $tokenId);
         $I->assertEquals(
             'The requested token was not found.',
             $response['data']['tokenDelete']['userErrors'][0]['message']
+        );
+        $I->assertEquals(
+            $tokenId,
+            $response['data']['tokenDelete']['userErrors'][0]['identifier']
         );
     }
 
@@ -427,10 +437,15 @@ class TokenCest
     public function testUserCannotDeleteNotExistingToken(AcceptanceTester $I): void
     {
         $I->login(self::USER_LOGIN, $this->getUserPassword());
-        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
-        $I->assertEquals(
+        $tokenId = 'not_existing_token';
+        $response = $this->sendTokenDeleteMutation($I, $tokenId);
+        $I->assertSame(
             'The requested token was not found.',
             $response['data']['tokenDelete']['userErrors'][0]['message']
+        );
+        $I->assertSame(
+            $tokenId,
+            $response['data']['tokenDelete']['userErrors'][0]['identifier']
         );
     }
 
@@ -460,9 +475,13 @@ class TokenCest
 
         $I->login(self::USER_LOGIN, $this->getUserPassword());
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
-        $I->assertEquals(
+        $I->assertSame(
             'The requested token was not found.',
             $response['data']['tokenDelete']['userErrors'][0]['message']
+        );
+        $I->assertSame(
+            $tokenId,
+            $response['data']['tokenDelete']['userErrors'][0]['identifier']
         );
     }
 
@@ -609,7 +628,7 @@ class TokenCest
         $query = ' mutation {
                customerTokensDelete ';
         !$userId ?: $query .= '(customerId: "' . $userId . '")';
-        $query .= '{ deletedCount userErrors { code message } } }';
+        $query .= '{ deletedCount userErrors { code message ... on NotFoundError { identifier } } } }';
 
         $I->sendGQLQuery($query);
 
@@ -684,7 +703,9 @@ class TokenCest
     private function sendTokenDeleteMutation(AcceptanceTester $I, string $tokenId): array
     {
         $mutation = 'mutation ($tokenId: ID!) {
-            tokenDelete(tokenId: $tokenId) { deletedCount userErrors { code message } }
+            tokenDelete(tokenId: $tokenId) {
+                deletedCount userErrors { code message ... on NotFoundError { identifier }}
+            }
         }';
 
         $I->sendGQLQuery($mutation, ['tokenId' => $tokenId]);
