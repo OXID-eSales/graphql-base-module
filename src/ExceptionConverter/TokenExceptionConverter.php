@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Service;
+namespace OxidEsales\GraphQL\Base\ExceptionConverter;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
@@ -25,6 +25,9 @@ use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Exception\UserNotFound;
+use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Token;
+use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 /**

@@ -15,7 +15,7 @@ use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
-use OxidEsales\GraphQL\Base\Service\LoginExceptionConverter;
+use OxidEsales\GraphQL\Base\ExceptionConverter\LoginExceptionConverter;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
