@@ -14,7 +14,7 @@ use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayload;
 use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayloadInterface;
-use OxidEsales\GraphQL\Base\Service\LoginExceptionConverterInterface;
+use OxidEsales\GraphQL\Base\ExceptionConverter\LoginExceptionConverterInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login

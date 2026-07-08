@@ -13,7 +13,7 @@ use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Controller\Login;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\LoginInterface;
-use OxidEsales\GraphQL\Base\Service\LoginExceptionConverterInterface;
+use OxidEsales\GraphQL\Base\ExceptionConverter\LoginExceptionConverterInterface;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
