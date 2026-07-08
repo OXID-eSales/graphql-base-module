@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Base\Service;
+namespace OxidEsales\GraphQL\Base\ExceptionConverter;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
