@@ -30,6 +30,7 @@ class NotFoundError extends AbstractError
         parent::__construct($code, $message);
     }
 
+    /** @inheritDoc */
     protected static function messages(): array
     {
         return [
