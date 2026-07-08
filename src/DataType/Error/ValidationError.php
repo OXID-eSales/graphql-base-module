@@ -20,6 +20,7 @@ final class ValidationError extends AbstractError
     public const INVALID_FINGERPRINT = 'oegqlb.validation.invalid_fingerprint';
     public const INVALID_REFRESH_TOKEN = 'oegqlb.validation.invalid_refresh_token';
 
+    /** @inheritDoc */
     protected static function messages(): array
     {
         return [

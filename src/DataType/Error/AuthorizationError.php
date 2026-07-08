@@ -19,6 +19,7 @@ final class AuthorizationError extends AbstractError
     public const UNAUTHORIZED_DELETE_TOKEN = 'oegqlb.authorized.delete_token';
     public const UNAUTHORIZED_VIEW_TOKEN = 'oegqlb.authorized.view_token';
 
+    /** @inheritDoc */
     protected static function messages(): array
     {
         return [
