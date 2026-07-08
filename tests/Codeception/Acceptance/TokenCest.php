@@ -398,7 +398,7 @@ class TokenCest
         $tokenId = 'not_existing_token';
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
         $I->assertEquals(
-            'The requested token was not found.',
+            'The token was not found.',
             $response['data']['tokenDelete']['userErrors'][0]['message']
         );
         $I->assertEquals(
@@ -440,7 +440,7 @@ class TokenCest
         $tokenId = 'not_existing_token';
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
         $I->assertSame(
-            'The requested token was not found.',
+            'The token was not found.',
             $response['data']['tokenDelete']['userErrors'][0]['message']
         );
         $I->assertSame(
@@ -476,7 +476,7 @@ class TokenCest
         $I->login(self::USER_LOGIN, $this->getUserPassword());
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
         $I->assertSame(
-            'The requested token was not found.',
+            'The token was not found.',
             $response['data']['tokenDelete']['userErrors'][0]['message']
         );
         $I->assertSame(
