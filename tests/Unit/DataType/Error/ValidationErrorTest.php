@@ -28,9 +28,9 @@ class ValidationErrorTest extends AbstractErrorTestCase
     public static function validCodesProvider(): array
     {
         return [
-            [ValidationError::INVALID_CREDENTIALS, 'The provided credentials are invalid.'],
-            [ValidationError::INVALID_FINGERPRINT, 'The fingerprint validation failed.'],
-            [ValidationError::INVALID_REFRESH_TOKEN, 'The provided refresh token is invalid.'],
+            [ValidationError::CREDENTIALS, 'The provided credentials are invalid.'],
+            [ValidationError::FINGERPRINT, 'The fingerprint validation failed.'],
+            [ValidationError::REFRESH_TOKEN, 'The provided refresh token is invalid.'],
         ];
     }
 
