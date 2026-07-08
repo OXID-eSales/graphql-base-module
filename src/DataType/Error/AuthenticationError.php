@@ -18,6 +18,7 @@ final class AuthenticationError extends AbstractError
 {
     public const TOKEN_QUOTA_EXCEEDED = 'oegqlb.authentication.token_quota_exceeded';
 
+    /** @inheritDoc */
     protected static function messages(): array
     {
         return [

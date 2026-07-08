@@ -20,6 +20,7 @@ abstract class AbstractError implements ErrorInterface
     ) {
     }
 
+    /** @return array<string, string> */
     abstract protected static function messages(): array;
 
     public static function fromCode(string $code): static
