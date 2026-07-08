@@ -18,9 +18,8 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 class NotFoundError extends AbstractError
 {
-    public const NOT_FOUND = 'oegqlb.not_found';
-    public const NOT_FOUND_TOKEN = 'oegqlb.not_found.token';
-    public const NOT_FOUND_USER = 'oegqlb.not_found.user';
+    public const TOKEN = 'oegqlb.not_found.token';
+    public const USER = 'oegqlb.not_found.user';
 
     public function __construct(
         string $code,
@@ -34,9 +33,8 @@ class NotFoundError extends AbstractError
     protected static function messages(): array
     {
         return [
-            self::NOT_FOUND => 'The requested resource was not found.',
-            self::NOT_FOUND_TOKEN => 'The requested token was not found.',
-            self::NOT_FOUND_USER => 'The requested user was not found.',
+            self::TOKEN => 'The requested token was not found.',
+            self::USER => 'The requested user was not found.',
         ];
     }
 

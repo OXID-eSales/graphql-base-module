@@ -50,9 +50,8 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     public static function validCodesProvider(): array
     {
         return [
-            [NotFoundError::NOT_FOUND, 'The requested resource was not found.'],
-            [NotFoundError::NOT_FOUND_TOKEN, 'The requested token was not found.'],
-            [NotFoundError::NOT_FOUND_USER, 'The requested user was not found.'],
+            [NotFoundError::TOKEN, 'The requested token was not found.'],
+            [NotFoundError::USER, 'The requested user was not found.'],
         ];
     }
 

@@ -59,9 +59,9 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
         try {
             return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
         } catch (FingerprintValidationException) {
-            return ValidationError::fromCode(ValidationError::INVALID_FINGERPRINT);
+            return ValidationError::fromCode(ValidationError::FINGERPRINT);
         } catch (InvalidRefreshToken) {
-            return ValidationError::fromCode(ValidationError::INVALID_REFRESH_TOKEN);
+            return ValidationError::fromCode(ValidationError::REFRESH_TOKEN);
         } catch (TokenQuota) {
             return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
         }
@@ -74,7 +74,7 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
         } catch (InvalidLogin) {
             return AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN);
         } catch (UserNotFound) {
-            return NotFoundError::fromCode(NotFoundError::NOT_FOUND_USER, (string)$customerId);
+            return NotFoundError::fromCode(NotFoundError::USER, (string)$customerId);
         }
     }
 
@@ -84,7 +84,7 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
             $this->tokenService->deleteToken($tokenId);
             return true;
         } catch (UnknownToken) {
-            return NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId);
+            return NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId);
         }
     }
 
@@ -94,7 +94,7 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
             $this->tokenService->deleteUserToken($user, $tokenId);
             return true;
         } catch (UnknownToken) {
-            return NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId);
+            return NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId);
         }
     }
 
