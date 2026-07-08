@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\GraphQL\Base\ExceptionConverter\LoginExceptionConverterInterface:
+    class: OxidEsales\GraphQL\Base\ExceptionConverter\LoginExceptionConverter
+
+  OxidEsales\GraphQL\Base\ExceptionConverter\TokenExceptionConverterInterface:
+    class: OxidEsales\GraphQL\Base\ExceptionConverter\TokenExceptionConverter

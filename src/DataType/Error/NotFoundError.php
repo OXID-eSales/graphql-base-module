@@ -33,8 +33,8 @@ class NotFoundError extends AbstractError
     protected static function messages(): array
     {
         return [
-            self::TOKEN => 'The requested token was not found.',
-            self::USER => 'The requested user was not found.',
+            self::TOKEN => 'The token was not found.',
+            self::USER => 'The user was not found.',
         ];
     }
 
