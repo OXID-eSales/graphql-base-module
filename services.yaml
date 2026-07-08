@@ -2,6 +2,7 @@ imports:
   - { resource: src/Infrastructure/services.yaml }
   - { resource: src/Seo/services.yaml }
   - { resource: src/Shared/services.yaml }
+  - { resource: src/ExceptionConverter/services.yaml }
 
 services:
 
@@ -52,12 +53,6 @@ services:
 
   OxidEsales\GraphQL\Base\Service\LoginServiceInterface:
     class: OxidEsales\GraphQL\Base\Service\LoginService
-
-  OxidEsales\GraphQL\Base\Service\LoginExceptionConverterInterface:
-    class: OxidEsales\GraphQL\Base\Service\LoginExceptionConverter
-
-  OxidEsales\GraphQL\Base\Service\TokenExceptionConverterInterface:
-    class: OxidEsales\GraphQL\Base\Service\TokenExceptionConverter
 
   OxidEsales\GraphQL\Base\Service\TokenValidator:
     class: OxidEsales\GraphQL\Base\Service\TokenValidator
