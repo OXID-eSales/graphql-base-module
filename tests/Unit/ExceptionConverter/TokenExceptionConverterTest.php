@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\Tests\Unit\Service;
+namespace ExceptionConverter;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
