@@ -97,7 +97,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
         $result = $sut->refresh($refreshToken, $fingerprintHash);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::INVALID_FINGERPRINT), $result);
+        $this->assertEquals(ValidationError::fromCode(ValidationError::FINGERPRINT), $result);
     }
 
     #[Test]
@@ -114,7 +114,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
         $result = $sut->refresh($refreshToken, $fingerprintHash);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::INVALID_REFRESH_TOKEN), $result);
+        $this->assertEquals(ValidationError::fromCode(ValidationError::REFRESH_TOKEN), $result);
     }
 
     #[Test]
@@ -192,7 +192,7 @@ class TokenExceptionConverterTest extends TestCase
         $result = $sut->customerTokensDelete($customerId);
 
         $this->assertEquals(
-            NotFoundError::fromCode(NotFoundError::NOT_FOUND_USER, (string)$customerId),
+            NotFoundError::fromCode(NotFoundError::USER, (string)$customerId),
             $result
         );
     }
@@ -222,7 +222,7 @@ class TokenExceptionConverterTest extends TestCase
         $result = $sut->deleteToken($tokenId);
 
         $this->assertEquals(
-            NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId),
+            NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId),
             $result
         );
     }
@@ -254,7 +254,7 @@ class TokenExceptionConverterTest extends TestCase
         $result = $sut->deleteUserToken($this->createStub(UserInterface::class), $tokenId);
 
         $this->assertEquals(
-            NotFoundError::fromCode(NotFoundError::NOT_FOUND_TOKEN, (string)$tokenId),
+            NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId),
             $result
         );
     }
