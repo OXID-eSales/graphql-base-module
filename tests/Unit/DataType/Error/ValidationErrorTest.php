@@ -18,11 +18,13 @@ use PHPUnit\Framework\Attributes\Test;
 class ValidationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function extendsAbstractError(): void
+    public function validationError(): void
     {
-        $sut = new ValidationError(uniqid(), uniqid());
+        $sut = new ValidationError($code = uniqid(), $message = uniqid());
 
         $this->assertInstanceOf(AbstractError::class, $sut);
+        $this->assertSame($code, $sut->code());
+        $this->assertSame($message, $sut->message());
     }
 
     #[Test]
