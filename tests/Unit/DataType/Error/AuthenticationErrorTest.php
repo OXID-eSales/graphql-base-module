@@ -25,6 +25,12 @@ class AuthenticationErrorTest extends AbstractErrorTestCase
         $this->assertInstanceOf(AbstractError::class, $sut);
     }
 
+    #[Test]
+    public function errorCodes(): void
+    {
+        $this->assertSame('oegqlb.authentication.token_quota_exceeded', AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+    }
+
     public static function validCodesProvider(): array
     {
         return [
