@@ -370,7 +370,7 @@ class TokenCest
         $result = $this->sendCustomerTokenDeleteMutation($I, $userId);
 
         $I->assertSame(
-            'The requested user was not found.',
+            'The user was not found.',
             $result['data']['customerTokensDelete']['userErrors'][0]['message']
         );
         $I->assertSame(
