@@ -25,6 +25,13 @@ class AuthorizationErrorTest extends AbstractErrorTestCase
         $this->assertInstanceOf(AbstractError::class, $sut);
     }
 
+    #[Test]
+    public function errorCodes(): void
+    {
+        $this->assertSame('oegqlb.authorized.delete_token', AuthorizationError::UNAUTHORIZED_DELETE_TOKEN);
+        $this->assertSame('oegqlb.authorized.view_token', AuthorizationError::UNAUTHORIZED_VIEW_TOKEN);
+    }
+
     public static function validCodesProvider(): array
     {
         return [

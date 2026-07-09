@@ -25,6 +25,14 @@ class ValidationErrorTest extends AbstractErrorTestCase
         $this->assertInstanceOf(AbstractError::class, $sut);
     }
 
+    #[Test]
+    public function errorCodes(): void
+    {
+        $this->assertSame('oegqlb.validation.credentials', ValidationError::CREDENTIALS);
+        $this->assertSame('oegqlb.validation.fingerprint', ValidationError::FINGERPRINT);
+        $this->assertSame('oegqlb.validation.refresh_token', ValidationError::REFRESH_TOKEN);
+    }
+
     public static function validCodesProvider(): array
     {
         return [

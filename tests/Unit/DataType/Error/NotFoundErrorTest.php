@@ -36,6 +36,13 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     }
 
     #[Test]
+    public function errorCodes(): void
+    {
+        $this->assertSame('oegqlb.not_found.token', NotFoundError::TOKEN);
+        $this->assertSame('oegqlb.not_found.user', NotFoundError::USER);
+    }
+
+    #[Test]
     #[DataProvider('validCodesProvider')]
     public function fromCodeReturnsCorrectCodeAndMessageAndIdentifier(string $code, string $expectedMessage): void
     {
