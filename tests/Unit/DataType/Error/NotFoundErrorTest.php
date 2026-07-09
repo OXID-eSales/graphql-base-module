@@ -39,7 +39,7 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     #[Test]
     public function fromCodeWithoutOptionalArguments(): void
     {
-        $sut = NotFoundError::fromCode(uniqid());
+        $sut = NotFoundError::fromCode(NotFoundError::USER);
         $this->assertSame('', $sut->identifier());
     }
 
