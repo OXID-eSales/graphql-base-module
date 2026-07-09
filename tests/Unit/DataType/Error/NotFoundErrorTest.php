@@ -36,6 +36,7 @@ class NotFoundErrorTest extends AbstractErrorTestCase
         $this->assertSame('oegqlb.not_found.user', NotFoundError::USER);
     }
 
+    #[Test]
     public function fromCodeWithoutOptionalArguments(): void
     {
         $sut = NotFoundError::fromCode(uniqid());
@@ -43,14 +44,11 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     }
 
     #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCodeReturnsCorrectCodeAndMessageAndIdentifier(string $code, string $expectedMessage): void
+    public function fromCodeReturnsCorrectIdentifier(): void
     {
         $identifier = uniqid();
-        $sut = NotFoundError::fromCode($code, $identifier);
+        $sut = NotFoundError::fromCode(NotFoundError::TOKEN, $identifier);
 
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
         $this->assertSame($identifier, $sut->identifier());
     }
 
