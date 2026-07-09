@@ -18,11 +18,13 @@ use PHPUnit\Framework\Attributes\Test;
 class AuthorizationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function extendsAbstractError(): void
+    public function authorizationError(): void
     {
-        $sut = new AuthorizationError(uniqid(), uniqid());
+        $sut = new AuthorizationError($code = uniqid(), $message = uniqid());
 
         $this->assertInstanceOf(AbstractError::class, $sut);
+        $this->assertSame($code, $sut->code());
+        $this->assertSame($message, $sut->message());
     }
 
     #[Test]

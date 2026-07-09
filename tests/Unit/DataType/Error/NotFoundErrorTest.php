@@ -19,19 +19,13 @@ use PHPUnit\Framework\Attributes\Test;
 class NotFoundErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function extendsAbstractError(): void
+    public function notFoundError(): void
     {
-        $sut = new NotFoundError(uniqid(), uniqid(), uniqid());
+        $sut = new NotFoundError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
 
         $this->assertInstanceOf(AbstractError::class, $sut);
-    }
-
-    #[Test]
-    public function identifierField(): void
-    {
-        $identifier = uniqid();
-        $sut = new NotFoundError(uniqid(), uniqid(), $identifier);
-
+        $this->assertSame($code, $sut->code());
+        $this->assertSame($message, $sut->message());
         $this->assertSame($identifier, $sut->identifier());
     }
 
@@ -40,6 +34,12 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     {
         $this->assertSame('oegqlb.not_found.token', NotFoundError::TOKEN);
         $this->assertSame('oegqlb.not_found.user', NotFoundError::USER);
+    }
+
+    public function fromCodeWithoutOptionalArguments(): void
+    {
+        $sut = NotFoundError::fromCode(uniqid());
+        $this->assertSame('', $sut->identifier());
     }
 
     #[Test]
