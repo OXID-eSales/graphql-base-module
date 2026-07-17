@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataType\Error;
 
+use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
@@ -20,6 +21,14 @@ final class ValidationError extends AbstractError
     public const FINGERPRINT = 'oegqlb.validation.fingerprint';
     public const REFRESH_TOKEN = 'oegqlb.validation.refresh_token';
 
+    public function __construct(
+        string $code,
+        string $message,
+        private readonly string $value = ''
+    ) {
+        parent::__construct($code, $message);
+    }
+
     /** @inheritDoc */
     protected static function messages(): array
     {
@@ -28,5 +37,18 @@ final class ValidationError extends AbstractError
             self::FINGERPRINT => 'The fingerprint validation failed.',
             self::REFRESH_TOKEN => 'The provided refresh token is invalid.',
         ];
+    }
+
+    public static function fromCode(string $code, string $value = ''): static
+    {
+        return new static($code, static::messages()[$code], $value);
+    }
+
+    /**
+     * @Field()
+     */
+    public function value(): string
+    {
+        return $this->value;
     }
 }

@@ -97,7 +97,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
         $result = $sut->refresh($refreshToken, $fingerprintHash);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::FINGERPRINT), $result);
+        $this->assertEquals(ValidationError::fromCode(ValidationError::FINGERPRINT, $fingerprintHash), $result);
     }
 
     #[Test]
@@ -114,7 +114,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
         $result = $sut->refresh($refreshToken, $fingerprintHash);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::REFRESH_TOKEN), $result);
+        $this->assertEquals(ValidationError::fromCode(ValidationError::REFRESH_TOKEN, $refreshToken), $result);
     }
 
     #[Test]
