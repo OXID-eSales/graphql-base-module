@@ -62,9 +62,9 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
         try {
             return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
         } catch (FingerprintValidationException) {
-            return ValidationError::fromCode(ValidationError::FINGERPRINT);
+            return ValidationError::fromCode(ValidationError::FINGERPRINT, $fingerprintHash);
         } catch (InvalidRefreshToken) {
-            return ValidationError::fromCode(ValidationError::REFRESH_TOKEN);
+            return ValidationError::fromCode(ValidationError::REFRESH_TOKEN, $refreshToken);
         } catch (TokenQuota) {
             return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
         }

@@ -20,11 +20,12 @@ class ValidationErrorTest extends AbstractErrorTestCase
     #[Test]
     public function validationError(): void
     {
-        $sut = new ValidationError($code = uniqid(), $message = uniqid());
+        $sut = new ValidationError($code = uniqid(), $message = uniqid(), $value = uniqid());
 
         $this->assertInstanceOf(AbstractError::class, $sut);
         $this->assertSame($code, $sut->code());
         $this->assertSame($message, $sut->message());
+        $this->assertSame($value, $sut->value());
     }
 
     #[Test]
@@ -33,6 +34,15 @@ class ValidationErrorTest extends AbstractErrorTestCase
         $this->assertSame('oegqlb.validation.credentials', ValidationError::CREDENTIALS);
         $this->assertSame('oegqlb.validation.fingerprint', ValidationError::FINGERPRINT);
         $this->assertSame('oegqlb.validation.refresh_token', ValidationError::REFRESH_TOKEN);
+    }
+
+    #[Test]
+    public function fromCodeReturnsCorrectValue(): void
+    {
+        $value = uniqid();
+        $sut = ValidationError::fromCode(ValidationError::CREDENTIALS, $value);
+
+        $this->assertSame($value, $sut->value());
     }
 
     public static function validCodesProvider(): array
