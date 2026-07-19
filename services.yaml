@@ -119,6 +119,12 @@ services:
   OxidEsales\GraphQL\Base\Event\Subscriber\BeforeTokenCreationSubscriber:
     tags: [ 'kernel.event_subscriber' ]
 
+  OxidEsales\GraphQL\Base\Event\Subscriber\ShopCacheClearSubscriber:
+    arguments:
+      $cache: '@oxidesales.graphqlbase.cache'
+    tags:
+      - { name: kernel.event_subscriber }
+
   OxidEsales\GraphQL\Base\Framework\FilesystemAdapterFactory:
     class: OxidEsales\GraphQL\Base\Framework\FilesystemAdapterFactory
 

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [14.0.0] - unreleased
 
+### Added
+- Clear the GraphQL schema cache when the shop cache is cleared (e.g. via `oe:cache:clear`)
+
 ### Changed
 - Update module to work with OXID eShop 7.6
 - Upgrade GraphQLite v7 -> v8
