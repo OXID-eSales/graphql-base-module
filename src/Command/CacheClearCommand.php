@@ -13,6 +13,7 @@ use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CacheClearCommand extends Command
 {
@@ -21,21 +22,22 @@ class CacheClearCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('oe:graphql:cache-clear')
-            ->setDescription('Clear schema cache');
+        $this->setDescription('Clear schema cache');
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln('<info>Clearing schema cache...</info>');
-        $this->cache->clear();
-        $output->writeln('<info>Schema cache cleared.</info>');
+        $style = new SymfonyStyle($input, $output);
+
+        if (!$this->cache->clear()) {
+            $style->error('Failed to clear schema cache.');
+
+            return Command::FAILURE;
+        }
+
+        $style->success('Schema cache cleared.');
 
         return Command::SUCCESS;
     }
