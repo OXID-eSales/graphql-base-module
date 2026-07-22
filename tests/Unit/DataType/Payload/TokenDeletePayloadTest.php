@@ -9,22 +9,25 @@ declare(strict_types=1);
 
 namespace DataType\Payload;
 
-use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenDeletePayload;
-use OxidEsales\GraphQL\Base\Tests\Unit\DataType\AbstractPayloadTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(TokenDeletePayload::class)]
-class TokenDeletePayloadTest extends AbstractPayloadTestCase
+class TokenDeletePayloadTest extends TestCase
 {
     #[Test]
     public function fields(): void
     {
         $count = random_int(1, 100);
-        $sut = new TokenDeletePayload($count);
+        $userErrors = [$this->createStub(ErrorInterface::class)];
+
+        $sut = new TokenDeletePayload($count, $userErrors);
 
         $this->assertSame($count, $sut->deletedCount());
+        $this->assertSame($userErrors, $sut->userErrors());
     }
 
     #[Test]
@@ -33,10 +36,6 @@ class TokenDeletePayloadTest extends AbstractPayloadTestCase
         $sut = new TokenDeletePayload(null);
 
         $this->assertNull($sut->deletedCount());
-    }
-
-    protected function createPayload(array $userErrors = []): PayloadInterface
-    {
-        return new TokenDeletePayload(null, $userErrors);
+        $this->assertEmpty($sut->userErrors());
     }
 }
