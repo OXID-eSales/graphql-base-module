@@ -9,22 +9,25 @@ declare(strict_types=1);
 
 namespace DataType\Payload;
 
-use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
-use OxidEsales\GraphQL\Base\Tests\Unit\DataType\AbstractPayloadTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(TokenPayload::class)]
-class TokenPayloadTest extends AbstractPayloadTestCase
+class TokenPayloadTest extends TestCase
 {
     #[Test]
     public function fields(): void
     {
         $tokenString = uniqid();
-        $sut = new TokenPayload($tokenString);
+        $userErrors = [$this->createStub(ErrorInterface::class)];
+
+        $sut = new TokenPayload($tokenString, $userErrors);
 
         $this->assertSame($tokenString, $sut->token());
+        $this->assertSame($userErrors, $sut->userErrors());
     }
 
     #[Test]
@@ -33,10 +36,6 @@ class TokenPayloadTest extends AbstractPayloadTestCase
         $sut = new TokenPayload(null);
 
         $this->assertNull($sut->token());
-    }
-
-    protected function createPayload(array $userErrors = []): PayloadInterface
-    {
-        return new TokenPayload(null, $userErrors);
+        $this->assertEmpty($sut->userErrors());
     }
 }

@@ -9,23 +9,26 @@ declare(strict_types=1);
 
 namespace DataType\Payload;
 
-use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayload;
-use OxidEsales\GraphQL\Base\Tests\Unit\DataType\AbstractPayloadTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(LoginPayload::class)]
-class LoginPayloadTest extends AbstractPayloadTestCase
+class LoginPayloadTest extends TestCase
 {
     #[Test]
     public function fields(): void
     {
         $loginStub = $this->createStub(LoginInterface::class);
-        $sut = new LoginPayload($loginStub);
+        $userErrors = [$this->createStub(ErrorInterface::class)];
+
+        $sut = new LoginPayload($loginStub, $userErrors);
 
         $this->assertSame($loginStub, $sut->login());
+        $this->assertSame($userErrors, $sut->userErrors());
     }
 
     #[Test]
@@ -34,10 +37,6 @@ class LoginPayloadTest extends AbstractPayloadTestCase
         $sut = new LoginPayload(null);
 
         $this->assertNull($sut->login());
-    }
-
-    protected function createPayload(array $userErrors = []): PayloadInterface
-    {
-        return new LoginPayload(null, $userErrors);
+        $this->assertEmpty($sut->userErrors());
     }
 }
