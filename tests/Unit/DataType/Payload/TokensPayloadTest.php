@@ -9,24 +9,27 @@ declare(strict_types=1);
 
 namespace DataType\Payload;
 
-use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokensPayload;
 use OxidEsales\GraphQL\Base\DataType\Token;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
-use OxidEsales\GraphQL\Base\Tests\Unit\DataType\AbstractPayloadTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(TokensPayload::class)]
-class TokensPayloadTest extends AbstractPayloadTestCase
+class TokensPayloadTest extends TestCase
 {
     #[Test]
     public function fields(): void
     {
         $token = new Token($this->createStub(TokenModel::class));
-        $sut = new TokensPayload([$token]);
+        $userErrors = [$this->createStub(ErrorInterface::class)];
+
+        $sut = new TokensPayload([$token], $userErrors);
 
         $this->assertSame([$token], $sut->tokens());
+        $this->assertSame($userErrors, $sut->userErrors());
     }
 
     #[Test]
@@ -35,10 +38,6 @@ class TokensPayloadTest extends AbstractPayloadTestCase
         $sut = new TokensPayload(null);
 
         $this->assertNull($sut->tokens());
-    }
-
-    protected function createPayload(array $userErrors = []): PayloadInterface
-    {
-        return new TokensPayload(null, $userErrors);
+        $this->assertEmpty($sut->userErrors());
     }
 }
