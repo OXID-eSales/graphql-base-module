@@ -11,9 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class AuthorizationError extends AbstractError
 {
     public const UNAUTHORIZED_DELETE_TOKEN = 'oegqlb.authorized.delete_token';

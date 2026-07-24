@@ -28,17 +28,13 @@ abstract class AbstractError implements ErrorInterface
         return new static($code, static::messages()[$code]);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function code(): string
     {
         return $this->code;
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function message(): string
     {
         return $this->message;

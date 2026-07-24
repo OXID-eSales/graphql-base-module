@@ -12,9 +12,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class ValidationError extends AbstractError
 {
     public const CREDENTIALS = 'oegqlb.validation.credentials';
@@ -44,9 +42,7 @@ final class ValidationError extends AbstractError
         return new static($code, static::messages()[$code], $value);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function value(): string
     {
         return $this->value;

@@ -11,9 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class AuthenticationError extends AbstractError
 {
     public const TOKEN_QUOTA_EXCEEDED = 'oegqlb.authentication.token_quota_exceeded';

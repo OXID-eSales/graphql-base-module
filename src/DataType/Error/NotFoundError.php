@@ -13,9 +13,9 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
- * @Type()
  * @phpstan-consistent-constructor
  */
+#[Type]
 class NotFoundError extends AbstractError
 {
     public const TOKEN = 'oegqlb.not_found.token';
@@ -43,9 +43,7 @@ class NotFoundError extends AbstractError
         return new static($code, static::messages()[$code], $identifier);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function identifier(): string
     {
         return $this->identifier;

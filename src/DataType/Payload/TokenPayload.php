@@ -14,9 +14,7 @@ use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class TokenPayload extends AbstractPayload implements TokenPayloadInterface
 {
     /**
@@ -29,9 +27,7 @@ final class TokenPayload extends AbstractPayload implements TokenPayloadInterfac
         parent::__construct($userErrors);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function token(): ?string
     {
         return $this->token;

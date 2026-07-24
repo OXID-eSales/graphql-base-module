@@ -14,9 +14,7 @@ use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class TokenDeletePayload extends AbstractPayload implements TokenDeletePayloadInterface
 {
     /**
@@ -29,9 +27,7 @@ final class TokenDeletePayload extends AbstractPayload implements TokenDeletePay
         parent::__construct($userErrors);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function deletedCount(): ?int
     {
         return $this->deletedCount;
