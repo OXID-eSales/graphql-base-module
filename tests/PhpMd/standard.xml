@@ -18,7 +18,11 @@
                     \OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError,
                     \OxidEsales\GraphQL\Base\DataType\Error\ValidationError,
                     \OxidEsales\GraphQL\Base\DataType\Error\NotFoundError,
-                    \OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError
+                    \OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError,
+                    \OxidEsales\GraphQL\Base\DataType\Error\IdAlreadyExistError,
+                    \OxidEsales\GraphQL\Base\DataType\Error\NotCreatedError,
+                    \OxidEsales\GraphQL\Base\DataType\Error\NotDeletedError,
+                    \OxidEsales\GraphQL\Base\DataType\Error\NotUpdatedError
                 </value>
             </property>
         </properties>
