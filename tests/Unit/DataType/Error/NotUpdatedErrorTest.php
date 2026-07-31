@@ -13,10 +13,9 @@ use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
 use OxidEsales\GraphQL\Base\DataType\Error\NotUpdatedError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NotUpdatedError::class)]
-final class NotUpdatedErrorTest extends TestCase
+final class NotUpdatedErrorTest extends AbstractErrorTestCase
 {
     #[Test]
     public function notUpdatedError(): void

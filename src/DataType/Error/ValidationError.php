@@ -29,26 +29,26 @@ final class ValidationError extends AbstractError
         parent::__construct($code, $message);
     }
 
-    /** @inheritDoc */
-    protected static function messages(): array
-    {
-        return [
-            self::CREDENTIALS => 'The provided credentials are invalid.',
-            self::FINGERPRINT => 'The fingerprint validation failed.',
-            self::REFRESH_TOKEN => 'The provided refresh token is invalid.',
-        ];
-    }
-
-    public static function fromCode(string $code, string $value = ''): static
-    {
-        return new static($code, static::messages()[$code], $value);
-    }
-
     /**
      * @Field()
      */
     public function value(): string
     {
         return $this->value;
+    }
+
+    public static function fromCode(string $code, string $value): self
+    {
+        return new self($code, self::messages()[$code], $value);
+    }
+
+    /** @return array<string, string> */
+    private static function messages(): array
+    {
+        return [
+            self::CREDENTIALS => 'The provided credentials are invalid.',
+            self::FINGERPRINT => 'The fingerprint validation failed.',
+            self::REFRESH_TOKEN => 'The provided refresh token is invalid.',
+        ];
     }
 }

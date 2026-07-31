@@ -73,7 +73,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(tokenService: $tokenServiceMock);
         $result = $sut->createToken($username, $password);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::CREDENTIALS), $result);
+        $this->assertEquals(ValidationError::fromCode(ValidationError::CREDENTIALS, ''), $result);
     }
 
     #[Test]
@@ -141,7 +141,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(loginService: $loginServiceMock);
         $result = $sut->login($username, $password);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::CREDENTIALS), $result);
+        $this->assertEquals(ValidationError::fromCode(ValidationError::CREDENTIALS, ''), $result);
     }
 
     #[Test]

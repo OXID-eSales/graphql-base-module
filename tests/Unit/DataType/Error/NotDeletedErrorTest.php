@@ -13,10 +13,9 @@ use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
 use OxidEsales\GraphQL\Base\DataType\Error\NotDeletedError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NotDeletedError::class)]
-final class NotDeletedErrorTest extends TestCase
+final class NotDeletedErrorTest extends AbstractErrorTestCase
 {
     #[Test]
     public function notDeletedError(): void
