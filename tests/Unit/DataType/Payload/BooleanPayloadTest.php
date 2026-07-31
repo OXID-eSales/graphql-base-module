@@ -21,10 +21,10 @@ class BooleanPayloadTest extends TestCase
     #[Test]
     public function fields(): void
     {
-        $success = rand(0, 1);
+        $success = (bool)rand(0, 1);
         $userErrors = [$this->createStub(ErrorInterface::class)];
 
-        $sut = new BooleanPayload(true, $userErrors);
+        $sut = new BooleanPayload($success, $userErrors);
 
         $this->assertSame($success, $sut->success());
         $this->assertSame($userErrors, $sut->userErrors());
