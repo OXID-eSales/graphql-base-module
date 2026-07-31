@@ -39,7 +39,7 @@ class NotFoundError extends AbstractError
 
     public static function fromCode(string $code, string $identifier): static
     {
-        return new static($code, static::messages()[$code], $identifier);
+        return new self($code, self::messages()[$code], $identifier);
     }
 
     /** @return array<string, string> */
