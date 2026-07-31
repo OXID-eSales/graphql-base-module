@@ -29,25 +29,25 @@ class NotFoundError extends AbstractError
         parent::__construct($code, $message);
     }
 
-    /** @inheritDoc */
-    protected static function messages(): array
-    {
-        return [
-            self::TOKEN => 'The token was not found.',
-            self::USER => 'The user was not found.',
-        ];
-    }
-
-    public static function fromCode(string $code, string $identifier = ''): static
-    {
-        return new static($code, static::messages()[$code], $identifier);
-    }
-
     /**
      * @Field()
      */
     public function identifier(): string
     {
         return $this->identifier;
+    }
+
+    public static function fromCode(string $code, string $identifier): static
+    {
+        return new static($code, static::messages()[$code], $identifier);
+    }
+
+    /** @return array<string, string> */
+    private static function messages(): array
+    {
+        return [
+            self::TOKEN => 'The token was not found.',
+            self::USER => 'The user was not found.',
+        ];
     }
 }

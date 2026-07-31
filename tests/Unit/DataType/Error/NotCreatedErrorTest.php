@@ -13,10 +13,9 @@ use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
 use OxidEsales\GraphQL\Base\DataType\Error\NotCreatedError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NotCreatedError::class)]
-final class NotCreatedErrorTest extends TestCase
+final class NotCreatedErrorTest extends AbstractErrorTestCase
 {
     #[Test]
     public function notCreatedError(): void

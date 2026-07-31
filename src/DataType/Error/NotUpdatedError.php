@@ -26,17 +26,6 @@ class NotUpdatedError extends AbstractError
         parent::__construct($code, $message);
     }
 
-    /** @inheritDoc */
-    protected static function messages(): array
-    {
-        return [];
-    }
-
-    public static function fromCode(string $code, string $identifier = ''): static
-    {
-        return new static($code, static::messages()[$code], $identifier);
-    }
-
     /**
      * @Field()
      */

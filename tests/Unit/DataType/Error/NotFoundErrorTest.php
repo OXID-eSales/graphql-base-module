@@ -37,18 +37,14 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     }
 
     #[Test]
-    public function fromCodeWithoutOptionalArguments(): void
-    {
-        $sut = NotFoundError::fromCode(NotFoundError::USER);
-        $this->assertSame('', $sut->identifier());
-    }
-
-    #[Test]
-    public function fromCodeReturnsCorrectIdentifier(): void
+    #[DataProvider('validCodesProvider')]
+    public function fromCode(string $code, string $expectedMessage): void
     {
         $identifier = uniqid();
-        $sut = NotFoundError::fromCode(NotFoundError::TOKEN, $identifier);
+        $sut = NotFoundError::fromCode($code, $identifier);
 
+        $this->assertSame($code, $sut->code());
+        $this->assertSame($expectedMessage, $sut->message());
         $this->assertSame($identifier, $sut->identifier());
     }
 
@@ -58,10 +54,5 @@ class NotFoundErrorTest extends AbstractErrorTestCase
             [NotFoundError::TOKEN, 'The token was not found.'],
             [NotFoundError::USER, 'The user was not found.'],
         ];
-    }
-
-    protected function getConcreteError(): string
-    {
-        return NotFoundError::class;
     }
 }
