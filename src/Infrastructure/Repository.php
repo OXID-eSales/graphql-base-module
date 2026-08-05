@@ -13,6 +13,8 @@ use Doctrine\DBAL\Result;
 use InvalidArgumentException;
 use OxidEsales\Eshop\Core\Model\BaseModel;
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContext;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\FilterListInterface as FilterList;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\ShopModelAwareInterface;
@@ -24,13 +26,14 @@ use RuntimeException;
 class Repository
 {
     public function __construct(
-        private readonly QueryBuilderFactoryInterface $queryBuilderFactory
+        private readonly QueryBuilderFactoryInterface $queryBuilderFactory,
+        private readonly BasicContextInterface $basicContext
     ) {
     }
 
     /**
-     * @SuppressWarnings(PHPMD.ShortVariable)
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings("PHPMD.ShortVariable")
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag")
      *
      * @template T
      *
@@ -61,7 +64,7 @@ class Repository
     }
 
     /**
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag")
      *
      * @template T of ShopModelAwareInterface
      *
@@ -156,7 +159,7 @@ class Repository
             throw new InvalidArgumentException();
         }
 
-        if (method_exists($model, 'setDisableShopCheck')) {
+        if ($this->basicContext->getEdition() === BasicContext::ENTERPRISE_EDITION) {
             $model->setDisableShopCheck($disableSubShop);
         }
 

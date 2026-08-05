@@ -64,7 +64,7 @@ abstract class AbstractNumberFilter
         return false;
     }
 
-    /** @SuppressWarnings(PHPMD.CyclomaticComplexity) */
+    /** @SuppressWarnings("PHPMD.CyclomaticComplexity") */
     protected function matches(mixed $value): bool
     {
         if ($this->equals() !== null && $value !== $this->equals()) {

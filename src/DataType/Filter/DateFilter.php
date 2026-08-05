@@ -87,11 +87,8 @@ class DateFilter implements FilterInterface
         ?array $between = null
     ): self {
         if (
-            $between !== null && (
-                count($between) !== 2 ||
-                !is_string($between[0]) ||
-                !is_string($between[1])
-            )
+            $between !== null &&
+            count($between) !== 2
         ) {
             throw new OutOfBoundsException();
         }

@@ -19,7 +19,7 @@ readonly class FilesystemAdapterFactory
     {
     }
 
-    /** @SuppressWarnings(PHPMD.StaticAccess) */
+    /** @SuppressWarnings("PHPMD.StaticAccess") */
     public function create(): FilesystemAdapter
     {
         $path = Path::join(

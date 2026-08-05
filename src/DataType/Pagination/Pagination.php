@@ -30,7 +30,7 @@ final class Pagination
         }
     }
 
-    public function offset(): ?int
+    public function offset(): int
     {
         return $this->offset;
     }

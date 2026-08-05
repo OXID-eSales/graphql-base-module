@@ -12,7 +12,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Filter;
 interface FilterListInterface
 {
     /**
-     * @return FilterInterface[]
+     * @return array<string, FilterInterface|null>
      */
     public function getFilters(): array;
 

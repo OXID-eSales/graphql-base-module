@@ -26,7 +26,7 @@ class ResponseWriter implements ResponseWriterInterface
      * Return a JSON Object with the graphql results
      *
      * @codeCoverageIgnore
-     * @SuppressWarnings(PHPMD.ExitExpression)
+     * @SuppressWarnings("PHPMD.ExitExpression")
      *
      * @param mixed[] $result
      */

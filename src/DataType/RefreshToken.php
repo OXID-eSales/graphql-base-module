@@ -35,7 +35,7 @@ final class RefreshToken implements ShopModelAwareInterface, RefreshTokenInterfa
 
     /**
      * @Field()
-     * @SuppressWarnings(PHPMD.ShortMethodName)
+     * @SuppressWarnings("PHPMD.ShortMethodName")
      */
     public function id(): ID
     {

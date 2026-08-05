@@ -24,7 +24,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * Token data access service
  *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects) TODO: Consider splitting this class
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects") TODO: Consider splitting this class
  */
 class Token
 {

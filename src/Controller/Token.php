@@ -33,7 +33,7 @@ use TheCodingMachine\GraphQLite\Annotations\Right;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class Token
 {

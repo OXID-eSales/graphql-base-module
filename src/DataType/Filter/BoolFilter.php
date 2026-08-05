@@ -18,7 +18,7 @@ use function strtoupper;
 class BoolFilter implements FilterInterface
 {
     /**
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag")
      */
     public function __construct(private readonly bool $equals = true)
     {

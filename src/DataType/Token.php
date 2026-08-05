@@ -63,7 +63,7 @@ final class Token implements ShopModelAwareInterface
     /**
      * Field of Base module's Token-Type.
      * @Field()
-     * @SuppressWarnings(PHPMD.ShortMethodName)
+     * @SuppressWarnings("PHPMD.ShortMethodName")
      */
     public function id(): ID
     {

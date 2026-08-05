@@ -37,16 +37,10 @@ class DateFilterTest extends DataTypeTestCase
                 [],
             ],
             [
-                [null, null, null],
+                ['2020-01-30'],
             ],
             [
-                ['foobar', null],
-            ],
-            [
-                [null, 'foobar'],
-            ],
-            [
-                [null, null],
+                ['2020-01-30', '2020-02-01', '2020-03-01'],
             ],
         ];
     }

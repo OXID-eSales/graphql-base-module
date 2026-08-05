@@ -19,6 +19,7 @@ class AggregatedFinder implements FinderInterface
 {
     use ReflectionFilterTrait;
 
+    /** @var AppendIterator<mixed, mixed, IteratorIterator<mixed, mixed, Traversable<mixed, mixed>>> */
     private AppendIterator $iterator;
 
     public function __construct()
