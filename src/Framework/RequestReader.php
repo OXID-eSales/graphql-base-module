@@ -148,6 +148,8 @@ class RequestReader implements RequestReaderInterface
         if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
 
+            // PHPStan stub declares array, PhpStorm stub false|array – check kept defensively
+            // @phpstan-ignore function.alreadyNarrowedType
             if (is_array($headers)) {
                 $headers = array_change_key_case($headers, CASE_LOWER);
 

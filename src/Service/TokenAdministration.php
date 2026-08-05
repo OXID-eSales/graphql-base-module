@@ -26,7 +26,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * Token data access service
  *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects) TODO: Consider reducing complexity of this class
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects") TODO: Consider reducing complexity of this class
  */
 class TokenAdministration
 {

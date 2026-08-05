@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace OxidEsales\GraphQL\Base\Tests\Integration\Infrastructure;
 
 use OxidEsales\EshopCommunity\Internal\Framework\Database\QueryBuilderFactoryInterface;
+use OxidEsales\EshopCommunity\Internal\Transition\Utility\BasicContextInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\BoolFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting as BaseSorting;
@@ -25,10 +26,8 @@ final class RepositoryTest extends TestCase
     public function testFatalErrorOnWrongClassById(): void
     {
         $this->expectException(\Error::class);
-        $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
-        $repository->getById(
+        $sut = $this->getSut();
+        $sut->getById(
             'foo',
             \stdClass::class
         );
@@ -37,10 +36,8 @@ final class RepositoryTest extends TestCase
     public function testExceptionOnWrongModelById(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
-        $repository->getById(
+        $sut = $this->getSut();
+        $sut->getById(
             'foo',
             WrongType::class
         );
@@ -49,10 +46,8 @@ final class RepositoryTest extends TestCase
     public function testExceptionOnWrongTypeById(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
-        $repository->getById(
+        $sut = $this->getSut();
+        $sut->getById(
             'foo',
             AlsoWrongType::class
         );
@@ -61,10 +56,8 @@ final class RepositoryTest extends TestCase
     public function testExceptionOnWrongModelByFilter(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
-        $repository->getList(
+        $sut = $this->getSut();
+        $sut->getList(
             WrongType::class,
             new EmptyFilterList(),
             new Pagination(),
@@ -75,39 +68,43 @@ final class RepositoryTest extends TestCase
     public function testExceptionOnFailToDeleteModel(): void
     {
         $this->expectException(\RuntimeException::class);
-        $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
-        $repository->delete(new CorrectModel());
+        $sut = $this->getSut();
+        $sut->delete(new CorrectModel());
     }
 
     public function testModelSave(): void
     {
-        $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
+        $sut = $this->getSut();
 
         $model = $this->createPartialMock(
             \OxidEsales\Eshop\Core\Model\BaseModel::class,
             ['save']
         );
         $model->expects($this->any())->method('save')->willReturn('someid');
-        $this->assertTrue($repository->saveModel($model));
+        $this->assertTrue($sut->saveModel($model));
     }
 
     public function testModelSaveFailed(): void
     {
         $this->expectException(\RuntimeException::class);
-        $repository = new Repository(
-            $this->createMock(QueryBuilderFactoryInterface::class)
-        );
+        $sut = $this->getSut();
 
         $model = $this->createPartialMock(
             \OxidEsales\Eshop\Core\Model\BaseModel::class,
             ['save']
         );
         $model->expects($this->any())->method('save')->willReturn(false);
-        $this->assertTrue($repository->saveModel($model));
+        $this->assertTrue($sut->saveModel($model));
+    }
+
+    private function getSut(
+        ?QueryBuilderFactoryInterface $queryBuilderFactory = null,
+        ?BasicContextInterface $basicContext = null,
+    ): Repository {
+        return new Repository(
+            $queryBuilderFactory ?? $this->createStub(QueryBuilderFactoryInterface::class),
+            $basicContext ?? $this->createStub(BasicContextInterface::class),
+        );
     }
 }
 

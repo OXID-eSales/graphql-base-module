@@ -76,10 +76,10 @@ class GraphQLQueryHandler implements GraphQLQueryHandlerInterface
             $operationName
         );
 
-        $result->errors = array_merge(
+        $result->errors = array_values(array_merge(
             $result->errors,
             self::$errors
-        );
+        ));
 
         $queryTimer->stop();
 

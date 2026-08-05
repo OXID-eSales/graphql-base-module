@@ -18,7 +18,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 final class User implements ShopModelAwareInterface, UserInterface
 {
     /**
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag) TODO: Consider extracting AnonymousUser class
+     * @SuppressWarnings("PHPMD.BooleanArgumentFlag") TODO: Consider extracting AnonymousUser class
      */
     public function __construct(
         private readonly EshopUserModel $userModel,
@@ -42,7 +42,7 @@ final class User implements ShopModelAwareInterface, UserInterface
 
     /**
      * Field of Base module's User-Type.
-     * @SuppressWarnings(PHPMD.ShortMethodName)
+     * @SuppressWarnings("PHPMD.ShortMethodName")
      */
     #[Field]
     public function id(): ID

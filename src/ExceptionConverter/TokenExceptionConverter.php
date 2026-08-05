@@ -31,7 +31,7 @@ use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use TheCodingMachine\GraphQLite\Types\ID;
 
 /**
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
 class TokenExceptionConverter implements TokenExceptionConverterInterface
 {
