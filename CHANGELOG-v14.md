@@ -14,3 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade GraphQLite v7 -> v8
 - Move SEO encoder and refresh token model factories to the `Shared` namespace for reuse outside their original domains
 - Align the `oe:graphql:cache-clear` command with the streamlined 7.6 console conventions
+
+### Removed
+- `SeoEncoderArticle`-Model extension
