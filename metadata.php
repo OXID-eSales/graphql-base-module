@@ -11,8 +11,6 @@ declare(strict_types=1);
  * Metadata version
  */
 
-use OxidEsales\GraphQL\Base\Seo\Infrastructure\Model\SeoEncoderArticle;
-
 $sMetadataVersion = '2.0';
 
 /**
@@ -34,7 +32,6 @@ $aModule = [
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
     'extend'      => [
-        \OxidEsales\Eshop\Application\Model\SeoEncoderArticle::class => SeoEncoderArticle::class,
     ],
     'controllers' => [
         // Widget Controller
