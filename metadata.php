@@ -29,7 +29,7 @@ $aModule = [
         'en'      => '<span>OXID GraphQL API Framework</span>',
     ],
     'thumbnail'   => 'logo.png',
-    'version'     => '13.1.0',
+    'version'     => '13.2.0',
     'author'      => 'OXID eSales',
     'url'         => 'www.oxid-esales.com',
     'email'       => 'info@oxid-esales.com',
