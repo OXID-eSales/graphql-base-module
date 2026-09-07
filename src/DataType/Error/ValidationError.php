@@ -17,7 +17,6 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
  */
 final class ValidationError extends AbstractError
 {
-    public const CREDENTIALS = 'oegqlb.validation.credentials';
     public const FINGERPRINT = 'oegqlb.validation.fingerprint';
     public const REFRESH_TOKEN = 'oegqlb.validation.refresh_token';
 
@@ -46,7 +45,6 @@ final class ValidationError extends AbstractError
     private static function messages(): array
     {
         return [
-            self::CREDENTIALS => 'The provided credentials are invalid.',
             self::FINGERPRINT => 'The fingerprint validation failed.',
             self::REFRESH_TOKEN => 'The provided refresh token is invalid.',
         ];

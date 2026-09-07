@@ -31,6 +31,7 @@ class AuthenticationErrorTest extends AbstractErrorTestCase
     #[Test]
     public function errorCodes(): void
     {
+        $this->assertSame('oegqlb.authentication.credentials_incorrect', AuthenticationError::CREDENTIALS_INCORRECT);
         $this->assertSame('oegqlb.authentication.token_quota_exceeded', AuthenticationError::TOKEN_QUOTA_EXCEEDED);
     }
 
@@ -47,6 +48,7 @@ class AuthenticationErrorTest extends AbstractErrorTestCase
     public static function validCodesProvider(): array
     {
         return [
+            [AuthenticationError::CREDENTIALS_INCORRECT, 'The provided credentials are invalid.'],
             [AuthenticationError::TOKEN_QUOTA_EXCEEDED, 'The token quota for this user has been exceeded.'],
         ];
     }
