@@ -32,7 +32,6 @@ class ValidationErrorTest extends AbstractErrorTestCase
     #[Test]
     public function errorCodes(): void
     {
-        $this->assertSame('oegqlb.validation.credentials', ValidationError::CREDENTIALS);
         $this->assertSame('oegqlb.validation.fingerprint', ValidationError::FINGERPRINT);
         $this->assertSame('oegqlb.validation.refresh_token', ValidationError::REFRESH_TOKEN);
     }
@@ -52,7 +51,6 @@ class ValidationErrorTest extends AbstractErrorTestCase
     public static function validCodesProvider(): array
     {
         return [
-            [ValidationError::CREDENTIALS, 'The provided credentials are invalid.'],
             [ValidationError::FINGERPRINT, 'The fingerprint validation failed.'],
             [ValidationError::REFRESH_TOKEN, 'The provided refresh token is invalid.'],
         ];

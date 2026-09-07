@@ -12,7 +12,6 @@ namespace OxidEsales\GraphQL\Base\ExceptionConverter;
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
-use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
@@ -32,7 +31,7 @@ class LoginExceptionConverter implements LoginExceptionConverterInterface
         try {
             return $this->tokenService->createToken($username, $password);
         } catch (InvalidLogin) {
-            return ValidationError::fromCode(ValidationError::CREDENTIALS, '');
+            return AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT);
         } catch (TokenQuota) {
             return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
         }
@@ -43,7 +42,7 @@ class LoginExceptionConverter implements LoginExceptionConverterInterface
         try {
             return $this->loginService->login($username, $password);
         } catch (InvalidLogin) {
-            return ValidationError::fromCode(ValidationError::CREDENTIALS, '');
+            return AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT);
         } catch (TokenQuota) {
             return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
         }

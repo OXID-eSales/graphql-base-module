@@ -11,7 +11,6 @@ namespace ExceptionConverter;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
-use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
@@ -60,7 +59,7 @@ class LoginExceptionConverterTest extends TestCase
     }
 
     #[Test]
-    public function createTokenReturnsValidationErrorOnInvalidLogin(): void
+    public function createTokenReturnsAuthenticationErrorOnInvalidLogin(): void
     {
         $username = uniqid();
         $password = uniqid();
@@ -73,7 +72,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(tokenService: $tokenServiceMock);
         $result = $sut->createToken($username, $password);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::CREDENTIALS, ''), $result);
+        $this->assertEquals(AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT), $result);
     }
 
     #[Test]
@@ -128,7 +127,7 @@ class LoginExceptionConverterTest extends TestCase
     }
 
     #[Test]
-    public function loginReturnsValidationErrorOnInvalidLogin(): void
+    public function loginReturnsAuthenticationErrorOnInvalidLogin(): void
     {
         $username = uniqid();
         $password = uniqid();
@@ -141,7 +140,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(loginService: $loginServiceMock);
         $result = $sut->login($username, $password);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::CREDENTIALS, ''), $result);
+        $this->assertEquals(AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT), $result);
     }
 
     #[Test]
