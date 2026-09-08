@@ -72,7 +72,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(tokenService: $tokenServiceMock);
         $result = $sut->createToken($username, $password);
 
-        $this->assertEquals(AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT), $result);
+        $this->assertEquals(new AuthenticationError(AuthenticationError::CREDENTIALS_INCORRECT), $result);
     }
 
     #[Test]
@@ -89,7 +89,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(tokenService: $tokenServiceMock);
         $result = $sut->createToken($username, $password);
 
-        $this->assertEquals(AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED), $result);
+        $this->assertEquals(new AuthenticationError(AuthenticationError::TOKEN_QUOTA_EXCEEDED), $result);
     }
 
     #[Test]
@@ -140,7 +140,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(loginService: $loginServiceMock);
         $result = $sut->login($username, $password);
 
-        $this->assertEquals(AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT), $result);
+        $this->assertEquals(new AuthenticationError(AuthenticationError::CREDENTIALS_INCORRECT), $result);
     }
 
     #[Test]
@@ -157,7 +157,7 @@ class LoginExceptionConverterTest extends TestCase
         $sut = $this->getSut(loginService: $loginServiceMock);
         $result = $sut->login($username, $password);
 
-        $this->assertEquals(AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED), $result);
+        $this->assertEquals(new AuthenticationError(AuthenticationError::TOKEN_QUOTA_EXCEEDED), $result);
     }
 
     private function getSut(

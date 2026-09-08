@@ -19,13 +19,13 @@ final class AuthenticationError extends AbstractError
     public const CREDENTIALS_INCORRECT = 'oegqlb.authentication.credentials_incorrect';
     public const TOKEN_QUOTA_EXCEEDED = 'oegqlb.authentication.token_quota_exceeded';
 
-    public static function fromCode(string $code): self
+    public function __construct(string $code)
     {
-        return new self($code, self::messages()[$code]);
+        parent::__construct($code, $this->messages()[$code]);
     }
 
     /** @return array<string, string> */
-    private static function messages(): array
+    private function messages(): array
     {
         return [
             self::CREDENTIALS_INCORRECT => 'The provided credentials are invalid.',

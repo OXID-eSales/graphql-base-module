@@ -19,13 +19,14 @@ use PHPUnit\Framework\Attributes\Test;
 class AuthenticationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function authenticationError(): void
+    #[DataProvider('validCodesProvider')]
+    public function authenticationError(string $code, string $expectedMessage): void
     {
-        $sut = new AuthenticationError($code = uniqid(), $message = uniqid());
+        $sut = new AuthenticationError($code);
 
         $this->assertInstanceOf(AbstractError::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertSame($expectedMessage, $sut->message());
     }
 
     #[Test]
@@ -33,16 +34,6 @@ class AuthenticationErrorTest extends AbstractErrorTestCase
     {
         $this->assertSame('oegqlb.authentication.credentials_incorrect', AuthenticationError::CREDENTIALS_INCORRECT);
         $this->assertSame('oegqlb.authentication.token_quota_exceeded', AuthenticationError::TOKEN_QUOTA_EXCEEDED);
-    }
-
-    #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCode(string $code, string $expectedMessage): void
-    {
-        $sut = AuthenticationError::fromCode($code);
-
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
     }
 
     public static function validCodesProvider(): array

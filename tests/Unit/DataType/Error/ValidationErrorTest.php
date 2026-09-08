@@ -19,13 +19,14 @@ use PHPUnit\Framework\Attributes\Test;
 class ValidationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function validationError(): void
+    #[DataProvider('validCodesProvider')]
+    public function validationError(string $code, string $expectedMessage): void
     {
-        $sut = new ValidationError($code = uniqid(), $message = uniqid(), $value = uniqid());
+        $sut = new ValidationError($code, $value = uniqid());
 
         $this->assertInstanceOf(AbstractError::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertSame($expectedMessage, $sut->message());
         $this->assertSame($value, $sut->value());
     }
 
@@ -34,18 +35,6 @@ class ValidationErrorTest extends AbstractErrorTestCase
     {
         $this->assertSame('oegqlb.validation.fingerprint', ValidationError::FINGERPRINT);
         $this->assertSame('oegqlb.validation.refresh_token', ValidationError::REFRESH_TOKEN);
-    }
-
-    #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCode(string $code, string $expectedMessage): void
-    {
-        $value = uniqid();
-        $sut = ValidationError::fromCode($code, $value);
-
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
-        $this->assertSame($value, $sut->value());
     }
 
     public static function validCodesProvider(): array

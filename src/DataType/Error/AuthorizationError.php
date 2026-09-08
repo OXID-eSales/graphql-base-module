@@ -19,13 +19,13 @@ final class AuthorizationError extends AbstractError
     public const UNAUTHORIZED_DELETE_TOKEN = 'oegqlb.authorized.delete_token';
     public const UNAUTHORIZED_VIEW_TOKEN = 'oegqlb.authorized.view_token';
 
-    public static function fromCode(string $code): self
+    public function __construct(string $code)
     {
-        return new self($code, self::messages()[$code]);
+        parent::__construct($code, $this->messages()[$code]);
     }
 
     /** @return array<string, string> */
-    private static function messages(): array
+    private function messages(): array
     {
         return [
             self::UNAUTHORIZED_DELETE_TOKEN => 'You are not authorized to delete this token.',

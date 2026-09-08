@@ -65,7 +65,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(tokenAdministration: $tokenAdministrationMock);
         $result = $sut->tokens($filterList, $pagination, $sort);
 
-        $this->assertEquals(AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN), $result);
+        $this->assertEquals(new AuthorizationError(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN), $result);
     }
 
     #[Test]
@@ -97,7 +97,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
         $result = $sut->refresh($refreshToken, $fingerprintHash);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::FINGERPRINT, $fingerprintHash), $result);
+        $this->assertEquals(new ValidationError(ValidationError::FINGERPRINT, $fingerprintHash), $result);
     }
 
     #[Test]
@@ -114,7 +114,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
         $result = $sut->refresh($refreshToken, $fingerprintHash);
 
-        $this->assertEquals(ValidationError::fromCode(ValidationError::REFRESH_TOKEN, $refreshToken), $result);
+        $this->assertEquals(new ValidationError(ValidationError::REFRESH_TOKEN, $refreshToken), $result);
     }
 
     #[Test]
@@ -131,7 +131,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(refreshTokenService: $refreshTokenServiceMock);
         $result = $sut->refresh($refreshToken, $fingerprintHash);
 
-        $this->assertEquals(AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED), $result);
+        $this->assertEquals(new AuthenticationError(AuthenticationError::TOKEN_QUOTA_EXCEEDED), $result);
     }
 
     #[Test]
@@ -175,7 +175,7 @@ class TokenExceptionConverterTest extends TestCase
         $sut = $this->getSut(tokenAdministration: $tokenAdministrationMock);
         $result = $sut->customerTokensDelete($customerId);
 
-        $this->assertEquals(AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN), $result);
+        $this->assertEquals(new AuthorizationError(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN), $result);
     }
 
     #[Test]
@@ -192,7 +192,7 @@ class TokenExceptionConverterTest extends TestCase
         $result = $sut->customerTokensDelete($customerId);
 
         $this->assertEquals(
-            NotFoundError::fromCode(NotFoundError::USER, (string)$customerId),
+            new NotFoundError(NotFoundError::USER, (string)$customerId),
             $result
         );
     }
@@ -222,7 +222,7 @@ class TokenExceptionConverterTest extends TestCase
         $result = $sut->deleteToken($tokenId);
 
         $this->assertEquals(
-            NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId),
+            new NotFoundError(NotFoundError::TOKEN, (string)$tokenId),
             $result
         );
     }
@@ -254,7 +254,7 @@ class TokenExceptionConverterTest extends TestCase
         $result = $sut->deleteUserToken($this->createStub(UserInterface::class), $tokenId);
 
         $this->assertEquals(
-            NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId),
+            new NotFoundError(NotFoundError::TOKEN, (string)$tokenId),
             $result
         );
     }
