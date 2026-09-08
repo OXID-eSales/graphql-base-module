@@ -14,7 +14,6 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 
 /**
  * @Type()
- * @phpstan-consistent-constructor
  */
 class NotCreatedError extends AbstractError
 {
