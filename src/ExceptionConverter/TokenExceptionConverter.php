@@ -53,7 +53,7 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
         try {
             return $this->tokenAdministration->tokens($filterList, $pagination, $sort);
         } catch (InvalidLogin) {
-            return AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN);
+            return new AuthorizationError(AuthorizationError::UNAUTHORIZED_VIEW_TOKEN);
         }
     }
 
@@ -62,11 +62,11 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
         try {
             return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash);
         } catch (FingerprintValidationException) {
-            return ValidationError::fromCode(ValidationError::FINGERPRINT, $fingerprintHash);
+            return new ValidationError(ValidationError::FINGERPRINT, $fingerprintHash);
         } catch (InvalidRefreshToken) {
-            return ValidationError::fromCode(ValidationError::REFRESH_TOKEN, $refreshToken);
+            return new ValidationError(ValidationError::REFRESH_TOKEN, $refreshToken);
         } catch (TokenQuota) {
-            return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+            return new AuthenticationError(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
         }
     }
 
@@ -75,9 +75,9 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
         try {
             return $this->tokenAdministration->customerTokensDelete($customerId);
         } catch (InvalidLogin) {
-            return AuthorizationError::fromCode(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN);
+            return new AuthorizationError(AuthorizationError::UNAUTHORIZED_DELETE_TOKEN);
         } catch (UserNotFound) {
-            return NotFoundError::fromCode(NotFoundError::USER, (string)$customerId);
+            return new NotFoundError(NotFoundError::USER, (string)$customerId);
         }
     }
 
@@ -87,7 +87,7 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
             $this->tokenService->deleteToken($tokenId);
             return true;
         } catch (UnknownToken) {
-            return NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId);
+            return new NotFoundError(NotFoundError::TOKEN, (string)$tokenId);
         }
     }
 
@@ -97,7 +97,7 @@ class TokenExceptionConverter implements TokenExceptionConverterInterface
             $this->tokenService->deleteUserToken($user, $tokenId);
             return true;
         } catch (UnknownToken) {
-            return NotFoundError::fromCode(NotFoundError::TOKEN, (string)$tokenId);
+            return new NotFoundError(NotFoundError::TOKEN, (string)$tokenId);
         }
     }
 

@@ -19,13 +19,14 @@ use PHPUnit\Framework\Attributes\Test;
 class NotFoundErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function notFoundError(): void
+    #[DataProvider('validCodesProvider')]
+    public function notFoundError(string $code, string $expectedMessage): void
     {
-        $sut = new NotFoundError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
+        $sut = new NotFoundError($code, $identifier = uniqid());
 
         $this->assertInstanceOf(AbstractError::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertSame($expectedMessage, $sut->message());
         $this->assertSame($identifier, $sut->identifier());
     }
 
@@ -34,18 +35,6 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     {
         $this->assertSame('oegqlb.not_found.token', NotFoundError::TOKEN);
         $this->assertSame('oegqlb.not_found.user', NotFoundError::USER);
-    }
-
-    #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCode(string $code, string $expectedMessage): void
-    {
-        $identifier = uniqid();
-        $sut = NotFoundError::fromCode($code, $identifier);
-
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
-        $this->assertSame($identifier, $sut->identifier());
     }
 
     public static function validCodesProvider(): array

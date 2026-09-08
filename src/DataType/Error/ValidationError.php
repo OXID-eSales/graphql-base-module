@@ -22,10 +22,9 @@ final class ValidationError extends AbstractError
 
     public function __construct(
         string $code,
-        string $message,
         private readonly string $value = ''
     ) {
-        parent::__construct($code, $message);
+        parent::__construct($code, $this->messages()[$code]);
     }
 
     /**
@@ -36,13 +35,8 @@ final class ValidationError extends AbstractError
         return $this->value;
     }
 
-    public static function fromCode(string $code, string $value): self
-    {
-        return new self($code, self::messages()[$code], $value);
-    }
-
     /** @return array<string, string> */
-    private static function messages(): array
+    private function messages(): array
     {
         return [
             self::FINGERPRINT => 'The fingerprint validation failed.',

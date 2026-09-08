@@ -19,13 +19,14 @@ use PHPUnit\Framework\Attributes\Test;
 class AuthorizationErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function authorizationError(): void
+    #[DataProvider('validCodesProvider')]
+    public function authorizationError(string $code, string $expectedMessage): void
     {
-        $sut = new AuthorizationError($code = uniqid(), $message = uniqid());
+        $sut = new AuthorizationError($code);
 
         $this->assertInstanceOf(AbstractError::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertSame($expectedMessage, $sut->message());
     }
 
     #[Test]
@@ -33,16 +34,6 @@ class AuthorizationErrorTest extends AbstractErrorTestCase
     {
         $this->assertSame('oegqlb.authorized.delete_token', AuthorizationError::UNAUTHORIZED_DELETE_TOKEN);
         $this->assertSame('oegqlb.authorized.view_token', AuthorizationError::UNAUTHORIZED_VIEW_TOKEN);
-    }
-
-    #[Test]
-    #[DataProvider('validCodesProvider')]
-    public function fromCode(string $code, string $expectedMessage): void
-    {
-        $sut = AuthorizationError::fromCode($code);
-
-        $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
     }
 
     public static function validCodesProvider(): array

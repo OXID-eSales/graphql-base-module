@@ -31,9 +31,9 @@ class LoginExceptionConverter implements LoginExceptionConverterInterface
         try {
             return $this->tokenService->createToken($username, $password);
         } catch (InvalidLogin) {
-            return AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT);
+            return new AuthenticationError(AuthenticationError::CREDENTIALS_INCORRECT);
         } catch (TokenQuota) {
-            return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+            return new AuthenticationError(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
         }
     }
 
@@ -42,9 +42,9 @@ class LoginExceptionConverter implements LoginExceptionConverterInterface
         try {
             return $this->loginService->login($username, $password);
         } catch (InvalidLogin) {
-            return AuthenticationError::fromCode(AuthenticationError::CREDENTIALS_INCORRECT);
+            return new AuthenticationError(AuthenticationError::CREDENTIALS_INCORRECT);
         } catch (TokenQuota) {
-            return AuthenticationError::fromCode(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+            return new AuthenticationError(AuthenticationError::TOKEN_QUOTA_EXCEEDED);
         }
     }
 }
