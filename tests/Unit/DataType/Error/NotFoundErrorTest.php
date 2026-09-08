@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
-use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -24,7 +24,7 @@ class NotFoundErrorTest extends AbstractErrorTestCase
     {
         $sut = new NotFoundError($code, $identifier = uniqid());
 
-        $this->assertInstanceOf(AbstractError::class, $sut);
+        $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
         $this->assertSame($expectedMessage, $sut->message());
         $this->assertSame($identifier, $sut->identifier());

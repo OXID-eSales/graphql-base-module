@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
-use OxidEsales\GraphQL\Base\DataType\Error\AbstractError;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\NotCreatedError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -22,7 +22,7 @@ final class NotCreatedErrorTest extends AbstractErrorTestCase
     {
         $sut = new NotCreatedError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
 
-        $this->assertInstanceOf(AbstractError::class, $sut);
+        $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
         $this->assertSame($message, $sut->message());
         $this->assertSame($identifier, $sut->identifier());
