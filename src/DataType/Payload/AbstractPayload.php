@@ -7,8 +7,9 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\DataType\Error;
+namespace OxidEsales\GraphQL\Base\DataType\Payload;
 
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
 abstract class AbstractPayload implements PayloadInterface

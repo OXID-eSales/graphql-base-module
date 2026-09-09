@@ -7,7 +7,6 @@
 
 namespace OxidEsales\GraphQL\Base\DataType\Payload;
 
-use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Token;
 
 interface TokensPayloadInterface extends PayloadInterface
