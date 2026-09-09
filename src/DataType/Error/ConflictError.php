@@ -15,7 +15,7 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-class IdAlreadyExistError extends AbstractError
+class ConflictError extends AbstractError
 {
     public function __construct(
         string $code,

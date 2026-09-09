@@ -9,18 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use OxidEsales\GraphQL\Base\DataType\Error\ConflictError;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
-use OxidEsales\GraphQL\Base\DataType\Error\IdAlreadyExistError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 
-#[CoversClass(IdAlreadyExistError::class)]
-final class IdAlreadyExistErrorTest extends AbstractErrorTestCase
+#[CoversClass(ConflictError::class)]
+final class ConflictErrorTest extends AbstractErrorTestCase
 {
     #[Test]
-    public function idAlreadyExistError(): void
+    public function conflictError(): void
     {
-        $sut = new IdAlreadyExistError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
+        $sut = new ConflictError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
 
         $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
