@@ -7,8 +7,6 @@
 
 namespace OxidEsales\GraphQL\Base\DataType\Payload;
 
-use OxidEsales\GraphQL\Base\DataType\Error\PayloadInterface;
-
 interface BooleanPayloadInterface extends PayloadInterface
 {
     public function success(): ?bool;
