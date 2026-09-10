@@ -53,7 +53,11 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $beforeUpdateStub = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub]);
         $afterUpdateStub = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub]);
 
-        $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
+        $sut = $this->getSut(
+            userModelService: $userModelService,
+            refreshTokenRepository: $refreshTokenRepository,
+            tokenInfrastructure: $tokenInfrastructure,
+        );
         $sut->handleBeforeUpdate($beforeUpdateStub);
         $sut->handleAfterUpdate($afterUpdateStub);
     }
@@ -95,7 +99,11 @@ class PasswordChangeSubscriberTest extends BaseTestCase
             ['getModel' => $userModelStub2]
         );
 
-        $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
+        $sut = $this->getSut(
+            userModelService: $userModelService,
+            refreshTokenRepository: $refreshTokenRepository,
+            tokenInfrastructure: $tokenInfrastructure,
+        );
         $sut->handleBeforeUpdate($beforeUpdateStub1);
         $sut->handleBeforeUpdate($beforeUpdateStub2);
         $sut->handleAfterUpdate($afterUpdateStub1);
@@ -124,7 +132,11 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $beforeUpdateStub = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => new Article()]);
         $afterUpdateStub = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => new Article()]);
 
-        $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
+        $sut = $this->getSut(
+            userModelService: $userModelService,
+            refreshTokenRepository: $refreshTokenRepository,
+            tokenInfrastructure: $tokenInfrastructure,
+        );
         $sut->handleBeforeUpdate($beforeUpdateStub);
         $sut->handleAfterUpdate($afterUpdateStub);
     }
@@ -146,7 +158,11 @@ class PasswordChangeSubscriberTest extends BaseTestCase
         $beforeUpdateStub = $this->createConfiguredStub(BeforeModelUpdateEvent::class, ['getModel' => $userModelStub]);
         $afterUpdateStub = $this->createConfiguredStub(AfterModelUpdateEvent::class, ['getModel' => $userModelStub]);
 
-        $sut = $this->getSut($userModelService, $refreshTokenRepository, $tokenInfrastructure);
+        $sut = $this->getSut(
+            userModelService: $userModelService,
+            refreshTokenRepository: $refreshTokenRepository,
+            tokenInfrastructure: $tokenInfrastructure,
+        );
         $sut->handleBeforeUpdate($beforeUpdateStub);
         $sut->handleAfterUpdate($afterUpdateStub);
     }
