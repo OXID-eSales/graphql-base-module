@@ -25,7 +25,7 @@ class CookieServiceTest extends TestCase
     {
         $exampleFingerprint = uniqid();
 
-        $sut = $this->getSut(ModuleConfiguration::COOKIE_SETTING_SAME);
+        $sut = $this->getSut(option: ModuleConfiguration::COOKIE_SETTING_SAME);
         $sut->setFingerprintCookie($exampleFingerprint);
 
         $currentHeaders = xdebug_get_headers();
@@ -47,7 +47,7 @@ class CookieServiceTest extends TestCase
     {
         $exampleFingerprint = uniqid();
 
-        $sut = $this->getSut(ModuleConfiguration::COOKIE_SETTING_CROSS);
+        $sut = $this->getSut(option: ModuleConfiguration::COOKIE_SETTING_CROSS);
         $sut->setFingerprintCookie($exampleFingerprint);
 
         $currentHeaders = xdebug_get_headers();
