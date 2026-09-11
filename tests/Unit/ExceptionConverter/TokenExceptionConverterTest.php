@@ -59,8 +59,10 @@ class TokenExceptionConverterTest extends TestCase
         $pagination = new Pagination();
         $sort = new TokenSorting(TokenSorting::SORTING_ASC);
 
-        $tokenAdministrationMock = $this->createStub(TokenAdministration::class);
-        $tokenAdministrationMock->method('tokens')->willThrowException(new InvalidLogin(uniqid()));
+        $tokenAdministrationMock = $this->createMock(TokenAdministration::class);
+        $tokenAdministrationMock->method('tokens')
+            ->with($filterList, $pagination, $sort)
+            ->willThrowException(new InvalidLogin(uniqid()));
 
         $sut = $this->getSut(tokenAdministration: $tokenAdministrationMock);
         $result = $sut->tokens($filterList, $pagination, $sort);

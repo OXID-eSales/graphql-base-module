@@ -85,8 +85,14 @@ class TokenTest extends BaseTestCase
         $authenticationStub = $this->createStub(Authentication::class);
         $authenticationStub->method('getUser')->willReturn($userDataType);
 
+        $expectedFilter = new TokenFilterList(new IDFilter($userDataType->id()));
+        $expectedPagination = new Pagination();
+        $expectedSort = new TokenSorting(Sorting::SORTING_ASC);
+
         $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
-        $converterMock->method('tokens')->willReturn($errorStub);
+        $converterMock->method('tokens')
+            ->with($expectedFilter, $expectedPagination, $expectedSort)
+            ->willReturn($errorStub);
 
         $sut = $this->getSut(authentication: $authenticationStub, tokenExceptionConverter: $converterMock);
         $payload = $sut->tokens();
