@@ -14,13 +14,13 @@ use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayload;
 use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
 use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayloadInterface;
-use OxidEsales\GraphQL\Base\ExceptionConverter\LoginExceptionConverterInterface;
+use OxidEsales\GraphQL\Base\ErrorResolver\LoginResolverInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
 {
     public function __construct(
-        private readonly LoginExceptionConverterInterface $loginExceptionConverter,
+        private readonly LoginResolverInterface $loginResolver,
     ) {
     }
 
@@ -32,7 +32,7 @@ class Login
      */
     public function token(?string $username = null, ?string $password = null): TokenPayloadInterface
     {
-        $result = $this->loginExceptionConverter->createToken($username, $password);
+        $result = $this->loginResolver->createToken($username, $password);
 
         if ($result instanceof ErrorInterface) {
             return new TokenPayload(null, [$result]);
@@ -49,7 +49,7 @@ class Login
      */
     public function login(?string $username = null, ?string $password = null): LoginPayloadInterface
     {
-        $result = $this->loginExceptionConverter->login($username, $password);
+        $result = $this->loginResolver->login($username, $password);
 
         if ($result instanceof ErrorInterface) {
             return new LoginPayload(null, [$result]);

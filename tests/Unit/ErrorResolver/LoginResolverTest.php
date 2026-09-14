@@ -7,14 +7,14 @@
 
 declare(strict_types=1);
 
-namespace ExceptionConverter;
+namespace ErrorResolver;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
 use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use OxidEsales\GraphQL\Base\Exception\InvalidLogin;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
-use OxidEsales\GraphQL\Base\ExceptionConverter\LoginExceptionConverter;
+use OxidEsales\GraphQL\Base\ErrorResolver\LoginResolver;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -22,7 +22,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 #[AllowMockObjectsWithoutExpectations]
-class LoginExceptionConverterTest extends TestCase
+class LoginResolverTest extends TestCase
 {
     #[Test]
     public function createTokenReturnsTokenOnSuccess(): void
@@ -163,8 +163,8 @@ class LoginExceptionConverterTest extends TestCase
     private function getSut(
         ?TokenService $tokenService = null,
         ?LoginServiceInterface $loginService = null,
-    ): LoginExceptionConverter {
-        return new LoginExceptionConverter(
+    ): LoginResolver {
+        return new LoginResolver(
             $tokenService ?? $this->createStub(TokenService::class),
             $loginService ?? $this->createStub(LoginServiceInterface::class),
         );

@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    autowire: true
+    public: false
+
+  OxidEsales\GraphQL\Base\ErrorResolver\LoginResolverInterface:
+    class: OxidEsales\GraphQL\Base\ErrorResolver\LoginResolver
+
+  OxidEsales\GraphQL\Base\ErrorResolver\TokenResolverInterface:
+    class: OxidEsales\GraphQL\Base\ErrorResolver\TokenResolver

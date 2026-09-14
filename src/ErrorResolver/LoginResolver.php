@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\ExceptionConverter;
+namespace OxidEsales\GraphQL\Base\ErrorResolver;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
@@ -18,7 +18,7 @@ use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token;
 
-class LoginExceptionConverter implements LoginExceptionConverterInterface
+class LoginResolver implements LoginResolverInterface
 {
     public function __construct(
         private readonly Token $tokenService,

@@ -1,7 +1,7 @@
 imports:
   - { resource: src/Infrastructure/services.yaml }
   - { resource: src/Seo/services.yaml }
-  - { resource: src/ExceptionConverter/services.yaml }
+  - { resource: src/ErrorResolver/services.yaml }
 
 services:
 
