@@ -5,7 +5,7 @@
  * See LICENSE file for license details.
  */
 
-namespace OxidEsales\GraphQL\Base\ExceptionConverter;
+namespace OxidEsales\GraphQL\Base\ErrorResolver;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
@@ -16,7 +16,7 @@ use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-interface TokenExceptionConverterInterface
+interface TokenResolverInterface
 {
     /**
      * @return TokenAlias[]|ErrorInterface

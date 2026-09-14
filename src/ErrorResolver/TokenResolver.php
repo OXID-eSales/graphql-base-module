@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace OxidEsales\GraphQL\Base\ExceptionConverter;
+namespace OxidEsales\GraphQL\Base\ErrorResolver;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
@@ -33,7 +33,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
  */
-class TokenExceptionConverter implements TokenExceptionConverterInterface
+class TokenResolver implements TokenResolverInterface
 {
     public function __construct(
         private readonly TokenAdministration $tokenAdministration,

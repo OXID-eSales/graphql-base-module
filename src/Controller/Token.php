@@ -23,7 +23,7 @@ use OxidEsales\GraphQL\Base\DataType\Payload\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
-use OxidEsales\GraphQL\Base\ExceptionConverter\TokenExceptionConverterInterface;
+use OxidEsales\GraphQL\Base\ErrorResolver\TokenResolverInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
@@ -40,7 +40,7 @@ class Token
     public function __construct(
         private readonly Authentication $authentication,
         private readonly Authorization $authorization,
-        private readonly TokenExceptionConverterInterface $tokenExceptionConverter,
+        private readonly TokenResolverInterface $tokenResolver,
     ) {
     }
 
@@ -56,7 +56,7 @@ class Token
         ?Pagination $pagination = null,
         ?TokenSorting $sort = null
     ): TokensPayloadInterface {
-        $result = $this->tokenExceptionConverter->tokens(
+        $result = $this->tokenResolver->tokens(
             $filter ?? new TokenFilterList(
                 new IDFilter($this->authentication->getUser()->id())
             ),
@@ -77,7 +77,7 @@ class Token
     #[Query(outputType: "TokenPayload")]
     public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
-        $result = $this->tokenExceptionConverter->refresh($refreshToken, $fingerprintHash);
+        $result = $this->tokenResolver->refresh($refreshToken, $fingerprintHash);
 
         if ($result instanceof ErrorInterface) {
             return new TokenPayload(null, [$result]);
@@ -97,7 +97,7 @@ class Token
     #[Logged]
     public function customerTokensDelete(?ID $customerId): TokenDeletePayloadInterface
     {
-        $result = $this->tokenExceptionConverter->customerTokensDelete($customerId);
+        $result = $this->tokenResolver->customerTokensDelete($customerId);
 
         if ($result instanceof ErrorInterface) {
             return new TokenDeletePayload(null, [$result]);
@@ -117,9 +117,9 @@ class Token
     public function tokenDelete(ID $tokenId): TokenDeletePayloadInterface
     {
         if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
-            $result = $this->tokenExceptionConverter->deleteToken($tokenId);
+            $result = $this->tokenResolver->deleteToken($tokenId);
         } else {
-            $result = $this->tokenExceptionConverter->deleteUserToken(
+            $result = $this->tokenResolver->deleteUserToken(
                 $this->authentication->getUser(),
                 $tokenId
             );
@@ -142,7 +142,7 @@ class Token
     #[Right('INVALIDATE_ANY_TOKEN')]
     public function shopTokensDelete(): TokenDeletePayloadInterface
     {
-        $result = $this->tokenExceptionConverter->shopTokensDelete();
+        $result = $this->tokenResolver->shopTokensDelete();
 
         if ($result instanceof ErrorInterface) {
             return new TokenDeletePayload(null, [$result]);
@@ -163,7 +163,7 @@ class Token
     #[Right('REGENERATE_SIGNATURE_KEY')]
     public function regenerateSignatureKey(): BooleanPayloadInterface
     {
-        $result = $this->tokenExceptionConverter->regenerateSignatureKey();
+        $result = $this->tokenResolver->regenerateSignatureKey();
 
         if ($result instanceof ErrorInterface) {
             return new BooleanPayload(null, [$result]);

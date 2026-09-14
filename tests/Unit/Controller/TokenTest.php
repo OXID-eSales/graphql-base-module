@@ -18,7 +18,7 @@ use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
-use OxidEsales\GraphQL\Base\ExceptionConverter\TokenExceptionConverterInterface;
+use OxidEsales\GraphQL\Base\ErrorResolver\TokenResolverInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
@@ -44,12 +44,12 @@ class TokenTest extends BaseTestCase
         $expectedPagination = new Pagination();
         $expectedSort = new TokenSorting(Sorting::SORTING_ASC);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('tokens')
             ->with($expectedFilter, $expectedPagination, $expectedSort)
             ->willReturn($tokenList);
 
-        $sut = $this->getSut(authentication: $authenticationStub, tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(authentication: $authenticationStub, tokenResolver: $converterMock);
         $payload = $sut->tokens();
 
         $this->assertSame($tokenList, $payload->tokens());
@@ -64,12 +64,12 @@ class TokenTest extends BaseTestCase
         $pagination = Pagination::fromUserInput(10, 20);
         $sort = new TokenSorting(Sorting::SORTING_DESC);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('tokens')
             ->with($filter, $pagination, $sort)
             ->willReturn($tokenList);
 
-        $sut = $this->getSut(tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(tokenResolver: $converterMock);
         $payload = $sut->tokens($filter, $pagination, $sort);
 
         $this->assertSame($tokenList, $payload->tokens());
@@ -89,12 +89,12 @@ class TokenTest extends BaseTestCase
         $expectedPagination = new Pagination();
         $expectedSort = new TokenSorting(Sorting::SORTING_ASC);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('tokens')
             ->with($expectedFilter, $expectedPagination, $expectedSort)
             ->willReturn($errorStub);
 
-        $sut = $this->getSut(authentication: $authenticationStub, tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(authentication: $authenticationStub, tokenResolver: $converterMock);
         $payload = $sut->tokens();
 
         $this->assertNull($payload->tokens());
@@ -109,12 +109,12 @@ class TokenTest extends BaseTestCase
         $fingerprintHash = uniqid();
         $tokenValue = uniqid();
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('refresh')
             ->with($refreshToken, $fingerprintHash)
             ->willReturn($this->createConfiguredStub(UnencryptedToken::class, ['toString' => $tokenValue]));
 
-        $sut = $this->getSut(tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(tokenResolver: $converterMock);
         $payload = $sut->refresh($refreshToken, $fingerprintHash);
 
         $this->assertSame($tokenValue, $payload->token());
@@ -128,12 +128,12 @@ class TokenTest extends BaseTestCase
         $fingerprintHash = uniqid();
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('refresh')
             ->with($refreshToken, $fingerprintHash)
             ->willReturn($errorStub);
 
-        $sut = $this->getSut(tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(tokenResolver: $converterMock);
         $payload = $sut->refresh($refreshToken, $fingerprintHash);
 
         $this->assertNull($payload->token());
@@ -147,12 +147,12 @@ class TokenTest extends BaseTestCase
         $customerId = new ID(uniqid());
         $deleteCount = rand();
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('customerTokensDelete')
             ->with($customerId)
             ->willReturn($deleteCount);
 
-        $sut = $this->getSut(tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(tokenResolver: $converterMock);
         $payload = $sut->customerTokensDelete($customerId);
 
         $this->assertSame($deleteCount, $payload->deletedCount());
@@ -165,12 +165,12 @@ class TokenTest extends BaseTestCase
         $customerId = new ID(uniqid());
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('customerTokensDelete')
             ->with($customerId)
             ->willReturn($errorStub);
 
-        $sut = $this->getSut(tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(tokenResolver: $converterMock);
         $payload = $sut->customerTokensDelete($customerId);
 
         $this->assertNull($payload->deletedCount());
@@ -186,12 +186,12 @@ class TokenTest extends BaseTestCase
         $authorizationMock = $this->createMock(Authorization::class);
         $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('deleteToken')
             ->with($tokenId)
             ->willReturn(true);
 
-        $sut = $this->getSut(authorization: $authorizationMock, tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(authorization: $authorizationMock, tokenResolver: $converterMock);
         $payload = $sut->tokenDelete($tokenId);
 
         $this->assertSame(1, $payload->deletedCount());
@@ -207,12 +207,12 @@ class TokenTest extends BaseTestCase
         $authorizationMock = $this->createMock(Authorization::class);
         $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('deleteToken')
             ->with($tokenId)
             ->willReturn($errorStub);
 
-        $sut = $this->getSut(authorization: $authorizationMock, tokenExceptionConverter: $converterMock);
+        $sut = $this->getSut(authorization: $authorizationMock, tokenResolver: $converterMock);
         $payload = $sut->tokenDelete($tokenId);
 
         $this->assertNull($payload->deletedCount());
@@ -232,7 +232,7 @@ class TokenTest extends BaseTestCase
         $authenticationStub = $this->createStub(Authentication::class);
         $authenticationStub->method('getUser')->willReturn($userDataType);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('deleteUserToken')
             ->with($userDataType, $tokenId)
             ->willReturn(true);
@@ -240,7 +240,7 @@ class TokenTest extends BaseTestCase
         $sut = $this->getSut(
             authentication: $authenticationStub,
             authorization: $authorizationMock,
-            tokenExceptionConverter: $converterMock
+            tokenResolver: $converterMock
         );
         $payload = $sut->tokenDelete($tokenId);
 
@@ -261,7 +261,7 @@ class TokenTest extends BaseTestCase
         $authenticationStub = $this->createStub(Authentication::class);
         $authenticationStub->method('getUser')->willReturn($userDataType);
 
-        $converterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
         $converterMock->method('deleteUserToken')
             ->with($userDataType, $tokenId)
             ->willReturn($errorStub);
@@ -269,7 +269,7 @@ class TokenTest extends BaseTestCase
         $sut = $this->getSut(
             authentication: $authenticationStub,
             authorization: $authorizationMock,
-            tokenExceptionConverter: $converterMock
+            tokenResolver: $converterMock
         );
         $payload = $sut->tokenDelete($tokenId);
 
@@ -282,10 +282,10 @@ class TokenTest extends BaseTestCase
     {
         $deleteCount = rand();
 
-        $exceptionConverterStub = $this->createStub(TokenExceptionConverterInterface::class);
+        $exceptionConverterStub = $this->createStub(TokenResolverInterface::class);
         $exceptionConverterStub->method('shopTokensDelete')->willReturn($deleteCount);
 
-        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterStub);
+        $sut = $this->getSut(tokenResolver: $exceptionConverterStub);
         $payload = $sut->shopTokensDelete();
 
         $this->assertSame($deleteCount, $payload->deletedCount());
@@ -297,10 +297,10 @@ class TokenTest extends BaseTestCase
     {
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $exceptionConverterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $exceptionConverterMock = $this->createMock(TokenResolverInterface::class);
         $exceptionConverterMock->method('shopTokensDelete')->willReturn($errorStub);
 
-        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterMock);
+        $sut = $this->getSut(tokenResolver: $exceptionConverterMock);
         $payload = $sut->shopTokensDelete();
 
         $this->assertNull($payload->deletedCount());
@@ -313,10 +313,10 @@ class TokenTest extends BaseTestCase
     {
         $success = (bool)rand(0, 1);
 
-        $exceptionConverterStub = $this->createStub(TokenExceptionConverterInterface::class);
+        $exceptionConverterStub = $this->createStub(TokenResolverInterface::class);
         $exceptionConverterStub->method('regenerateSignatureKey')->willReturn($success);
 
-        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterStub);
+        $sut = $this->getSut(tokenResolver: $exceptionConverterStub);
         $payload = $sut->regenerateSignatureKey();
 
         $this->assertSame($success, $payload->success());
@@ -328,10 +328,10 @@ class TokenTest extends BaseTestCase
     {
         $errorStub = $this->createStub(ErrorInterface::class);
 
-        $exceptionConverterMock = $this->createMock(TokenExceptionConverterInterface::class);
+        $exceptionConverterMock = $this->createMock(TokenResolverInterface::class);
         $exceptionConverterMock->method('regenerateSignatureKey')->willReturn($errorStub);
 
-        $sut = $this->getSut(tokenExceptionConverter: $exceptionConverterMock);
+        $sut = $this->getSut(tokenResolver: $exceptionConverterMock);
         $payload = $sut->regenerateSignatureKey();
 
         $this->assertNull($payload->success());
@@ -342,13 +342,13 @@ class TokenTest extends BaseTestCase
     private function getSut(
         ?Authentication $authentication = null,
         ?Authorization $authorization = null,
-        ?TokenExceptionConverterInterface $tokenExceptionConverter = null,
+        ?TokenResolverInterface $tokenResolver = null,
     ): TokenController {
         return new TokenController(
             authentication: $authentication ?? $this->createStub(Authentication::class),
             authorization: $authorization ?? $this->createStub(Authorization::class),
-            tokenExceptionConverter: $tokenExceptionConverter ?? $this->createStub(
-                TokenExceptionConverterInterface::class
+            tokenResolver: $tokenResolver ?? $this->createStub(
+                TokenResolverInterface::class
             ),
         );
     }

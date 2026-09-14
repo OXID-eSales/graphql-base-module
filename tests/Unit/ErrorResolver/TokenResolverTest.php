@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace ExceptionConverter;
+namespace ErrorResolver;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
@@ -25,7 +25,7 @@ use OxidEsales\GraphQL\Base\Exception\InvalidRefreshToken;
 use OxidEsales\GraphQL\Base\Exception\TokenQuota;
 use OxidEsales\GraphQL\Base\Exception\UnknownToken;
 use OxidEsales\GraphQL\Base\Exception\UserNotFound;
-use OxidEsales\GraphQL\Base\ExceptionConverter\TokenExceptionConverter;
+use OxidEsales\GraphQL\Base\ErrorResolver\TokenResolver;
 use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
 use OxidEsales\GraphQL\Base\Service\Token as TokenService;
@@ -34,7 +34,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-class TokenExceptionConverterTest extends TestCase
+class TokenResolverTest extends TestCase
 {
     #[Test]
     public function tokensReturnsTokenListOnSuccess(): void
@@ -291,8 +291,8 @@ class TokenExceptionConverterTest extends TestCase
         ?TokenAdministration $tokenAdministration = null,
         ?TokenService $tokenService = null,
         ?RefreshTokenServiceInterface $refreshTokenService = null,
-    ): TokenExceptionConverter {
-        return new TokenExceptionConverter(
+    ): TokenResolver {
+        return new TokenResolver(
             $tokenAdministration ?? $this->createStub(TokenAdministration::class),
             $tokenService ?? $this->createStub(TokenService::class),
             $refreshTokenService ?? $this->createStub(RefreshTokenServiceInterface::class),
