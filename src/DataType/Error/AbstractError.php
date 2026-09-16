@@ -13,10 +13,13 @@ use TheCodingMachine\GraphQLite\Annotations\Field;
 
 abstract class AbstractError implements ErrorInterface
 {
+    private readonly string $message;
+
     public function __construct(
         private readonly string $code,
-        private readonly string $message
+        ?string $message = null,
     ) {
+        $this->message = $message ?? $this->messages()[$code];
     }
 
     /**
@@ -34,4 +37,7 @@ abstract class AbstractError implements ErrorInterface
     {
         return $this->message;
     }
+
+    /** @return array<string, string> */
+    abstract protected function messages(): array;
 }

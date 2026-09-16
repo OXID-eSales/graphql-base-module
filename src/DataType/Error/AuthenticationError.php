@@ -21,11 +21,10 @@ final class AuthenticationError extends AbstractError
 
     public function __construct(string $code)
     {
-        parent::__construct($code, $this->messages()[$code]);
+        parent::__construct($code);
     }
 
-    /** @return array<string, string> */
-    private function messages(): array
+    protected function messages(): array
     {
         return [
             self::CREDENTIALS_INCORRECT => 'The provided credentials are invalid.',

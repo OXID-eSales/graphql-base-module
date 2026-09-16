@@ -13,18 +13,26 @@ use OxidEsales\GraphQL\Base\DataType\Error\IdAlreadyExistsError;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(IdAlreadyExistsError::class)]
-final class ConflictErrorTest extends AbstractErrorTestCase
+final class IdAlreadyExistsErrorTest extends TestCase
 {
     #[Test]
-    public function conflictError(): void
+    public function idAlreadyExistsError(): void
     {
-        $sut = new IdAlreadyExistsError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
+        $code = 'id_already_exists.code';
+        $identifier = uniqid();
+        $sut = new class ($code, $identifier) extends IdAlreadyExistsError {
+            protected function messages(): array
+            {
+                return ['id_already_exists.code' => 'The error message.'];
+            }
+        };
 
         $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertSame('The error message.', $sut->message());
         $this->assertSame($identifier, $sut->identifier());
     }
 }

@@ -15,16 +15,16 @@ use TheCodingMachine\GraphQLite\Annotations\Type;
 /**
  * @Type()
  */
-final class ValidationError extends AbstractError
+class ValidationError extends AbstractError
 {
     public const FINGERPRINT = 'oegqlb.validation.fingerprint';
     public const REFRESH_TOKEN = 'oegqlb.validation.refresh_token';
 
     public function __construct(
         string $code,
-        private readonly string $value = ''
+        private readonly string $value
     ) {
-        parent::__construct($code, $this->messages()[$code]);
+        parent::__construct($code);
     }
 
     /**
@@ -35,8 +35,7 @@ final class ValidationError extends AbstractError
         return $this->value;
     }
 
-    /** @return array<string, string> */
-    private function messages(): array
+    protected function messages(): array
     {
         return [
             self::FINGERPRINT => 'The fingerprint validation failed.',

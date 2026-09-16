@@ -14,9 +14,10 @@ use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NotFoundError::class)]
-class NotFoundErrorTest extends AbstractErrorTestCase
+class NotFoundErrorTest extends TestCase
 {
     #[Test]
     #[DataProvider('validCodesProvider')]

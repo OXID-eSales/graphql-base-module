@@ -13,18 +13,26 @@ use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\NotUpdatedError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NotUpdatedError::class)]
-final class NotUpdatedErrorTest extends AbstractErrorTestCase
+final class NotUpdatedErrorTest extends TestCase
 {
     #[Test]
     public function notUpdatedError(): void
     {
-        $sut = new NotUpdatedError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
+        $code = 'not_updated.code';
+        $identifier = uniqid();
+        $sut = new class ($code, $identifier) extends NotUpdatedError {
+            protected function messages(): array
+            {
+                return ['not_updated.code' => 'The error message.'];
+            }
+        };
 
         $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertSame('The error message.', $sut->message());
         $this->assertSame($identifier, $sut->identifier());
     }
 }

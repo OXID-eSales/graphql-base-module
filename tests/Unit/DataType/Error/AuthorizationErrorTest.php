@@ -14,9 +14,10 @@ use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(AuthorizationError::class)]
-class AuthorizationErrorTest extends AbstractErrorTestCase
+class AuthorizationErrorTest extends TestCase
 {
     #[Test]
     #[DataProvider('validCodesProvider')]
