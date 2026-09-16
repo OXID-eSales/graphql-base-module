@@ -13,18 +13,26 @@ use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\NotDeletedError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(NotDeletedError::class)]
-final class NotDeletedErrorTest extends AbstractErrorTestCase
+final class NotDeletedErrorTest extends TestCase
 {
     #[Test]
     public function notDeletedError(): void
     {
-        $sut = new NotDeletedError($code = uniqid(), $message = uniqid(), $identifier = uniqid());
+        $code = 'not_deleted.code';
+        $identifier = uniqid();
+        $sut = new class ($code, $identifier) extends NotDeletedError {
+            protected function messages(): array
+            {
+                return ['not_deleted.code' => 'The error message.'];
+            }
+        };
 
         $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($message, $sut->message());
+        $this->assertSame('The error message.', $sut->message());
         $this->assertSame($identifier, $sut->identifier());
     }
 }

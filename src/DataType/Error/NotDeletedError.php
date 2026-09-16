@@ -19,10 +19,9 @@ class NotDeletedError extends AbstractError
 {
     public function __construct(
         string $code,
-        string $message,
         private readonly string $identifier,
     ) {
-        parent::__construct($code, $message);
+        parent::__construct($code);
     }
 
     /**
@@ -31,5 +30,10 @@ class NotDeletedError extends AbstractError
     public function identifier(): string
     {
         return $this->identifier;
+    }
+
+    protected function messages(): array
+    {
+        return [];
     }
 }

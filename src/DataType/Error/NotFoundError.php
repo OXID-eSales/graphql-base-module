@@ -24,7 +24,7 @@ class NotFoundError extends AbstractError
         string $code,
         private readonly string $identifier
     ) {
-        parent::__construct($code, $this->messages()[$code]);
+        parent::__construct($code);
     }
 
     /**
@@ -35,8 +35,7 @@ class NotFoundError extends AbstractError
         return $this->identifier;
     }
 
-    /** @return array<string, string> */
-    private function messages(): array
+    protected function messages(): array
     {
         return [
             self::TOKEN => 'The token was not found.',

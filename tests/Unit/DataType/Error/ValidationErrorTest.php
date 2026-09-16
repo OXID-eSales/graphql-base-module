@@ -14,9 +14,10 @@ use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(ValidationError::class)]
-class ValidationErrorTest extends AbstractErrorTestCase
+class ValidationErrorTest extends TestCase
 {
     #[Test]
     #[DataProvider('validCodesProvider')]
