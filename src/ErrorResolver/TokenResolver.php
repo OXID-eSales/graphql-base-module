@@ -42,9 +42,6 @@ class TokenResolver implements TokenResolverInterface
     ) {
     }
 
-    /**
-     * @inheritDoc
-     */
     public function tokens(
         TokenFilterList $filterList,
         Pagination $pagination,
