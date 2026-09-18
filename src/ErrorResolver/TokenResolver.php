@@ -81,7 +81,7 @@ class TokenResolver implements TokenResolverInterface
         }
     }
 
-    public function deleteToken(ID $tokenId): true|ErrorInterface
+    public function deleteToken(ID $tokenId): bool|ErrorInterface
     {
         try {
             $this->tokenService->deleteToken($tokenId);
@@ -91,7 +91,7 @@ class TokenResolver implements TokenResolverInterface
         }
     }
 
-    public function deleteUserToken(UserInterface $user, ID $tokenId): true|ErrorInterface
+    public function deleteUserToken(UserInterface $user, ID $tokenId): bool|ErrorInterface
     {
         try {
             $this->tokenService->deleteUserToken($user, $tokenId);

@@ -31,9 +31,9 @@ interface TokenResolverInterface
 
     public function customerTokensDelete(?ID $customerId): int|ErrorInterface;
 
-    public function deleteToken(ID $tokenId): true|ErrorInterface;
+    public function deleteToken(ID $tokenId): bool|ErrorInterface;
 
-    public function deleteUserToken(UserInterface $user, ID $tokenId): true|ErrorInterface;
+    public function deleteUserToken(UserInterface $user, ID $tokenId): bool|ErrorInterface;
 
     public function shopTokensDelete(): int|ErrorInterface;
 
