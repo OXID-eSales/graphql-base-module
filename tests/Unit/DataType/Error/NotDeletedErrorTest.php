@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\NotDeletedError;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -34,5 +35,16 @@ final class NotDeletedErrorTest extends TestCase
         $this->assertSame($code, $sut->code());
         $this->assertSame('The error message.', $sut->message());
         $this->assertSame($identifier, $sut->identifier());
+    }
+
+    #[Test]
+    public function unknownCodeThrowsException(): void
+    {
+        $code = uniqid();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('There is no message for the error code "' . $code . '".');
+
+        new NotDeletedError($code, uniqid());
     }
 }

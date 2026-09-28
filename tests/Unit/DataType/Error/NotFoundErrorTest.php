@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\NotFoundError;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -44,5 +45,16 @@ class NotFoundErrorTest extends TestCase
             [NotFoundError::TOKEN, 'The token was not found.'],
             [NotFoundError::USER, 'The user was not found.'],
         ];
+    }
+
+    #[Test]
+    public function unknownCodeThrowsException(): void
+    {
+        $code = uniqid();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('There is no message for the error code "' . $code . '".');
+
+        new NotFoundError($code, uniqid());
     }
 }
