@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Error\ValidationError;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -44,5 +45,16 @@ class ValidationErrorTest extends TestCase
             [ValidationError::FINGERPRINT, 'The fingerprint validation failed.'],
             [ValidationError::REFRESH_TOKEN, 'The provided refresh token is invalid.'],
         ];
+    }
+
+    #[Test]
+    public function unknownCodeThrowsException(): void
+    {
+        $code = uniqid();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('There is no message for the error code "' . $code . '".');
+
+        new ValidationError($code, uniqid());
     }
 }

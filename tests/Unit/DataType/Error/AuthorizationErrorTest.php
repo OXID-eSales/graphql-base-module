@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthorizationError;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -43,5 +44,16 @@ class AuthorizationErrorTest extends TestCase
             [AuthorizationError::UNAUTHORIZED_DELETE_TOKEN, 'You are not authorized to delete this token.'],
             [AuthorizationError::UNAUTHORIZED_VIEW_TOKEN, 'You are not authorized to view this token.'],
         ];
+    }
+
+    #[Test]
+    public function unknownCodeThrowsException(): void
+    {
+        $code = uniqid();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('There is no message for the error code "' . $code . '".');
+
+        new AuthorizationError($code);
     }
 }

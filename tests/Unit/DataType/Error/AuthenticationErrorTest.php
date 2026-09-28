@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
 
+use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
 use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -43,5 +44,16 @@ class AuthenticationErrorTest extends TestCase
             [AuthenticationError::CREDENTIALS_INCORRECT, 'The provided credentials are invalid.'],
             [AuthenticationError::TOKEN_QUOTA_EXCEEDED, 'The token quota for this user has been exceeded.'],
         ];
+    }
+
+    #[Test]
+    public function unknownCodeThrowsException(): void
+    {
+        $code = uniqid();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('There is no message for the error code "' . $code . '".');
+
+        new AuthenticationError($code);
     }
 }
