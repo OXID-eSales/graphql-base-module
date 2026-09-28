@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\DataType\Error;
 
+use InvalidArgumentException;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 
 abstract class AbstractError implements ErrorInterface
@@ -19,7 +20,13 @@ abstract class AbstractError implements ErrorInterface
         private readonly string $code,
         ?string $message = null,
     ) {
-        $this->message = $message ?? $this->messages()[$code];
+        $messages = $this->messages();
+
+        if ($message === null && !array_key_exists($code, $messages)) {
+            throw new InvalidArgumentException('There is no message for the error code "' . $code . '".');
+        }
+
+        $this->message = $message ?? $messages[$code];
     }
 
     /**
