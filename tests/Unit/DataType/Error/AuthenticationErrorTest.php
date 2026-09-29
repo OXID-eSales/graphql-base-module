@@ -49,11 +49,11 @@ class AuthenticationErrorTest extends TestCase
     #[Test]
     public function unknownCodeThrowsException(): void
     {
-        $code = uniqid();
+        $notExistingCode = uniqid();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('There is no message for the error code "' . $code . '".');
+        $this->expectExceptionMessage('The error-code "' . $notExistingCode . '" is unknown.');
 
-        new AuthenticationError($code);
+        new AuthenticationError($notExistingCode);
     }
 }
