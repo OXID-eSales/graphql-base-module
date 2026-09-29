@@ -23,7 +23,7 @@ abstract class AbstractError implements ErrorInterface
         $messages = $this->messages();
 
         if ($message === null && !array_key_exists($code, $messages)) {
-            throw new InvalidArgumentException('There is no message for the error code "' . $code . '".');
+            throw new InvalidArgumentException('The error-code "' . $code . '" is unknown.');
         }
 
         $this->message = $message ?? $messages[$code];
