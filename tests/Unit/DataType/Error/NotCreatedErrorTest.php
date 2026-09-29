@@ -33,7 +33,7 @@ final class NotCreatedErrorTest extends TestCase
 
         $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame('The error message.', $sut->message());
+        $this->assertSame('The error message.', $sut->getMessage());
         $this->assertSame($identifier, $sut->identifier());
     }
 

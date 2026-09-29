@@ -28,7 +28,7 @@ class AuthorizationErrorTest extends TestCase
 
         $this->assertInstanceOf(ErrorInterface::class, $sut);
         $this->assertSame($code, $sut->code());
-        $this->assertSame($expectedMessage, $sut->message());
+        $this->assertSame($expectedMessage, $sut->getMessage());
     }
 
     #[Test]

@@ -40,7 +40,7 @@ abstract class AbstractError implements ErrorInterface
     /**
      * @Field()
      */
-    public function message(): string
+    public function getMessage(): string
     {
         return $this->message;
     }
