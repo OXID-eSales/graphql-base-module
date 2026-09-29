@@ -17,5 +17,5 @@ interface ErrorInterface
     public function code(): string;
 
     #[Field]
-    public function message(): string;
+    public function getMessage(): string;
 }
