@@ -9,38 +9,31 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
-use OxidEsales\GraphQL\Base\DataType\Payload\BooleanPayload;
-use OxidEsales\GraphQL\Base\DataType\Payload\BooleanPayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\Payload\TokenDeletePayload;
-use OxidEsales\GraphQL\Base\DataType\Payload\TokenDeletePayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
-use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayloadInterface;
-use OxidEsales\GraphQL\Base\DataType\Payload\TokensPayload;
-use OxidEsales\GraphQL\Base\DataType\Payload\TokensPayloadInterface;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
+use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
-use OxidEsales\GraphQL\Base\ErrorResolver\TokenResolverInterface;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
+use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
+use OxidEsales\GraphQL\Base\Service\Token as TokenService;
+use OxidEsales\GraphQL\Base\Service\TokenAdministration;
 use TheCodingMachine\GraphQLite\Annotations\Logged;
 use TheCodingMachine\GraphQLite\Annotations\Mutation;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 use TheCodingMachine\GraphQLite\Annotations\Right;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-/**
- * @SuppressWarnings("PHPMD.CouplingBetweenObjects")
- */
 class Token
 {
     public function __construct(
+        private readonly TokenAdministration $tokenAdministration,
         private readonly Authentication $authentication,
         private readonly Authorization $authorization,
-        private readonly TokenResolverInterface $tokenResolver,
+        private readonly TokenService $tokenService,
+        private readonly RefreshTokenServiceInterface $refreshTokenService,
     ) {
     }
 
@@ -48,42 +41,33 @@ class Token
      * Query of Base Module.
      * Query a customer's active JWT.
      * User with right 'VIEW_ANY_TOKEN' can query any customer's tokens.
+     *
+     *
+     * @return TokenDataType[]
      */
-    #[Query(outputType: "TokensPayload")]
+    #[Query]
     #[Logged]
     public function tokens(
         ?TokenFilterList $filter = null,
         ?Pagination $pagination = null,
         ?TokenSorting $sort = null
-    ): TokensPayloadInterface {
-        $result = $this->tokenResolver->tokens(
+    ): array {
+        return $this->tokenAdministration->tokens(
             $filter ?? new TokenFilterList(
                 new IDFilter($this->authentication->getUser()->id())
             ),
             $pagination ?? new Pagination(),
             $sort ?? new TokenSorting(Sorting::SORTING_ASC),
         );
-
-        if ($result instanceof ErrorInterface) {
-            return new TokensPayload(null, [$result]);
-        }
-
-        return new TokensPayload($result);
     }
 
     /**
      * retrieve a new JWT for authentication by refresh token data
      */
-    #[Query(outputType: "TokenPayload")]
-    public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
+    #[Query]
+    public function refresh(string $refreshToken, string $fingerprintHash): string
     {
-        $result = $this->tokenResolver->refresh($refreshToken, $fingerprintHash);
-
-        if ($result instanceof ErrorInterface) {
-            return new TokenPayload(null, [$result]);
-        }
-
-        return new TokenPayload($result->toString());
+        return $this->refreshTokenService->refreshToken($refreshToken, $fingerprintHash)->toString();
     }
 
     /**
@@ -93,17 +77,11 @@ class Token
      *  - Customer without special rights can invalidate only own tokens.
      * If no customerId is supplied, own Id is taken.
      */
-    #[Mutation(outputType: "TokenDeletePayload")]
+    #[Mutation]
     #[Logged]
-    public function customerTokensDelete(?ID $customerId): TokenDeletePayloadInterface
+    public function customerTokensDelete(?ID $customerId): int
     {
-        $result = $this->tokenResolver->customerTokensDelete($customerId);
-
-        if ($result instanceof ErrorInterface) {
-            return new TokenDeletePayload(null, [$result]);
-        }
-
-        return new TokenDeletePayload($result);
+        return $this->tokenAdministration->customerTokensDelete($customerId);
     }
 
     /**
@@ -112,24 +90,17 @@ class Token
      *  - Customer with right INVALIDATE_ANY_TOKEN can invalidate any token.
      *  - Customer without special rights can invalidate only own token.
      */
-    #[Mutation(outputType: "TokenDeletePayload")]
+    #[Mutation]
     #[Logged]
-    public function tokenDelete(ID $tokenId): TokenDeletePayloadInterface
+    public function tokenDelete(ID $tokenId): bool
     {
         if ($this->authorization->isAllowed('INVALIDATE_ANY_TOKEN')) {
-            $result = $this->tokenResolver->deleteToken($tokenId);
-        } else {
-            $result = $this->tokenResolver->deleteUserToken(
-                $this->authentication->getUser(),
-                $tokenId
-            );
+            $this->tokenService->deleteToken($tokenId);
+            return true;
         }
 
-        if ($result instanceof ErrorInterface) {
-            return new TokenDeletePayload(null, [$result]);
-        }
-
-        return new TokenDeletePayload(1);
+        $this->tokenService->deleteUserToken($this->authentication->getUser(), $tokenId);
+        return true;
     }
 
     /**
@@ -137,18 +108,12 @@ class Token
      * Invalidate all tokens for current shop.
      * INVALIDATE_ANY_TOKEN right is required.
      */
-    #[Mutation(outputType: "TokenDeletePayload")]
+    #[Mutation]
     #[Logged]
     #[Right('INVALIDATE_ANY_TOKEN')]
-    public function shopTokensDelete(): TokenDeletePayloadInterface
+    public function shopTokensDelete(): int
     {
-        $result = $this->tokenResolver->shopTokensDelete();
-
-        if ($result instanceof ErrorInterface) {
-            return new TokenDeletePayload(null, [$result]);
-        }
-
-        return new TokenDeletePayload($result);
+        return $this->tokenAdministration->shopTokensDelete();
     }
 
     /**
@@ -158,17 +123,11 @@ class Token
      * Only use if no other option is left.
      * REGENERATE_SIGNATURE_KEY right is required.
      */
-    #[Mutation(outputType: "BooleanPayload")]
+    #[Mutation]
     #[Logged]
     #[Right('REGENERATE_SIGNATURE_KEY')]
-    public function regenerateSignatureKey(): BooleanPayloadInterface
+    public function regenerateSignatureKey(): bool
     {
-        $result = $this->tokenResolver->regenerateSignatureKey();
-
-        if ($result instanceof ErrorInterface) {
-            return new BooleanPayload(null, [$result]);
-        }
-
-        return new BooleanPayload($result);
+        return $this->tokenAdministration->regenerateSignatureKey();
     }
 }

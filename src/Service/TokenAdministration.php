@@ -40,6 +40,9 @@ class TokenAdministration
     ) {
     }
 
+    /**
+     * @return TokenDataType[]
+     */
     public function tokens(
         TokenFilterList $filterList,
         Pagination $pagination,

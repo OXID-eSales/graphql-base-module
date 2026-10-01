@@ -19,13 +19,14 @@ class GraphQLCest
 {
     public function testLoginWithInvalidCredentials(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query {token(username:"wrong", password:"wrong") { token userErrors { code message } }}');
+        $I->sendGQLQuery('query {token(username:"wrong", password:"wrong")}');
         $I->seeResponseIsJson();
 //        $I->seeResponseContains('{"category":"permissionerror"}');
         $I->canSeeHttpHeader('Server-Timing');
+        $I->seeResponseContains('errors');
 
         $result = $I->grabJsonResponseAsArray();
-        $I->assertEquals('The provided credentials are invalid.', $result['data']['token']['userErrors'][0]['message']);
+        $I->assertEquals('Username/password combination is invalid', $result['errors'][0]['message']);
     }
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
@@ -37,7 +38,7 @@ class GraphQLCest
     public function testQueryWithInvalidToken(AcceptanceTester $I): void
     {
         $I->amBearerAuthenticated('invalid_token');
-        $I->sendGQLQuery('query {token(username:"admin", password:"admin") { token }}');
+        $I->sendGQLQuery('query {token(username:"admin", password:"admin")}');
         $I->seeResponseIsJson();
         $I->seeResponseContains('errors');
         $I->seeResponseMatchesJsonType([
@@ -57,7 +58,7 @@ class GraphQLCest
 
         $I->getRest()->haveHTTPHeader('Content-Type', 'application/json');
         $I->getRest()->sendPOST($uri, [
-            'query' => 'query {token(username:"admin", password:"admin") { token }}',
+            'query' => 'query {token(username:"admin", password:"admin")}',
             'variables' => [],
         ]);
 

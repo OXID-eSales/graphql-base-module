@@ -22,7 +22,7 @@ class LoginCest
 
     public function testLoginWithMissingCredentials(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query { token { token } }'); // anonymous token
+        $I->sendGQLQuery('query { token }'); // anonymous token
         $result = $I->grabJsonResponseAsArray();
 
         $I->assertNotEmpty($result['data']['token']);
@@ -30,7 +30,7 @@ class LoginCest
 
     public function testLoginWithIncompleteCredentialsPassword(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query { token (username: "foo") { token } }'); // anonymous token
+        $I->sendGQLQuery('query { token (username: "foo") }'); // anonymous token
         $result = $I->grabJsonResponseAsArray();
 
         $I->assertNotEmpty($result['data']['token']);
@@ -38,7 +38,7 @@ class LoginCest
 
     public function testLoginWithIncompleteCredentialsUsername(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query { token (password: "foo") { token } }'); // anonymous token
+        $I->sendGQLQuery('query { token (password: "foo") }'); // anonymous token
         $result = $I->grabJsonResponseAsArray();
 
         $I->assertNotEmpty($result['data']['token']);
@@ -46,19 +46,15 @@ class LoginCest
 
     public function testLoginWithWrongCredentials(AcceptanceTester $I): void
     {
-        $I->sendGQLQuery('query { token (username: "foo", password: "bar") { token userErrors { code message } } }');
+        $I->sendGQLQuery('query { token (username: "foo", password: "bar") }');
         $result = $I->grabJsonResponseAsArray();
 
-        $I->assertEquals('The provided credentials are invalid.', $result['data']['token']['userErrors'][0]['message']);
+        $I->assertEquals('Username/password combination is invalid', $result['errors'][0]['message']);
     }
 
     public function testLoginWithValidCredentials(AcceptanceTester $I): void
     {
-        $query = sprintf(
-            'query { token (username: "%s", password: "%s") { token } }',
-            self::ADMIN_LOGIN,
-            self::ADMIN_PASSWORD
-        );
+        $query = 'query { token (username: "' . self::ADMIN_LOGIN . '", password: "' . self::ADMIN_PASSWORD . '") }';
         $I->sendGQLQuery($query);
         $result = $I->grabJsonResponseAsArray();
 
@@ -68,9 +64,7 @@ class LoginCest
     public function testLoginWithValidCredentialsInVariables(AcceptanceTester $I): void
     {
         $I->sendGQLQuery(
-            'query ($username: String!, $password: String!) {
-                token (username: $username, password: $password) { token }
-            }',
+            'query ($username: String!, $password: String!) { token (username: $username, password: $password) }',
             [
                 'username' => self::ADMIN_LOGIN,
                 'password' => self::ADMIN_PASSWORD,
