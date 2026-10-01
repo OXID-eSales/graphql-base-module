@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 
 /**
@@ -18,5 +19,5 @@ interface RefreshTokenServiceInterface
 {
     public function createRefreshTokenForUser(UserInterface $user): string;
 
-    public function refreshToken(string $refreshToken, string $fingerprintHash): string;
+    public function refreshToken(string $refreshToken, string $fingerprintHash): UnencryptedToken;
 }

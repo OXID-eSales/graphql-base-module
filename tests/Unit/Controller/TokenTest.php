@@ -11,132 +11,345 @@ namespace OxidEsales\GraphQL\Base\Tests\Unit\Controller;
 
 use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\Controller\Token as TokenController;
-use OxidEsales\GraphQL\Base\DataType\Filter\DateFilter;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
+use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
+use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
 use OxidEsales\GraphQL\Base\DataType\TokenFilterList;
-use OxidEsales\GraphQL\Base\DataType\User as UserDataType;
+use OxidEsales\GraphQL\Base\ErrorResolver\TokenResolverInterface;
+use OxidEsales\GraphQL\Base\Infrastructure\Model\Token as TokenModel;
 use OxidEsales\GraphQL\Base\Service\Authentication;
 use OxidEsales\GraphQL\Base\Service\Authorization;
-use OxidEsales\GraphQL\Base\Service\RefreshTokenServiceInterface;
-use OxidEsales\GraphQL\Base\Service\Token as TokenService;
-use OxidEsales\GraphQL\Base\Service\TokenAdministration as TokenAdministration;
 use OxidEsales\GraphQL\Base\Tests\Unit\BaseTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 use TheCodingMachine\GraphQLite\Types\ID;
 
-//todo: tests do not do any assertions, fix it.
 #[AllowMockObjectsWithoutExpectations]
 class TokenTest extends BaseTestCase
 {
-    public function testTokensQueryWithDefaultFilters(): void
+    #[Test]
+    public function tokensReturnsPayloadWithTokenList(): void
     {
-        $authentication = $this->createPartialMock(Authentication::class, ['getUser']);
-        $authentication->method('getUser')
-            ->willReturn(new UserDataType($this->getUserModelStub('_testuserid')));
+        $userId = uniqid();
+        $userDataType = $this->getUserDataStub($this->getUserModelStub($userId));
+        $tokenList = [new TokenDataType($this->createStub(TokenModel::class))];
 
-        $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['tokens']);
-        $tokenAdministration->method('tokens')
-            ->with(
-                new TokenFilterList(new IDFilter($authentication->getUser()->id())),
-                new Pagination(),
-                new TokenSorting(TokenSorting::SORTING_ASC),
-            )
-            ->willReturn([]);
+        $authenticationStub = $this->createStub(Authentication::class);
+        $authenticationStub->method('getUser')->willReturn($userDataType);
 
-        $tokenController = $this->getTokenController(
-            tokenAdministration: $tokenAdministration,
-            authentication: $authentication
-        );
-        $tokenController->tokens();
+        $expectedFilter = new TokenFilterList(new IDFilter($userDataType->id()));
+        $expectedPagination = new Pagination();
+        $expectedSort = new TokenSorting(Sorting::SORTING_ASC);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('tokens')
+            ->with($expectedFilter, $expectedPagination, $expectedSort)
+            ->willReturn($tokenList);
+
+        $sut = $this->getSut(authentication: $authenticationStub, tokenResolver: $converterMock);
+        $payload = $sut->tokens();
+
+        $this->assertSame($tokenList, $payload->tokens());
+        $this->assertEmpty($payload->userErrors());
     }
 
-    public function testTokensQueryWithCustomFilters(): void
+    #[Test]
+    public function tokensWithCustomParametersReturnsPayloadWithTokenList(): void
     {
-        $authentication = $this->createPartialMock(Authentication::class, ['getUser']);
-        $authentication->method('getUser')
-            ->willReturn(new UserDataType($this->getUserModelStub('_testuserid')));
-
-        $filterList = new TokenFilterList(
-            new IDFilter(new ID('someone_else')),
-            new IDFilter(new ID(1)),
-            new DateFilter(null, ['2021-01-12 12:12:12', '2021-12-31 12:12:12'])
-        );
-        $sort = new TokenSorting(TokenSorting::SORTING_DESC);
+        $tokenList = [new TokenDataType($this->createStub(TokenModel::class))];
+        $filter = new TokenFilterList(new IDFilter(new ID(uniqid())));
         $pagination = Pagination::fromUserInput(10, 20);
+        $sort = new TokenSorting(Sorting::SORTING_DESC);
 
-        $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['tokens']);
-        $tokenAdministration->method('tokens')
-            ->with(
-                $filterList,
-                $pagination,
-                $sort
-            )
-            ->willReturn([]);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('tokens')
+            ->with($filter, $pagination, $sort)
+            ->willReturn($tokenList);
 
-        $tokenController = $this->getTokenController(
-            tokenAdministration: $tokenAdministration,
-            authentication: $authentication
-        );
-        $tokenController->tokens($filterList, $pagination, $sort);
+        $sut = $this->getSut(tokenResolver: $converterMock);
+        $payload = $sut->tokens($filter, $pagination, $sort);
+
+        $this->assertSame($tokenList, $payload->tokens());
+        $this->assertEmpty($payload->userErrors());
     }
 
-    public function testCustomerTokensDelete(): void
+    #[Test]
+    public function tokensReturnsPayloadWithError(): void
     {
-        $authentication = $this->createPartialMock(Authentication::class, []);
-        $tokenAdministration = $this->createPartialMock(TokenAdministration::class, ['customerTokensDelete']);
-        $tokenAdministration->method('customerTokensDelete')
-            ->willReturn(5);
+        $userDataType = $this->getUserDataStub($this->getUserModelStub(uniqid()));
+        $errorStub = $this->createStub(ErrorInterface::class);
 
-        $tokenController = $this->getTokenController(
-            tokenAdministration: $tokenAdministration,
-            authentication: $authentication
-        );
-        $tokenController->customerTokensDelete(new ID('someUserId'));
+        $authenticationStub = $this->createStub(Authentication::class);
+        $authenticationStub->method('getUser')->willReturn($userDataType);
+
+        $expectedFilter = new TokenFilterList(new IDFilter($userDataType->id()));
+        $expectedPagination = new Pagination();
+        $expectedSort = new TokenSorting(Sorting::SORTING_ASC);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('tokens')
+            ->with($expectedFilter, $expectedPagination, $expectedSort)
+            ->willReturn($errorStub);
+
+        $sut = $this->getSut(authentication: $authenticationStub, tokenResolver: $converterMock);
+        $payload = $sut->tokens();
+
+        $this->assertNull($payload->tokens());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
     }
 
-    public function testTokenDelete(): void
+    #[Test]
+    public function refreshReturnsPayloadWithToken(): void
     {
-        $authorization = $this->createPartialMock(Authorization::class, ['isAllowed']);
-        $authorization->method('isAllowed')
-            ->willReturn(true);
-
-        $tokenController = $this->getTokenController(
-            authorization: $authorization
-        );
-        $tokenController->tokenDelete(new ID('someTokenId'));
-    }
-
-    public function testRefreshGivesStringValueOfNewToken(): void
-    {
-        $sut = $this->getTokenController(
-            refreshTokenService: $refreshTokenServiceMock = $this->createMock(RefreshTokenServiceInterface::class),
-        );
-
         $refreshToken = uniqid();
         $fingerprintHash = uniqid();
-        $newRefreshToken = uniqid();
+        $tokenValue = uniqid();
 
-        $refreshTokenServiceMock->method('refreshToken')
-            ->with($refreshToken, $fingerprintHash)->willReturn($newRefreshToken);
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('refresh')
+            ->with($refreshToken, $fingerprintHash)
+            ->willReturn($this->createConfiguredStub(UnencryptedToken::class, ['toString' => $tokenValue]));
 
-        $this->assertSame($newRefreshToken, $sut->refresh($refreshToken, $fingerprintHash));
+        $sut = $this->getSut(tokenResolver: $converterMock);
+        $payload = $sut->refresh($refreshToken, $fingerprintHash);
+
+        $this->assertSame($tokenValue, $payload->token());
+        $this->assertEmpty($payload->userErrors());
     }
 
-    private function getTokenController(
-        ?TokenAdministration $tokenAdministration = null,
+    #[Test]
+    public function refreshReturnsPayloadWithError(): void
+    {
+        $refreshToken = uniqid();
+        $fingerprintHash = uniqid();
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('refresh')
+            ->with($refreshToken, $fingerprintHash)
+            ->willReturn($errorStub);
+
+        $sut = $this->getSut(tokenResolver: $converterMock);
+        $payload = $sut->refresh($refreshToken, $fingerprintHash);
+
+        $this->assertNull($payload->token());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
+    }
+
+    #[Test]
+    public function customerTokensDeleteReturnsPayloadWithDeleteCount(): void
+    {
+        $customerId = new ID(uniqid());
+        $deleteCount = rand();
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('customerTokensDelete')
+            ->with($customerId)
+            ->willReturn($deleteCount);
+
+        $sut = $this->getSut(tokenResolver: $converterMock);
+        $payload = $sut->customerTokensDelete($customerId);
+
+        $this->assertSame($deleteCount, $payload->deletedCount());
+        $this->assertEmpty($payload->userErrors());
+    }
+
+    #[Test]
+    public function customerTokensDeleteReturnsPayloadWithError(): void
+    {
+        $customerId = new ID(uniqid());
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('customerTokensDelete')
+            ->with($customerId)
+            ->willReturn($errorStub);
+
+        $sut = $this->getSut(tokenResolver: $converterMock);
+        $payload = $sut->customerTokensDelete($customerId);
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
+    }
+
+    #[Test]
+    public function tokenDeleteWithAdminRightReturnsPayload(): void
+    {
+        $tokenId = new ID(uniqid());
+
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('deleteToken')
+            ->with($tokenId)
+            ->willReturn(true);
+
+        $sut = $this->getSut(authorization: $authorizationMock, tokenResolver: $converterMock);
+        $payload = $sut->tokenDelete($tokenId);
+
+        $this->assertSame(1, $payload->deletedCount());
+        $this->assertEmpty($payload->userErrors());
+    }
+
+    #[Test]
+    public function tokenDeleteWithAdminRightReturnsPayloadWithError(): void
+    {
+        $tokenId = new ID(uniqid());
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(true);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('deleteToken')
+            ->with($tokenId)
+            ->willReturn($errorStub);
+
+        $sut = $this->getSut(authorization: $authorizationMock, tokenResolver: $converterMock);
+        $payload = $sut->tokenDelete($tokenId);
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
+    }
+
+    #[Test]
+    public function tokenDeleteWithoutAdminRightReturnsPayload(): void
+    {
+        $tokenId = new ID(uniqid());
+        $userDataType = $this->getUserDataStub($this->getUserModelStub(uniqid()));
+
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(false);
+
+        $authenticationStub = $this->createStub(Authentication::class);
+        $authenticationStub->method('getUser')->willReturn($userDataType);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('deleteUserToken')
+            ->with($userDataType, $tokenId)
+            ->willReturn(true);
+
+        $sut = $this->getSut(
+            authentication: $authenticationStub,
+            authorization: $authorizationMock,
+            tokenResolver: $converterMock
+        );
+        $payload = $sut->tokenDelete($tokenId);
+
+        $this->assertSame(1, $payload->deletedCount());
+        $this->assertEmpty($payload->userErrors());
+    }
+
+    #[Test]
+    public function tokenDeleteWithoutAdminRightReturnsPayloadWithError(): void
+    {
+        $tokenId = new ID(uniqid());
+        $userDataType = $this->getUserDataStub($this->getUserModelStub(uniqid()));
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $authorizationMock = $this->createMock(Authorization::class);
+        $authorizationMock->method('isAllowed')->with('INVALIDATE_ANY_TOKEN')->willReturn(false);
+
+        $authenticationStub = $this->createStub(Authentication::class);
+        $authenticationStub->method('getUser')->willReturn($userDataType);
+
+        $converterMock = $this->createMock(TokenResolverInterface::class);
+        $converterMock->method('deleteUserToken')
+            ->with($userDataType, $tokenId)
+            ->willReturn($errorStub);
+
+        $sut = $this->getSut(
+            authentication: $authenticationStub,
+            authorization: $authorizationMock,
+            tokenResolver: $converterMock
+        );
+        $payload = $sut->tokenDelete($tokenId);
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
+    }
+
+    #[Test]
+    public function shopTokensDeleteReturnsPayload(): void
+    {
+        $deleteCount = rand();
+
+        $exceptionConverterStub = $this->createStub(TokenResolverInterface::class);
+        $exceptionConverterStub->method('shopTokensDelete')->willReturn($deleteCount);
+
+        $sut = $this->getSut(tokenResolver: $exceptionConverterStub);
+        $payload = $sut->shopTokensDelete();
+
+        $this->assertSame($deleteCount, $payload->deletedCount());
+        $this->assertEmpty($payload->userErrors());
+    }
+
+    #[Test]
+    public function shopTokensDeleteReturnsPayloadWithError(): void
+    {
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $exceptionConverterMock = $this->createMock(TokenResolverInterface::class);
+        $exceptionConverterMock->method('shopTokensDelete')->willReturn($errorStub);
+
+        $sut = $this->getSut(tokenResolver: $exceptionConverterMock);
+        $payload = $sut->shopTokensDelete();
+
+        $this->assertNull($payload->deletedCount());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
+    }
+
+    #[Test]
+    public function regenerateSignatureKeyReturnsPayload(): void
+    {
+        $success = (bool)rand(0, 1);
+
+        $exceptionConverterStub = $this->createStub(TokenResolverInterface::class);
+        $exceptionConverterStub->method('regenerateSignatureKey')->willReturn($success);
+
+        $sut = $this->getSut(tokenResolver: $exceptionConverterStub);
+        $payload = $sut->regenerateSignatureKey();
+
+        $this->assertSame($success, $payload->success());
+        $this->assertEmpty($payload->userErrors());
+    }
+
+    #[Test]
+    public function regenerateSignatureKeyReturnsPayloadWithError(): void
+    {
+        $errorStub = $this->createStub(ErrorInterface::class);
+
+        $exceptionConverterMock = $this->createMock(TokenResolverInterface::class);
+        $exceptionConverterMock->method('regenerateSignatureKey')->willReturn($errorStub);
+
+        $sut = $this->getSut(tokenResolver: $exceptionConverterMock);
+        $payload = $sut->regenerateSignatureKey();
+
+        $this->assertNull($payload->success());
+        $this->assertCount(1, $payload->userErrors());
+        $this->assertSame($errorStub, $payload->userErrors()[0]);
+    }
+
+    private function getSut(
         ?Authentication $authentication = null,
         ?Authorization $authorization = null,
-        ?TokenService $tokenService = null,
-        ?RefreshTokenServiceInterface $refreshTokenService = null,
+        ?TokenResolverInterface $tokenResolver = null,
     ): TokenController {
         return new TokenController(
-            tokenAdministration: $tokenAdministration ?? $this->createStub(TokenAdministration::class),
             authentication: $authentication ?? $this->createStub(Authentication::class),
             authorization: $authorization ?? $this->createStub(Authorization::class),
-            tokenService: $tokenService ?? $this->createStub(TokenService::class),
-            refreshTokenService: $refreshTokenService ?? $this->createStub(RefreshTokenServiceInterface::class),
+            tokenResolver: $tokenResolver ?? $this->createStub(
+                TokenResolverInterface::class
+            ),
         );
     }
 }

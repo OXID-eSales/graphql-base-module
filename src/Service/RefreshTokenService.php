@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
+use Lcobucci\JWT\UnencryptedToken;
 use OxidEsales\GraphQL\Base\DataType\UserInterface;
 use OxidEsales\GraphQL\Base\Infrastructure\RefreshTokenRepositoryInterface;
 
@@ -37,13 +38,12 @@ class RefreshTokenService implements RefreshTokenServiceInterface
         return $token->token();
     }
 
-    public function refreshToken(string $refreshToken, string $fingerprintHash): string
+    public function refreshToken(string $refreshToken, string $fingerprintHash): UnencryptedToken
     {
         $this->fingerprintService->validateFingerprintHashToCookie($fingerprintHash);
 
         $user = $this->refreshTokenRepository->getTokenUser($refreshToken);
-        $newToken = $this->tokenService->createTokenForUser($user);
 
-        return $newToken->toString();
+        return $this->tokenService->createTokenForUser($user);
     }
 }

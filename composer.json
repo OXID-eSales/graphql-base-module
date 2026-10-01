@@ -21,7 +21,7 @@
         "symfony/process": "^6.4",
         "ext-xdebug": "*",
         "oxid-esales/oxideshop-ce": "dev-b-7.6.x",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^2.2",
         "squizlabs/php_codesniffer": "3.*",
         "phpmd/phpmd": "^2.11",
         "mikey179/vfsstream": "~1.6.8",

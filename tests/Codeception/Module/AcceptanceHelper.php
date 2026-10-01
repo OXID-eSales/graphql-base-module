@@ -69,7 +69,9 @@ class AcceptanceHelper extends Module implements DependsOnModule
     {
         $this->logout();
 
-        $query = 'query ($username: String, $password: String) { token (username: $username, password: $password) }';
+        $query = 'query ($username: String, $password: String) {
+            token (username: $username, password: $password) { token }
+        }';
         $variables = [
             'username' => $username,
             'password' => $password,
@@ -95,7 +97,7 @@ class AcceptanceHelper extends Module implements DependsOnModule
 
     public function grabTokenFromResponse(): string
     {
-        return $this->grabJsonResponseAsArray()['data']['token'];
+        return $this->grabJsonResponseAsArray()['data']['token']['token'];
     }
 
     public function seeResponseContainsValidJWTToken(): void

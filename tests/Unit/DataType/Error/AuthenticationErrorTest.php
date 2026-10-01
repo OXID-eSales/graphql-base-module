@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+declare(strict_types=1);
+
+namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Error;
+
+use InvalidArgumentException;
+use OxidEsales\GraphQL\Base\DataType\Error\AuthenticationError;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+
+#[CoversClass(AuthenticationError::class)]
+class AuthenticationErrorTest extends TestCase
+{
+    #[Test]
+    #[DataProvider('validCodesProvider')]
+    public function authenticationError(string $code, string $expectedMessage): void
+    {
+        $sut = new AuthenticationError($code);
+
+        $this->assertInstanceOf(ErrorInterface::class, $sut);
+        $this->assertSame($code, $sut->code());
+        $this->assertSame($expectedMessage, $sut->getMessage());
+    }
+
+    #[Test]
+    public function errorCodes(): void
+    {
+        $this->assertSame('oegqlb.authentication.credentials_incorrect', AuthenticationError::CREDENTIALS_INCORRECT);
+        $this->assertSame('oegqlb.authentication.token_quota_exceeded', AuthenticationError::TOKEN_QUOTA_EXCEEDED);
+    }
+
+    public static function validCodesProvider(): array
+    {
+        return [
+            [AuthenticationError::CREDENTIALS_INCORRECT, 'The provided credentials are invalid.'],
+            [AuthenticationError::TOKEN_QUOTA_EXCEEDED, 'The token quota for this user has been exceeded.'],
+        ];
+    }
+
+    #[Test]
+    public function unknownCodeThrowsException(): void
+    {
+        $notExistingCode = uniqid();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The error-code "' . $notExistingCode . '" is unknown.');
+
+        new AuthenticationError($notExistingCode);
+    }
+}

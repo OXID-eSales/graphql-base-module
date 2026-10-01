@@ -52,9 +52,9 @@ class TokenCest
     {
         $I->wantToTest('cannot query tokens with anonymous token');
 
-        $I->sendGQLQuery('query { token }'); // anonymous token
+        $I->sendGQLQuery('query { token { token } }'); // anonymous token
         $result = $I->grabJsonResponseAsArray();
-        $I->amBearerAuthenticated($result['data']['token']);
+        $I->amBearerAuthenticated($result['data']['token']['token']);
 
         $result = $this->sendTokenQuery($I);
 
@@ -72,13 +72,13 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I, false);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see three more user tokens
         $I->assertEquals($tokenCountBefore + 3, $tokenCountAfter);
@@ -92,17 +92,17 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see two more user tokens because without explicit filter userid filter will be added by default
         $I->assertEquals($tokenCountBefore + 2, $tokenCountAfter);
-        $I->assertNotEquals(self::TEST_USER_ID, $result['data']['tokens'][0]['customerId']); //admin user
+        $I->assertNotEquals(self::TEST_USER_ID, $result['data']['tokens']['tokens'][0]['customerId']); //admin user
     }
 
     public function testQueryTokensWithAdminTokenAndUserFilterOnNotExistingUserId(AcceptanceTester $I): void
@@ -119,7 +119,7 @@ class TokenCest
         $I->amBearerAuthenticated($token);
         $result = $this->sendTokenQuery($I, $filterPart);
 
-        $I->assertEmpty($result['data']['tokens']);
+        $I->assertEmpty($result['data']['tokens']['tokens']);
     }
 
     public function testQueryTokensWithUserTokenAndUserFilterOnNotOwnId(AcceptanceTester $I): void
@@ -137,7 +137,10 @@ class TokenCest
 
         $result = $this->sendTokenQuery($I, $filterPart);
 
-        $I->assertStringStartsWith('Unauthorized', $result['errors'][0]['message']);
+        $I->assertEquals(
+            'You are not authorized to view this token.',
+            $result['data']['tokens']['userErrors'][0]['message']
+        );
     }
 
     public function testQueryTokensWithUserTokenAndUserFilterOnOwnId(AcceptanceTester $I): void
@@ -154,16 +157,16 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see three more user tokens for this customer
-        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens'][0]['customerId']);
+        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens']['tokens'][0]['customerId']);
         $I->assertEquals($tokenCountBefore + 3, $tokenCountAfter);
     }
 
@@ -181,16 +184,16 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountBefore = count($result['data']['tokens']);
+        $tokenCountBefore = count($result['data']['tokens']['tokens']);
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, $filterPart);
-        $tokenCountAfter = count($result['data']['tokens']);
+        $tokenCountAfter = count($result['data']['tokens']['tokens']);
 
         //we see three more user tokens because of userid filter
-        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens'][0]['customerId']);
+        $I->assertEquals(self::TEST_USER_ID, $result['data']['tokens']['tokens'][0]['customerId']);
         $I->assertEquals($tokenCountBefore + 3, $tokenCountAfter);
     }
 
@@ -205,11 +208,11 @@ class TokenCest
         $resultDESC = $this->sendTokenQuery($I, '(sort:{expiresAt: "DESC"})');
         $resultASC = $this->sendTokenQuery($I, '(sort:{expiresAt: "ASC"})');
 
-        $I->assertEquals(count($resultASC['data']['tokens']), count($resultDESC['data']['tokens']));
-        $I->assertNotEquals($resultDESC['data']['tokens'], $resultASC['data']['tokens']);
+        $I->assertEquals(count($resultASC['data']['tokens']['tokens']), count($resultDESC['data']['tokens']['tokens']));
+        $I->assertNotEquals($resultDESC['data']['tokens']['tokens'], $resultASC['data']['tokens']['tokens']);
         $I->assertLessThan(
-            $resultDESC['data']['tokens'][0]['expiresAt'],
-            $resultASC['data']['tokens'][0]['expiresAt']
+            $resultDESC['data']['tokens']['tokens'][0]['expiresAt'],
+            $resultASC['data']['tokens']['tokens'][0]['expiresAt']
         );
     }
 
@@ -224,9 +227,15 @@ class TokenCest
         $resultFirst = $this->sendTokenQuery($I, "(pagination:{offset: 0 \n limit: 3})");
         $resultSecond = $this->sendTokenQuery($I, "(pagination:{offset: 1 \n limit: 3})");
 
-        $I->assertEquals(count($resultFirst['data']['tokens']), count($resultSecond['data']['tokens']));
-        $I->assertNotEquals($resultFirst['data']['tokens'], $resultSecond['data']['tokens']);
-        $I->assertEquals($resultFirst['data']['tokens'][1]['id'], $resultSecond['data']['tokens'][0]['id']);
+        $I->assertEquals(
+            count($resultFirst['data']['tokens']['tokens']),
+            count($resultSecond['data']['tokens']['tokens'])
+        );
+        $I->assertNotEquals($resultFirst['data']['tokens']['tokens'], $resultSecond['data']['tokens']['tokens']);
+        $I->assertEquals(
+            $resultFirst['data']['tokens']['tokens'][1]['id'],
+            $resultSecond['data']['tokens']['tokens'][0]['id']
+        );
     }
 
     public function testQueryTokensWithShopIdFilter(AcceptanceTester $I): void
@@ -237,10 +246,10 @@ class TokenCest
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendTokenQuery($I, '(filter:{shopId:{equals: "1"}})');
-        $I->assertNotEmpty($result['data']['tokens']);
+        $I->assertNotEmpty($result['data']['tokens']['tokens']);
 
         $result = $this->sendTokenQuery($I, '(filter:{shopId:{equals: "666"}})');
-        $I->assertEmpty($result['data']['tokens']);
+        $I->assertEmpty($result['data']['tokens']['tokens']);
     }
 
     public function testQueryTokensWithDateFilter(AcceptanceTester $I): void
@@ -254,12 +263,12 @@ class TokenCest
             $I,
             '(filter:{expiresAt:{between: ["2020-12-01 12:12:12", "2021-12-01 12:12:12"]}})'
         );
-        $I->assertEmpty($result['data']['tokens']);
+        $I->assertEmpty($result['data']['tokens']['tokens']);
 
         $filterPart = '(filter:{expiresAt:{between: ["2020-12-01 12:12:12", "' .
             (new DateTimeImmutable('+48 hours'))->format('Y-m-d H:i:s') . '"]}})';
         $result = $this->sendTokenQuery($I, $filterPart);
-        $I->assertNotEmpty($result['data']['tokens']);
+        $I->assertNotEmpty($result['data']['tokens']['tokens']);
     }
 
     public function testCustomerTokensDeleteWithoutToken(AcceptanceTester $I): void
@@ -275,8 +284,8 @@ class TokenCest
     {
         $I->wantToTest('calling customerTokenDelete with anonymous token');
 
-        $I->sendGQLQuery('query { token }');
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->sendGQLQuery('query { token { token } }');
+        $token = $I->grabJsonResponseAsArray()['data']['token']['token'];
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendCustomerTokenDeleteMutation($I);
@@ -296,7 +305,7 @@ class TokenCest
 
         $result = $this->sendCustomerTokenDeleteMutation($I);
 
-        $I->assertEquals(3, $result['data']['customerTokensDelete']);
+        $I->assertEquals(3, $result['data']['customerTokensDelete']['deletedCount']);
     }
 
     public function testCustomerTokensDeleteOwnId(AcceptanceTester $I): void
@@ -308,7 +317,7 @@ class TokenCest
 
         $result = $this->sendCustomerTokenDeleteMutation($I, self::TEST_USER_ID);
 
-        $I->assertEquals(3, $result['data']['customerTokensDelete']);
+        $I->assertEquals(3, $result['data']['customerTokensDelete']['deletedCount']);
     }
 
     public function testCustomerTokensDeleteOtherUserFails(AcceptanceTester $I): void
@@ -320,7 +329,10 @@ class TokenCest
 
         $result = $this->sendCustomerTokenDeleteMutation($I, '_other_user');
 
-        $I->assertStringStartsWith('Unauthorized', $result['errors'][0]['message']);
+        $I->assertEquals(
+            'You are not authorized to delete this token.',
+            $result['data']['customerTokensDelete']['userErrors'][0]['message']
+        );
     }
 
     public function testCustomerTokensDeleteOtherUserAdmin(AcceptanceTester $I): void
@@ -332,7 +344,7 @@ class TokenCest
 
         $result = $this->sendCustomerTokenDeleteMutation($I, self::TEST_USER_ID);
 
-        $I->assertEquals(3, $result['data']['customerTokensDelete']);
+        $I->assertEquals(3, $result['data']['customerTokensDelete']['deletedCount']);
     }
 
     public function testCustomerTokensDeleteAdminDeletesOwnTokens(AcceptanceTester $I): void
@@ -344,7 +356,7 @@ class TokenCest
 
         $result = $this->sendCustomerTokenDeleteMutation($I);
 
-        $I->assertEquals(2, $result['data']['customerTokensDelete']);
+        $I->assertEquals(2, $result['data']['customerTokensDelete']['deletedCount']);
     }
 
     public function testCustomerTokensDeleteNotExistingOtherUserAdmin(AcceptanceTester $I): void
@@ -353,10 +365,18 @@ class TokenCest
 
         $token = $this->generateUserTokens($I);
         $I->amBearerAuthenticated($token);
+        $userId = 'unknown_user';
 
-        $result = $this->sendCustomerTokenDeleteMutation($I, 'unknown_user');
+        $result = $this->sendCustomerTokenDeleteMutation($I, $userId);
 
-        $I->assertStringStartsWith('User was not found by id:', $result['errors'][0]['message']);
+        $I->assertSame(
+            'The user was not found.',
+            $result['data']['customerTokensDelete']['userErrors'][0]['message']
+        );
+        $I->assertSame(
+            $userId,
+            $result['data']['customerTokensDelete']['userErrors'][0]['identifier']
+        );
     }
 
     public function testNotLoggedUserCannotDeleteToken(AcceptanceTester $I): void
@@ -375,8 +395,16 @@ class TokenCest
     public function testShopAdminCannotDeleteNotExistingToken(AcceptanceTester $I): void
     {
         $I->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
-        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
-        $I->assertEquals('The token is not registered', $response['errors'][0]['message']);
+        $tokenId = 'not_existing_token';
+        $response = $this->sendTokenDeleteMutation($I, $tokenId);
+        $I->assertEquals(
+            'The token was not found.',
+            $response['data']['tokenDelete']['userErrors'][0]['message']
+        );
+        $I->assertEquals(
+            $tokenId,
+            $response['data']['tokenDelete']['userErrors'][0]['identifier']
+        );
     }
 
     public function testAdminCanDeleteToken(AcceptanceTester $I): void
@@ -392,25 +420,33 @@ class TokenCest
 
         // Get one of user tokens
         $response = $this->sendTokenQuery($I, $filterPart);
-        $tokenId = $response['data']['tokens'][0]['id'];
+        $tokenId = $response['data']['tokens']['tokens'][0]['id'];
 
         // Delete it
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
-        $I->assertTrue($response['data']['tokenDelete']);
+        $I->assertEquals(1, $response['data']['tokenDelete']['deletedCount']);
 
         // It's not there anymore
         $response = $this->sendTokenQuery($I, $filterPart);
         $ids = array_map(function ($tokenRow) {
             return $tokenRow['id'];
-        }, $response['data']['tokens']);
+        }, $response['data']['tokens']['tokens']);
         $I->assertNotContains($tokenId, $ids);
     }
 
     public function testUserCannotDeleteNotExistingToken(AcceptanceTester $I): void
     {
         $I->login(self::USER_LOGIN, $this->getUserPassword());
-        $response = $this->sendTokenDeleteMutation($I, 'not_existing_token');
-        $I->assertEquals('The token is not registered', $response['errors'][0]['message']);
+        $tokenId = 'not_existing_token';
+        $response = $this->sendTokenDeleteMutation($I, $tokenId);
+        $I->assertSame(
+            'The token was not found.',
+            $response['data']['tokenDelete']['userErrors'][0]['message']
+        );
+        $I->assertSame(
+            $tokenId,
+            $response['data']['tokenDelete']['userErrors'][0]['identifier']
+        );
     }
 
     public function testUserCanDeleteHisToken(AcceptanceTester $I): void
@@ -421,25 +457,32 @@ class TokenCest
         $I->login(self::USER_LOGIN, $this->getUserPassword());
 
         $response = $this->sendTokenQuery($I, '(sort:{expiresAt: "ASC"})');
-        $tokenId = $response['data']['tokens'][0]['id'];
+        $tokenId = $response['data']['tokens']['tokens'][0]['id'];
 
         // Delete the older one
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
-        $I->assertTrue($response['data']['tokenDelete']);
+        $I->assertEquals(1, $response['data']['tokenDelete']['deletedCount']);
 
         $response = $this->sendTokenQuery($I);
-        $I->assertNotEquals($tokenId, $response['data']['tokens'][0]['id']);
+        $I->assertNotEquals($tokenId, $response['data']['tokens']['tokens'][0]['id']);
     }
 
     public function testUserCannotDeleteNotHisToken(AcceptanceTester $I): void
     {
         $I->login(self::ADMIN_LOGIN, self::ADMIN_PASSWORD);
         $response = $this->sendTokenQuery($I);
-        $tokenId = $response['data']['tokens'][0]['id'];
+        $tokenId = $response['data']['tokens']['tokens'][0]['id'];
 
         $I->login(self::USER_LOGIN, $this->getUserPassword());
         $response = $this->sendTokenDeleteMutation($I, $tokenId);
-        $I->assertEquals('The token is not registered', $response['errors'][0]['message']);
+        $I->assertSame(
+            'The token was not found.',
+            $response['data']['tokenDelete']['userErrors'][0]['message']
+        );
+        $I->assertSame(
+            $tokenId,
+            $response['data']['tokenDelete']['userErrors'][0]['identifier']
+        );
     }
 
     public function testShopTokensDeleteWithoutToken(AcceptanceTester $I): void
@@ -458,8 +501,8 @@ class TokenCest
     {
         $I->wantToTest('calling shopTokenDelete with anonymous token');
 
-        $I->sendGQLQuery('query { token }');
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->sendGQLQuery('query { token { token } }');
+        $token = $I->grabJsonResponseAsArray()['data']['token']['token'];
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendShopTokensDeleteMutation($I);
@@ -494,7 +537,7 @@ class TokenCest
 
         $result = $this->sendShopTokensDeleteMutation($I);
 
-        $I->assertEquals(5, $result['data']['shopTokensDelete']);
+        $I->assertEquals(5, $result['data']['shopTokensDelete']['deletedCount']);
     }
 
     public function testRegenerateSignatureKeyWithoutToken(AcceptanceTester $I): void
@@ -513,8 +556,8 @@ class TokenCest
     {
         $I->wantToTest('calling regenerateSignatureKey with anonymous token');
 
-        $I->sendGQLQuery('query { token }');
-        $token = $I->grabJsonResponseAsArray()['data']['token'];
+        $I->sendGQLQuery('query { token { token } }');
+        $token = $I->grabJsonResponseAsArray()['data']['token']['token'];
         $I->amBearerAuthenticated($token);
 
         $result = $this->sendRegenerateSignatureKeyMutation($I);
@@ -549,7 +592,7 @@ class TokenCest
 
         $result = $this->sendRegenerateSignatureKeyMutation($I);
 
-        $I->assertTrue($result['data']['regenerateSignatureKey']);
+        $I->assertTrue($result['data']['regenerateSignatureKey']['success']);
 
         //fails on second call because the token is no longer valid for new signature
         $result = $this->sendRegenerateSignatureKeyMutation($I);
@@ -561,10 +604,16 @@ class TokenCest
     {
         $query = ' query {
                tokens ' . $filterPart . ' {
-                 id
-                 customerId
-                 expiresAt
-                 shopId
+                 tokens {
+                   id
+                   customerId
+                   expiresAt
+                   shopId
+                 }
+                 userErrors {
+                   code
+                   message
+                 }
               }
             }
         ';
@@ -579,7 +628,7 @@ class TokenCest
         $query = ' mutation {
                customerTokensDelete ';
         !$userId ?: $query .= '(customerId: "' . $userId . '")';
-        $query .= '}';
+        $query .= '{ deletedCount userErrors { code message ... on NotFoundError { identifier } } } }';
 
         $I->sendGQLQuery($query);
 
@@ -589,7 +638,7 @@ class TokenCest
     private function sendShopTokensDeleteMutation(AcceptanceTester $I): array
     {
         $query = ' mutation {
-                       shopTokensDelete
+                       shopTokensDelete { deletedCount userErrors { code message } }
                    }';
 
         $I->sendGQLQuery($query);
@@ -600,7 +649,7 @@ class TokenCest
     private function sendRegenerateSignatureKeyMutation(AcceptanceTester $I): array
     {
         $query = ' mutation {
-                       regenerateSignatureKey
+                       regenerateSignatureKey { success userErrors { code message } }
                    }';
 
         $I->sendGQLQuery($query);
@@ -654,7 +703,9 @@ class TokenCest
     private function sendTokenDeleteMutation(AcceptanceTester $I, string $tokenId): array
     {
         $mutation = 'mutation ($tokenId: ID!) {
-            tokenDelete(tokenId: $tokenId)
+            tokenDelete(tokenId: $tokenId) {
+                deletedCount userErrors { code message ... on NotFoundError { identifier }}
+            }
         }';
 
         $I->sendGQLQuery($mutation, ['tokenId' => $tokenId]);
@@ -665,7 +716,7 @@ class TokenCest
     private function generateToken(AcceptanceTester $I, $username = null, $password = null): string
     {
         $query = 'query ($username: String, $password: String) {
-            token (username: $username, password: $password)
+            token (username: $username, password: $password) { token }
         }';
 
         $I->sendGQLQuery($query, [
@@ -673,7 +724,7 @@ class TokenCest
             'password' => $password,
         ]);
 
-        return $I->grabJsonResponseAsArray()['data']['token'];
+        return $I->grabJsonResponseAsArray()['data']['token']['token'];
     }
 
     private function getUserPassword(): string

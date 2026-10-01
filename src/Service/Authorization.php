@@ -41,7 +41,7 @@ class Authorization implements AuthorizationServiceInterface
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter) TODO: Make usage of $subject argument
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter") TODO: Make usage of $subject argument
      */
     public function isAllowed(string $right, mixed $subject = null): bool
     {

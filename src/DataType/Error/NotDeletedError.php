@@ -1,0 +1,39 @@
+<?php
+
+/**
+ * Copyright © OXID eSales AG. All rights reserved.
+ * See LICENSE file for license details.
+ */
+
+declare(strict_types=1);
+
+namespace OxidEsales\GraphQL\Base\DataType\Error;
+
+use TheCodingMachine\GraphQLite\Annotations\Field;
+use TheCodingMachine\GraphQLite\Annotations\Type;
+
+/**
+ * @Type()
+ */
+class NotDeletedError extends AbstractError
+{
+    public function __construct(
+        string $code,
+        private readonly string $identifier,
+    ) {
+        parent::__construct($code);
+    }
+
+    /**
+     * @Field()
+     */
+    public function identifier(): string
+    {
+        return $this->identifier;
+    }
+
+    protected function messages(): array
+    {
+        return [];
+    }
+}

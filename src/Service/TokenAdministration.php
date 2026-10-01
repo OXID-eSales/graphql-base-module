@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Service;
 
-use OxidEsales\GraphQL\Base\DataType\Filter\IDFilter;
 use OxidEsales\GraphQL\Base\DataType\Pagination\Pagination;
 use OxidEsales\GraphQL\Base\DataType\Sorting\TokenSorting;
 use OxidEsales\GraphQL\Base\DataType\Token as TokenDataType;
@@ -27,7 +26,7 @@ use TheCodingMachine\GraphQLite\Types\ID;
 /**
  * Token data access service
  *
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects) TODO: Consider reducing complexity of this class
+ * @SuppressWarnings("PHPMD.CouplingBetweenObjects") TODO: Consider reducing complexity of this class
  */
 class TokenAdministration
 {
@@ -41,9 +40,6 @@ class TokenAdministration
     ) {
     }
 
-    /**
-     * @return TokenDataType[]
-     */
     public function tokens(
         TokenFilterList $filterList,
         Pagination $pagination,
@@ -77,6 +73,7 @@ class TokenAdministration
 
     /**
      * @throws \OxidEsales\GraphQL\Base\Exception\NotFound
+     * @throws InvalidLogin
      */
     public function customerTokensDelete(?ID $customerId): int
     {

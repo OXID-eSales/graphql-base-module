@@ -1,6 +1,13 @@
 parameters:
     ignoreErrors:
         - identifier: missingType.iterableValue
+        -
+            # setDisableShopCheck() only exists on the EE BaseModel, not in CE.
+            # reportUnmatched: false so this ignore does not error when analysing the EE edition.
+            message: '#Call to an undefined method OxidEsales\\Eshop\\Core\\Model\\BaseModel::setDisableShopCheck\(\)#'
+            identifier: method.notFound
+            path: ../../src/Infrastructure/Repository.php
+            reportUnmatched: false
     bootstrapFiles:
         - phpstan-bootstrap.php
     level: 8

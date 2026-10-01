@@ -80,7 +80,7 @@ class GraphQL extends WidgetController
     }
 
     /**
-     * @SuppressWarnings(PHPMD.ExitExpression)
+     * @SuppressWarnings("PHPMD.ExitExpression")
      */
     public static function sendErrorResponse(array $message, int $status): never
     {

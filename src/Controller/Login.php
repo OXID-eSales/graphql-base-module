@@ -9,16 +9,18 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Controller;
 
-use OxidEsales\GraphQL\Base\DataType\LoginInterface;
-use OxidEsales\GraphQL\Base\Service\LoginServiceInterface;
-use OxidEsales\GraphQL\Base\Service\Token;
+use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\LoginPayloadInterface;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayload;
+use OxidEsales\GraphQL\Base\DataType\Payload\TokenPayloadInterface;
+use OxidEsales\GraphQL\Base\ErrorResolver\LoginResolverInterface;
 use TheCodingMachine\GraphQLite\Annotations\Query;
 
 class Login
 {
     public function __construct(
-        protected Token $tokenService,
-        protected LoginServiceInterface $loginService,
+        private readonly LoginResolverInterface $loginResolver,
     ) {
     }
 
@@ -26,22 +28,31 @@ class Login
      * Query of Base Module.
      * Retrieve a JWT for authentication of further requests
      */
-    #[Query]
-    public function token(?string $username = null, ?string $password = null): string
+    #[Query(outputType: "TokenPayload")]
+    public function token(?string $username = null, ?string $password = null): TokenPayloadInterface
     {
-        return $this->tokenService->createToken(
-            $username,
-            $password
-        )->toString();
+        $result = $this->loginResolver->createToken($username, $password);
+
+        if ($result instanceof ErrorInterface) {
+            return new TokenPayload(null, [$result]);
+        }
+
+        return new TokenPayload($result->toString());
     }
 
     /**
      * Query of Base Module.
      * Retrieve a refresh token and access token
      */
-    #[Query]
-    public function login(?string $username = null, ?string $password = null): LoginInterface
+    #[Query(outputType: "LoginPayload")]
+    public function login(?string $username = null, ?string $password = null): LoginPayloadInterface
     {
-        return $this->loginService->login($username, $password);
+        $result = $this->loginResolver->login($username, $password);
+
+        if ($result instanceof ErrorInterface) {
+            return new LoginPayload(null, [$result]);
+        }
+
+        return new LoginPayload($result);
     }
 }

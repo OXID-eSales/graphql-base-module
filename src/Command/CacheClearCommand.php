@@ -27,6 +27,9 @@ class CacheClearCommand extends Command
         $this->setDescription('Clear schema cache');
     }
 
+    /**
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $style = new SymfonyStyle($input, $output);
