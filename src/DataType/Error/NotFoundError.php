@@ -12,9 +12,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 class NotFoundError extends AbstractError
 {
     public const TOKEN = 'oegqlb.not_found.token';
@@ -27,9 +25,7 @@ class NotFoundError extends AbstractError
         parent::__construct($code);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function identifier(): string
     {
         return $this->identifier;

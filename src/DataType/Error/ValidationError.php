@@ -12,9 +12,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 class ValidationError extends AbstractError
 {
     public const FINGERPRINT = 'oegqlb.validation.fingerprint';
@@ -27,9 +25,7 @@ class ValidationError extends AbstractError
         parent::__construct($code);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function value(): string
     {
         return $this->value;

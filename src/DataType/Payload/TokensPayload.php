@@ -14,9 +14,7 @@ use OxidEsales\GraphQL\Base\DataType\Token;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class TokensPayload extends AbstractPayload implements TokensPayloadInterface
 {
     /**
@@ -31,9 +29,9 @@ final class TokensPayload extends AbstractPayload implements TokensPayloadInterf
     }
 
     /**
-     * @Field()
      * @return Token[]|null
      */
+    #[Field]
     public function tokens(): ?array
     {
         return $this->tokens;

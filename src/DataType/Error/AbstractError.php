@@ -29,17 +29,13 @@ abstract class AbstractError implements ErrorInterface
         $this->message = $message ?? $messages[$code];
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function code(): string
     {
         return $this->code;
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function getMessage(): string
     {
         return $this->message;
