@@ -53,4 +53,9 @@ abstract class Sorting
             $builder->addOrderBy($table . '.' . $field, $dir);
         }
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->sorting === [];
+    }
 }

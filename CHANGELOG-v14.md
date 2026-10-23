@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Clear the GraphQL schema cache when the shop cache is cleared (e.g. via `oe:cache:clear`)
 - Implement Errors and Payloads as preparation, which contains result and possible errors (including message and unique code) (https://docs.oxid-esales.com/interfaces/graphql/en/latest/exceptions/Error%20Handling.html)
+- `Sorting::isEmpty()` to distinguish an empty sorting input from a missing one
 
 ### Changed
 - Update module to work with OXID eShop 7.6
