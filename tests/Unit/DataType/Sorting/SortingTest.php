@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Sorting;
 
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
@@ -21,10 +20,11 @@ use PHPUnit\Framework\Attributes\Test;
 class SortingTest extends DataTypeTestCase
 {
     #[Test]
-    public function throwsExceptionOnInvalidInput(): void
+    public function throwsExceptionOnInvalidDirection(): void
     {
-        $this->expectException(InvalidArgumentMultiplePossible::class);
-        $this->expectExceptionMessage('"foo" is only allowed to be one of "ASC, DESC", was "bar"');
+        $this->expectExceptionObject(
+            new InvalidArgumentMultiplePossible('foo', [Sorting::SORTING_ASC, Sorting::SORTING_DESC], 'bar')
+        );
         new class (['foo' => 'bar']) extends Sorting {
         };
     }
@@ -33,13 +33,13 @@ class SortingTest extends DataTypeTestCase
     public function addQueryPartWithoutAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort = new class (['foo' => 'ASC']) extends Sorting {
+        $sut = new class (['foo' => 'ASC']) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table');
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
+        /** @var string[] $orderBy */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
 
         $this->assertSame(
@@ -52,13 +52,13 @@ class SortingTest extends DataTypeTestCase
     public function addQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort = new class (['foo' => 'ASC']) extends Sorting {
+        $sut = new class (['foo' => 'ASC']) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table', 'db_table_alias');
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
+        /** @var string[] $orderBy */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
 
         $this->assertSame(
@@ -71,13 +71,13 @@ class SortingTest extends DataTypeTestCase
     public function addQueryWithMultipleSearchFields(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort = new class (['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
+        $sut = new class (['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table');
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
+        /** @var string[] $orderBy */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
 
         $this->assertCount(
@@ -99,11 +99,11 @@ class SortingTest extends DataTypeTestCase
     {
         $queryBuilder = $this->createQueryBuilderMock();
 
-        $sort = new class ([]) extends Sorting {
+        $sut = new class ([]) extends Sorting {
         };
 
         $this->expectException(InvalidArgumentException::class);
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
     }
 
     #[Test]
@@ -122,14 +122,5 @@ class SortingTest extends DataTypeTestCase
         };
 
         $this->assertFalse($sut->isEmpty());
-    }
-
-    #[Test]
-    public function failOnWrongSortingConfiguration(): void
-    {
-        $this->expectException(InvalidArgumentMultiplePossible::class);
-        $this->expectExceptionMessage('"foo" is only allowed to be one of "ASC, DESC", was "x"');
-        new class (['foo' => 'x']) extends Sorting {
-        };
     }
 }
