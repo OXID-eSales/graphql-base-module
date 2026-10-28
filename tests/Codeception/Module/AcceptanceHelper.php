@@ -52,17 +52,34 @@ class AcceptanceHelper extends Module implements DependsOnModule
         int $shopId = 1,
         array $additionalParameters = []
     ): void {
-        $uri = '/graphql?lang=' . $language . '&shp=' . $shopId;
-
-        foreach ($additionalParameters as $key => $value) {
-            $uri .= '&' . $key . '=' . $value;
-        }
-
         $this->rest->haveHTTPHeader('Content-Type', 'application/json');
-        $this->rest->sendPOST($uri, [
+        $this->rest->sendPOST($this->getGraphQLUri($language, $shopId, $additionalParameters), [
             'query' => $query,
             'variables' => $variables,
         ]);
+    }
+
+    public function sendGQLFileUpload(
+        string $query,
+        array $variables,
+        string $fileVariableName,
+        string $filePath,
+        int $language = 0,
+        int $shopId = 1
+    ): void {
+        $operations = [
+            'query' => $query,
+            'variables' => $variables + [$fileVariableName => null],
+        ];
+        $map = [$fileVariableName => ["variables.$fileVariableName"]];
+        $parameters = [
+            'operations' => json_encode($operations),
+            'map' => json_encode($map),
+        ];
+        $files = [$fileVariableName => $filePath];
+
+        $this->rest->unsetHttpHeader('Content-Type');
+        $this->rest->sendPOST($this->getGraphQLUri($language, $shopId), $parameters, $files);
     }
 
     public function login(?string $username = null, ?string $password = null, int $shopId = 1): void
@@ -143,5 +160,16 @@ class AcceptanceHelper extends Module implements DependsOnModule
         $token = $config->getConfiguration()->parser()->parse($jwt);
 
         return $token;
+    }
+
+    private function getGraphQLUri(int $language, int $shopId, array $additionalParameters = []): string
+    {
+        $uri = '/graphql?lang=' . $language . '&shp=' . $shopId;
+
+        foreach ($additionalParameters as $key => $value) {
+            $uri .= '&' . $key . '=' . $value;
+        }
+
+        return $uri;
     }
 }

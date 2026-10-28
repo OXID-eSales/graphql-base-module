@@ -8,16 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Clear the GraphQL schema cache when the shop cache is cleared (e.g. via `oe:cache:clear`)
+- Implement Errors and Payloads as preparation, which contains result and possible errors (including message and unique code) (https://docs.oxid-esales.com/interfaces/graphql/en/latest/exceptions/Error%20Handling.html)
 - New Error-handling with payload which contains result and possible errors (including message and unique code) (https://docs.oxid-esales.com/interfaces/graphql/en/latest/exceptions/Error%20Handling.html)
 - New Exception-converter between controller and service which converts exceptions into GraphQL-Errors
 
 ### Changed
 - Update module to work with OXID eShop 7.6
+- MissingSignatureKey-Exception is not shown to the user anymore
 - Upgrade GraphQLite v7 -> v8
 - Move SEO encoder and refresh token model factories to the `Shared` namespace for reuse outside their original domains
 - Align the `oe:graphql:cache-clear` command with the streamlined 7.6 console conventions
+- `RefreshTokenService::refreshToken()` return the `UnencryptedToken` instead of the token-string
+- `MissingSignatureKey`-Exception is not a ClientAware-Exception anymore
+- `Repository::getModel()` checks now against Edition and not if a method of the edition exists
 - Queries and Mutations are now using payloads
 - MissingSignatureKey-Exception is not shown to the user anymore
 
 ### Removed
 - `SeoEncoderArticle`-Model extension
+
+### Fixed
+- Annotations without double-quotes throwing a deprecation warning
+- Docblock for `FilterListInterface::getFilters()` didn't show possible nullable values
+- Pagination::offset() is nullable, but never returned null

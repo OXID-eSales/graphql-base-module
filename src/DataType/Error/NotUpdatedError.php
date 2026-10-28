@@ -12,9 +12,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 class NotUpdatedError extends AbstractError
 {
     public function __construct(
@@ -24,9 +22,7 @@ class NotUpdatedError extends AbstractError
         parent::__construct($code);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function identifier(): string
     {
         return $this->identifier;

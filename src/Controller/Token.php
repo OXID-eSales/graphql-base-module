@@ -80,7 +80,7 @@ class Token
     #[Query(outputType: "TokenPayload")]
     public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
-        $result = $this->tokenResolver->refresh($refreshToken, $fingerprintHash);
+        $result = $this->tokenResolver->refresh($refreshToken, $fingerprintHash)->toString();
 
         if ($result instanceof ErrorInterface) {
             return new TokenPayload(null, [$result]);

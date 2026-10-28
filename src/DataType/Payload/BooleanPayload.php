@@ -13,9 +13,7 @@ use OxidEsales\GraphQL\Base\DataType\Error\ErrorInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class BooleanPayload extends AbstractPayload implements BooleanPayloadInterface
 {
     /**
@@ -28,9 +26,7 @@ final class BooleanPayload extends AbstractPayload implements BooleanPayloadInte
         parent::__construct($userErrors);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function success(): ?bool
     {
         return $this->success;

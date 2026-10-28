@@ -11,9 +11,7 @@ namespace OxidEsales\GraphQL\Base\DataType\Error;
 
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class AuthenticationError extends AbstractError
 {
     public const CREDENTIALS_INCORRECT = 'oegqlb.authentication.credentials_incorrect';

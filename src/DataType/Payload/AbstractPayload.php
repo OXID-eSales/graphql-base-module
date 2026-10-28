@@ -24,8 +24,8 @@ abstract class AbstractPayload implements PayloadInterface
 
     /**
      * @return ErrorInterface[]
-     * @Field()
      */
+    #[Field]
     public function userErrors(): array
     {
         return $this->userErrors;

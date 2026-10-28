@@ -20,7 +20,7 @@ final class ShopCacheClearSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings("PHPMD.UnusedFormalParameter")
      */
     public function invalidateSchemaCache(ClearShopCacheEvent $event): void
     {

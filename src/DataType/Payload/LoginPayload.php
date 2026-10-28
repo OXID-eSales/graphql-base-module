@@ -14,9 +14,7 @@ use OxidEsales\GraphQL\Base\DataType\LoginInterface;
 use TheCodingMachine\GraphQLite\Annotations\Field;
 use TheCodingMachine\GraphQLite\Annotations\Type;
 
-/**
- * @Type()
- */
+#[Type]
 final class LoginPayload extends AbstractPayload implements LoginPayloadInterface
 {
     /**
@@ -29,9 +27,7 @@ final class LoginPayload extends AbstractPayload implements LoginPayloadInterfac
         parent::__construct($userErrors);
     }
 
-    /**
-     * @Field()
-     */
+    #[Field]
     public function login(): ?LoginInterface
     {
         return $this->login;
