@@ -9,34 +9,37 @@ declare(strict_types=1);
 
 namespace OxidEsales\GraphQL\Base\Tests\Unit\DataType\Sorting;
 
-use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use InvalidArgumentException;
 use OxidEsales\GraphQL\Base\DataType\Sorting\Sorting;
 use OxidEsales\GraphQL\Base\Exception\InvalidArgumentMultiplePossible;
 use OxidEsales\GraphQL\Base\Tests\Unit\DataType\DataTypeTestCase;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Test;
 
 #[AllowMockObjectsWithoutExpectations]
 class SortingTest extends DataTypeTestCase
 {
-    public function testThrowsExceptionOnInvalidInput(): void
+    #[Test]
+    public function throwsExceptionOnInvalidDirection(): void
     {
-        $this->expectException(InvalidArgumentMultiplePossible::class);
-        $this->expectExceptionMessage('"foo" is only allowed to be one of "ASC, DESC", was "bar"');
+        $this->expectExceptionObject(
+            new InvalidArgumentMultiplePossible('foo', [Sorting::SORTING_ASC, Sorting::SORTING_DESC], 'bar')
+        );
         new class (['foo' => 'bar']) extends Sorting {
         };
     }
 
-    public function testAddQueryPartWithoutAlias(): void
+    #[Test]
+    public function addQueryPartWithoutAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort = new class (['foo' => 'ASC']) extends Sorting {
+        $sut = new class (['foo' => 'ASC']) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table');
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
+        /** @var string[] $orderBy */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
 
         $this->assertSame(
@@ -45,16 +48,17 @@ class SortingTest extends DataTypeTestCase
         );
     }
 
-    public function testAddQueryPartWithAlias(): void
+    #[Test]
+    public function addQueryPartWithAlias(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort = new class (['foo' => 'ASC']) extends Sorting {
+        $sut = new class (['foo' => 'ASC']) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table', 'db_table_alias');
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
+        /** @var string[] $orderBy */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
 
         $this->assertSame(
@@ -63,16 +67,17 @@ class SortingTest extends DataTypeTestCase
         );
     }
 
-    public function testAddQueryWithMultipleSearchFields(): void
+    #[Test]
+    public function addQueryWithMultipleSearchFields(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
-        $sort = new class (['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
+        $sut = new class (['foo' => 'ASC', 'bar' => 'DESC', 'empty' => null]) extends Sorting {
         };
 
         $queryBuilder->select()->from('db_table');
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
 
-        /** @var CompositeExpression */
+        /** @var string[] $orderBy */
         $orderBy = $queryBuilder->getQueryPart('orderBy');
 
         $this->assertCount(
@@ -89,22 +94,33 @@ class SortingTest extends DataTypeTestCase
         );
     }
 
-    public function testFailAddToQueryWithoutFormPart(): void
+    #[Test]
+    public function failAddToQueryWithoutFromPart(): void
     {
         $queryBuilder = $this->createQueryBuilderMock();
 
-        $sort = new class ([]) extends Sorting {
+        $sut = new class ([]) extends Sorting {
         };
 
         $this->expectException(InvalidArgumentException::class);
-        $sort->addToQuery($queryBuilder);
+        $sut->addToQuery($queryBuilder);
     }
 
-    public function testFailOnWrongSortingConfiguration(): void
+    #[Test]
+    public function isEmptyWhenAllFieldsAreFilteredAway(): void
     {
-        $this->expectException(InvalidArgumentMultiplePossible::class);
-        $this->expectExceptionMessage('"foo" is only allowed to be one of "ASC, DESC", was "x"');
-        new class (['foo' => 'x']) extends Sorting {
+        $sut = new class ([uniqid('emptyField') => '', uniqid('nullField') => null]) extends Sorting {
         };
+
+        $this->assertTrue($sut->isEmpty());
+    }
+
+    #[Test]
+    public function isNotEmptyWhenAnyFieldIsSorted(): void
+    {
+        $sut = new class ([uniqid('sortedField') => 'ASC', uniqid('emptyField') => '']) extends Sorting {
+        };
+
+        $this->assertFalse($sut->isEmpty());
     }
 }

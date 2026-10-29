@@ -19,7 +19,9 @@ abstract class Sorting
 
     public const SORTING_ASC = 'ASC';
 
-    /** @var array<string, null|string> */
+    private const ALLOWED_DIRECTIONS = [self::SORTING_ASC, self::SORTING_DESC];
+
+    /** @var array<string, string> */
     private array $sorting;
 
     /**
@@ -30,11 +32,8 @@ abstract class Sorting
         $this->sorting = array_filter($sorting);
 
         foreach ($this->sorting as $field => $val) {
-            if (
-                $val !== self::SORTING_DESC &&
-                $val !== self::SORTING_ASC
-            ) {
-                throw new InvalidArgumentMultiplePossible($field, ['ASC', 'DESC'], $val);
+            if (!in_array($val, self::ALLOWED_DIRECTIONS, true)) {
+                throw new InvalidArgumentMultiplePossible($field, self::ALLOWED_DIRECTIONS, $val);
             }
         }
     }
@@ -52,5 +51,10 @@ abstract class Sorting
         foreach ($this->sorting as $field => $dir) {
             $builder->addOrderBy($table . '.' . $field, $dir);
         }
+    }
+
+    public function isEmpty(): bool
+    {
+        return $this->sorting === [];
     }
 }
