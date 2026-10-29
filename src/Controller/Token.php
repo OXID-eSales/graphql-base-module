@@ -48,9 +48,6 @@ class Token
      * Query of Base Module.
      * Query a customer's active JWT.
      * User with right 'VIEW_ANY_TOKEN' can query any customer's tokens.
-     *
-     *
-     * @return TokenDataType[]
      */
     #[Query(outputType: "TokensPayload")]
     #[Logged]
@@ -80,7 +77,7 @@ class Token
     #[Query(outputType: "TokenPayload")]
     public function refresh(string $refreshToken, string $fingerprintHash): TokenPayloadInterface
     {
-        $result = $this->tokenResolver->refresh($refreshToken, $fingerprintHash)->toString();
+        $result = $this->tokenResolver->refresh($refreshToken, $fingerprintHash);
 
         if ($result instanceof ErrorInterface) {
             return new TokenPayload(null, [$result]);
