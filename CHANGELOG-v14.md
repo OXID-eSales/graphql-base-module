@@ -29,4 +29,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docblock for `FilterListInterface::getFilters()` didn't show possible nullable values
 - Pagination::offset() is nullable, but never returned null
 
-[13.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v13.2.0...v14.0.0
+[14.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v13.2.0...v14.0.0
