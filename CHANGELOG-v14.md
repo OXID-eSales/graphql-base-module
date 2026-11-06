@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [14.0.0] - 2026-10-04
+## [14.0.1] - 2026-11-06
+
+### Fixed
+- Release date of v14.0.0 in the changelog
+- Install instructions in README referenced v13 instead of v14
+
+## [14.0.0] - 2026-11-04
 
 ### Added
 - Clear the GraphQL schema cache when the shop cache is cleared (e.g. via `oe:cache:clear`)
@@ -29,4 +35,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docblock for `FilterListInterface::getFilters()` didn't show possible nullable values
 - Pagination::offset() is nullable, but never returned null
 
+[14.0.1]: https://github.com/OXID-eSales/graphql-base-module/compare/v14.0.0...v14.0.1
 [14.0.0]: https://github.com/OXID-eSales/graphql-base-module/compare/v13.2.0...v14.0.0
