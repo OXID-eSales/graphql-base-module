@@ -6,7 +6,7 @@
     "homepage": "https://www.oxid-esales.com",
     "license": ["proprietary"],
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-json": "*",
         "thecodingmachine/graphqlite": "^8.3",
         "lcobucci/jwt": "^5.0",
@@ -20,7 +20,7 @@
         "phpunit/phpunit": "^12.5",
         "symfony/process": "^6.4",
         "ext-xdebug": "*",
-        "oxid-esales/oxideshop-ce": "dev-b-7.6.x",
+        "oxid-esales/oxideshop-ce": "dev-b-7.7.x",
         "phpstan/phpstan": "^2.2",
         "squizlabs/php_codesniffer": "3.*",
         "phpmd/phpmd": "^2.11",
@@ -30,15 +30,15 @@
         "codeception/module-db": "*",
         "codeception/codeception": "^5.0",
         "codeception/module-asserts": "^3.0",
-        "oxid-esales/codeception-modules": "dev-b-7.6.x",
-        "oxid-esales/codeception-page-objects": "dev-b-7.6.x",
-        "oxid-esales/developer-tools": "dev-b-7.6.x",
-        "oxid-esales/oxideshop-db-views-generator": "dev-b-7.6.x",
-        "oxid-esales/oxideshop-doctrine-migration-wrapper": "dev-b-7.6.x",
-        "oxid-esales/oxideshop-unified-namespace-generator": "dev-b-7.6.x"
+        "oxid-esales/codeception-modules": "dev-b-7.7.x",
+        "oxid-esales/codeception-page-objects": "dev-b-7.7.x",
+        "oxid-esales/developer-tools": "dev-b-7.7.x",
+        "oxid-esales/oxideshop-db-views-generator": "dev-b-7.7.x",
+        "oxid-esales/oxideshop-doctrine-migration-wrapper": "dev-b-7.7.x",
+        "oxid-esales/oxideshop-unified-namespace-generator": "dev-b-7.7.x"
     },
     "conflict": {
-        "oxid-esales/oxideshop-ce": "<7.6"
+        "oxid-esales/oxideshop-ce": "<7.7"
     },
     "autoload": {
         "psr-4": {
