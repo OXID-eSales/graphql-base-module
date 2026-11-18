@@ -24,7 +24,7 @@ install:
         vendor/bin/oe-console oe:database:reset --db-host=mysql --db-port=3306 --db-name=example --db-user=root --db-password=root --force
         vendor/bin/oe-console oe:module:install ./
 
-        vendor/bin/oe-eshop-doctrine_migration migrations:migrate
+        vendor/bin/oe-console oe:database:migrate
         vendor/bin/oe-eshop-db_views_generate
 
         vendor/bin/oe-console oe:module:activate "{{ $ids }}"

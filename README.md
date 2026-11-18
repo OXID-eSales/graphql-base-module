@@ -46,7 +46,7 @@ $ composer require oxid-esales/graphql-base ^15.0.0 --with-all-dependencies
 You should run migrations both after installing the module and after each module update:
 
 ```bash
-$ vendor/bin/oe-eshop-doctrine_migration migrations:migrate oe_graphql_base
+$ vendor/bin/oe-console oe:database:migrate
 ```
 
 After requiring the module, you need to activate it, either via OXID eShop admin or CLI.
