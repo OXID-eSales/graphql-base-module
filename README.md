@@ -38,8 +38,8 @@ This assumes you have OXID eShop (at least `OXID-eSales/oxideshop_ce: v7.6.0` co
 ### Install
 
 ```bash
-# Install desired version of oxid-esales/graphql-base module, in this case - latest released 11.x version, While updating the version you should add additional flag --with-all-dependencies with below command.
-$ composer require oxid-esales/graphql-base ^13.0.0 --with-all-dependencies
+# Install desired version of oxid-esales/graphql-base module, in this case - latest released 14.x version, While updating the version you should add additional flag --with-all-dependencies with below command.
+$ composer require oxid-esales/graphql-base ^14.0.0 --with-all-dependencies
 ```
 
 You should run migrations both after installing the module and after each module update:
