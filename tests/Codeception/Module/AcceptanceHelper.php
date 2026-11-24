@@ -62,21 +62,21 @@ class AcceptanceHelper extends Module implements DependsOnModule
     public function sendGQLFileUpload(
         string $query,
         array $variables,
-        string $fileVariableName,
+        string $fileVariablePath,
         string $filePath,
         int $language = 0,
         int $shopId = 1
     ): void {
         $operations = [
             'query' => $query,
-            'variables' => $variables + [$fileVariableName => null],
+            'variables' => $variables,
         ];
-        $map = [$fileVariableName => ["variables.$fileVariableName"]];
+        $map = ['file' => ["variables.$fileVariablePath"]];
         $parameters = [
             'operations' => json_encode($operations),
             'map' => json_encode($map),
         ];
-        $files = [$fileVariableName => $filePath];
+        $files = ['file' => $filePath];
 
         $this->rest->unsetHttpHeader('Content-Type');
         $this->rest->sendPOST($this->getGraphQLUri($language, $shopId), $parameters, $files);
